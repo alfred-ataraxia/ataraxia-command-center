@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "openclaw-backup": {
+      "version": "1.0.0",
+      "installedAt": 1774553768518
+    },
+    "Architecture-Designer": {
+      "version": "0.1.0",
+      "installedAt": 1774556276779
+    },
+    "MBB-Strategist": {
+      "version": "1.0.0",
+      "installedAt": 1774556285197
+    }
+  }
+}
