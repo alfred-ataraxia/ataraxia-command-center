@@ -291,7 +291,7 @@
       "id": "T-019",
       "title": "Dashboard PWA desteği",
       "description": "Progressive Web App manifest + service worker ekle. Telefonda ana ekrana eklenebilsin, offline'da temel bilgi göstersin.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -306,6 +306,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T05:19:47.064Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T09:40:00.000Z"
         }
       ]
     },
