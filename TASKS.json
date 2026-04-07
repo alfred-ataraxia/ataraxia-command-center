@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T21:36:17.360Z",
+  "updated_at": "2026-04-07T21:36:19.086Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1308,7 +1308,7 @@
       "id": "T-073",
       "title": "Log Rotation Policy",
       "description": "OpenClaw ve Dashboard loglarının SD kartı doldurmasını engellemek için otomatik log rotation. logrotate konfigürasyonu: 50MB üzeri loglar sıkıştırılır, 7 günden eski silinir. /home/sefa/openclaw/logs/ ve /home/sefa/.pm2/logs/ için geçerli.",
-      "status": "done",
+      "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1328,6 +1328,11 @@
           "from": "in_progress",
           "to": "done",
           "at": "2026-04-07T21:36:17.358Z"
+        },
+        {
+          "from": "done",
+          "to": "pending",
+          "at": "2026-04-07T21:36:19.086Z"
         }
       ],
       "notes": [
