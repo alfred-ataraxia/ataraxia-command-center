@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T21:43:26.294Z",
+  "updated_at": "2026-04-07T21:44:53.031Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1380,6 +1380,17 @@
       "tags": [],
       "due": "",
       "created_at": "2026-04-07T21:35:55.328Z"
+    },
+    {
+      "id": "T-074",
+      "title": "Test Görev",
+      "description": "Test açıklaması",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-07T21:44:53.031Z"
     }
   ]
 }
