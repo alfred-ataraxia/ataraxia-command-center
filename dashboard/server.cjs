@@ -43,6 +43,70 @@ function loadEnv() {
 }
 loadEnv()
 
+// --- Startup validation ---
+function validateStartup() {
+  const issues = []
+  const warnings = []
+  const info = []
+
+  // Check required directories
+  if (!fs.existsSync(DIST)) {
+    issues.push('dist/ directory not found')
+  } else {
+    info.push('dist/ directory ready')
+  }
+
+  // Check TASKS.json
+  const tasksPath = path.join(__dirname, '..', 'TASKS.json')
+  if (!fs.existsSync(tasksPath)) {
+    issues.push('TASKS.json not found')
+  } else {
+    info.push('TASKS.json ready')
+  }
+
+  // Check HA connection if configured
+  if (process.env.HA_URL) {
+    info.push(`Home Assistant configured: ${process.env.HA_URL}`)
+  } else {
+    warnings.push('HA_URL not configured (optional)')
+  }
+
+  // Check Telegram if configured
+  if (process.env.TELEGRAM_CHAT_ID) {
+    info.push('Telegram notifications enabled')
+  } else {
+    warnings.push('TELEGRAM_CHAT_ID not configured (optional)')
+  }
+
+  // Environment mode
+  const nodeEnv = process.env.NODE_ENV || 'development'
+  info.push(`Environment: ${nodeEnv}`)
+
+  // Report startup status
+  console.log('\n╔════════════════════════════════════════╗')
+  console.log('║  Ataraxia Dashboard — Startup Check   ║')
+  console.log('╚════════════════════════════════════════╝\n')
+
+  if (info.length > 0) {
+    console.log('✅ INFO:')
+    info.forEach(i => console.log(`  • ${i}`))
+  }
+
+  if (warnings.length > 0) {
+    console.log('\n⚠️  WARNINGS:')
+    warnings.forEach(w => console.log(`  • ${w}`))
+  }
+
+  if (issues.length > 0) {
+    console.log('\n❌ CRITICAL ISSUES:')
+    issues.forEach(issue => console.log(`  • ${issue}`))
+    return false
+  }
+
+  console.log('\n✅ Startup checks passed!\n')
+  return true
+}
+
 const PORT = 4173
 const DIST = path.join(__dirname, 'dist')
 
@@ -1153,8 +1217,17 @@ const server = http.createServer((req, res) => {
 })
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Ataraxia Dashboard: http://0.0.0.0:${PORT}`)
-  console.log(`Stats API: http://0.0.0.0:${PORT}/api/stats`)
+  // Run startup validation
+  const validationOk = validateStartup()
+
+  if (!validationOk) {
+    console.error('Startup validation failed. Server may not operate correctly.')
+    process.exit(1)
+  }
+
+  console.log(`🚀 Ataraxia Dashboard: http://0.0.0.0:${PORT}`)
+  console.log(`📊 Stats API: http://0.0.0.0:${PORT}/api/stats`)
+  console.log(`❤️  Health: http://0.0.0.0:${PORT}/api/health\n`)
 })
 
 // --- Graceful shutdown ---
