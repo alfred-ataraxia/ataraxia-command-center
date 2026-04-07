@@ -235,7 +235,7 @@
       "id": "T-016",
       "title": "Kullanıcı ayarları sayfası",
       "description": "Dashboard'a Settings sayfası ekle. Tema, bildirim tercihleri, cron zamanlamaları, HA bağlantı ayarları düzenlenebilsin.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
@@ -250,6 +250,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-06T23:16:00.014Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T17:00:00.000Z"
         }
       ]
     },
@@ -482,7 +487,7 @@
       "id": "T-030",
       "title": "Haftalık özet raporu — Pazartesi sabahı cron",
       "description": "Her Pazartesi 09:00'da haftalık özet raporu hazırlanacak. İçerik: tamamlanan görevler, bekleyen görevler, sistem metrikleri ortalaması, cron sağlık durumu. Rapor Telegram'a gönderilecek ve workspace/reports/ klasörüne kaydedilecek.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -497,6 +502,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-06T23:16:21.072Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T16:30:00.000Z"
         }
       ]
     },
