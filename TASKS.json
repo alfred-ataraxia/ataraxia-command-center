@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T20:44:05.082Z",
+  "updated_at": "2026-04-07T20:44:07.681Z",
   "tasks": [
     {
       "id": "T-001",
@@ -985,7 +985,7 @@
       "id": "T-053",
       "title": "Config file centralization",
       "description": "config.js dosyası. Tüm hard-coded values (ports, timeouts, limits). Environment-based config (dev/prod). .env örneği.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -993,7 +993,14 @@
         "refactoring"
       ],
       "due": "2026-04-11",
-      "created_at": "2026-04-07T07:35:00.000Z"
+      "created_at": "2026-04-07T07:35:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T20:44:07.681Z"
+        }
+      ]
     },
     {
       "id": "T-054",
