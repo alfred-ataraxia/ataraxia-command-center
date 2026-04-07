@@ -88,6 +88,25 @@ function getStats() {
 const HISTORY_MAX = 288
 const statsHistory = []
 
+// --- Notifications history (in-memory, max 50) ---
+const NOTIFICATIONS_MAX = 50
+const notifications = []
+
+function addNotification(type, title, message, taskId = null) {
+  const notification = {
+    id: Date.now(),
+    type, // 'task_complete', 'cron_alert', 'system_warning'
+    title,
+    message,
+    taskId,
+    timestamp: new Date().toISOString(),
+  }
+  notifications.unshift(notification) // newest first
+  if (notifications.length > NOTIFICATIONS_MAX) {
+    notifications.pop()
+  }
+}
+
 // --- FreeRide skill state ---
 const frState = { running: false, output: '', exitCode: null, lastRun: null, command: null }
 
@@ -546,6 +565,13 @@ const server = http.createServer((req, res) => {
     return
   }
 
+  // API: notifications (GET /api/notifications)
+  if (url === '/api/notifications' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ notifications }))
+    return
+  }
+
   // API: stats history (last 24h samples) - must come before /api/stats
   if (url === '/api/stats/history') {
     res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -604,6 +630,7 @@ const server = http.createServer((req, res) => {
             // Görev 'done' statüsüne geçtiğinde Telegram bildirimi gönder
             if (updates.status === 'done') {
               sendTelegramNotification(task.id, task.title, completionTime)
+              addNotification('task_complete', `${task.id} Tamamlandı`, task.title, task.id)
             }
           }
           if (updates.priority) task.priority = updates.priority
@@ -649,6 +676,7 @@ const server = http.createServer((req, res) => {
           }
           db.tasks.push(task)
           db.updated_at = new Date().toISOString()
+          addNotification('task_created', `${task.id} Oluşturuldu`, task.title, task.id)
           fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
             if (err2) {
               res.writeHead(500, { 'Content-Type': 'application/json' })

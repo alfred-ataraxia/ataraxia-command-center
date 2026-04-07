@@ -1,0 +1,32 @@
+📊 Haftalık Özet Raporu
+📅 2026-04-07 (2026-03-31 - 2026-04-07)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ GÖREV İSTATİSTİKLERİ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 Toplam Görevler: 38
+  ✓ Tamamlanan: 29 (76%)
+  ⏳ Bekleyen: 8
+  🔄 Devam Ediyor: 1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚙️ SİSTEM METRİKLERİ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔴 CPU: 28.9%
+🟢 RAM: 78%
+🟡 Disk: 15%
+⏰ Uptime: up 7 hours, 39 minutes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🕐 CRON SAĞLIK DURUMU
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Durumu: ✅ Sağlıklı
+Aktif Jobs: 4
+Log Dizini: /home/sefa/.openclaw/workspace/cron/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Generated: 2026-04-07 04:34:27
+

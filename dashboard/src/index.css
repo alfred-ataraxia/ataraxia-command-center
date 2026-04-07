@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ax-bg:       #080a0f;
+  --color-ax-surface:  #0e1118;
+  --color-ax-panel:    #13161f;
+  --color-ax-border:   #1e2233;
+  --color-ax-muted:    #252a3a;
+  --color-ax-subtle:   #3a3f55;
+  --color-ax-dim:      #6b7280;
+  --color-ax-text:     #c9cdd8;
+  --color-ax-heading:  #e8eaf0;
+  --color-ax-accent:   #6366f1;
+  --color-ax-accent2:  #818cf8;
+  --color-ax-cyan:     #22d3ee;
+  --color-ax-green:    #10b981;
+  --color-ax-amber:    #f59e0b;
+  --color-ax-red:      #ef4444;
+  --color-ax-purple:   #a855f7;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Light theme override */
+[data-theme="light"] {
+  --color-ax-bg:       #f5f7fa;
+  --color-ax-surface:  #eef1f5;
+  --color-ax-panel:    #ffffff;
+  --color-ax-border:   #d1d5db;
+  --color-ax-muted:    #e5e7eb;
+  --color-ax-subtle:   #9ca3af;
+  --color-ax-dim:      #6b7280;
+  --color-ax-text:     #1f2937;
+  --color-ax-heading:  #111827;
+  --color-ax-accent:   #4f46e5;
+  --color-ax-accent2:  #6366f1;
+  --color-ax-cyan:     #0891b2;
+  --color-ax-green:    #059669;
+  --color-ax-amber:    #d97706;
+  --color-ax-red:      #dc2626;
+  --color-ax-purple:   #9333ea;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--color-ax-bg);
+  color: var(--color-ax-text);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--color-ax-surface); }
+::-webkit-scrollbar-thumb { background: var(--color-ax-muted); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ax-subtle); }

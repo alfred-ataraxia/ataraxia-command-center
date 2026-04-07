@@ -12,6 +12,18 @@
     "MBB-Strategist": {
       "version": "1.0.0",
       "installedAt": 1774556285197
+    },
+    "home-assistant": {
+      "version": "1.0.0",
+      "installedAt": 1775197875670
+    },
+    "free-ride": {
+      "version": "1.0.8",
+      "installedAt": 1775222249220
+    },
+    "ontology": {
+      "version": "1.0.4",
+      "installedAt": 1775230302637
     }
   }
 }

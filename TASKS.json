@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-06T23:16:21.072Z",
+  "updated_at": "2026-04-07T18:45:00.000Z",
   "tasks": [
     {
       "id": "T-001",
@@ -291,7 +291,7 @@
       "id": "T-019",
       "title": "Dashboard PWA desteği",
       "description": "Progressive Web App manifest + service worker ekle. Telefonda ana ekrana eklenebilsin, offline'da temel bilgi göstersin.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -300,7 +300,14 @@
         "pwa"
       ],
       "due": "2026-04-09",
-      "created_at": "2026-04-06T16:30:00+03:00"
+      "created_at": "2026-04-06T16:30:00+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T05:19:47.064Z"
+        }
+      ]
     },
     {
       "id": "T-020",
@@ -445,7 +452,7 @@
       "id": "T-028",
       "title": "Tamamlanan görevleri arşivle / gizle",
       "description": "Görev Kuyruğu sayfasına 'Tamamlananları Gizle' toggle butonu ekle. Tamamlanan görevler ayrı 'Arşiv' sekmesinde gösterilecek. Tercih localStorage'da saklanacak.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -454,7 +461,14 @@
         "görev"
       ],
       "due": "2026-04-09",
-      "created_at": "2026-04-07T00:40:00.000Z"
+      "created_at": "2026-04-07T00:40:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T05:19:51.389Z"
+        }
+      ]
     },
     {
       "id": "T-029",
@@ -592,7 +606,7 @@
       "id": "T-036",
       "title": "API: /api/stats/history düzeltme",
       "description": "Stats history endpoint boş JSON döndürüyor. recordStats() interval'ı çalışmıyor. Server.cjs'deki statsHistory array'i populate edilecek, 24h window'da 5dk interval sample'lar tutulacak.",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -601,13 +615,25 @@
         "bug"
       ],
       "due": "2026-04-07",
-      "created_at": "2026-04-07T00:02:00.000Z"
+      "created_at": "2026-04-07T00:02:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T05:20:28.535Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T18:45:00.000Z"
+        }
+      ]
     },
     {
       "id": "T-037",
       "title": "API: /api/notifications endpoint'i implement",
       "description": "Dashboard'daki notification bell için API endpoint. GET /api/notifications: recent notifications (görev completion, cron alerts, system warnings). Notification history in-memory tutulacak.",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -616,13 +642,25 @@
         "bildirim"
       ],
       "due": "2026-04-07",
-      "created_at": "2026-04-07T00:02:00.000Z"
+      "created_at": "2026-04-07T00:02:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T05:20:51.469Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T09:30:00.000Z"
+        }
+      ]
     },
     {
       "id": "T-038",
       "title": "API: POST /api/tasks (new task creation)",
       "description": "Dashboard UI'dan yeni görev eklemek için endpoint. POST /api/tasks { title, description, priority, tags, due }. Yeni task unique ID ile TASKS.json'a eklenir ve commit edilir (T-031 ile entegre).",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -631,7 +669,14 @@
         "görev"
       ],
       "due": "2026-04-07",
-      "created_at": "2026-04-07T00:02:00.000Z"
+      "created_at": "2026-04-07T00:02:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T05:20:45.315Z"
+        }
+      ]
     }
   ]
 }
