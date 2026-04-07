@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T20:43:57.412Z",
+  "updated_at": "2026-04-07T20:44:02.816Z",
   "tasks": [
     {
       "id": "T-001",
@@ -825,7 +825,7 @@
       "id": "T-045",
       "title": "Dashboard availability ve uptime monitoring",
       "description": "Dashboard availability'i izleyen healthcheck endpoint. Cron job ile 5 dakikada bir kontrol etsin. Eğer 3 kere üst üste fail olursa alert göndersin. /api/health endpoint'i eklenecek.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -834,7 +834,14 @@
         "api"
       ],
       "due": "2026-04-11",
-      "created_at": "2026-04-07T07:25:00.000Z"
+      "created_at": "2026-04-07T07:25:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T20:44:02.816Z"
+        }
+      ]
     },
     {
       "id": "T-046",
