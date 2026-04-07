@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T20:44:02.816Z",
+  "updated_at": "2026-04-07T20:44:05.082Z",
   "tasks": [
     {
       "id": "T-001",
@@ -932,7 +932,7 @@
       "id": "T-050",
       "title": "Error boundary & error UI components",
       "description": "React error boundary. Error toast notifications. Error fallback page. User-friendly error messages. 500 error handling.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -941,7 +941,14 @@
         "ux"
       ],
       "due": "2026-04-10",
-      "created_at": "2026-04-07T07:35:00.000Z"
+      "created_at": "2026-04-07T07:35:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T20:44:05.081Z"
+        }
+      ]
     },
     {
       "id": "T-051",
