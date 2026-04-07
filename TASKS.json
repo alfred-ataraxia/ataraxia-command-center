@@ -1,11 +1,11 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T19:03:21Z",
+  "updated_at": "2026-04-07T23:11:05.058456Z",
   "tasks": [
     {
       "id": "T-001",
-      "title": "Dashboard canlı veri entegrasyonu",
-      "description": "Stats API + same-origin server.cjs ile CPU, RAM, Disk, Uptime verilerini dashboard'a bağla.",
+      "title": "Dashboard canl\u0131 veri entegrasyonu",
+      "description": "Stats API + same-origin server.cjs ile CPU, RAM, Disk, Uptime verilerini dashboard'a ba\u011fla.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -18,8 +18,8 @@
     },
     {
       "id": "T-002",
-      "title": "Mobil responsive düzeltmeleri",
-      "description": "Sidebar hamburger menü, stat kartları tek sütun, görev kartları mobil uyumu.",
+      "title": "Mobil responsive d\u00fczeltmeleri",
+      "description": "Sidebar hamburger men\u00fc, stat kartlar\u0131 tek s\u00fctun, g\u00f6rev kartlar\u0131 mobil uyumu.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -32,8 +32,8 @@
     },
     {
       "id": "T-003",
-      "title": "OOM crash koruması",
-      "description": "4GB swap dosyası + systemd MemoryMax limiti ile RAM taşması önleme.",
+      "title": "OOM crash korumas\u0131",
+      "description": "4GB swap dosyas\u0131 + systemd MemoryMax limiti ile RAM ta\u015fmas\u0131 \u00f6nleme.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -46,8 +46,8 @@
     },
     {
       "id": "T-004",
-      "title": "Saatlik rapor cron görevi",
-      "description": "Her saat :17'de sistem durumu + dashboard kontrolü + Telegram raporu.",
+      "title": "Saatlik rapor cron g\u00f6revi",
+      "description": "Her saat :17'de sistem durumu + dashboard kontrol\u00fc + Telegram raporu.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -60,8 +60,8 @@
     },
     {
       "id": "T-005",
-      "title": "Görev kuyruğunu dinamik yap + UI'dan görev ekleme",
-      "description": "TaskQueue.jsx statik veriden TASKS.json API'ye geçiş. Görevler canlı güncellenir. UI'dan yeni görev eklenebilir.",
+      "title": "G\u00f6rev kuyru\u011funu dinamik yap + UI'dan g\u00f6rev ekleme",
+      "description": "TaskQueue.jsx statik veriden TASKS.json API'ye ge\u00e7i\u015f. G\u00f6revler canl\u0131 g\u00fcncellenir. UI'dan yeni g\u00f6rev eklenebilir.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -75,21 +75,21 @@
     {
       "id": "T-006",
       "title": "Session Reset Automation",
-      "description": "Hafızayı günlük tazeleyecek oturum sıfırlama scripti.",
+      "description": "Haf\u0131zay\u0131 g\u00fcnl\u00fck tazeleyecek oturum s\u0131f\u0131rlama scripti.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
         "cron",
-        "hafıza"
+        "haf\u0131za"
       ],
       "due": "2026-04-07",
       "created_at": "2026-04-06T09:00:00+03:00"
     },
     {
       "id": "T-007",
-      "title": "UI'dan görev ekleme özelliği",
-      "description": "Dashboard Görev Kuyruğu sayfasından 'Yeni Görev' butonu ile görev ekleme formu.",
+      "title": "UI'dan g\u00f6rev ekleme \u00f6zelli\u011fi",
+      "description": "Dashboard G\u00f6rev Kuyru\u011fu sayfas\u0131ndan 'Yeni G\u00f6rev' butonu ile g\u00f6rev ekleme formu.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -102,8 +102,8 @@
     },
     {
       "id": "T-008",
-      "title": "Dashboardu şuana kadar yapılan kısım analizi",
-      "description": "Dashboardu şuana kadar yapılan kısım analizi Yapılıp geliştirme planı hazırlanacak",
+      "title": "Dashboardu \u015fuana kadar yap\u0131lan k\u0131s\u0131m analizi",
+      "description": "Dashboardu \u015fuana kadar yap\u0131lan k\u0131s\u0131m analizi Yap\u0131l\u0131p geli\u015ftirme plan\u0131 haz\u0131rlanacak",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -113,8 +113,8 @@
     },
     {
       "id": "T-009",
-      "title": "Dashboard dark/light tema geçişi",
-      "description": "Sağ üst köşeye tema toggle butonu ekle. Dark ve light tema arasında geçiş yapılabilsin. Tercih localStorage'da saklanacak.",
+      "title": "Dashboard dark/light tema ge\u00e7i\u015fi",
+      "description": "Sa\u011f \u00fcst k\u00f6\u015feye tema toggle butonu ekle. Dark ve light tema aras\u0131nda ge\u00e7i\u015f yap\u0131labilsin. Tercih localStorage'da saklanacak.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -128,7 +128,7 @@
     {
       "id": "T-010",
       "title": "Dashboard bildirim sistemi",
-      "description": "Sağ üst köşede bildirim ikonu. Cron raporları, görev tamamlanma, sistem uyarıları bildirim olarak gösterilsin. /api/notifications endpoint'i oluştur.",
+      "description": "Sa\u011f \u00fcst k\u00f6\u015fede bildirim ikonu. Cron raporlar\u0131, g\u00f6rev tamamlanma, sistem uyar\u0131lar\u0131 bildirim olarak g\u00f6sterilsin. /api/notifications endpoint'i olu\u015ftur.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -143,7 +143,7 @@
     {
       "id": "T-011",
       "title": "Home Assistant otomasyon paneli",
-      "description": "Dashboard'a HA cihaz listesi ve otomasyon kontrol sayfası ekle. Işıklar, anahtarlar, sensörler görünsün. HA REST API üzerinden kontrol edilebilsin.",
+      "description": "Dashboard'a HA cihaz listesi ve otomasyon kontrol sayfas\u0131 ekle. I\u015f\u0131klar, anahtarlar, sens\u00f6rler g\u00f6r\u00fcns\u00fcn. HA REST API \u00fczerinden kontrol edilebilsin.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -174,8 +174,8 @@
     },
     {
       "id": "T-012",
-      "title": "Sistem log görüntüleyici",
-      "description": "Dashboard'da canlı log sayfası. Cron logları, gateway logları, server loglarını /api/logs endpoint'i ile göster. Filtreleme ve arama özelliği.",
+      "title": "Sistem log g\u00f6r\u00fcnt\u00fcleyici",
+      "description": "Dashboard'da canl\u0131 log sayfas\u0131. Cron loglar\u0131, gateway loglar\u0131, server loglar\u0131n\u0131 /api/logs endpoint'i ile g\u00f6ster. Filtreleme ve arama \u00f6zelli\u011fi.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -189,8 +189,8 @@
     },
     {
       "id": "T-013",
-      "title": "Görev detay sayfası ve notlar",
-      "description": "Her göreve tıklandığında detay modalı açılsın. Görev açıklaması, ilerleme notları, geçmiş statü değişiklikleri görünsün.",
+      "title": "G\u00f6rev detay sayfas\u0131 ve notlar",
+      "description": "Her g\u00f6reve t\u0131kland\u0131\u011f\u0131nda detay modal\u0131 a\u00e7\u0131ls\u0131n. G\u00f6rev a\u00e7\u0131klamas\u0131, ilerleme notlar\u0131, ge\u00e7mi\u015f stat\u00fc de\u011fi\u015fiklikleri g\u00f6r\u00fcns\u00fcn.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -204,7 +204,7 @@
     {
       "id": "T-014",
       "title": "CPU/RAM alarm sistemi",
-      "description": "CPU %90+ veya RAM %85+ olduğunda dashboard'da kırmızı uyarı banner'ı göster. /api/alerts endpoint'i ile alarm geçmişi tut.",
+      "description": "CPU %90+ veya RAM %85+ oldu\u011funda dashboard'da k\u0131rm\u0131z\u0131 uyar\u0131 banner'\u0131 g\u00f6ster. /api/alerts endpoint'i ile alarm ge\u00e7mi\u015fi tut.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -219,7 +219,7 @@
     {
       "id": "T-015",
       "title": "Grafik ve chart'lar - sistem metrikleri",
-      "description": "Overview sayfasına CPU, RAM, Disk kullanım grafiği ekle. Son 24 saatlik veri /api/stats/history endpoint'i ile saklanacak. Chart.js veya Recharts kullan.",
+      "description": "Overview sayfas\u0131na CPU, RAM, Disk kullan\u0131m grafi\u011fi ekle. Son 24 saatlik veri /api/stats/history endpoint'i ile saklanacak. Chart.js veya Recharts kullan.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -233,8 +233,8 @@
     },
     {
       "id": "T-016",
-      "title": "Kullanıcı ayarları sayfası",
-      "description": "Dashboard'a Settings sayfası ekle. Tema, bildirim tercihleri, cron zamanlamaları, HA bağlantı ayarları düzenlenebilsin.",
+      "title": "Kullan\u0131c\u0131 ayarlar\u0131 sayfas\u0131",
+      "description": "Dashboard'a Settings sayfas\u0131 ekle. Tema, bildirim tercihleri, cron zamanlamalar\u0131, HA ba\u011flant\u0131 ayarlar\u0131 d\u00fczenlenebilsin.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -260,7 +260,7 @@
     },
     {
       "id": "T-017",
-      "title": "Haftalık otomatik yedekleme",
+      "title": "Haftal\u0131k otomatik yedekleme",
       "description": "Her Pazar gece workspace, TASKS.json, dashboard config yedeklensin. Backup scripti + cron job. Son 4 yedek tutulsun.",
       "status": "done",
       "priority": "medium",
@@ -276,7 +276,7 @@
     {
       "id": "T-018",
       "title": "OpenClaw skill entegrasyonu - free-ride",
-      "description": "skills/free-ride klasöründeki skill'i dashboard'dan tetiklenebilir hale getir. Skill durumu ve çıktısı dashboard'da görünsün.",
+      "description": "skills/free-ride klas\u00f6r\u00fcndeki skill'i dashboard'dan tetiklenebilir hale getir. Skill durumu ve \u00e7\u0131kt\u0131s\u0131 dashboard'da g\u00f6r\u00fcns\u00fcn.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -289,8 +289,8 @@
     },
     {
       "id": "T-019",
-      "title": "Dashboard PWA desteği",
-      "description": "Progressive Web App manifest + service worker ekle. Telefonda ana ekrana eklenebilsin, offline'da temel bilgi göstersin.",
+      "title": "Dashboard PWA deste\u011fi",
+      "description": "Progressive Web App manifest + service worker ekle. Telefonda ana ekrana eklenebilsin, offline'da temel bilgi g\u00f6stersin.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -316,8 +316,8 @@
     },
     {
       "id": "T-020",
-      "title": "Görev öncelik sıralaması ve drag-drop",
-      "description": "Görev kuyruğunda drag-drop ile sıralama. Öncelik değiştirme. Görevler önceliğe göre otomatik sıralansın.",
+      "title": "G\u00f6rev \u00f6ncelik s\u0131ralamas\u0131 ve drag-drop",
+      "description": "G\u00f6rev kuyru\u011funda drag-drop ile s\u0131ralama. \u00d6ncelik de\u011fi\u015ftirme. G\u00f6revler \u00f6nceli\u011fe g\u00f6re otomatik s\u0131ralans\u0131n.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -330,8 +330,8 @@
     },
     {
       "id": "T-021",
-      "title": "Sidebar aktif sayfa renklendirme düzeltmesi",
-      "description": "Sidebar menüde tıklanan sayfa doğru vurgulanacak, diğer sayfaların içeriği yüklenecek (agents, logs, tools vb.)",
+      "title": "Sidebar aktif sayfa renklendirme d\u00fczeltmesi",
+      "description": "Sidebar men\u00fcde t\u0131klanan sayfa do\u011fru vurgulanacak, di\u011fer sayfalar\u0131n i\u00e7eri\u011fi y\u00fcklenecek (agents, logs, tools vb.)",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -344,8 +344,8 @@
     },
     {
       "id": "T-022",
-      "title": "Ajanlar sayfası — canlı ajan durumu",
-      "description": "Agents sayfasında aktif/boşta/hata durumundaki ajanlar gösterilecek. Task worker durumu, son çalışma zamanı ve log linki.",
+      "title": "Ajanlar sayfas\u0131 \u2014 canl\u0131 ajan durumu",
+      "description": "Agents sayfas\u0131nda aktif/bo\u015fta/hata durumundaki ajanlar g\u00f6sterilecek. Task worker durumu, son \u00e7al\u0131\u015fma zaman\u0131 ve log linki.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -358,8 +358,8 @@
     },
     {
       "id": "T-023",
-      "title": "Kayıtlar sayfası — cron ve task-worker logları",
-      "description": "Logs sayfasında cron logları, task-worker çıktıları ve gateway logları gösterilecek. /api/logs endpoint ile.",
+      "title": "Kay\u0131tlar sayfas\u0131 \u2014 cron ve task-worker loglar\u0131",
+      "description": "Logs sayfas\u0131nda cron loglar\u0131, task-worker \u00e7\u0131kt\u0131lar\u0131 ve gateway loglar\u0131 g\u00f6sterilecek. /api/logs endpoint ile.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -373,8 +373,8 @@
     },
     {
       "id": "T-024",
-      "title": "Araçlar sayfası — sistem yönetim araçları",
-      "description": "Tools sayfasında server restart, cache temizleme, build tetikleme gibi araçlar. /api/actions endpoint ile.",
+      "title": "Ara\u00e7lar sayfas\u0131 \u2014 sistem y\u00f6netim ara\u00e7lar\u0131",
+      "description": "Tools sayfas\u0131nda server restart, cache temizleme, build tetikleme gibi ara\u00e7lar. /api/actions endpoint ile.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -387,8 +387,8 @@
     },
     {
       "id": "T-025",
-      "title": "Hafıza sayfası — memory dosyaları görüntüleme",
-      "description": "Memory sayfasında kayıtlı hafıza dosyaları listesi, içerik okuma ve silme. /api/memory endpoint ile.",
+      "title": "Haf\u0131za sayfas\u0131 \u2014 memory dosyalar\u0131 g\u00f6r\u00fcnt\u00fcleme",
+      "description": "Memory sayfas\u0131nda kay\u0131tl\u0131 haf\u0131za dosyalar\u0131 listesi, i\u00e7erik okuma ve silme. /api/memory endpoint ile.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -401,15 +401,15 @@
     },
     {
       "id": "T-026",
-      "title": "Görev arama + filtre (tag, öncelik, atanan)",
-      "description": "Görev Kuyruğu sayfasına arama kutusu ve filtre paneli ekle. Tag, öncelik (high/medium/low) ve atanan kişiye göre filtreleme. Filtreler URL parametresinde saklanacak.",
+      "title": "G\u00f6rev arama + filtre (tag, \u00f6ncelik, atanan)",
+      "description": "G\u00f6rev Kuyru\u011fu sayfas\u0131na arama kutusu ve filtre paneli ekle. Tag, \u00f6ncelik (high/medium/low) ve atanan ki\u015fiye g\u00f6re filtreleme. Filtreler URL parametresinde saklanacak.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
         "dashboard",
         "ui",
-        "görev"
+        "g\u00f6rev"
       ],
       "due": "2026-04-08",
       "created_at": "2026-04-07T00:40:00.000Z",
@@ -428,15 +428,15 @@
     },
     {
       "id": "T-027",
-      "title": "Deadline uyarısı — süresi geçen görevler kırmızı",
-      "description": "Due tarihi geçmiş ve tamamlanmamış görevler kırmızı ile vurgulanacak. Görev kartında ve detay modalında deadline badge gösterilecek. Süresi bugün biten görevler için sarı uyarı.",
+      "title": "Deadline uyar\u0131s\u0131 \u2014 s\u00fcresi ge\u00e7en g\u00f6revler k\u0131rm\u0131z\u0131",
+      "description": "Due tarihi ge\u00e7mi\u015f ve tamamlanmam\u0131\u015f g\u00f6revler k\u0131rm\u0131z\u0131 ile vurgulanacak. G\u00f6rev kart\u0131nda ve detay modal\u0131nda deadline badge g\u00f6sterilecek. S\u00fcresi bug\u00fcn biten g\u00f6revler i\u00e7in sar\u0131 uyar\u0131.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
         "dashboard",
         "ui",
-        "görev"
+        "g\u00f6rev"
       ],
       "due": "2026-04-08",
       "created_at": "2026-04-07T00:40:00.000Z",
@@ -455,15 +455,15 @@
     },
     {
       "id": "T-028",
-      "title": "Tamamlanan görevleri arşivle / gizle",
-      "description": "Görev Kuyruğu sayfasına 'Tamamlananları Gizle' toggle butonu ekle. Tamamlanan görevler ayrı 'Arşiv' sekmesinde gösterilecek. Tercih localStorage'da saklanacak.",
+      "title": "Tamamlanan g\u00f6revleri ar\u015fivle / gizle",
+      "description": "G\u00f6rev Kuyru\u011fu sayfas\u0131na 'Tamamlananlar\u0131 Gizle' toggle butonu ekle. Tamamlanan g\u00f6revler ayr\u0131 'Ar\u015fiv' sekmesinde g\u00f6sterilecek. Tercih localStorage'da saklanacak.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
         "dashboard",
         "ui",
-        "görev"
+        "g\u00f6rev"
       ],
       "due": "2026-04-09",
       "created_at": "2026-04-07T00:40:00.000Z",
@@ -482,15 +482,15 @@
     },
     {
       "id": "T-029",
-      "title": "Görev tamamlandığında Telegram bildirimi",
-      "description": "Bir görev 'done' statüsüne geçirildiğinde Telegram Bot API ile bildirim gönder. Bot token ve chat_id server.cjs'deki env değişkenlerinden okunacak. Bildirim mesajı: görev ID, başlık, tamamlanma zamanı.",
+      "title": "G\u00f6rev tamamland\u0131\u011f\u0131nda Telegram bildirimi",
+      "description": "Bir g\u00f6rev 'done' stat\u00fcs\u00fcne ge\u00e7irildi\u011finde Telegram Bot API ile bildirim g\u00f6nder. Bot token ve chat_id server.cjs'deki env de\u011fi\u015fkenlerinden okunacak. Bildirim mesaj\u0131: g\u00f6rev ID, ba\u015fl\u0131k, tamamlanma zaman\u0131.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
         "bildirim",
         "telegram",
-        "görev"
+        "g\u00f6rev"
       ],
       "due": "2026-04-10",
       "created_at": "2026-04-07T00:40:00.000Z",
@@ -509,8 +509,8 @@
     },
     {
       "id": "T-030",
-      "title": "Haftalık özet raporu — Pazartesi sabahı cron",
-      "description": "Her Pazartesi 09:00'da haftalık özet raporu hazırlanacak. İçerik: tamamlanan görevler, bekleyen görevler, sistem metrikleri ortalaması, cron sağlık durumu. Rapor Telegram'a gönderilecek ve workspace/reports/ klasörüne kaydedilecek.",
+      "title": "Haftal\u0131k \u00f6zet raporu \u2014 Pazartesi sabah\u0131 cron",
+      "description": "Her Pazartesi 09:00'da haftal\u0131k \u00f6zet raporu haz\u0131rlanacak. \u0130\u00e7erik: tamamlanan g\u00f6revler, bekleyen g\u00f6revler, sistem metrikleri ortalamas\u0131, cron sa\u011fl\u0131k durumu. Rapor Telegram'a g\u00f6nderilecek ve workspace/reports/ klas\u00f6r\u00fcne kaydedilecek.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -536,13 +536,13 @@
     },
     {
       "id": "T-031",
-      "title": "TASKS.json her değişimde otomatik git commit",
-      "description": "server.cjs'de görev ekleme/güncelleme endpoint'lerinden sonra TASKS.json otomatik git commit edilecek. Commit mesajı formatı: 'tasks: [T-XXX] <görev başlığı> -> <yeni status>'. Commit sadece TASKS.json'ı içerecek.",
+      "title": "TASKS.json her de\u011fi\u015fimde otomatik git commit",
+      "description": "server.cjs'de g\u00f6rev ekleme/g\u00fcncelleme endpoint'lerinden sonra TASKS.json otomatik git commit edilecek. Commit mesaj\u0131 format\u0131: 'tasks: [T-XXX] <g\u00f6rev ba\u015fl\u0131\u011f\u0131> -> <yeni status>'. Commit sadece TASKS.json'\u0131 i\u00e7erecek.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
-        "görev",
+        "g\u00f6rev",
         "git",
         "otomasyon"
       ],
@@ -563,8 +563,8 @@
     },
     {
       "id": "T-032",
-      "title": "Dashboard systemd servisi reboot koruması",
-      "description": "ataraxia-dashboard.service reboot sonrası otomatik başlasın. systemctl enable ile kalıcı hale getirildi. alfred.service de enable durumunda.",
+      "title": "Dashboard systemd servisi reboot korumas\u0131",
+      "description": "ataraxia-dashboard.service reboot sonras\u0131 otomatik ba\u015flas\u0131n. systemctl enable ile kal\u0131c\u0131 hale getirildi. alfred.service de enable durumunda.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -579,7 +579,7 @@
     {
       "id": "T-033",
       "title": "PM2 ile dashboard crash guard",
-      "description": "PM2 process manager kurulumu ve yapılandırması. server.cjs PM2 ekosistemi altında çalışacak: max_memory_restart 200MB, crash sonrası otomatik restart, PM2 startup ile systemd entegrasyonu. stats-server.cjs de PM2'ye taşınacak.",
+      "description": "PM2 process manager kurulumu ve yap\u0131land\u0131rmas\u0131. server.cjs PM2 ekosistemi alt\u0131nda \u00e7al\u0131\u015facak: max_memory_restart 200MB, crash sonras\u0131 otomatik restart, PM2 startup ile systemd entegrasyonu. stats-server.cjs de PM2'ye ta\u015f\u0131nacak.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -605,8 +605,8 @@
     },
     {
       "id": "T-034",
-      "title": "Swap kullanımı API'ye ekle",
-      "description": "/api/stats endpoint'ine swap kullanımı eklenmesi. swapPercent, swapUsedMB, swapTotalMB alanları. /proc/meminfo'dan okunacak. Overview sayfasındaki stat kartları arasına Swap kartı eklenecek.",
+      "title": "Swap kullan\u0131m\u0131 API'ye ekle",
+      "description": "/api/stats endpoint'ine swap kullan\u0131m\u0131 eklenmesi. swapPercent, swapUsedMB, swapTotalMB alanlar\u0131. /proc/meminfo'dan okunacak. Overview sayfas\u0131ndaki stat kartlar\u0131 aras\u0131na Swap kart\u0131 eklenecek.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -632,8 +632,8 @@
     },
     {
       "id": "T-035",
-      "title": "Tüm dashboard gözden geçirme",
-      "description": "Tüm dashboard test edilecek çalışmayan eksik yerler için task açılacak",
+      "title": "T\u00fcm dashboard g\u00f6zden ge\u00e7irme",
+      "description": "T\u00fcm dashboard test edilecek \u00e7al\u0131\u015fmayan eksik yerler i\u00e7in task a\u00e7\u0131lacak",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -650,8 +650,8 @@
     },
     {
       "id": "T-036",
-      "title": "API: /api/stats/history düzeltme",
-      "description": "Stats history endpoint boş JSON döndürüyor. recordStats() interval'ı çalışmıyor. Server.cjs'deki statsHistory array'i populate edilecek, 24h window'da 5dk interval sample'lar tutulacak.",
+      "title": "API: /api/stats/history d\u00fczeltme",
+      "description": "Stats history endpoint bo\u015f JSON d\u00f6nd\u00fcr\u00fcyor. recordStats() interval'\u0131 \u00e7al\u0131\u015fm\u0131yor. Server.cjs'deki statsHistory array'i populate edilecek, 24h window'da 5dk interval sample'lar tutulacak.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -678,7 +678,7 @@
     {
       "id": "T-037",
       "title": "API: /api/notifications endpoint'i implement",
-      "description": "Dashboard'daki notification bell için API endpoint. GET /api/notifications: recent notifications (görev completion, cron alerts, system warnings). Notification history in-memory tutulacak.",
+      "description": "Dashboard'daki notification bell i\u00e7in API endpoint. GET /api/notifications: recent notifications (g\u00f6rev completion, cron alerts, system warnings). Notification history in-memory tutulacak.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -705,14 +705,14 @@
     {
       "id": "T-038",
       "title": "API: POST /api/tasks (new task creation)",
-      "description": "Dashboard UI'dan yeni görev eklemek için endpoint. POST /api/tasks { title, description, priority, tags, due }. Yeni task unique ID ile TASKS.json'a eklenir ve commit edilir (T-031 ile entegre).",
+      "description": "Dashboard UI'dan yeni g\u00f6rev eklemek i\u00e7in endpoint. POST /api/tasks { title, description, priority, tags, due }. Yeni task unique ID ile TASKS.json'a eklenir ve commit edilir (T-031 ile entegre).",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
         "dashboard",
         "api",
-        "görev"
+        "g\u00f6rev"
       ],
       "due": "2026-04-07",
       "created_at": "2026-04-07T00:02:00.000Z",
@@ -732,7 +732,7 @@
     {
       "id": "T-041",
       "title": "Memory optimization ve OOM prevention",
-      "description": "Sistem şu anda 84% RAM kullanıyor (3.2GB/3.7GB). Açık claude process'leri temizleme, memory limits ayarlama, unnecessary service'leri kapama gibi optimizasyonlar yapılması gerekiyor.",
+      "description": "Sistem \u015fu anda 84% RAM kullan\u0131yor (3.2GB/3.7GB). A\u00e7\u0131k claude process'leri temizleme, memory limits ayarlama, unnecessary service'leri kapama gibi optimizasyonlar yap\u0131lmas\u0131 gerekiyor.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -758,8 +758,8 @@
     },
     {
       "id": "T-042",
-      "title": "Telegram ve Home Assistant konfigürasyon sorunları",
-      "description": "server.cjs'de Telegram bot token ve HA token konfigürasyonu eksik. Bildirim ve HA entegrasyonu çalışmıyor. .env dosyasında ya da config'de bu değerlerin ayarlanması gerekiyor. Hata handling iyileştirilmeli.",
+      "title": "Telegram ve Home Assistant konfig\u00fcrasyon sorunlar\u0131",
+      "description": "server.cjs'de Telegram bot token ve HA token konfig\u00fcrasyonu eksik. Bildirim ve HA entegrasyonu \u00e7al\u0131\u015fm\u0131yor. .env dosyas\u0131nda ya da config'de bu de\u011ferlerin ayarlanmas\u0131 gerekiyor. Hata handling iyile\u015ftirilmeli.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -787,7 +787,7 @@
     {
       "id": "T-043",
       "title": "Stale process cleanup otomasyonu",
-      "description": "Her 6 saatte bir hanging claude/openclaw process'lerini temizleyen cron job. Systemd service olarak yapılandırılabilir. Şu anda manuel pkill çalıştırılıyor.",
+      "description": "Her 6 saatte bir hanging claude/openclaw process'lerini temizleyen cron job. Systemd service olarak yap\u0131land\u0131r\u0131labilir. \u015eu anda manuel pkill \u00e7al\u0131\u015ft\u0131r\u0131l\u0131yor.",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
@@ -802,7 +802,7 @@
     {
       "id": "T-044",
       "title": "API error handling ve validation test",
-      "description": "Tüm API endpoint'leri (stats, tasks, ha, telegram) için error handling test edilmeli. Edge case'ler için properly error message return edilmesi gerekiyor. İstisna durumları handle edilmeli.",
+      "description": "T\u00fcm API endpoint'leri (stats, tasks, ha, telegram) i\u00e7in error handling test edilmeli. Edge case'ler i\u00e7in properly error message return edilmesi gerekiyor. \u0130stisna durumlar\u0131 handle edilmeli.",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
@@ -817,7 +817,7 @@
     {
       "id": "T-045",
       "title": "Dashboard availability ve uptime monitoring",
-      "description": "Dashboard availability'i izleyen healthcheck endpoint. Cron job ile 5 dakikada bir kontrol etsin. Eğer 3 kere üst üste fail olursa alert göndersin. /api/health endpoint'i eklenecek.",
+      "description": "Dashboard availability'i izleyen healthcheck endpoint. Cron job ile 5 dakikada bir kontrol etsin. E\u011fer 3 kere \u00fcst \u00fcste fail olursa alert g\u00f6ndersin. /api/health endpoint'i eklenecek.",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
@@ -832,7 +832,7 @@
     {
       "id": "T-046",
       "title": "API error handling & validation",
-      "description": "Tüm API endpoint'leri için proper error handling. Null checks, type validation, exception handling. 4xx/5xx status codes. Error messages JSON formatında dönsün.",
+      "description": "T\u00fcm API endpoint'leri i\u00e7in proper error handling. Null checks, type validation, exception handling. 4xx/5xx status codes. Error messages JSON format\u0131nda d\u00f6ns\u00fcn.",
       "status": "pending",
       "priority": "high",
       "assignee": "Alfred",
@@ -847,7 +847,7 @@
     {
       "id": "T-047",
       "title": "Health check endpoint & crash detection",
-      "description": "/api/health endpoint. Dashboard availability check her 5 dakikada. 3 consecutive fail → alert. Uptime tracking.",
+      "description": "/api/health endpoint. Dashboard availability check her 5 dakikada. 3 consecutive fail \u2192 alert. Uptime tracking.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -931,7 +931,7 @@
     {
       "id": "T-051",
       "title": "Environment validation & startup checks",
-      "description": "Server startup'ta env variables check. Missing required config → error log. Connection tests (HA, Telegram). Startup health report.",
+      "description": "Server startup'ta env variables check. Missing required config \u2192 error log. Connection tests (HA, Telegram). Startup health report.",
       "status": "pending",
       "priority": "high",
       "assignee": "Alfred",
@@ -961,7 +961,7 @@
     {
       "id": "T-053",
       "title": "Config file centralization",
-      "description": "config.js dosyası. Tüm hard-coded values (ports, timeouts, limits). Environment-based config (dev/prod). .env örneği.",
+      "description": "config.js dosyas\u0131. T\u00fcm hard-coded values (ports, timeouts, limits). Environment-based config (dev/prod). .env \u00f6rne\u011fi.",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
@@ -1061,7 +1061,7 @@
     {
       "id": "T-060",
       "title": "UI improvements - loading states & notifications",
-      "description": "Loading spinners tüm async operations. Toast notifications (success/error/warning). Skeleton screens. Optimistic updates.",
+      "description": "Loading spinners t\u00fcm async operations. Toast notifications (success/error/warning). Skeleton screens. Optimistic updates.",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
@@ -1192,7 +1192,7 @@
     {
       "id": "T-069",
       "title": "OOM-Guard & Alerting System",
-      "description": "800MB RAM sınırına kaç kez çarpıldığını takip eden log mekanizması. SIGKILL alan süreçleri tespit et ve Telegram üzerinden anlık 'Kritik: Claude RAM sınırını aştı ve durduruldu' uyarısı gönder. /home/sefa/openclaw/logs/oom-events.log dosyasına kayıt. task-worker.sh içinden tetiklenecek.",
+      "description": "800MB RAM s\u0131n\u0131r\u0131na ka\u00e7 kez \u00e7arp\u0131ld\u0131\u011f\u0131n\u0131 takip eden log mekanizmas\u0131. SIGKILL alan s\u00fcre\u00e7leri tespit et ve Telegram \u00fczerinden anl\u0131k 'Kritik: Claude RAM s\u0131n\u0131r\u0131n\u0131 a\u015ft\u0131 ve durduruldu' uyar\u0131s\u0131 g\u00f6nder. /home/sefa/openclaw/logs/oom-events.log dosyas\u0131na kay\u0131t. task-worker.sh i\u00e7inden tetiklenecek.",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -1209,8 +1209,8 @@
     {
       "id": "T-070",
       "title": "PM2 Zombie Process Cleaner",
-      "description": "Alfred her uyandığında arkada asılı kalmış orphan Node.js veya Vite süreçlerini otomatik tarayıp temizleyen pre-run scripti. cron/cleanup-orphans.sh oluştur. task-worker.sh başında çalıştır. Hedef: ps aux ile zombie tespit, 30 dakikadan eski node/vite process'leri öldür.",
-      "status": "in_progress",
+      "description": "Alfred her uyand\u0131\u011f\u0131nda arkada as\u0131l\u0131 kalm\u0131\u015f orphan Node.js veya Vite s\u00fcre\u00e7lerini otomatik taray\u0131p temizleyen pre-run scripti. cron/cleanup-orphans.sh olu\u015ftur. task-worker.sh ba\u015f\u0131nda \u00e7al\u0131\u015ft\u0131r. Hedef: ps aux ile zombie tespit, 30 dakikadan eski node/vite process'leri \u00f6ld\u00fcr.",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -1219,12 +1219,14 @@
         "cleanup"
       ],
       "due": "2026-04-08",
-      "created_at": "2026-04-07T21:00:00.000Z"
+      "created_at": "2026-04-07T21:00:00.000Z",
+      "updated_at": "2026-04-07T20:00:35.418622.000Z",
+      "completed_at": "2026-04-07T23:11:05.058400Z"
     },
     {
       "id": "T-071",
       "title": "API Timeout & Circuit Breaker",
-      "description": "server.cjs içine stats-server (4175) yanıt vermediğinde dashboard'un donmasını engelleyecek Circuit Breaker mantığı. 3 consecutive fail → circuit open, fallback response döndür, 60 saniye sonra half-open dene. /api/stats ve /api/stats/history için geçerli.",
+      "description": "server.cjs i\u00e7ine stats-server (4175) yan\u0131t vermedi\u011finde dashboard'un donmas\u0131n\u0131 engelleyecek Circuit Breaker mant\u0131\u011f\u0131. 3 consecutive fail \u2192 circuit open, fallback response d\u00f6nd\u00fcr, 60 saniye sonra half-open dene. /api/stats ve /api/stats/history i\u00e7in ge\u00e7erli.",
       "status": "pending",
       "priority": "high",
       "assignee": "Alfred",
@@ -1239,7 +1241,7 @@
     {
       "id": "T-072",
       "title": "Pure Nginx Static Serving",
-      "description": "Statik dosyaları server.cjs yerine Nginx'e devret. Nginx /data/nginx/proxy_host/4.conf içinde location / { root /home/sefa/.openclaw/workspace/dashboard/dist; } ve location /api { proxy_pass 4173; } yapılandırması. Hedef: Node.js RAM kullanımını 1.2GB altına indirmek.",
+      "description": "Statik dosyalar\u0131 server.cjs yerine Nginx'e devret. Nginx /data/nginx/proxy_host/4.conf i\u00e7inde location / { root /home/sefa/.openclaw/workspace/dashboard/dist; } ve location /api { proxy_pass 4173; } yap\u0131land\u0131rmas\u0131. Hedef: Node.js RAM kullan\u0131m\u0131n\u0131 1.2GB alt\u0131na indirmek.",
       "status": "pending",
       "priority": "high",
       "assignee": "Alfred",
@@ -1254,7 +1256,7 @@
     {
       "id": "T-073",
       "title": "Log Rotation Policy",
-      "description": "OpenClaw ve Dashboard loglarının SD kartı doldurmasını engellemek için otomatik log rotation. logrotate konfigürasyonu: 50MB üzeri loglar sıkıştırılır, 7 günden eski silinir. /home/sefa/openclaw/logs/ ve /home/sefa/.pm2/logs/ için geçerli.",
+      "description": "OpenClaw ve Dashboard loglar\u0131n\u0131n SD kart\u0131 doldurmas\u0131n\u0131 engellemek i\u00e7in otomatik log rotation. logrotate konfig\u00fcrasyonu: 50MB \u00fczeri loglar s\u0131k\u0131\u015ft\u0131r\u0131l\u0131r, 7 g\u00fcnden eski silinir. /home/sefa/openclaw/logs/ ve /home/sefa/.pm2/logs/ i\u00e7in ge\u00e7erli.",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
@@ -1269,7 +1271,7 @@
     {
       "id": "T-074",
       "title": "Worker-Node Migration: Kaizen Integration",
-      "description": "Ağır Claude Code işlemlerini (kod refaktörü, büyük veri analizi) Raspberry Pi'den ana bilgisayara (Kaizen) yönlendirecek Remote Worker mimarisi tasarımı. SSH tüneli üzerinden job dispatch, sonuçları Pi'ye geri aktar. task-worker.sh'e 'heavy' tag'li görevler için Kaizen routing ekle.",
+      "description": "A\u011f\u0131r Claude Code i\u015flemlerini (kod refakt\u00f6r\u00fc, b\u00fcy\u00fck veri analizi) Raspberry Pi'den ana bilgisayara (Kaizen) y\u00f6nlendirecek Remote Worker mimarisi tasar\u0131m\u0131. SSH t\u00fcneli \u00fczerinden job dispatch, sonu\u00e7lar\u0131 Pi'ye geri aktar. task-worker.sh'e 'heavy' tag'li g\u00f6revler i\u00e7in Kaizen routing ekle.",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
