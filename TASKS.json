@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T06:01:56.279Z",
+  "updated_at": "2026-04-07T07:30:27.069Z",
   "tasks": [
     {
       "id": "T-001",
@@ -457,7 +457,7 @@
       "id": "T-028",
       "title": "Tamamlanan görevleri arşivle / gizle",
       "description": "Görev Kuyruğu sayfasına 'Tamamlananları Gizle' toggle butonu ekle. Tamamlanan görevler ayrı 'Arşiv' sekmesinde gösterilecek. Tercih localStorage'da saklanacak.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -472,6 +472,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T05:19:51.389Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T08:30:00.000Z"
         }
       ]
     },
@@ -687,6 +692,96 @@
           "at": "2026-04-07T09:05:00.000Z"
         }
       ]
+    },
+    {
+      "id": "T-041",
+      "title": "Memory optimization ve OOM prevention",
+      "description": "Sistem şu anda 84% RAM kullanıyor (3.2GB/3.7GB). Açık claude process'leri temizleme, memory limits ayarlama, unnecessary service'leri kapama gibi optimizasyonlar yapılması gerekiyor.",
+      "status": "in_progress",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "sistem",
+        "stabilite",
+        "memory"
+      ],
+      "due": "2026-04-08",
+      "created_at": "2026-04-07T07:25:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T07:30:16.396Z"
+        }
+      ]
+    },
+    {
+      "id": "T-042",
+      "title": "Telegram ve Home Assistant konfigürasyon sorunları",
+      "description": "server.cjs'de Telegram bot token ve HA token konfigürasyonu eksik. Bildirim ve HA entegrasyonu çalışmıyor. .env dosyasında ya da config'de bu değerlerin ayarlanması gerekiyor. Hata handling iyileştirilmeli.",
+      "status": "in_progress",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "api",
+        "telegram",
+        "home-assistant",
+        "config"
+      ],
+      "due": "2026-04-09",
+      "created_at": "2026-04-07T07:25:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T07:30:27.069Z"
+        }
+      ]
+    },
+    {
+      "id": "T-043",
+      "title": "Stale process cleanup otomasyonu",
+      "description": "Her 6 saatte bir hanging claude/openclaw process'lerini temizleyen cron job. Systemd service olarak yapılandırılabilir. Şu anda manuel pkill çalıştırılıyor.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "sistem",
+        "cron",
+        "cleanup"
+      ],
+      "due": "2026-04-10",
+      "created_at": "2026-04-07T07:25:00.000Z"
+    },
+    {
+      "id": "T-044",
+      "title": "API error handling ve validation test",
+      "description": "Tüm API endpoint'leri (stats, tasks, ha, telegram) için error handling test edilmeli. Edge case'ler için properly error message return edilmesi gerekiyor. İstisna durumları handle edilmeli.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "api",
+        "testing",
+        "error-handling"
+      ],
+      "due": "2026-04-09",
+      "created_at": "2026-04-07T07:25:00.000Z"
+    },
+    {
+      "id": "T-045",
+      "title": "Dashboard availability ve uptime monitoring",
+      "description": "Dashboard availability'i izleyen healthcheck endpoint. Cron job ile 5 dakikada bir kontrol etsin. Eğer 3 kere üst üste fail olursa alert göndersin. /api/health endpoint'i eklenecek.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "monitoring",
+        "health-check",
+        "api"
+      ],
+      "due": "2026-04-11",
+      "created_at": "2026-04-07T07:25:00.000Z"
     }
   ]
 }

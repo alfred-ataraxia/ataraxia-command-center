@@ -15,6 +15,9 @@ import {
   GripVertical,
   Filter,
   Search,
+  Archive,
+  Eye,
+  EyeOff,
 } from 'lucide-react'
 import { getTasks, addTask, updateTask } from '../services/haService'
 import TaskDetailModal from './TaskDetailModal'
@@ -429,6 +432,10 @@ export default function TaskQueue() {
   const [dragging, setDragging] = useState(null)
   const [dragOver, setDragOver] = useState(null)
   const [selectedTask, setSelectedTask] = useState(null)
+  const [hideCompleted, setHideCompleted] = useState(() => {
+    return localStorage.getItem('hideCompletedTasks') === 'true'
+  })
+  const [activeTab, setActiveTab] = useState('active')
   const [filters, setFilters] = useState({
     search: '',
     priority: [],
@@ -447,6 +454,15 @@ export default function TaskQueue() {
     }
     setFilters(newFilters)
   }, [])
+
+  function handleHideCompletedToggle() {
+    const newValue = !hideCompleted
+    setHideCompleted(newValue)
+    localStorage.setItem('hideCompletedTasks', newValue.toString())
+    if (newValue) {
+      setActiveTab('active')
+    }
+  }
 
   function updateFilters(key, value) {
     let newFilters
@@ -470,6 +486,16 @@ export default function TaskQueue() {
 
   function getFilteredTasks() {
     return tasks.filter(task => {
+      // Hide completed tasks if toggle is on and we're in active tab
+      if (hideCompleted && activeTab === 'active' && task.status === 'done') {
+        return false
+      }
+
+      // Show only completed tasks in archive tab
+      if (activeTab === 'archive' && task.status !== 'done') {
+        return false
+      }
+
       // Search filter
       if (filters.search) {
         const q = filters.search.toLowerCase()
@@ -576,10 +602,54 @@ export default function TaskQueue() {
               : `${inProgress.length} devam ediyor · ${pending.length} bekliyor · ${done.length} tamamlandı`}
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ax-panel border border-ax-border">
-          <ListTodo size={13} className="text-ax-accent" />
-          <span className="text-ax-text text-sm">{filteredTasks.length} / {tasks.length}</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ax-panel border border-ax-border">
+            <ListTodo size={13} className="text-ax-accent" />
+            <span className="text-ax-text text-sm">{filteredTasks.length} / {tasks.length}</span>
+          </div>
+          <button
+            onClick={handleHideCompletedToggle}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
+              hideCompleted
+                ? 'bg-ax-accent/15 border-ax-accent/30 text-ax-accent hover:bg-ax-accent/25'
+                : 'bg-ax-panel border-ax-border text-ax-text hover:bg-ax-muted'
+            }`}
+            title={hideCompleted ? 'Tamamlananları göster' : 'Tamamlananları gizle'}
+          >
+            {hideCompleted ? <EyeOff size={13} /> : <Eye size={13} />}
+            <span className="text-sm hidden sm:inline">{hideCompleted ? 'Gizli' : 'Görünür'}</span>
+          </button>
         </div>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex items-center gap-2 border-b border-ax-border">
+        <button
+          onClick={() => setActiveTab('active')}
+          className={`px-4 py-2 border-b-2 transition-colors ${
+            activeTab === 'active'
+              ? 'border-ax-accent text-ax-accent font-medium'
+              : 'border-transparent text-ax-dim hover:text-ax-text'
+          }`}
+        >
+          <span className="flex items-center gap-2">
+            <ListTodo size={14} />
+            Etkinler
+          </span>
+        </button>
+        {done.length > 0 && (
+          <button
+            onClick={() => setActiveTab('archive')}
+            className={`px-4 py-2 border-b-2 transition-colors flex items-center gap-2 ${
+              activeTab === 'archive'
+                ? 'border-ax-accent text-ax-accent font-medium'
+                : 'border-transparent text-ax-dim hover:text-ax-text'
+            }`}
+          >
+            <Archive size={14} />
+            Arşiv ({done.length})
+          </button>
+        )}
       </div>
 
       {/* Search Bar */}
@@ -610,34 +680,68 @@ export default function TaskQueue() {
         allAssignees={allAssignees}
       />
 
-      <AddTaskForm onAdded={loadTasks} />
+      {/* Active Tasks View */}
+      {activeTab === 'active' && (
+        <>
+          <AddTaskForm onAdded={loadTasks} />
 
-      {COLUMNS.map(col => (
-        <DropZone
-          key={col.status}
-          status={col.status}
-          label={col.label}
-          icon={col.icon}
-          iconClass={col.iconClass}
-          badgeClass={col.badgeClass}
-          count={col.items.length}
-          onDrop={handleDrop}
-          dragOver={dragOver}
-          onDragOver={setDragOver}
-          onDragLeave={() => setDragOver(null)}
-        >
-          {col.items.map(t => (
-            <TaskRow
-              key={t.id}
-              task={t}
-              onStatusChange={loadTasks}
-              onDragStart={setDragging}
-              dragging={dragging}
-              onOpen={setSelectedTask}
-            />
+          {COLUMNS.map(col => (
+            <DropZone
+              key={col.status}
+              status={col.status}
+              label={col.label}
+              icon={col.icon}
+              iconClass={col.iconClass}
+              badgeClass={col.badgeClass}
+              count={col.items.length}
+              onDrop={handleDrop}
+              dragOver={dragOver}
+              onDragOver={setDragOver}
+              onDragLeave={() => setDragOver(null)}
+            >
+              {col.items.map(t => (
+                <TaskRow
+                  key={t.id}
+                  task={t}
+                  onStatusChange={loadTasks}
+                  onDragStart={setDragging}
+                  dragging={dragging}
+                  onOpen={setSelectedTask}
+                />
+              ))}
+            </DropZone>
           ))}
-        </DropZone>
-      ))}
+        </>
+      )}
+
+      {/* Archive View */}
+      {activeTab === 'archive' && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Archive size={13} className="text-ax-green" />
+            <h2 className="text-ax-text text-xs font-semibold uppercase tracking-wider">Arşiv</h2>
+            <span className="px-1.5 py-0.5 rounded border text-[10px] font-medium bg-ax-green/10 border-ax-green/20 text-ax-green">{filteredTasks.length}</span>
+          </div>
+          <div className="space-y-2">
+            {filteredTasks.length === 0 ? (
+              <div className="h-32 flex items-center justify-center text-ax-subtle text-sm rounded-lg border border-ax-border bg-ax-surface">
+                Arşivlenmiş görev bulunmuyor
+              </div>
+            ) : (
+              filteredTasks.map(t => (
+                <TaskRow
+                  key={t.id}
+                  task={t}
+                  onStatusChange={loadTasks}
+                  onDragStart={setDragging}
+                  dragging={dragging}
+                  onOpen={setSelectedTask}
+                />
+              ))
+            )}
+          </div>
+        </div>
+      )}
 
       {selectedTask && (
         <TaskDetailModal
