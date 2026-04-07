@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T21:54:47.306Z",
+  "updated_at": "2026-04-07T21:54:49.995Z",
   "tasks": [
     {
       "id": "T-001",
@@ -924,7 +924,7 @@
       "id": "T-049",
       "title": "Unit tests for API endpoints",
       "description": "Jest/Mocha ile API test suite. /api/stats, /api/tasks, /api/logs, /api/ha testleri. Happy path + error cases.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -933,7 +933,14 @@
         "quality"
       ],
       "due": "2026-04-10",
-      "created_at": "2026-04-07T07:35:00.000Z"
+      "created_at": "2026-04-07T07:35:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T21:54:49.995Z"
+        }
+      ]
     },
     {
       "id": "T-050",
