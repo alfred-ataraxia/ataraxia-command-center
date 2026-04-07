@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T07:30:27.069Z",
+  "updated_at": "2026-04-07T08:50:24.751Z",
   "tasks": [
     {
       "id": "T-001",
@@ -538,7 +538,7 @@
       "id": "T-031",
       "title": "TASKS.json her değişimde otomatik git commit",
       "description": "server.cjs'de görev ekleme/güncelleme endpoint'lerinden sonra TASKS.json otomatik git commit edilecek. Commit mesajı formatı: 'tasks: [T-XXX] <görev başlığı> -> <yeni status>'. Commit sadece TASKS.json'ı içerecek.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -547,7 +547,19 @@
         "otomasyon"
       ],
       "due": "2026-04-09",
-      "created_at": "2026-04-07T00:40:00.000Z"
+      "created_at": "2026-04-07T00:40:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T08:50:16.102Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T17:00:00.000Z"
+        }
+      ]
     },
     {
       "id": "T-032",
@@ -568,7 +580,7 @@
       "id": "T-033",
       "title": "PM2 ile dashboard crash guard",
       "description": "PM2 process manager kurulumu ve yapılandırması. server.cjs PM2 ekosistemi altında çalışacak: max_memory_restart 200MB, crash sonrası otomatik restart, PM2 startup ile systemd entegrasyonu. stats-server.cjs de PM2'ye taşınacak.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -577,13 +589,20 @@
         "pm2"
       ],
       "due": "2026-04-10",
-      "created_at": "2026-04-07T00:40:00.000Z"
+      "created_at": "2026-04-07T00:40:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T08:50:18.472Z"
+        }
+      ]
     },
     {
       "id": "T-034",
       "title": "Swap kullanımı API'ye ekle",
       "description": "/api/stats endpoint'ine swap kullanımı eklenmesi. swapPercent, swapUsedMB, swapTotalMB alanları. /proc/meminfo'dan okunacak. Overview sayfasındaki stat kartları arasına Swap kartı eklenecek.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
@@ -592,7 +611,14 @@
         "sistem"
       ],
       "due": "2026-04-10",
-      "created_at": "2026-04-07T00:40:00.000Z"
+      "created_at": "2026-04-07T00:40:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T08:50:24.751Z"
+        }
+      ]
     },
     {
       "id": "T-035",
@@ -697,7 +723,7 @@
       "id": "T-041",
       "title": "Memory optimization ve OOM prevention",
       "description": "Sistem şu anda 84% RAM kullanıyor (3.2GB/3.7GB). Açık claude process'leri temizleme, memory limits ayarlama, unnecessary service'leri kapama gibi optimizasyonlar yapılması gerekiyor.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -712,6 +738,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T07:30:16.396Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T08:01:40.000Z"
         }
       ]
     },
@@ -719,7 +750,7 @@
       "id": "T-042",
       "title": "Telegram ve Home Assistant konfigürasyon sorunları",
       "description": "server.cjs'de Telegram bot token ve HA token konfigürasyonu eksik. Bildirim ve HA entegrasyonu çalışmıyor. .env dosyasında ya da config'de bu değerlerin ayarlanması gerekiyor. Hata handling iyileştirilmeli.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -735,6 +766,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T07:30:27.069Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T07:45:00.000Z"
         }
       ]
     },
@@ -782,6 +818,366 @@
       ],
       "due": "2026-04-11",
       "created_at": "2026-04-07T07:25:00.000Z"
+    },
+    {
+      "id": "T-046",
+      "title": "API error handling & validation",
+      "description": "Tüm API endpoint'leri için proper error handling. Null checks, type validation, exception handling. 4xx/5xx status codes. Error messages JSON formatında dönsün.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "api",
+        "error-handling",
+        "robustness"
+      ],
+      "due": "2026-04-08",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-047",
+      "title": "Health check endpoint & crash detection",
+      "description": "/api/health endpoint. Dashboard availability check her 5 dakikada. 3 consecutive fail → alert. Uptime tracking.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "monitoring",
+        "health-check",
+        "alerting"
+      ],
+      "due": "2026-04-08",
+      "created_at": "2026-04-07T07:35:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T08:45:12.842Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T09:10:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "T-048",
+      "title": "Process lifecycle management & cleanup",
+      "description": "Systemd service olarak process manager. Memory limits, auto-restart, graceful shutdown. Cgroup ile resource isolation.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "sistem",
+        "systemd",
+        "process-management"
+      ],
+      "due": "2026-04-09",
+      "created_at": "2026-04-07T07:35:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T08:45:22.451Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T09:30:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "T-049",
+      "title": "Unit tests for API endpoints",
+      "description": "Jest/Mocha ile API test suite. /api/stats, /api/tasks, /api/logs, /api/ha testleri. Happy path + error cases.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "testing",
+        "api",
+        "quality"
+      ],
+      "due": "2026-04-10",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-050",
+      "title": "Error boundary & error UI components",
+      "description": "React error boundary. Error toast notifications. Error fallback page. User-friendly error messages. 500 error handling.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "ui",
+        "error-handling",
+        "ux"
+      ],
+      "due": "2026-04-10",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-051",
+      "title": "Environment validation & startup checks",
+      "description": "Server startup'ta env variables check. Missing required config → error log. Connection tests (HA, Telegram). Startup health report.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "config",
+        "startup",
+        "validation"
+      ],
+      "due": "2026-04-09",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-052",
+      "title": "Rate limiting & request logging",
+      "description": "Express rate limiter (10 req/min per IP). Request logging middleware. Response time logging. Slow query detection.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "api",
+        "security",
+        "observability"
+      ],
+      "due": "2026-04-11",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-053",
+      "title": "Config file centralization",
+      "description": "config.js dosyası. Tüm hard-coded values (ports, timeouts, limits). Environment-based config (dev/prod). .env örneği.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "config",
+        "refactoring"
+      ],
+      "due": "2026-04-11",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-054",
+      "title": "Request/response logging middleware",
+      "description": "Winston/Pino logger setup. HTTP request/response logging. JSON format. Log rotation. Dev vs prod loglevel.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "logging",
+        "observability"
+      ],
+      "due": "2026-04-11",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-055",
+      "title": "Performance metrics collection",
+      "description": "Prometheus metrics. Request latency, error rate, memory usage tracking. /metrics endpoint. Grafana integration.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "monitoring",
+        "observability",
+        "metrics"
+      ],
+      "due": "2026-04-12",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-056",
+      "title": "Error rate tracking & alerts",
+      "description": "Error counter tracking. Alert tetikleme if error rate > 5%. Dashboard widget for error stats.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "monitoring",
+        "alerting"
+      ],
+      "due": "2026-04-12",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-057",
+      "title": "Uptime & SLA dashboard widget",
+      "description": "Dashboard'a uptime meter. 30-day uptime %. SLA target (%99.9). Alert history.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "monitoring"
+      ],
+      "due": "2026-04-12",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-058",
+      "title": "Debug mode & development tools",
+      "description": "DEBUG env variable. Browser DevTools extension. Request inspector. Component profiler. Redux DevTools integration.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "development",
+        "debugging"
+      ],
+      "due": "2026-04-13",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-059",
+      "title": "Data persistence layer for history",
+      "description": "SQLite ya da JSON file storage. Stats history persistence. 30-day retention. Query API. Backup compatibility.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "data",
+        "persistence",
+        "storage"
+      ],
+      "due": "2026-04-13",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-060",
+      "title": "UI improvements - loading states & notifications",
+      "description": "Loading spinners tüm async operations. Toast notifications (success/error/warning). Skeleton screens. Optimistic updates.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "ui",
+        "ux",
+        "dashboard"
+      ],
+      "due": "2026-04-13",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-061",
+      "title": "Advanced task filtering & saved searches",
+      "description": "Complex filter builder. Status/priority/tag combinations. Save filter presets. URL state preservation.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "ui",
+        "feature"
+      ],
+      "due": "2026-04-14",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-062",
+      "title": "Backup restore functionality",
+      "description": "Restore interface. TASKS.json restore from backup. Version selection. Rollback capability.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "backup",
+        "recovery",
+        "feature"
+      ],
+      "due": "2026-04-14",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-063",
+      "title": "Data export functionality",
+      "description": "Export tasks as CSV/JSON. Export stats history. Export logs. Download options.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "export",
+        "data",
+        "feature"
+      ],
+      "due": "2026-04-14",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-064",
+      "title": "Basic auth/token system",
+      "description": "Simple API token auth. JWT implementation. Permission checks. Secure token storage.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "security",
+        "auth"
+      ],
+      "due": "2026-04-15",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-065",
+      "title": "Input validation & sanitization",
+      "description": "Joi/Zod schema validation. XSS prevention. SQL injection prevention. CSRF tokens.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "security",
+        "validation"
+      ],
+      "due": "2026-04-15",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-066",
+      "title": "CORS & security headers",
+      "description": "CORS config. CSP headers. X-Frame-Options. X-Content-Type-Options. Strict-Transport-Security.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "security",
+        "headers"
+      ],
+      "due": "2026-04-15",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-067",
+      "title": "Audit logging",
+      "description": "Task changes log. API access log. User action audit trail. Change history.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "logging",
+        "audit",
+        "security"
+      ],
+      "due": "2026-04-15",
+      "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-068",
+      "title": "API documentation (OpenAPI/Swagger)",
+      "description": "OpenAPI 3.0 spec. Swagger UI. API endpoint documentation. Examples. Request/response schemas.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "documentation",
+        "api"
+      ],
+      "due": "2026-04-16",
+      "created_at": "2026-04-07T07:35:00.000Z"
     }
   ]
 }
