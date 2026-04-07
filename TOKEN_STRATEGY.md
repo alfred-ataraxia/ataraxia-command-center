@@ -122,12 +122,28 @@ echo "Tokens: ~$(estimate_tokens "$PROMPT")" >> "$LOG"
 - [x] task-worker.sh'ye model selector ekle
 - [x] Cron job: Pazartesi 09:00 Opus trigger
 - [x] Weekly token audit cron script
-- [ ] Dashboard: Token usage widget
-- [ ] Alert: Weekly limit %80'ine ulaşınca
+- [x] Dashboard: Token usage widget
+- [x] Alert: Weekly limit %80'ine ulaşınca (TokenUsage.jsx)
+
+**✅ TAMAMLANDI: 2026-04-07 21:45**
 
 ---
 
-**Yürürlük:** Çarşamba 21:00 (2026-04-07) itibaren
+**Yürürlük:** Çarşamba 21:45 (2026-04-07) — ✅ AKTIF
 **Sorumluluk:** Alfred Automation System
 **Review:** Her Pazartesi 09:00
+**Status:** Token strategy fully operational
+
+### Cron Jobs aktif:
+```
+*/30 * * * * task-worker.sh     (Model selector + Haiku default)
+0 9 * * 1   monday-review-trigger.sh  (T-074 Opus trigger)
+0 18 * * 0  token-audit.sh      (Weekly token count & budget check)
+```
+
+### Dashboard Widget:
+- TokenUsage.jsx: Real-time token tracking
+- /api/tokens endpoint: Live data from TOKEN_AUDIT.json
+- Warning at 80% budget
+- Model breakdown (Haiku/Sonnet/Opus counts)
 
