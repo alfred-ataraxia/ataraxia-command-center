@@ -580,7 +580,7 @@
       "id": "T-033",
       "title": "PM2 ile dashboard crash guard",
       "description": "PM2 process manager kurulumu ve yapılandırması. server.cjs PM2 ekosistemi altında çalışacak: max_memory_restart 200MB, crash sonrası otomatik restart, PM2 startup ile systemd entegrasyonu. stats-server.cjs de PM2'ye taşınacak.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -595,6 +595,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T08:50:18.472Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T10:31:16.000Z"
         }
       ]
     },
