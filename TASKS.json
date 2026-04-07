@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T23:13:01.627376Z",
+  "updated_at": "2026-04-07T23:13:46.314670Z",
   "tasks": [
     {
       "id": "T-001",
@@ -933,7 +933,7 @@
       "id": "T-051",
       "title": "Environment validation & startup checks",
       "description": "Server startup'ta env variables check. Missing required config \u2192 error log. Connection tests (HA, Telegram). Startup health report.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -942,7 +942,8 @@
         "validation"
       ],
       "due": "2026-04-09",
-      "created_at": "2026-04-07T07:35:00.000Z"
+      "created_at": "2026-04-07T07:35:00.000Z",
+      "completed_at": "2026-04-07T23:13:32.011544Z"
     },
     {
       "id": "T-052",
@@ -1228,7 +1229,7 @@
       "id": "T-071",
       "title": "API Timeout & Circuit Breaker",
       "description": "server.cjs i\u00e7ine stats-server (4175) yan\u0131t vermedi\u011finde dashboard'un donmas\u0131n\u0131 engelleyecek Circuit Breaker mant\u0131\u011f\u0131. 3 consecutive fail \u2192 circuit open, fallback response d\u00f6nd\u00fcr, 60 saniye sonra half-open dene. /api/stats ve /api/stats/history i\u00e7in ge\u00e7erli.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [

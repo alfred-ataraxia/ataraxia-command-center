@@ -134,6 +134,67 @@ function sendSuccess(res, data) {
   res.end(body)
 }
 
+// --- Circuit Breaker Pattern ---
+class CircuitBreaker {
+  constructor(name, failureThreshold = 3, resetTimeout = 60000) {
+    this.name = name
+    this.failureThreshold = failureThreshold
+    this.resetTimeout = resetTimeout
+    this.state = 'CLOSED' // CLOSED, OPEN, HALF_OPEN
+    this.failureCount = 0
+    this.lastFailureTime = null
+    this.nextAttemptTime = null
+  }
+
+  recordSuccess() {
+    if (this.state === 'HALF_OPEN') {
+      this.state = 'CLOSED'
+      this.failureCount = 0
+    }
+  }
+
+  recordFailure() {
+    this.failureCount++
+    this.lastFailureTime = Date.now()
+
+    if (this.failureCount >= this.failureThreshold) {
+      this.state = 'OPEN'
+      this.nextAttemptTime = Date.now() + this.resetTimeout
+    }
+  }
+
+  canAttempt() {
+    if (this.state === 'CLOSED') return true
+    if (this.state === 'OPEN') {
+      if (Date.now() >= this.nextAttemptTime) {
+        this.state = 'HALF_OPEN'
+        this.failureCount = 0
+        return true
+      }
+      return false
+    }
+    return this.state === 'HALF_OPEN'
+  }
+
+  isOpen() {
+    return this.state === 'OPEN'
+  }
+
+  getStatus() {
+    return {
+      state: this.state,
+      failureCount: this.failureCount,
+      lastFailureTime: this.lastFailureTime,
+      nextAttemptTime: this.nextAttemptTime,
+    }
+  }
+}
+
+const circuitBreakers = {
+  stats: new CircuitBreaker('stats-api', 3, 60000),
+  ha: new CircuitBreaker('ha-api', 3, 60000),
+}
+
 // --- MIME types ---
 const MIME = {
   '.html': 'text/html',
@@ -777,14 +838,51 @@ const server = http.createServer((req, res) => {
     return
   }
 
-  // API: system stats
+  // API: system stats (with circuit breaker)
   if (url === '/api/stats') {
     try {
-      const stats = getStats()
-      if (!stats) {
-        return sendError(res, 500, 'İstatistikler alınamadı')
+      const cb = circuitBreakers.stats
+
+      if (!cb.canAttempt()) {
+        // Circuit is OPEN - return fallback
+        const fallback = {
+          cpuPercent: null,
+          memPercent: null,
+          diskPercent: null,
+          uptimeHuman: 'N/A',
+          circuit_breaker: {
+            state: 'OPEN',
+            message: 'Stats service unavailable - circuit breaker activated',
+            nextAttemptTime: new Date(cb.nextAttemptTime).toISOString(),
+          }
+        }
+        return sendSuccess(res, fallback)
       }
-      sendSuccess(res, stats)
+
+      try {
+        const stats = getStats()
+        if (!stats) {
+          throw new Error('Stats null')
+        }
+        cb.recordSuccess()
+        sendSuccess(res, stats)
+      } catch (statsErr) {
+        cb.recordFailure()
+        if (cb.isOpen()) {
+          const fallback = {
+            cpuPercent: null,
+            memPercent: null,
+            diskPercent: null,
+            circuit_breaker: {
+              state: 'OPEN',
+              message: 'Stats service unavailable',
+              nextAttemptTime: new Date(cb.nextAttemptTime).toISOString(),
+            }
+          }
+          return sendSuccess(res, fallback)
+        }
+        throw statsErr
+      }
     } catch (err) {
       sendError(res, 500, 'Sistem istatistikleri hatası', { details: err.message })
     }
@@ -1190,6 +1288,10 @@ const server = http.createServer((req, res) => {
           tasksFile: tasksFileExists,
           distDir: distDirExists,
           statsCollection: stats !== null,
+        },
+        circuitBreakers: {
+          stats: circuitBreakers.stats.getStatus(),
+          ha: circuitBreakers.ha.getStatus(),
         },
         timestamp: new Date().toISOString(),
       }
