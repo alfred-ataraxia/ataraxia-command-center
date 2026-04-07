@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T22:01:14.998Z",
+  "updated_at": "2026-04-07T22:04:02.101Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1125,7 +1125,7 @@
       "id": "T-060",
       "title": "UI improvements - loading states & notifications",
       "description": "Loading spinners tüm async operations. Toast notifications (success/error/warning). Skeleton screens. Optimistic updates.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1134,7 +1134,14 @@
         "dashboard"
       ],
       "due": "2026-04-13",
-      "created_at": "2026-04-07T07:35:00.000Z"
+      "created_at": "2026-04-07T07:35:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T22:04:02.101Z"
+        }
+      ]
     },
     {
       "id": "T-061",
