@@ -1313,9 +1313,12 @@ const server = http.createServer((req, res) => {
     return
   }
 
-  // Static files
-  const filePath = path.join(DIST, url === '/' ? 'index.html' : url)
-  serveFile(filePath, res)
+  // Static files are now served by Nginx reverse proxy
+  // This API-only mode reduces Node.js memory footprint significantly
+  sendError(res, 404, 'Statik dosyalar Nginx tarafından sunuluyor', {
+    info: 'Bu sunucu sadece /api endpoint\'leri sağlar',
+    accessDashboard: 'http://ataraxia.local'
+  })
 })
 
 server.listen(PORT, '0.0.0.0', () => {

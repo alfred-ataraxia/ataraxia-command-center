@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T23:13:46.314670Z",
+  "updated_at": "2026-04-07T23:26:44.486435Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1229,7 +1229,7 @@
       "id": "T-071",
       "title": "API Timeout & Circuit Breaker",
       "description": "server.cjs i\u00e7ine stats-server (4175) yan\u0131t vermedi\u011finde dashboard'un donmas\u0131n\u0131 engelleyecek Circuit Breaker mant\u0131\u011f\u0131. 3 consecutive fail \u2192 circuit open, fallback response d\u00f6nd\u00fcr, 60 saniye sonra half-open dene. /api/stats ve /api/stats/history i\u00e7in ge\u00e7erli.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -1238,13 +1238,14 @@
         "circuit-breaker"
       ],
       "due": "2026-04-09",
-      "created_at": "2026-04-07T21:00:00.000Z"
+      "created_at": "2026-04-07T21:00:00.000Z",
+      "completed_at": "2026-04-07T23:14:29.491641Z"
     },
     {
       "id": "T-072",
       "title": "Pure Nginx Static Serving",
       "description": "Statik dosyalar\u0131 server.cjs yerine Nginx'e devret. Nginx /data/nginx/proxy_host/4.conf i\u00e7inde location / { root /home/sefa/.openclaw/workspace/dashboard/dist; } ve location /api { proxy_pass 4173; } yap\u0131land\u0131rmas\u0131. Hedef: Node.js RAM kullan\u0131m\u0131n\u0131 1.2GB alt\u0131na indirmek.",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -1253,7 +1254,8 @@
         "memory"
       ],
       "due": "2026-04-09",
-      "created_at": "2026-04-07T21:00:00.000Z"
+      "created_at": "2026-04-07T21:00:00.000Z",
+      "completed_at": "2026-04-07T23:26:44.486377Z"
     },
     {
       "id": "T-073",
