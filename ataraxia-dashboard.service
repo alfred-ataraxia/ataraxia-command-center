@@ -1,0 +1,47 @@
+[Unit]
+Description=Ataraxia Dashboard Server
+Documentation=https://github.com/blocksefa/ataraxia
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=sefa
+Group=sefa
+WorkingDirectory=/home/sefa/.openclaw/workspace/dashboard
+ExecStart=/usr/bin/node /home/sefa/.openclaw/workspace/dashboard/server.cjs
+ExecStop=/bin/kill -SIGTERM $MAINPID
+Restart=on-failure
+RestartSec=5s
+RestartBurstLimit=5
+TimeoutStartSec=30
+TimeoutStopSec=30
+KillMode=mixed
+KillSignal=SIGTERM
+FinalKillSignal=SIGKILL
+
+# Environment
+Environment=NODE_ENV=production
+EnvironmentFile=-/home/sefa/.openclaw/workspace/dashboard/.env
+
+# Stdout/Stderr logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ataraxia-dashboard
+
+# Resource limits (cgroup v2 isolation)
+MemoryMax=512M
+MemorySwapMax=0
+CPUQuota=80%
+TasksMax=128
+LimitNOFILE=65536
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/home/sefa/.openclaw/workspace
+PrivateTmp=yes
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target

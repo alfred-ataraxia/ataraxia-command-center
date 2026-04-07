@@ -11,6 +11,38 @@ const path = require('path')
 const os = require('os')
 const { execSync, spawn } = require('child_process')
 
+// --- Load .env file ---
+function loadEnv() {
+  const envFile = path.join(__dirname, '.env')
+  try {
+    const lines = fs.readFileSync(envFile, 'utf8').split('\n')
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) continue
+      const eqIdx = trimmed.indexOf('=')
+      if (eqIdx === -1) continue
+      const key = trimmed.slice(0, eqIdx).trim()
+      const val = trimmed.slice(eqIdx + 1).trim()
+      if (key && !(key in process.env)) {
+        process.env[key] = val
+      }
+    }
+    // Map VITE_ prefixed vars for server-side use if not explicitly set
+    const viteMap = {
+      HA_URL: 'VITE_HA_URL',
+      HA_TOKEN: 'VITE_HA_TOKEN',
+    }
+    for (const [serverKey, viteKey] of Object.entries(viteMap)) {
+      if (!process.env[serverKey] && process.env[viteKey]) {
+        process.env[serverKey] = process.env[viteKey]
+      }
+    }
+  } catch (err) {
+    console.warn('.env dosyası okunamadı:', err.message)
+  }
+}
+loadEnv()
+
 const PORT = 4173
 const DIST = path.join(__dirname, 'dist')
 
@@ -63,6 +95,26 @@ function getDiskPercent() {
   }
 }
 
+function getSwapInfo() {
+  try {
+    const meminfo = fs.readFileSync('/proc/meminfo', 'utf8')
+    const get = (key) => {
+      const m = meminfo.match(new RegExp(`^${key}:\\s+(\\d+)`, 'm'))
+      return m ? parseInt(m[1], 10) : 0
+    }
+    const swapTotalKB = get('SwapTotal')
+    const swapFreeKB = get('SwapFree')
+    const swapUsedKB = swapTotalKB - swapFreeKB
+    return {
+      swapTotalMB: Math.round(swapTotalKB / 1024),
+      swapUsedMB: Math.round(swapUsedKB / 1024),
+      swapPercent: swapTotalKB > 0 ? Math.round((swapUsedKB / swapTotalKB) * 100) : 0,
+    }
+  } catch {
+    return { swapTotalMB: 0, swapUsedMB: 0, swapPercent: 0 }
+  }
+}
+
 function getStats() {
   const totalMem = os.totalmem()
   const freeMem = os.freemem()
@@ -72,12 +124,14 @@ function getStats() {
   const hours = Math.floor(uptimeSeconds / 3600)
   const minutes = Math.floor((uptimeSeconds % 3600) / 60)
 
+  const swap = getSwapInfo()
   return {
     cpuPercent: getCpuPercent(),
     memPercent,
     memUsedMB: Math.round(usedMem / 1024 / 1024),
     memTotalMB: Math.round(totalMem / 1024 / 1024),
     diskPercent: getDiskPercent(),
+    ...swap,
     uptimeSeconds: Math.round(uptimeSeconds),
     uptimeHuman: `${hours}sa ${minutes}dk`,
     timestamp: new Date().toISOString(),
@@ -87,6 +141,11 @@ function getStats() {
 // --- Stats history (last 24h, sampled every 5 min = max 288 entries) ---
 const HISTORY_MAX = 288
 const statsHistory = []
+
+// --- Health / uptime tracking ---
+const SERVER_START = Date.now()
+let healthConsecutiveFails = 0
+const HEALTH_FAIL_THRESHOLD = 3
 
 // --- Notifications history (in-memory, max 50) ---
 const NOTIFICATIONS_MAX = 50
@@ -271,6 +330,43 @@ function recordStats() {
 // Record immediately on startup, then every 5 minutes
 recordStats()
 setInterval(recordStats, 5 * 60 * 1000)
+
+// --- Dashboard availability self-check every 5 minutes ---
+function runHealthCheck() {
+  const req = http.get(`http://127.0.0.1:${PORT}/api/health`, (res) => {
+    if (res.statusCode === 200) {
+      if (healthConsecutiveFails > 0) {
+        console.log(`[health] Dashboard recovered after ${healthConsecutiveFails} fail(s)`)
+        addNotification('system_warning', 'Dashboard Recovered', `${healthConsecutiveFails} başarısız kontrol sonrası dashboard erişilebilir durumda`)
+      }
+      healthConsecutiveFails = 0
+    } else {
+      handleHealthFail(`HTTP ${res.statusCode}`)
+    }
+    res.resume()
+  })
+  req.on('error', (err) => handleHealthFail(err.message))
+  req.setTimeout(5000, () => { req.destroy(); handleHealthFail('timeout') })
+}
+
+function handleHealthFail(reason) {
+  healthConsecutiveFails++
+  console.warn(`[health] Check failed (${healthConsecutiveFails}/${HEALTH_FAIL_THRESHOLD}): ${reason}`)
+  if (healthConsecutiveFails >= HEALTH_FAIL_THRESHOLD) {
+    addNotification(
+      'cron_alert',
+      'Dashboard Erişim Uyarısı',
+      `${HEALTH_FAIL_THRESHOLD} ardışık health check başarısız: ${reason}`
+    )
+    sendTelegramNotification('HEALTH', 'Dashboard Health Alert', new Date().toISOString())
+    healthConsecutiveFails = 0 // reset to avoid spam
+  }
+}
+
+// Start health checks after server is up
+setTimeout(() => {
+  setInterval(runHealthCheck, 5 * 60 * 1000)
+}, 10000) // 10s after boot before first check
 
 // --- Serve static file ---
 function serveFile(filePath, res) {
@@ -600,6 +696,44 @@ const server = http.createServer((req, res) => {
     return
   }
 
+  // API: token usage
+  if (url === '/api/tokens') {
+    const tokenAuditFile = path.join(__dirname, '..', 'TOKEN_AUDIT.json')
+    fs.readFile(tokenAuditFile, 'utf8', (err, data) => {
+      if (err) {
+        // Return default (no audit data yet)
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({
+          estimated_tokens: 0,
+          tasks_by_model: { haiku: 0, sonnet: 0, opus: 0 },
+          budget_per_week: 35000,
+          usage_percent: 0,
+          week_of: new Date().toISOString().split('T')[0],
+        }))
+        return
+      }
+      try {
+        const auditData = JSON.parse(data)
+        // Return latest week's data
+        const latestWeek = auditData.weeks && auditData.weeks.length > 0
+          ? auditData.weeks[auditData.weeks.length - 1]
+          : { tasks_by_model: { haiku: 0, sonnet: 0, opus: 0 }, estimated_tokens: 0, usage_percent: 0 }
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({
+          estimated_tokens: latestWeek.estimated_tokens || 0,
+          tasks_by_model: latestWeek.tasks_by_model || { haiku: 0, sonnet: 0, opus: 0 },
+          budget_per_week: auditData.budget_per_week || 35000,
+          usage_percent: latestWeek.usage_percent || 0,
+          week_of: latestWeek.week_of || new Date().toISOString().split('T')[0],
+        }))
+      } catch {
+        res.writeHead(500, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: 'Token veri işleme hatası' }))
+      }
+    })
+    return
+  }
+
   // API: tasks
   if (url === '/api/tasks' && req.method === 'GET') {
     fs.readFile(tasksFile, 'utf8', (err, data) => {
@@ -807,10 +941,78 @@ const server = http.createServer((req, res) => {
     return
   }
 
-  // API: health
-  if (url === '/health') {
+  // API: process lifecycle info (GET /api/process)
+  if (url === '/api/process' && req.method === 'GET') {
+    const uptimeMs = Date.now() - SERVER_START
+    const memUsage = process.memoryUsage()
+    let systemdStatus = null
+    try {
+      systemdStatus = execSync('systemctl is-active ataraxia-dashboard.service 2>/dev/null', { timeout: 2000 }).toString().trim()
+    } catch { systemdStatus = 'inactive' }
+    let cgroupInfo = null
+    try {
+      const cgroupPath = fs.readFileSync('/proc/self/cgroup', 'utf8').trim().split('\n')[0]
+      cgroupInfo = cgroupPath.replace(/^.*::/, '').trim() || null
+    } catch {}
+    let memLimit = null
+    try {
+      const limitFile = '/sys/fs/cgroup/memory.max'
+      const raw = fs.readFileSync(limitFile, 'utf8').trim()
+      memLimit = raw === 'max' ? null : parseInt(raw, 10)
+    } catch {}
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ ok: true }))
+    res.end(JSON.stringify({
+      pid: process.pid,
+      ppid: process.ppid,
+      uptime: { ms: uptimeMs, sec: Math.floor(uptimeMs / 1000) },
+      memory: {
+        rss: memUsage.rss,
+        heapUsed: memUsage.heapUsed,
+        heapTotal: memUsage.heapTotal,
+        external: memUsage.external,
+        limitBytes: memLimit,
+      },
+      node: process.version,
+      platform: process.platform,
+      arch: process.arch,
+      systemd: { status: systemdStatus },
+      cgroup: cgroupInfo,
+      env: process.env.NODE_ENV || 'development',
+    }))
+    return
+  }
+
+  // API: health (detailed)
+  if (url === '/api/health' || url === '/health') {
+    const uptimeMs = Date.now() - SERVER_START
+    const uptimeSec = Math.floor(uptimeMs / 1000)
+    const uptimeHours = Math.floor(uptimeSec / 3600)
+    const uptimeMins = Math.floor((uptimeSec % 3600) / 60)
+    const uptimeSecs = uptimeSec % 60
+    const stats = getStats()
+    const payload = {
+      ok: true,
+      status: 'healthy',
+      server: {
+        uptimeMs,
+        uptimeHuman: `${uptimeHours}sa ${uptimeMins}dk ${uptimeSecs}sn`,
+        startedAt: new Date(SERVER_START).toISOString(),
+      },
+      system: {
+        cpuPercent: stats.cpuPercent,
+        memPercent: stats.memPercent,
+        diskPercent: stats.diskPercent,
+        osUptimeHuman: stats.uptimeHuman,
+      },
+      checks: {
+        tasksFile: fs.existsSync(path.join(__dirname, '..', 'TASKS.json')),
+        distDir: fs.existsSync(path.join(__dirname, 'dist')),
+      },
+      timestamp: new Date().toISOString(),
+    }
+    payload.status = (payload.checks.tasksFile && payload.checks.distDir) ? 'healthy' : 'degraded'
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify(payload))
     return
   }
 
@@ -822,4 +1024,36 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Ataraxia Dashboard: http://0.0.0.0:${PORT}`)
   console.log(`Stats API: http://0.0.0.0:${PORT}/api/stats`)
+})
+
+// --- Graceful shutdown ---
+let shutdownInProgress = false
+
+function gracefulShutdown(signal) {
+  if (shutdownInProgress) return
+  shutdownInProgress = true
+  console.log(`[shutdown] ${signal} alındı — graceful shutdown başlıyor...`)
+  const timeout = setTimeout(() => {
+    console.error('[shutdown] Timeout — zorla çıkılıyor')
+    process.exit(1)
+  }, 10000)
+  server.close((err) => {
+    clearTimeout(timeout)
+    if (err) {
+      console.error('[shutdown] Server kapanırken hata:', err.message)
+      process.exit(1)
+    }
+    console.log('[shutdown] Server kapatıldı')
+    process.exit(0)
+  })
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+process.on('SIGINT',  () => gracefulShutdown('SIGINT'))
+process.on('uncaughtException', (err) => {
+  console.error('[crash] Yakalanmamış istisna:', err)
+  gracefulShutdown('uncaughtException')
+})
+process.on('unhandledRejection', (reason) => {
+  console.error('[crash] İşlenmeyen promise reddi:', reason)
 })

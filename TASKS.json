@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T08:50:24.751Z",
+  "updated_at": "2026-04-07T19:03:21Z",
   "tasks": [
     {
       "id": "T-001",
@@ -607,7 +607,7 @@
       "id": "T-034",
       "title": "Swap kullanımı API'ye ekle",
       "description": "/api/stats endpoint'ine swap kullanımı eklenmesi. swapPercent, swapUsedMB, swapTotalMB alanları. /proc/meminfo'dan okunacak. Overview sayfasındaki stat kartları arasına Swap kartı eklenecek.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
@@ -622,6 +622,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T08:50:24.751Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T09:00:00.000Z"
         }
       ]
     },
@@ -1183,6 +1188,98 @@
       ],
       "due": "2026-04-16",
       "created_at": "2026-04-07T07:35:00.000Z"
+    },
+    {
+      "id": "T-069",
+      "title": "OOM-Guard & Alerting System",
+      "description": "800MB RAM sınırına kaç kez çarpıldığını takip eden log mekanizması. SIGKILL alan süreçleri tespit et ve Telegram üzerinden anlık 'Kritik: Claude RAM sınırını aştı ve durduruldu' uyarısı gönder. /home/sefa/openclaw/logs/oom-events.log dosyasına kayıt. task-worker.sh içinden tetiklenecek.",
+      "status": "in_progress",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "sistem",
+        "monitoring",
+        "telegram",
+        "oom"
+      ],
+      "due": "2026-04-08",
+      "created_at": "2026-04-07T21:00:00.000Z"
+    },
+    {
+      "id": "T-070",
+      "title": "PM2 Zombie Process Cleaner",
+      "description": "Alfred her uyandığında arkada asılı kalmış orphan Node.js veya Vite süreçlerini otomatik tarayıp temizleyen pre-run scripti. cron/cleanup-orphans.sh oluştur. task-worker.sh başında çalıştır. Hedef: ps aux ile zombie tespit, 30 dakikadan eski node/vite process'leri öldür.",
+      "status": "in_progress",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "sistem",
+        "process-management",
+        "cleanup"
+      ],
+      "due": "2026-04-08",
+      "created_at": "2026-04-07T21:00:00.000Z"
+    },
+    {
+      "id": "T-071",
+      "title": "API Timeout & Circuit Breaker",
+      "description": "server.cjs içine stats-server (4175) yanıt vermediğinde dashboard'un donmasını engelleyecek Circuit Breaker mantığı. 3 consecutive fail → circuit open, fallback response döndür, 60 saniye sonra half-open dene. /api/stats ve /api/stats/history için geçerli.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "api",
+        "resilience",
+        "circuit-breaker"
+      ],
+      "due": "2026-04-09",
+      "created_at": "2026-04-07T21:00:00.000Z"
+    },
+    {
+      "id": "T-072",
+      "title": "Pure Nginx Static Serving",
+      "description": "Statik dosyaları server.cjs yerine Nginx'e devret. Nginx /data/nginx/proxy_host/4.conf içinde location / { root /home/sefa/.openclaw/workspace/dashboard/dist; } ve location /api { proxy_pass 4173; } yapılandırması. Hedef: Node.js RAM kullanımını 1.2GB altına indirmek.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "nginx",
+        "performance",
+        "memory"
+      ],
+      "due": "2026-04-09",
+      "created_at": "2026-04-07T21:00:00.000Z"
+    },
+    {
+      "id": "T-073",
+      "title": "Log Rotation Policy",
+      "description": "OpenClaw ve Dashboard loglarının SD kartı doldurmasını engellemek için otomatik log rotation. logrotate konfigürasyonu: 50MB üzeri loglar sıkıştırılır, 7 günden eski silinir. /home/sefa/openclaw/logs/ ve /home/sefa/.pm2/logs/ için geçerli.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "sistem",
+        "logging",
+        "storage"
+      ],
+      "due": "2026-04-10",
+      "created_at": "2026-04-07T21:00:00.000Z"
+    },
+    {
+      "id": "T-074",
+      "title": "Worker-Node Migration: Kaizen Integration",
+      "description": "Ağır Claude Code işlemlerini (kod refaktörü, büyük veri analizi) Raspberry Pi'den ana bilgisayara (Kaizen) yönlendirecek Remote Worker mimarisi tasarımı. SSH tüneli üzerinden job dispatch, sonuçları Pi'ye geri aktar. task-worker.sh'e 'heavy' tag'li görevler için Kaizen routing ekle.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "mimari",
+        "distributed",
+        "kaizen",
+        "performance"
+      ],
+      "due": "2026-04-14",
+      "created_at": "2026-04-07T21:00:00.000Z"
     }
   ]
 }

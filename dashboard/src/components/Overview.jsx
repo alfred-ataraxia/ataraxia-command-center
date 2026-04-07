@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { useHA } from '../hooks/useHA'
 import SystemMetricsChart from './SystemMetricsChart'
+import TokenUsage from './TokenUsage'
 
 const STAT_SCHEMA = [
   {
@@ -42,6 +43,15 @@ const STAT_SCHEMA = [
     bg: 'bg-ax-amber/10',
     border: 'border-ax-amber/20',
     iconColor: 'text-ax-amber',
+  },
+  {
+    label: 'Swap',
+    key: 'swapPercent',
+    unit: '%',
+    icon: HardDrive,
+    bg: 'bg-purple-500/10',
+    border: 'border-purple-500/20',
+    iconColor: 'text-purple-400',
   },
   {
     label: 'Çalışma Süresi',
@@ -275,6 +285,9 @@ export default function Overview() {
 
         {/* Sağ sütun */}
         <div className="space-y-4">
+          {/* Token Kullanımı */}
+          <TokenUsage />
+
           {/* Sistem kaynakları */}
           <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
             <div className="flex items-center justify-between mb-4">

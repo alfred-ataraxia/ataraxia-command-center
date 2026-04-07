@@ -76,23 +76,32 @@ echo "Working on: $TASK_ID — $TASK_TITLE" >> "$LOG"
 echo "Description: $TASK_DESC" >> "$LOG"
 echo "" >> "$LOG"
 
-# Build the prompt for Claude Code (lightweight for memory efficiency)
-PROMPT="Ataraxia Command Center: Görev $TASK_ID — $TASK_TITLE
+# Select model based on TOKEN_STRATEGY.md rules
+HOUR=$(date +%H)
+WEEKDAY=$(date +%u)  # 1=Monday, 7=Sunday
+MODEL="claude-haiku-4-5-20251001"  # Default: Haiku (70% of work)
 
-Açıklama: $TASK_DESC
+# Strategic tasks: use Opus
+if [ "$TASK_ID" = "T-074" ] || [ "$TASK_ID" = "T-055" ]; then
+  MODEL="claude-opus-4-6"
+  echo "Model selected: OPUS (strategic task)" >> "$LOG"
+# Monday 09:00 review: use Sonnet
+elif [ "$WEEKDAY" = "1" ] && [ "$HOUR" = "09" ]; then
+  MODEL="claude-sonnet-4-6"
+  echo "Model selected: SONNET (weekly review)" >> "$LOG"
+else
+  echo "Model selected: HAIKU (routine work)" >> "$LOG"
+fi
 
-Çalışma alanı: $WORKSPACE
-Dashboard: $WORKSPACE/dashboard/
-
-Yapılacaklar:
-1. Görevi tamamla
-2. Derle varsa
-3. TASKS.json'da status → done
-4. Kısa çalış"
+# Build the prompt for Claude Code (minimal tokens)
+PROMPT="Görev: $TASK_ID $TASK_TITLE
+$TASK_DESC
+Workspace: $WORKSPACE
+Kural: Görevi tamamla, TASKS.json status=done yap, gereksiz açıklama yapma."
 
 cd "$WORKSPACE"
 # Run with 5 minute timeout to prevent SIGTERM + memory exhaustion
-timeout 300 claude --dangerously-skip-permissions --print "$PROMPT" >> "$LOG" 2>&1
+timeout 300 claude --dangerously-skip-permissions --model "$MODEL" --print "$PROMPT" >> "$LOG" 2>&1
 EXIT_CODE=$?
 
 echo "" >> "$LOG"
