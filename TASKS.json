@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T21:54:49.995Z",
+  "updated_at": "2026-04-07T22:01:14.998Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1319,61 +1319,6 @@
       "completed_at": "2026-04-07T23:31:12.689414Z"
     },
     {
-      "id": "T-073",
-      "title": "Log Rotation Policy",
-      "description": "OpenClaw ve Dashboard loglarının SD kartı doldurmasını engellemek için otomatik log rotation. logrotate konfigürasyonu: 50MB üzeri loglar sıkıştırılır, 7 günden eski silinir. /home/sefa/openclaw/logs/ ve /home/sefa/.pm2/logs/ için geçerli.",
-      "status": "in_progress",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [
-        "sistem",
-        "logging",
-        "storage"
-      ],
-      "due": "2026-04-10",
-      "created_at": "2026-04-07T21:00:00.000Z",
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-07T21:36:04.348Z"
-        },
-        {
-          "from": "in_progress",
-          "to": "done",
-          "at": "2026-04-07T21:36:17.358Z"
-        },
-        {
-          "from": "done",
-          "to": "pending",
-          "at": "2026-04-07T21:36:19.086Z"
-        },
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-07T21:36:20.260Z"
-        },
-        {
-          "from": "in_progress",
-          "to": "pending",
-          "at": "2026-04-07T21:43:26.294Z"
-        },
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-07T21:54:27.481Z"
-        }
-      ],
-      "notes": [
-        {
-          "id": 1775597775960,
-          "text": "YAPMANIZ GEREKEN İLK İŞ BU",
-          "at": "2026-04-07T21:36:15.960Z"
-        }
-      ],
-      "completed_at": "2026-04-07T21:36:17.358Z"
-    },
-    {
       "id": "T-074",
       "title": "Worker-Node Migration: Kaizen Integration",
       "description": "Ağır Claude Code işlemlerini (kod refaktörü, büyük veri analizi) Raspberry Pi'den ana bilgisayara (Kaizen) yönlendirecek Remote Worker mimarisi tasarımı. SSH tüneli üzerinden job dispatch, sonuçları Pi'ye geri aktar. task-worker.sh'e 'heavy' tag'li görevler için Kaizen routing ekle.",
@@ -1400,23 +1345,19 @@
       "id": "T-073",
       "title": "KULLANILABİLİR GELİŞTİRMELER",
       "description": "DASHBOARDDAKİ ÇOĞU VERİ ESKİ HATALI HEPSİ GÖZDEN GEÇİRİLMELİ",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-07T21:35:55.328Z"
-    },
-    {
-      "id": "T-074",
-      "title": "Test Görev",
-      "description": "Test açıklaması",
-      "status": "pending",
-      "priority": "high",
-      "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-07T21:44:53.031Z"
+      "created_at": "2026-04-07T21:35:55.328Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T22:01:14.998Z"
+        }
+      ]
     }
   ]
 }
