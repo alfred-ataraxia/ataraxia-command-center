@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-07T21:44:53.031Z",
+  "updated_at": "2026-04-07T21:47:55.609Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1358,7 +1358,7 @@
       "id": "T-074",
       "title": "Worker-Node Migration: Kaizen Integration",
       "description": "Ağır Claude Code işlemlerini (kod refaktörü, büyük veri analizi) Raspberry Pi'den ana bilgisayara (Kaizen) yönlendirecek Remote Worker mimarisi tasarımı. SSH tüneli üzerinden job dispatch, sonuçları Pi'ye geri aktar. task-worker.sh'e 'heavy' tag'li görevler için Kaizen routing ekle.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1368,7 +1368,14 @@
         "performance"
       ],
       "due": "2026-04-14",
-      "created_at": "2026-04-07T21:00:00.000Z"
+      "created_at": "2026-04-07T21:00:00.000Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-07T21:47:55.609Z"
+        }
+      ]
     },
     {
       "id": "T-073",
