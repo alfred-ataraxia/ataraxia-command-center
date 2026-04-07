@@ -1193,7 +1193,7 @@
       "id": "T-069",
       "title": "OOM-Guard & Alerting System",
       "description": "800MB RAM sınırına kaç kez çarpıldığını takip eden log mekanizması. SIGKILL alan süreçleri tespit et ve Telegram üzerinden anlık 'Kritik: Claude RAM sınırını aştı ve durduruldu' uyarısı gönder. /home/sefa/openclaw/logs/oom-events.log dosyasına kayıt. task-worker.sh içinden tetiklenecek.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -1203,7 +1203,8 @@
         "oom"
       ],
       "due": "2026-04-08",
-      "created_at": "2026-04-07T21:00:00.000Z"
+      "created_at": "2026-04-07T21:00:00.000Z",
+      "completed_at": "2026-04-07T22:30:54.481544Z"
     },
     {
       "id": "T-070",

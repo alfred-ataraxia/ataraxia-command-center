@@ -19,6 +19,9 @@ LOG="$LOG_DIR/task-worker-$(date +%Y%m%d-%H%M).log"
 
 echo "=== Task Worker $(date) ===" >> "$LOG"
 
+# Run OOM-Guard first
+bash "$WORKSPACE/cron/oom-guard.sh" 2>&1 | grep -v "^$" >> "$LOG" || true
+
 # Prevent overlapping runs
 if [ -f "$LOCK_FILE" ]; then
   PID=$(cat "$LOCK_FILE")
