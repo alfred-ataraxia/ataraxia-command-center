@@ -660,7 +660,7 @@
       "id": "T-038",
       "title": "API: POST /api/tasks (new task creation)",
       "description": "Dashboard UI'dan yeni görev eklemek için endpoint. POST /api/tasks { title, description, priority, tags, due }. Yeni task unique ID ile TASKS.json'a eklenir ve commit edilir (T-031 ile entegre).",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -675,6 +675,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T05:20:45.315Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-07T09:05:00.000Z"
         }
       ]
     }

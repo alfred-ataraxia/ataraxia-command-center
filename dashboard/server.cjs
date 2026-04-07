@@ -162,6 +162,20 @@ function sendTelegramNotification(taskId, taskTitle, completionTime) {
   req.end()
 }
 
+// Git commit helper (T-031 integration)
+function commitTasksFile(taskId, taskTitle, newStatus) {
+  try {
+    const workspaceDir = path.join(__dirname, '..')
+    const commitMsg = `tasks: [${taskId}] ${taskTitle} -> ${newStatus}`
+    execSync(`git add TASKS.json && git commit -m "${commitMsg}"`, {
+      cwd: workspaceDir,
+      stdio: 'pipe'
+    })
+  } catch (err) {
+    console.error(`Git commit hatası [${taskId}]:`, err.message)
+  }
+}
+
 // Helper to make HA API calls
 function haApiCall(method, path, data = null) {
   return new Promise((resolve, reject) => {
@@ -621,11 +635,13 @@ const server = http.createServer((req, res) => {
             res.end(JSON.stringify({ error: 'Görev bulunamadı' }))
             return
           }
+          let statusChanged = false
           if (updates.status && updates.status !== task.status) {
             task.status_history = task.status_history || []
             const completionTime = new Date().toISOString()
             task.status_history.push({ from: task.status, to: updates.status, at: completionTime })
             task.status = updates.status
+            statusChanged = true
 
             // Görev 'done' statüsüne geçtiğinde Telegram bildirimi gönder
             if (updates.status === 'done') {
@@ -641,6 +657,10 @@ const server = http.createServer((req, res) => {
               res.writeHead(500, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ error: 'Yazma hatası' }))
               return
+            }
+            // Git commit (T-031 integration) - only if status changed
+            if (statusChanged) {
+              commitTasksFile(task.id, task.title, task.status)
             }
             res.writeHead(200, { 'Content-Type': 'application/json' })
             res.end(JSON.stringify(task))
@@ -683,6 +703,8 @@ const server = http.createServer((req, res) => {
               res.end(JSON.stringify({ error: 'Yazma hatası' }))
               return
             }
+            // Git commit (T-031 integration)
+            commitTasksFile(task.id, task.title, task.status)
             res.writeHead(201, { 'Content-Type': 'application/json' })
             res.end(JSON.stringify(task))
           })
