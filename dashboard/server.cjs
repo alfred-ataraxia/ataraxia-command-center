@@ -799,56 +799,86 @@ const server = http.createServer((req, res) => {
   if (taskMatch && req.method === 'PATCH') {
     let body = ''
     req.on('data', chunk => { body += chunk })
+    req.on('error', () => {
+      sendError(res, 400, 'Request verileri alınamadı')
+    })
     req.on('end', () => {
       try {
-        const updates = JSON.parse(body)
-        fs.readFile(tasksFile, 'utf8', (err, raw) => {
-          if (err) {
-            res.writeHead(500, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ error: 'TASKS.json okunamadı' }))
-            return
-          }
-          const db = JSON.parse(raw)
-          const task = db.tasks.find(t => t.id === taskMatch[1])
-          if (!task) {
-            res.writeHead(404, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ error: 'Görev bulunamadı' }))
-            return
-          }
-          let statusChanged = false
-          if (updates.status && updates.status !== task.status) {
-            task.status_history = task.status_history || []
-            const completionTime = new Date().toISOString()
-            task.status_history.push({ from: task.status, to: updates.status, at: completionTime })
-            task.status = updates.status
-            statusChanged = true
+        if (!body) {
+          return sendError(res, 400, 'Request body boş')
+        }
 
-            // Görev 'done' statüsüne geçtiğinde Telegram bildirimi gönder
-            if (updates.status === 'done') {
-              sendTelegramNotification(task.id, task.title, completionTime)
-              addNotification('task_complete', `${task.id} Tamamlandı`, task.title, task.id)
+        const updates = JSON.parse(body)
+        const taskId = taskMatch[1]
+
+        // Validate update fields
+        if (updates.status && !['pending', 'in_progress', 'done'].includes(updates.status)) {
+          return sendError(res, 400, `Geçersiz status: ${updates.status}`)
+        }
+        if (updates.priority && !['low', 'medium', 'high'].includes(updates.priority)) {
+          return sendError(res, 400, `Geçersiz priority: ${updates.priority}`)
+        }
+        if (updates.title && (typeof updates.title !== 'string' || !updates.title.trim())) {
+          return sendError(res, 400, 'Başlık geçersiz')
+        }
+
+        fs.readFile(tasksFile, 'utf8', (err, raw) => {
+          try {
+            if (err) {
+              if (err.code === 'ENOENT') {
+                return sendError(res, 404, 'TASKS.json bulunamadı')
+              }
+              return sendError(res, 500, 'TASKS.json okunamadı', { code: err.code })
             }
+
+            const db = JSON.parse(raw)
+            if (!Array.isArray(db.tasks)) {
+              return sendError(res, 500, 'Geçersiz TASKS.json formatı')
+            }
+
+            const task = db.tasks.find(t => t.id === taskId)
+            if (!task) {
+              return sendError(res, 404, `Görev ${taskId} bulunamadı`)
+            }
+
+            let statusChanged = false
+            if (updates.status && updates.status !== task.status) {
+              task.status_history = task.status_history || []
+              const completionTime = new Date().toISOString()
+              task.status_history.push({ from: task.status, to: updates.status, at: completionTime })
+              task.status = updates.status
+              statusChanged = true
+
+              if (updates.status === 'done') {
+                task.completed_at = completionTime
+                sendTelegramNotification(task.id, task.title, completionTime)
+                addNotification('task_complete', `${task.id} Tamamlandı`, task.title, task.id)
+              }
+            }
+
+            if (updates.priority) task.priority = updates.priority
+            if (updates.title) task.title = updates.title.trim()
+
+            db.updated_at = new Date().toISOString()
+
+            fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
+              if (err2) {
+                return sendError(res, 500, 'Görev dosyasına yazılamadı', { code: err2.code })
+              }
+
+              if (statusChanged) {
+                commitTasksFile(task.id, task.title, task.status)
+              }
+
+              res.writeHead(200, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify(task))
+            })
+          } catch (parseErr) {
+            sendError(res, 500, 'TASKS.json işleme hatası', { details: parseErr.message })
           }
-          if (updates.priority) task.priority = updates.priority
-          if (updates.title) task.title = updates.title
-          db.updated_at = new Date().toISOString()
-          fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
-            if (err2) {
-              res.writeHead(500, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ error: 'Yazma hatası' }))
-              return
-            }
-            // Git commit (T-031 integration) - only if status changed
-            if (statusChanged) {
-              commitTasksFile(task.id, task.title, task.status)
-            }
-            res.writeHead(200, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify(task))
-          })
         })
-      } catch {
-        res.writeHead(400, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ error: 'Geçersiz JSON' }))
+      } catch (jsonErr) {
+        sendError(res, 400, 'Geçersiz JSON formatı', { details: jsonErr.message })
       }
     })
     return
@@ -1056,35 +1086,64 @@ const server = http.createServer((req, res) => {
 
   // API: health (detailed)
   if (url === '/api/health' || url === '/health') {
-    const uptimeMs = Date.now() - SERVER_START
-    const uptimeSec = Math.floor(uptimeMs / 1000)
-    const uptimeHours = Math.floor(uptimeSec / 3600)
-    const uptimeMins = Math.floor((uptimeSec % 3600) / 60)
-    const uptimeSecs = uptimeSec % 60
-    const stats = getStats()
-    const payload = {
-      ok: true,
-      status: 'healthy',
-      server: {
-        uptimeMs,
-        uptimeHuman: `${uptimeHours}sa ${uptimeMins}dk ${uptimeSecs}sn`,
-        startedAt: new Date(SERVER_START).toISOString(),
-      },
-      system: {
-        cpuPercent: stats.cpuPercent,
-        memPercent: stats.memPercent,
-        diskPercent: stats.diskPercent,
-        osUptimeHuman: stats.uptimeHuman,
-      },
-      checks: {
-        tasksFile: fs.existsSync(path.join(__dirname, '..', 'TASKS.json')),
-        distDir: fs.existsSync(path.join(__dirname, 'dist')),
-      },
-      timestamp: new Date().toISOString(),
+    try {
+      const uptimeMs = Date.now() - SERVER_START
+      const uptimeSec = Math.floor(uptimeMs / 1000)
+      const uptimeHours = Math.floor(uptimeSec / 3600)
+      const uptimeMins = Math.floor((uptimeSec % 3600) / 60)
+      const uptimeSecs = uptimeSec % 60
+
+      let stats = null
+      try {
+        stats = getStats()
+      } catch (statsErr) {
+        console.error('Stats collection failed:', statsErr.message)
+      }
+
+      const tasksFileExists = fs.existsSync(path.join(__dirname, '..', 'TASKS.json'))
+      const distDirExists = fs.existsSync(path.join(__dirname, 'dist'))
+
+      const payload = {
+        ok: true,
+        status: 'healthy',
+        server: {
+          uptimeMs,
+          uptimeHuman: `${uptimeHours}sa ${uptimeMins}dk ${uptimeSecs}sn`,
+          startedAt: new Date(SERVER_START).toISOString(),
+        },
+        system: stats ? {
+          cpuPercent: stats.cpuPercent || null,
+          memPercent: stats.memPercent || null,
+          diskPercent: stats.diskPercent || null,
+          osUptimeHuman: stats.uptimeHuman || null,
+        } : {
+          cpuPercent: null,
+          memPercent: null,
+          diskPercent: null,
+          osUptimeHuman: null,
+        },
+        checks: {
+          tasksFile: tasksFileExists,
+          distDir: distDirExists,
+          statsCollection: stats !== null,
+        },
+        timestamp: new Date().toISOString(),
+      }
+
+      // Determine status based on checks
+      if (!tasksFileExists || !distDirExists) {
+        payload.status = 'degraded'
+      } else if (!stats) {
+        payload.status = 'degraded'
+      } else if (stats.memPercent >= 90) {
+        payload.status = 'warning'
+      }
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify(payload))
+    } catch (err) {
+      sendError(res, 500, 'Health check hatası', { details: err.message })
     }
-    payload.status = (payload.checks.tasksFile && payload.checks.distDir) ? 'healthy' : 'degraded'
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify(payload))
     return
   }
 
