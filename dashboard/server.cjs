@@ -46,6 +46,30 @@ loadEnv()
 const PORT = 4173
 const DIST = path.join(__dirname, 'dist')
 
+// --- Error Response Handler ---
+function sendError(res, statusCode, errorMessage, details = {}) {
+  const body = JSON.stringify({
+    error: errorMessage,
+    status: statusCode,
+    timestamp: new Date().toISOString(),
+    ...details
+  })
+  res.writeHead(statusCode, {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(body)
+  })
+  res.end(body)
+}
+
+function sendSuccess(res, data) {
+  const body = JSON.stringify(data)
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(body)
+  })
+  res.end(body)
+}
+
 // --- MIME types ---
 const MIME = {
   '.html': 'text/html',
@@ -691,8 +715,15 @@ const server = http.createServer((req, res) => {
 
   // API: system stats
   if (url === '/api/stats') {
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify(getStats()))
+    try {
+      const stats = getStats()
+      if (!stats) {
+        return sendError(res, 500, 'İstatistikler alınamadı')
+      }
+      sendSuccess(res, stats)
+    } catch (err) {
+      sendError(res, 500, 'Sistem istatistikleri hatası', { details: err.message })
+    }
     return
   }
 
@@ -700,35 +731,38 @@ const server = http.createServer((req, res) => {
   if (url === '/api/tokens') {
     const tokenAuditFile = path.join(__dirname, '..', 'TOKEN_AUDIT.json')
     fs.readFile(tokenAuditFile, 'utf8', (err, data) => {
-      if (err) {
-        // Return default (no audit data yet)
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({
+      try {
+        if (err && err.code !== 'ENOENT') {
+          return sendError(res, 500, 'Token dosyası okunamadı', { code: err.code })
+        }
+
+        let auditData = null
+        if (!err) {
+          auditData = JSON.parse(data)
+        }
+
+        const defaultResponse = {
           estimated_tokens: 0,
           tasks_by_model: { haiku: 0, sonnet: 0, opus: 0 },
           budget_per_week: 35000,
           usage_percent: 0,
           week_of: new Date().toISOString().split('T')[0],
-        }))
-        return
-      }
-      try {
-        const auditData = JSON.parse(data)
-        // Return latest week's data
-        const latestWeek = auditData.weeks && auditData.weeks.length > 0
-          ? auditData.weeks[auditData.weeks.length - 1]
-          : { tasks_by_model: { haiku: 0, sonnet: 0, opus: 0 }, estimated_tokens: 0, usage_percent: 0 }
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({
+        }
+
+        if (!auditData || !auditData.weeks || auditData.weeks.length === 0) {
+          return sendSuccess(res, defaultResponse)
+        }
+
+        const latestWeek = auditData.weeks[auditData.weeks.length - 1]
+        sendSuccess(res, {
           estimated_tokens: latestWeek.estimated_tokens || 0,
           tasks_by_model: latestWeek.tasks_by_model || { haiku: 0, sonnet: 0, opus: 0 },
           budget_per_week: auditData.budget_per_week || 35000,
           usage_percent: latestWeek.usage_percent || 0,
           week_of: latestWeek.week_of || new Date().toISOString().split('T')[0],
-        }))
-      } catch {
-        res.writeHead(500, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ error: 'Token veri işleme hatası' }))
+        })
+      } catch (parseErr) {
+        sendError(res, 500, 'Token veri işleme hatası', { details: parseErr.message })
       }
     })
     return
@@ -737,13 +771,25 @@ const server = http.createServer((req, res) => {
   // API: tasks
   if (url === '/api/tasks' && req.method === 'GET') {
     fs.readFile(tasksFile, 'utf8', (err, data) => {
-      if (err) {
-        res.writeHead(500, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ error: 'TASKS.json okunamadı' }))
-        return
+      try {
+        if (err) {
+          if (err.code === 'ENOENT') {
+            return sendError(res, 404, 'TASKS.json bulunamadı')
+          }
+          return sendError(res, 500, 'TASKS.json okunamadı', { code: err.code })
+        }
+
+        // Validate JSON
+        const tasks = JSON.parse(data)
+        if (!tasks.tasks || !Array.isArray(tasks.tasks)) {
+          return sendError(res, 500, 'Geçersiz TASKS.json formatı')
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(data)
+      } catch (parseErr) {
+        sendError(res, 500, 'TASKS.json parse hatası', { details: parseErr.message })
       }
-      res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(data)
     })
     return
   }
@@ -811,41 +857,67 @@ const server = http.createServer((req, res) => {
   if (url === '/api/tasks' && req.method === 'POST') {
     let body = ''
     req.on('data', chunk => { body += chunk })
+    req.on('error', () => {
+      sendError(res, 400, 'Request verileri alınamadı')
+    })
     req.on('end', () => {
       try {
+        if (!body) {
+          return sendError(res, 400, 'Request body boş')
+        }
+
         const newTask = JSON.parse(body)
+        if (!newTask.title || typeof newTask.title !== 'string' || !newTask.title.trim()) {
+          return sendError(res, 400, 'Görev başlığı zorunludur ve string olmalıdır')
+        }
+
         fs.readFile(tasksFile, 'utf8', (err, raw) => {
-          const db = err ? { project: 'Ataraxia Command Center', tasks: [] } : JSON.parse(raw)
-          const nextId = 'T-' + String(db.tasks.length + 1).padStart(3, '0')
-          const task = {
-            id: nextId,
-            title: newTask.title || 'Başlıksız görev',
-            description: newTask.description || '',
-            status: newTask.status || 'pending',
-            priority: newTask.priority || 'medium',
-            assignee: newTask.assignee || 'Alfred',
-            tags: newTask.tags || [],
-            due: newTask.due || '',
-            created_at: new Date().toISOString(),
-          }
-          db.tasks.push(task)
-          db.updated_at = new Date().toISOString()
-          addNotification('task_created', `${task.id} Oluşturuldu`, task.title, task.id)
-          fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
-            if (err2) {
-              res.writeHead(500, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ error: 'Yazma hatası' }))
-              return
+          try {
+            let db
+            if (err && err.code === 'ENOENT') {
+              db = { project: 'Ataraxia Command Center', tasks: [] }
+            } else if (err) {
+              return sendError(res, 500, 'TASKS.json okunamadı', { code: err.code })
+            } else {
+              db = JSON.parse(raw)
             }
-            // Git commit (T-031 integration)
-            commitTasksFile(task.id, task.title, task.status)
-            res.writeHead(201, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify(task))
-          })
+
+            if (!Array.isArray(db.tasks)) {
+              return sendError(res, 500, 'Geçersiz TASKS.json formatı')
+            }
+
+            const nextId = 'T-' + String(db.tasks.length + 1).padStart(3, '0')
+            const task = {
+              id: nextId,
+              title: newTask.title.trim(),
+              description: (newTask.description || '').toString().slice(0, 500),
+              status: ['pending', 'in_progress', 'done'].includes(newTask.status) ? newTask.status : 'pending',
+              priority: ['low', 'medium', 'high'].includes(newTask.priority) ? newTask.priority : 'medium',
+              assignee: (newTask.assignee || 'Alfred').toString().slice(0, 50),
+              tags: Array.isArray(newTask.tags) ? newTask.tags.slice(0, 10) : [],
+              due: (newTask.due || '').toString().slice(0, 20),
+              created_at: new Date().toISOString(),
+            }
+
+            db.tasks.push(task)
+            db.updated_at = new Date().toISOString()
+            addNotification('task_created', `${task.id} Oluşturuldu`, task.title, task.id)
+
+            fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
+              if (err2) {
+                return sendError(res, 500, 'Görev dosyasına yazılamadı', { code: err2.code })
+              }
+
+              commitTasksFile(task.id, task.title, task.status)
+              res.writeHead(201, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify(task))
+            })
+          } catch (parseErr) {
+            sendError(res, 500, 'TASKS.json işleme hatası', { details: parseErr.message })
+          }
         })
-      } catch {
-        res.writeHead(400, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ error: 'Geçersiz JSON' }))
+      } catch (jsonErr) {
+        sendError(res, 400, 'Geçersiz JSON formatı', { details: jsonErr.message })
       }
     })
     return
