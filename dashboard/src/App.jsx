@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import ErrorBoundary from './components/ErrorBoundary'
+import { ToastProvider } from './components/ToastContainer'
 import Sidebar from './components/Sidebar'
 import Overview from './components/Overview'
 import AgentStatus from './components/AgentStatus'
@@ -28,11 +30,15 @@ export default function App() {
   const View = VIEWS[activeView] ?? Overview
 
   return (
-    <div className="flex h-screen bg-ax-bg overflow-hidden">
-      <Sidebar activeView={activeView} onNavigate={setActiveView} />
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
-        <View />
-      </main>
-    </div>
+    <ErrorBoundary>
+      <ToastProvider>
+        <div className="flex h-screen bg-ax-bg overflow-hidden">
+          <Sidebar activeView={activeView} onNavigate={setActiveView} />
+          <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+            <View />
+          </main>
+        </div>
+      </ToastProvider>
+    </ErrorBoundary>
   )
 }

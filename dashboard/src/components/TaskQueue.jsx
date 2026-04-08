@@ -21,6 +21,8 @@ import {
 } from 'lucide-react'
 import { getTasks, addTask, updateTask } from '../services/haService'
 import TaskDetailModal from './TaskDetailModal'
+import { useToast } from './ToastContainer'
+import TaskSkeleton from './TaskSkeleton'
 
 const STATUS_MAP = {
   in_progress: 'in_progress',
@@ -94,6 +96,7 @@ const STATUS_FLOW = {
 
 function TaskRow({ task, onStatusChange, onDragStart, dragging, onOpen }) {
   const [updating, setUpdating] = useState(false)
+  const { addToast } = useToast()
   const status   = STATUS_CONFIG[task.status] ?? STATUS_CONFIG.pending
   const priority = PRIORITY_CONFIG[task.priority] ?? PRIORITY_CONFIG.low
   const StatusIcon = status.icon
@@ -105,9 +108,10 @@ function TaskRow({ task, onStatusChange, onDragStart, dragging, onOpen }) {
     setUpdating(true)
     try {
       await updateTask(task.id, { status: flow.next })
+      addToast(`Görev '${flow.label}' durumuna güncellendi`, 'success')
       onStatusChange()
-    } catch {
-      // silently fail
+    } catch (err) {
+      addToast(`Görev güncellenemedi: ${err.message}`, 'error')
     }
     setUpdating(false)
   }
@@ -232,6 +236,7 @@ function AddTaskForm({ onAdded }) {
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState('medium')
   const [saving, setSaving] = useState(false)
+  const { addToast } = useToast()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -245,13 +250,14 @@ function AddTaskForm({ onAdded }) {
         status: 'pending',
         tags: [],
       })
+      addToast(`'${title.trim()}' görevi başarıyla oluşturuldu`, 'success')
       setTitle('')
       setDescription('')
       setPriority('medium')
       setOpen(false)
       onAdded()
-    } catch {
-      // silently fail
+    } catch (err) {
+      addToast(`Görev oluşturulamadı: ${err.message}`, 'error')
     }
     setSaving(false)
   }
@@ -427,6 +433,7 @@ function FilterPanel({ filters, onFilterChange, allTags, allAssignees }) {
 }
 
 export default function TaskQueue() {
+  const { addToast } = useToast()
   const [tasks, setTasks]     = useState([])
   const [loading, setLoading] = useState(true)
   const [dragging, setDragging] = useState(null)
@@ -547,7 +554,10 @@ export default function TaskQueue() {
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t))
     try {
       await updateTask(taskId, { status: newStatus })
-    } catch {
+      const statusLabel = STATUS_CONFIG[newStatus]?.label || newStatus
+      addToast(`'${task.title}' ${statusLabel} durumuna taşındı`, 'success')
+    } catch (err) {
+      addToast(`Görev taşınamadı: ${err.message}`, 'error')
       loadTasks() // rollback
     }
   }
@@ -685,32 +695,36 @@ export default function TaskQueue() {
         <>
           <AddTaskForm onAdded={loadTasks} />
 
-          {COLUMNS.map(col => (
-            <DropZone
-              key={col.status}
-              status={col.status}
-              label={col.label}
-              icon={col.icon}
-              iconClass={col.iconClass}
-              badgeClass={col.badgeClass}
-              count={col.items.length}
-              onDrop={handleDrop}
-              dragOver={dragOver}
-              onDragOver={setDragOver}
-              onDragLeave={() => setDragOver(null)}
-            >
-              {col.items.map(t => (
-                <TaskRow
-                  key={t.id}
-                  task={t}
-                  onStatusChange={loadTasks}
-                  onDragStart={setDragging}
-                  dragging={dragging}
-                  onOpen={setSelectedTask}
-                />
-              ))}
-            </DropZone>
-          ))}
+          {loading ? (
+            <TaskSkeleton />
+          ) : (
+            COLUMNS.map(col => (
+              <DropZone
+                key={col.status}
+                status={col.status}
+                label={col.label}
+                icon={col.icon}
+                iconClass={col.iconClass}
+                badgeClass={col.badgeClass}
+                count={col.items.length}
+                onDrop={handleDrop}
+                dragOver={dragOver}
+                onDragOver={setDragOver}
+                onDragLeave={() => setDragOver(null)}
+              >
+                {col.items.map(t => (
+                  <TaskRow
+                    key={t.id}
+                    task={t}
+                    onStatusChange={loadTasks}
+                    onDragStart={setDragging}
+                    dragging={dragging}
+                    onOpen={setSelectedTask}
+                  />
+                ))}
+              </DropZone>
+            ))
+          )}
         </>
       )}
 

@@ -50,7 +50,7 @@ if [ "$FREE_MB" -lt 400 ]; then
   exit 0
 fi
 
-# Find the single highest-priority in_progress task
+# Find the single highest-priority in_progress task (with heavy tag detection)
 TASK_INFO=$(python3 -c "
 import json
 PRIORITY_ORDER = {'high': 0, 'medium': 1, 'low': 2}
@@ -66,7 +66,8 @@ if not tasks:
 tasks.sort(key=lambda t: (PRIORITY_ORDER.get(t.get('priority','medium'), 1), t.get('created_at','')))
 
 t = tasks[0]
-print(f\"{t['id']}|{t['title']}|{t.get('description','')}\")
+is_heavy = 'heavy' in t.get('tags', [])
+print(f\"{t['id']}|{t['title']}|{t.get('description','')}|{'heavy' if is_heavy else 'light'}\")
 " 2>/dev/null)
 
 if [ -z "$TASK_INFO" ]; then
@@ -77,8 +78,9 @@ fi
 TASK_ID=$(echo "$TASK_INFO" | cut -d'|' -f1)
 TASK_TITLE=$(echo "$TASK_INFO" | cut -d'|' -f2)
 TASK_DESC=$(echo "$TASK_INFO" | cut -d'|' -f3)
+TASK_WEIGHT=$(echo "$TASK_INFO" | cut -d'|' -f4)
 
-echo "Working on: $TASK_ID — $TASK_TITLE" >> "$LOG"
+echo "Working on: $TASK_ID — $TASK_TITLE [$TASK_WEIGHT]" >> "$LOG"
 echo "Description: $TASK_DESC" >> "$LOG"
 echo "" >> "$LOG"
 
@@ -106,9 +108,27 @@ Workspace: $WORKSPACE
 Kural: Görevi tamamla, TASKS.json status=done yap, gereksiz açıklama yapma."
 
 cd "$WORKSPACE"
-# Run with 5 minute timeout to prevent SIGTERM + memory exhaustion
-timeout 300 claude --dangerously-skip-permissions --model "$MODEL" --print "$PROMPT" >> "$LOG" 2>&1
-EXIT_CODE=$?
+
+# Route heavy tasks to Kaizen (remote worker)
+if [ "$TASK_WEIGHT" = "heavy" ]; then
+  echo ">>> Routing to Kaizen (heavy task)" >> "$LOG"
+  bash "$WORKSPACE/cron/kaizen-worker.sh" "$TASK_ID" "$TASK_TITLE" "$TASK_DESC" "$MODEL" "$LOG"
+  EXIT_CODE=$?
+  if [ $EXIT_CODE -ne 0 ] && [ $EXIT_CODE -ne 124 ]; then
+    echo "Kaizen failed (exit $EXIT_CODE), falling back to local execution..." >> "$LOG"
+    # Fall through to local execution below
+  else
+    # Kaizen handled it (success or timeout) — skip local execution
+    SKIP_LOCAL=1
+  fi
+fi
+
+# Local execution (default, or fallback from failed Kaizen dispatch)
+if [ -z "$SKIP_LOCAL" ]; then
+  # Run with 5 minute timeout to prevent SIGTERM + memory exhaustion
+  timeout 300 claude --dangerously-skip-permissions --model "$MODEL" --print "$PROMPT" >> "$LOG" 2>&1
+  EXIT_CODE=$?
+fi
 
 echo "" >> "$LOG"
 if [ $EXIT_CODE -eq 124 ]; then

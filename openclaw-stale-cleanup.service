@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenClaw Stale Process Cleanup
+After=network.target
+
+[Service]
+Type=oneshot
+User=sefa
+ExecStart=/home/sefa/.openclaw/workspace/cron/cleanup-orphans.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

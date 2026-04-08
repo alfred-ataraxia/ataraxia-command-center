@@ -88,29 +88,29 @@ export default function HomeAssistantView() {
           )}
         </div>
 
-        {device.attributes && (
+        {(device.brightness !== undefined || device.temperature !== undefined || device.humidity !== undefined || device.value !== undefined) && (
           <div className="space-y-1">
             {device.brightness !== undefined && (
               <div className="flex items-center justify-between text-xs">
-                <span className="text-ax-dim">Brightness</span>
+                <span className="text-ax-dim">Parlaklık</span>
                 <span className="text-ax-text font-medium">{device.brightness}%</span>
               </div>
             )}
             {device.temperature !== undefined && (
               <div className="flex items-center justify-between text-xs">
-                <span className="text-ax-dim">Temperature</span>
+                <span className="text-ax-dim">Sıcaklık</span>
                 <span className="text-ax-text font-medium">{device.temperature}°C</span>
               </div>
             )}
             {device.humidity !== undefined && (
               <div className="flex items-center justify-between text-xs">
-                <span className="text-ax-dim">Humidity</span>
+                <span className="text-ax-dim">Nem</span>
                 <span className="text-ax-text font-medium">{device.humidity}%</span>
               </div>
             )}
             {device.value !== undefined && (
               <div className="flex items-center justify-between text-xs">
-                <span className="text-ax-dim">Value</span>
+                <span className="text-ax-dim">Değer</span>
                 <span className="text-ax-text font-medium">{device.value} {device.unit || ''}</span>
               </div>
             )}

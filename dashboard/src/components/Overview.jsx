@@ -79,10 +79,10 @@ const RESOURCE_ICONS = {
   'Disk':    HardDrive,
 }
 
-const ACTIVE_AGENTS = [
-  { name: 'Alfred',   role: 'Orkestratör',  status: 'active',  model: 'claude-sonnet-4-6', tasks: 3 },
-  { name: 'Planner',  role: 'Stratejist',   status: 'idle',    model: 'claude-opus-4-6',   tasks: 0 },
-  { name: 'Monitor',  role: 'Gözcü',        status: 'active',  model: 'claude-haiku-4-5',  tasks: 1 },
+// Agents data is now fetched dynamically from /api/process
+// Fallback when data is unavailable
+const DEFAULT_AGENTS = [
+  { name: 'Alfred',   role: 'Orkestratör',  status: 'idle',  model: 'claude-sonnet-4-6' },
 ]
 
 function formatTimeAgo(dateStr) {
@@ -316,10 +316,10 @@ export default function Overview() {
           <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
             <div className="flex items-center gap-2 mb-4">
               <Bot size={14} className="text-ax-purple" />
-              <h2 className="text-ax-heading text-sm font-semibold">Ajan Kadrosu</h2>
+              <h2 className="text-ax-heading text-sm font-semibold">Sistem</h2>
             </div>
             <div className="space-y-3">
-              {ACTIVE_AGENTS.map(agent => (
+              {DEFAULT_AGENTS.map(agent => (
                 <div key={agent.name} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-ax-muted border border-ax-border flex items-center justify-center">

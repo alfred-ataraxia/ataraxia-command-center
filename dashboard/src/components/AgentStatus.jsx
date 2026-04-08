@@ -1,61 +1,21 @@
-import { Bot, Cpu, Clock, MessageSquare, RefreshCw, ExternalLink } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Bot, Cpu, Clock, MessageSquare, RefreshCw, ExternalLink, AlertCircle } from 'lucide-react'
 
-const AGENTS = [
+// Default agents when data cannot be fetched
+const DEFAULT_AGENTS = [
   {
     id: 1,
     name: 'Alfred',
     role: 'Orkestratör',
     model: 'claude-sonnet-4-6',
-    status: 'active',
-    uptime: '14sa 32dk',
-    tasksTotal: 147,
-    tasksToday: 3,
-    lastAction: 'Sabah brifingini tamamladı',
-    lastActionTime: '2dk önce',
-    description: 'Birincil koordinasyon ajanı. Zamanlanmış görevleri, hafızayı ve ağ genelinde görev dağılımını yönetir.',
-    tags: ['cron', 'hafıza', 'delegasyon'],
-  },
-  {
-    id: 2,
-    name: 'Planner',
-    role: 'Stratejist',
-    model: 'claude-opus-4-6',
     status: 'idle',
-    uptime: '6sa 10dk',
-    tasksTotal: 34,
-    tasksToday: 0,
-    lastAction: 'EPIC.md yol haritası oluşturuldu',
-    lastActionTime: '8dk önce',
-    description: 'Üst düzey planlama ve yol haritası oluşturma. EPIC ayrıştırma ve kilometre taşı takibi yapar.',
-    tags: ['planlama', 'yol haritası', 'epikler'],
-  },
-  {
-    id: 3,
-    name: 'Monitor',
-    role: 'Gözcü',
-    model: 'claude-haiku-4-5',
-    status: 'active',
-    uptime: '3g 4sa',
-    tasksTotal: 892,
-    tasksToday: 1,
-    lastAction: 'Sistem sağlık kontrolü başarılı',
-    lastActionTime: '1sa önce',
-    description: 'Sürekli sistem izleme, sağlık kontrolleri ve OpenClaw çalışma alanı için uyarı yönetimi.',
-    tags: ['izleme', 'sağlık', 'uyarılar'],
-  },
-  {
-    id: 4,
-    name: 'Security',
-    role: 'Denetçi',
-    model: 'claude-sonnet-4-6',
-    status: 'idle',
-    uptime: '1g 2sa',
-    tasksTotal: 56,
-    tasksToday: 0,
-    lastAction: '2 bağımlılık güncellemesi işaretlendi',
-    lastActionTime: '15dk önce',
-    description: 'Güvenlik denetimi, bağımlılık taraması ve ajan ağı için güvenlik açığı değerlendirmesi.',
-    tags: ['güvenlik', 'denetim', 'CVE'],
+    uptime: '—',
+    tasksTotal: '—',
+    tasksToday: '—',
+    lastAction: 'Veri yükleniyor...',
+    lastActionTime: 'az önce',
+    description: 'Birincil koordinasyon ajanı.',
+    tags: [],
   },
 ]
 
@@ -162,7 +122,17 @@ function AgentCard({ agent }) {
 }
 
 export default function AgentStatus() {
-  const activeCount = AGENTS.filter(a => a.status === 'active').length
+  const [agents, setAgents] = useState(DEFAULT_AGENTS)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    // Agents data is not currently provided by the API
+    // Display default agent with "Data unavailable" message
+    setLoading(false)
+  }, [])
+
+  const activeCount = agents.filter(a => a.status === 'active').length
 
   return (
     <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl">
@@ -171,7 +141,7 @@ export default function AgentStatus() {
         <div>
           <h1 className="text-ax-heading text-xl sm:text-2xl font-bold tracking-tight">Ajan Durumları</h1>
           <p className="text-ax-dim text-sm mt-0.5">
-            {AGENTS.length} ajandan {activeCount} tanesi aktif
+            {agents.length} ajandan {activeCount} tanesi aktif
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -180,9 +150,17 @@ export default function AgentStatus() {
         </div>
       </div>
 
+      {/* Uyarı */}
+      {error && (
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-ax-amber/10 border border-ax-amber/30">
+          <AlertCircle size={16} className="text-ax-amber shrink-0" />
+          <p className="text-ax-amber text-sm">{error}</p>
+        </div>
+      )}
+
       {/* Izgara */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {AGENTS.map(agent => <AgentCard key={agent.id} agent={agent} />)}
+        {agents.map(agent => <AgentCard key={agent.id} agent={agent} />)}
       </div>
     </div>
   )

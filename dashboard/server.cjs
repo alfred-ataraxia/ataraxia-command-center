@@ -10,6 +10,7 @@ const fs = require('fs')
 const path = require('path')
 const os = require('os')
 const { execSync, spawn } = require('child_process')
+const logger = require('./lib/logger.cjs')
 
 // --- Load .env file ---
 function loadEnv() {
@@ -43,6 +44,21 @@ function loadEnv() {
 }
 loadEnv()
 
+// --- Load centralized configuration ---
+const config = require('./config.cjs')
+
+// --- Initialize logs directory ---
+const logsDir = path.join(__dirname, 'logs')
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true })
+}
+
+// Log initialization
+logger.info('Server starting', {
+  nodeEnv: config.nodeEnv,
+  port: config.PORT
+})
+
 // --- Startup validation ---
 function validateStartup() {
   const issues = []
@@ -50,37 +66,36 @@ function validateStartup() {
   const info = []
 
   // Check required directories
-  if (!fs.existsSync(DIST)) {
+  if (!fs.existsSync(config.DIST_PATH)) {
     issues.push('dist/ directory not found')
   } else {
     info.push('dist/ directory ready')
   }
 
   // Check TASKS.json
-  const tasksPath = path.join(__dirname, '..', 'TASKS.json')
-  if (!fs.existsSync(tasksPath)) {
+  if (!fs.existsSync(config.TASKS_JSON_PATH)) {
     issues.push('TASKS.json not found')
   } else {
     info.push('TASKS.json ready')
   }
 
   // Check HA connection if configured
-  if (process.env.HA_URL) {
-    info.push(`Home Assistant configured: ${process.env.HA_URL}`)
+  if (config.HA_URL) {
+    info.push(`Home Assistant configured: ${config.HA_URL}`)
   } else {
     warnings.push('HA_URL not configured (optional)')
   }
 
   // Check Telegram if configured
-  if (process.env.TELEGRAM_CHAT_ID) {
+  if (config.TELEGRAM_CHAT_ID) {
     info.push('Telegram notifications enabled')
   } else {
-    warnings.push('TELEGRAM_CHAT_ID not configured (optional)')
+    warnings.push('Telegram notifications not configured (optional)')
   }
 
   // Environment mode
-  const nodeEnv = process.env.NODE_ENV || 'development'
-  info.push(`Environment: ${nodeEnv}`)
+  info.push(`Environment: ${config.nodeEnv}`)
+  info.push(`Server port: ${config.PORT}`)
 
   // Report startup status
   console.log('\n╔════════════════════════════════════════╗')
@@ -107,8 +122,8 @@ function validateStartup() {
   return true
 }
 
-const PORT = 4173
-const DIST = path.join(__dirname, 'dist')
+const PORT = config.PORT
+const DIST = config.DIST_PATH
 
 // --- Error Response Handler ---
 function sendError(res, statusCode, errorMessage, details = {}) {
@@ -191,8 +206,108 @@ class CircuitBreaker {
 }
 
 const circuitBreakers = {
-  stats: new CircuitBreaker('stats-api', 3, 60000),
-  ha: new CircuitBreaker('ha-api', 3, 60000),
+  stats: new CircuitBreaker('stats-api', config.CIRCUIT_BREAKER_FAILURE_THRESHOLD, config.CIRCUIT_BREAKER_RESET_TIMEOUT),
+  ha: new CircuitBreaker('ha-api', config.CIRCUIT_BREAKER_FAILURE_THRESHOLD, config.CIRCUIT_BREAKER_RESET_TIMEOUT),
+}
+
+// --- Rate Limiter (10 req/min per IP) ---
+class RateLimiter {
+  constructor(maxRequests = 10, windowMs = 60000) {
+    this.maxRequests = maxRequests
+    this.windowMs = windowMs
+    this.requests = new Map()
+  }
+
+  isAllowed(ip) {
+    const now = Date.now()
+    if (!this.requests.has(ip)) {
+      this.requests.set(ip, [])
+    }
+
+    const ips = this.requests.get(ip)
+    const recentRequests = ips.filter(time => now - time < this.windowMs)
+
+    if (recentRequests.length >= this.maxRequests) {
+      return false
+    }
+
+    recentRequests.push(now)
+    this.requests.set(ip, recentRequests)
+    return true
+  }
+
+  getStatus(ip) {
+    const now = Date.now()
+    const ips = this.requests.get(ip) || []
+    const recentRequests = ips.filter(time => now - time < this.windowMs)
+    return {
+      remaining: Math.max(0, this.maxRequests - recentRequests.length),
+      resetTime: recentRequests.length > 0 ? Math.max(...recentRequests) + this.windowMs : now
+    }
+  }
+}
+
+const rateLimiter = new RateLimiter(config.RATE_LIMIT_REQUESTS, config.RATE_LIMIT_WINDOW)
+
+// --- Request Logger ---
+const requestLogs = []
+
+function logRequest(ip, method, url, statusCode, responseTime) {
+  const log = {
+    timestamp: new Date().toISOString(),
+    ip,
+    method,
+    url,
+    statusCode,
+    responseTime: `${responseTime.toFixed(2)}ms`
+  }
+  requestLogs.push(log)
+  if (requestLogs.length > config.MAX_REQUEST_LOGS) {
+    requestLogs.shift()
+  }
+
+  // Log to Winston with appropriate level
+  const logLevel = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'info'
+  logger.log(logLevel, 'HTTP Request', {
+    method,
+    path: url,
+    status: statusCode,
+    duration: `${responseTime.toFixed(2)}ms`,
+    ip
+  })
+}
+
+function getRequestLogs(limit = 100) {
+  return requestLogs.slice(-limit)
+}
+
+// --- Slow Query Detection ---
+const slowQueries = []
+
+function logSlowQuery(url, method, responseTime) {
+  if (responseTime > config.SLOW_QUERY_THRESHOLD) {
+    slowQueries.push({
+      timestamp: new Date().toISOString(),
+      url,
+      method,
+      responseTime: `${responseTime.toFixed(2)}ms`
+    })
+    if (slowQueries.length > config.MAX_SLOW_QUERIES) {
+      slowQueries.shift()
+    }
+
+    // Log slow query to Winston
+    logger.warn('Slow Query Detected', {
+      path: url,
+      method,
+      duration: `${responseTime.toFixed(2)}ms`,
+      threshold: `${config.SLOW_QUERY_THRESHOLD}ms`
+    })
+  }
+}
+
+function getSlowQueries(limit = 50) {
+  return slowQueries.slice(-limit)
 }
 
 // --- MIME types ---
@@ -288,16 +403,13 @@ function getStats() {
 }
 
 // --- Stats history (last 24h, sampled every 5 min = max 288 entries) ---
-const HISTORY_MAX = 288
 const statsHistory = []
 
 // --- Health / uptime tracking ---
 const SERVER_START = Date.now()
 let healthConsecutiveFails = 0
-const HEALTH_FAIL_THRESHOLD = 3
 
 // --- Notifications history (in-memory, max 50) ---
-const NOTIFICATIONS_MAX = 50
 const notifications = []
 
 function addNotification(type, title, message, taskId = null) {
@@ -310,7 +422,7 @@ function addNotification(type, title, message, taskId = null) {
     timestamp: new Date().toISOString(),
   }
   notifications.unshift(notification) // newest first
-  if (notifications.length > NOTIFICATIONS_MAX) {
+  if (notifications.length > config.NOTIFICATIONS_MAX) {
     notifications.pop()
   }
 }
@@ -473,7 +585,7 @@ async function getHADevices() {
 function recordStats() {
   const s = getStats()
   statsHistory.push({ t: s.timestamp, cpu: s.cpuPercent, mem: s.memPercent, disk: s.diskPercent })
-  if (statsHistory.length > HISTORY_MAX) statsHistory.shift()
+  if (statsHistory.length > config.HISTORY_MAX_RECORDS) statsHistory.shift()
 }
 
 // Record immediately on startup, then every 5 minutes
@@ -500,12 +612,12 @@ function runHealthCheck() {
 
 function handleHealthFail(reason) {
   healthConsecutiveFails++
-  console.warn(`[health] Check failed (${healthConsecutiveFails}/${HEALTH_FAIL_THRESHOLD}): ${reason}`)
-  if (healthConsecutiveFails >= HEALTH_FAIL_THRESHOLD) {
+  console.warn(`[health] Check failed (${healthConsecutiveFails}/${config.HEALTH_CHECK_FAIL_THRESHOLD}): ${reason}`)
+  if (healthConsecutiveFails >= config.HEALTH_CHECK_FAIL_THRESHOLD) {
     addNotification(
       'cron_alert',
       'Dashboard Erişim Uyarısı',
-      `${HEALTH_FAIL_THRESHOLD} ardışık health check başarısız: ${reason}`
+      `${config.HEALTH_CHECK_FAIL_THRESHOLD} ardışık health check başarısız: ${reason}`
     )
     sendTelegramNotification('HEALTH', 'Dashboard Health Alert', new Date().toISOString())
     healthConsecutiveFails = 0 // reset to avoid spam
@@ -534,8 +646,8 @@ function serveFile(filePath, res) {
   })
 }
 
-// --- Server ---
-const server = http.createServer((req, res) => {
+// --- Request Handler ---
+function handleRequest(req, res) {
   // No-cache for HTML files
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   const url = req.url.split('?')[0]
@@ -930,6 +1042,31 @@ const server = http.createServer((req, res) => {
     return
   }
 
+  // API: request logs
+  if (url === '/api/request-logs') {
+    const limit = parseInt(new URLSearchParams(req.url.split('?')[1] || '').get('limit') || '100', 10)
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({
+      logs: getRequestLogs(limit),
+      total: requestLogs.length,
+      timestamp: new Date().toISOString()
+    }))
+    return
+  }
+
+  // API: slow queries
+  if (url === '/api/slow-queries') {
+    const limit = parseInt(new URLSearchParams(req.url.split('?')[1] || '').get('limit') || '50', 10)
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({
+      slowQueries: getSlowQueries(limit),
+      threshold: `${SLOW_QUERY_THRESHOLD}ms`,
+      total: slowQueries.length,
+      timestamp: new Date().toISOString()
+    }))
+    return
+  }
+
   // API: tasks
   if (url === '/api/tasks' && req.method === 'GET') {
     fs.readFile(tasksFile, 'utf8', (err, data) => {
@@ -1102,6 +1239,97 @@ const server = http.createServer((req, res) => {
 
               commitTasksFile(task.id, task.title, task.status)
               res.writeHead(201, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify(task))
+            })
+          } catch (parseErr) {
+            sendError(res, 500, 'TASKS.json işleme hatası', { details: parseErr.message })
+          }
+        })
+      } catch (jsonErr) {
+        sendError(res, 400, 'Geçersiz JSON formatı', { details: jsonErr.message })
+      }
+    })
+    return
+  }
+
+  // API: update task (PUT /api/tasks/T-001)
+  const updateMatch = url.match(/^\/api\/tasks\/(T-\d+)$/)
+  if (updateMatch && req.method === 'PUT') {
+    const taskId = updateMatch[1]
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('error', () => {
+      sendError(res, 400, 'Request verileri alınamadı')
+    })
+    req.on('end', () => {
+      try {
+        if (!body) {
+          return sendError(res, 400, 'Request body boş')
+        }
+
+        const updates = JSON.parse(body)
+
+        fs.readFile(tasksFile, 'utf8', (err, raw) => {
+          try {
+            if (err) {
+              return sendError(res, 500, 'TASKS.json okunamadı', { code: err.code })
+            }
+
+            const db = JSON.parse(raw)
+            const taskIdx = db.tasks.findIndex(t => t.id === taskId)
+            if (taskIdx === -1) {
+              return sendError(res, 404, `Görev ${taskId} bulunamadı`)
+            }
+
+            const task = db.tasks[taskIdx]
+            const oldStatus = task.status
+
+            // Validate and apply updates
+            if (updates.status && ['pending', 'in_progress', 'done'].includes(updates.status)) {
+              task.status = updates.status
+            }
+            if (updates.priority && ['low', 'medium', 'high'].includes(updates.priority)) {
+              task.priority = updates.priority
+            }
+            if (updates.title && typeof updates.title === 'string' && updates.title.trim()) {
+              task.title = updates.title.trim()
+            }
+            if (updates.description !== undefined) {
+              task.description = (updates.description || '').toString().slice(0, 500)
+            }
+            if (updates.assignee !== undefined) {
+              task.assignee = (updates.assignee || 'Alfred').toString().slice(0, 50)
+            }
+            if (updates.due !== undefined) {
+              task.due = (updates.due || '').toString().slice(0, 20)
+            }
+            if (Array.isArray(updates.tags)) {
+              task.tags = updates.tags.slice(0, 10)
+            }
+
+            // Track status changes
+            if (oldStatus !== task.status) {
+              if (!task.status_history) task.status_history = []
+              task.status_history.push({
+                from: oldStatus,
+                to: task.status,
+                at: new Date().toISOString()
+              })
+            }
+
+            db.updated_at = new Date().toISOString()
+
+            fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
+              if (err2) {
+                return sendError(res, 500, 'Görev dosyasına yazılamadı', { code: err2.code })
+              }
+
+              // Commit to git
+              if (oldStatus !== task.status) {
+                commitTasksFile(task.id, task.title, task.status)
+              }
+
+              res.writeHead(200, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify(task))
             })
           } catch (parseErr) {
@@ -1316,6 +1544,48 @@ const server = http.createServer((req, res) => {
   // Static files (optimized serving)
   const filePath = path.join(DIST, url === '/' ? 'index.html' : url)
   serveFile(filePath, res)
+}
+
+// --- Server with Error Handling, Rate Limiting, and Logging ---
+const server = http.createServer((req, res) => {
+  const startTime = Date.now()
+  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || 'unknown'
+
+  // Check rate limit
+  if (!rateLimiter.isAllowed(ip)) {
+    const status = rateLimiter.getStatus(ip)
+    const responseTime = Date.now() - startTime
+    logRequest(ip, req.method, req.url, 429, responseTime)
+    res.writeHead(429, {
+      'Content-Type': 'application/json',
+      'X-RateLimit-Limit': '10',
+      'X-RateLimit-Remaining': '0',
+      'X-RateLimit-Reset': new Date(status.resetTime).toISOString()
+    })
+    res.end(JSON.stringify({
+      error: 'Çok fazla istek - 10 req/min sınırı aşıldı',
+      status: 429,
+      retryAfter: Math.ceil((status.resetTime - Date.now()) / 1000)
+    }))
+    return
+  }
+
+  try {
+    // Wrap response.end to log timing and slow queries
+    const originalEnd = res.end
+    res.end = function(...args) {
+      const responseTime = Date.now() - startTime
+      logRequest(ip, req.method, req.url, res.statusCode || 200, responseTime)
+      logSlowQuery(req.url, req.method, responseTime)
+      originalEnd.apply(res, args)
+    }
+
+    handleRequest(req, res)
+  } catch (err) {
+    const responseTime = Date.now() - startTime
+    logRequest(ip, req.method, req.url, 500, responseTime)
+    sendError(res, 500, 'Sunucu hatası', { details: err.message })
+  }
 })
 
 server.listen(PORT, '0.0.0.0', () => {

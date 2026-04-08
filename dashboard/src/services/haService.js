@@ -78,11 +78,11 @@ export async function addTask(task) {
 }
 
 /**
- * Update a task's status (or other fields) via PATCH API.
+ * Update a task's status (or other fields) via PUT API.
  */
 export async function updateTask(taskId, updates) {
   const res = await fetch(`/api/tasks/${taskId}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(updates),
   })

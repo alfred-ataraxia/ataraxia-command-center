@@ -788,7 +788,7 @@
       "id": "T-043",
       "title": "Stale process cleanup otomasyonu",
       "description": "Her 6 saatte bir hanging claude/openclaw process'lerini temizleyen cron job. Systemd service olarak yapılandırılabilir. Şu anda manuel pkill çalıştırılıyor.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -803,6 +803,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T21:54:47.306Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-08T01:35:00.000Z"
         }
       ]
     },
@@ -810,7 +815,7 @@
       "id": "T-044",
       "title": "API error handling ve validation test",
       "description": "Tüm API endpoint'leri (stats, tasks, ha, telegram) için error handling test edilmeli. Edge case'ler için properly error message return edilmesi gerekiyor. İstisna durumları handle edilmeli.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -832,7 +837,7 @@
       "id": "T-045",
       "title": "Dashboard availability ve uptime monitoring",
       "description": "Dashboard availability'i izleyen healthcheck endpoint. Cron job ile 5 dakikada bir kontrol etsin. Eğer 3 kere üst üste fail olursa alert göndersin. /api/health endpoint'i eklenecek.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -924,7 +929,7 @@
       "id": "T-049",
       "title": "Unit tests for API endpoints",
       "description": "Jest/Mocha ile API test suite. /api/stats, /api/tasks, /api/logs, /api/ha testleri. Happy path + error cases.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -939,6 +944,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T21:54:49.995Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-08T00:00:00.000Z"
         }
       ]
     },
@@ -989,7 +999,7 @@
       "id": "T-052",
       "title": "Rate limiting & request logging",
       "description": "Express rate limiter (10 req/min per IP). Request logging middleware. Response time logging. Slow query detection.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1011,7 +1021,7 @@
       "id": "T-053",
       "title": "Config file centralization",
       "description": "config.js dosyası. Tüm hard-coded values (ports, timeouts, limits). Environment-based config (dev/prod). .env örneği.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1025,6 +1035,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T20:44:07.681Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-08T04:01:00.000Z"
         }
       ]
     },
@@ -1032,7 +1047,7 @@
       "id": "T-054",
       "title": "Request/response logging middleware",
       "description": "Winston/Pino logger setup. HTTP request/response logging. JSON format. Log rotation. Dev vs prod loglevel.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1046,6 +1061,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T20:44:08.976Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-08T05:13:00.000Z"
         }
       ]
     },
@@ -1125,7 +1145,7 @@
       "id": "T-060",
       "title": "UI improvements - loading states & notifications",
       "description": "Loading spinners tüm async operations. Toast notifications (success/error/warning). Skeleton screens. Optimistic updates.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1140,6 +1160,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T22:04:02.101Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-08T00:00:00.000Z"
         }
       ]
     },
@@ -1329,7 +1354,7 @@
       "id": "T-074",
       "title": "Worker-Node Migration: Kaizen Integration",
       "description": "Ağır Claude Code işlemlerini (kod refaktörü, büyük veri analizi) Raspberry Pi'den ana bilgisayara (Kaizen) yönlendirecek Remote Worker mimarisi tasarımı. SSH tüneli üzerinden job dispatch, sonuçları Pi'ye geri aktar. task-worker.sh'e 'heavy' tag'li görevler için Kaizen routing ekle.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1345,14 +1370,20 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T21:47:55.609Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-08T12:00:00.000Z"
         }
-      ]
+      ],
+      "completed_at": "2026-04-08T12:00:00.000Z"
     },
     {
       "id": "T-073",
       "title": "KULLANILABİLİR GELİŞTİRMELER",
       "description": "DASHBOARDDAKİ ÇOĞU VERİ ESKİ HATALI HEPSİ GÖZDEN GEÇİRİLMELİ",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [],
@@ -1363,6 +1394,11 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-07T22:01:14.998Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-08T02:01:53.602362Z"
         }
       ]
     }
