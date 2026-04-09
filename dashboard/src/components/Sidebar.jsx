@@ -24,7 +24,7 @@ const NAV_ITEMS = [
   { id: 'ha',        label: 'Otomasyon',    icon: Lightbulb },
   { id: 'memory',    label: 'Hafıza',       icon: BrainCircuit },
   { id: 'logs',      label: 'Kayıtlar',     icon: ScrollText },
-  { id: 'freeride',  label: 'FreeRide',     icon: Sparkles },
+  // { id: 'freeride',  label: 'FreeRide',     icon: Sparkles }, // openclaw-only
 ]
 
 const BOTTOM_ITEMS = [

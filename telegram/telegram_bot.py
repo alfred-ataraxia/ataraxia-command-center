@@ -109,9 +109,22 @@ def handle_command(chat_id, text):
             "`/sprint` — Sprint\n"
             "`/backlog` — Backlog\n"
             "`/shell <cmd>` — Bash\n"
+            "`/backup` — GitHub'a yedekle\n"
             "`/clear` — Konuşma geçmişini sıfırla\n\n"
             "Örnek: 'Docker container'ları listele' veya '/shell docker ps'"
         )
+
+    elif cmd == "/backup":
+        send_message(chat_id, "⏳ GitHub'a yedekleniyor...")
+        try:
+            result = subprocess.run(
+                ["bash", "/home/sefa/alfred-hub/alfred-backup.sh"],
+                capture_output=True, text=True, timeout=60
+            )
+            output = (result.stdout + result.stderr)[-1500:]
+            send_message(chat_id, f"```\n{output}\n```")
+        except Exception as e:
+            send_message(chat_id, f"❌ Yedekleme hatası: {e}")
 
     elif cmd == "/clear":
         CONVERSATIONS.pop(chat_id, None)

@@ -666,6 +666,33 @@ function serveFile(filePath, res) {
 
 // --- Request Handler ---
 function handleRequest(req, res) {
+  // Security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+  res.setHeader('X-XSS-Protection', '1; mode=block')
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()')
+  res.setHeader('Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline'; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data:; " +
+    "connect-src 'self'; " +
+    "frame-ancestors 'none'"
+  )
+  // CORS — sadece local erişim
+  const origin = req.headers.origin || ''
+  const allowed = ['http://localhost:4173', 'http://192.168.1.91:4173', 'http://127.0.0.1:4173']
+  if (allowed.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  }
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204)
+    res.end()
+    return
+  }
   // No-cache for HTML files
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   const url = req.url.split('?')[0]

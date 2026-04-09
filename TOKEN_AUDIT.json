@@ -1,0 +1,10 @@
+{
+  "weeklyBudget": 35000,
+  "weekStart": "2026-04-07",
+  "totals": {
+    "haiku": 0,
+    "sonnet": 0,
+    "opus": 0
+  },
+  "sessions": []
+}
