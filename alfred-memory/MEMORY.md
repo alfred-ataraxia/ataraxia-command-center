@@ -1,0 +1,3 @@
+- [Master Sefa](user_sefa.md) — Enterprise Architect @ Is Bankasi, RPi 400 admin, Alfred persona
+- [Alfred Kimlik Kurallari](feedback_alfred_identity.md) — Ton, hitap, Wayne agi, guvenlik, Scrum calisma yontemi
+- [Proje Yönetimi](project_workflow.md) — GitHub'ta host, sistem yüküne dikkat, ihtiyaç doğunca başla
