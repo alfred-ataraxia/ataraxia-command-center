@@ -1429,7 +1429,7 @@
       "id": "T-084",
       "title": "Wayne Ağı Harness meta-skill tasarımı",
       "description": "Alfred'in alt-ajan ekibini (Lucius/Netrunner/Robin) koordine eden harness skill'i tasarla. N-008.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1439,6 +1439,7 @@
       ],
       "due": "2026-04-23",
       "created_at": "2026-04-09T10:00:00+03:00",
+      "updated_at": "2026-04-09T20:00:00+03:00",
       "auto": false
     },
     {
