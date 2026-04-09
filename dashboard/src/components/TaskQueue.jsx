@@ -18,6 +18,7 @@ import {
   Archive,
   Eye,
   EyeOff,
+  Zap,
 } from 'lucide-react'
 import { getTasks, addTask, updateTask } from '../services/haService'
 import TaskDetailModal from './TaskDetailModal'
@@ -85,6 +86,8 @@ function normalizeTask(t) {
     created_at: t.created_at || '',
     notes: t.notes || [],
     status_history: t.status_history || [],
+    auto: t.auto || false,
+    points: t.points || 1,
   }
 }
 
@@ -173,6 +176,12 @@ function TaskRow({ task, onStatusChange, onDragStart, dragging, onOpen }) {
         <span className={`px-2 py-0.5 rounded-full border text-[10px] font-medium ${priority.class}`}>
           {priority.label}
         </span>
+        {task.auto && (
+          <span title="Cron ile otomatik çalışır — günde 2x (09:00, 21:00)" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border bg-ax-amber/10 border-ax-amber/20 text-ax-amber text-[10px] font-medium">
+            <Zap size={10} />
+            Otomatik
+          </span>
+        )}
         <div className="flex items-center gap-1 text-ax-subtle text-[10px]">
           <Bot size={10} />
           <span>{task.agent}</span>
@@ -361,6 +370,22 @@ function FilterPanel({ filters, onFilterChange, allTags, allAssignees }) {
             </div>
           </div>
 
+          {/* Auto Filter */}
+          <div className="space-y-2">
+            <p className="text-ax-text text-xs font-semibold uppercase">Otomasyon</p>
+            <button
+              onClick={() => onFilterChange('auto', !filters.auto)}
+              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                filters.auto
+                  ? 'bg-ax-amber text-white border-ax-amber'
+                  : 'bg-ax-bg border-ax-border text-ax-text hover:bg-ax-muted'
+              }`}
+            >
+              <Zap size={12} />
+              {filters.auto ? 'Yalnızca otomatik' : 'Tüm görevler'}
+            </button>
+          </div>
+
           {/* Tag Filter */}
           {allTags.length > 0 && (
             <div className="space-y-2">
@@ -448,6 +473,7 @@ export default function TaskQueue() {
     priority: [],
     tags: [],
     assignee: [],
+    auto: false,
   })
 
   // Load filters from URL params
@@ -458,6 +484,7 @@ export default function TaskQueue() {
       priority: params.get('priority')?.split(',').filter(Boolean) || [],
       tags: params.get('tags')?.split(',').filter(Boolean) || [],
       assignee: params.get('assignee')?.split(',').filter(Boolean) || [],
+      auto: params.get('auto') === 'true',
     }
     setFilters(newFilters)
   }, [])
@@ -522,6 +549,11 @@ export default function TaskQueue() {
 
       // Assignee filter
       if (filters.assignee.length && !filters.assignee.includes(task.agent)) {
+        return false
+      }
+
+      // Auto filter
+      if (filters.auto && !task.auto) {
         return false
       }
 
