@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-09T10:17:10.817Z",
+  "updated_at": "2026-04-09T10:19:01.117Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1203,23 +1203,6 @@
       "auto": false
     },
     {
-      "id": "T-072",
-      "title": "Pure Nginx Static Serving",
-      "description": "Statik dosyaları server.cjs yerine Nginx'e devret. Nginx /data/nginx/proxy_host/4.conf içinde location / { root /home/sefa/.openclaw/workspace/dashboard/dist; } ve location /api { proxy_pass 4173; } yapılandırması. Hedef: Node.js RAM kullanımını 1.2GB altına indirmek.",
-      "status": "done",
-      "priority": "high",
-      "assignee": "Alfred",
-      "tags": [
-        "nginx",
-        "performance",
-        "memory"
-      ],
-      "due": "2026-04-09",
-      "created_at": "2026-04-07T21:00:00.000Z",
-      "completed_at": "2026-04-07T23:31:12.689414Z",
-      "auto": false
-    },
-    {
       "id": "T-074",
       "title": "Worker-Node Migration: Kaizen Integration",
       "description": "Ağır Claude Code işlemlerini (kod refaktörü, büyük veri analizi) Raspberry Pi'den ana bilgisayara (Kaizen) yönlendirecek Remote Worker mimarisi tasarımı. SSH tüneli üzerinden job dispatch, sonuçları Pi'ye geri aktar. task-worker.sh'e 'heavy' tag'li görevler için Kaizen routing ekle.",
@@ -1469,18 +1452,15 @@
       "auto": false
     },
     {
-      "id": "T-072",
-      "title": "Test: README güncelle",
-      "description": "alfred-hub ana README dosyasını mevcut yapıyı yansıtacak şekilde güncelle.",
+      "id": "T-071",
+      "title": "Dashboard son kayıtlar",
+      "description": "Son kayıtlar kısmı hatalı ya da yanlış eğer verimli olacaksa ve gerekliyse token çok yakmayacak şekilde entegre edelim",
       "status": "pending",
       "priority": "high",
       "assignee": "Alfred",
-      "tags": [
-        "docs",
-        "test"
-      ],
+      "tags": [],
       "due": "",
-      "created_at": "2026-04-09T10:17:10.817Z"
+      "created_at": "2026-04-09T10:19:01.117Z"
     }
   ]
 }
