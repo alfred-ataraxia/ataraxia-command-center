@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-09T20:50:40.563Z",
+  "updated_at": "2026-04-09T23:57:23.426404",
   "tasks": [
     {
       "id": "T-001",
@@ -1491,6 +1491,104 @@
       "tags": [],
       "due": "",
       "created_at": "2026-04-09T10:19:01.117Z"
+    },
+    {
+      "id": "T-087",
+      "title": "TaskQueue — auto:true badge ve filtresi ekle",
+      "description": "normalizeTask() fonksiyonuna auto field'ı ekle. TaskRow'a ⚡ rozet koy (ax-amber rengi, 'Otomatik' tooltip). FilterPanel'a 'Otomatik Görevler' toggle switch ekle. getFilteredTasks()'a auto filtresi entegre et.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Lucius",
+      "tags": [
+        "dashboard",
+        "ux",
+        "taskqueue",
+        "automation"
+      ],
+      "due": "2026-04-12",
+      "points": 2,
+      "auto": false
+    },
+    {
+      "id": "T-088",
+      "title": "AgentStatus — gerçek model routing'i yansıt",
+      "description": "server.cjs WAYNE_AGI array'inde model alanlarını güncelleştir. Robin için model='gemini-2.5-pro', diğerleri için routing'e göre güncelle. AgentCard'a model chip'i ekle.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Lucius",
+      "tags": [
+        "dashboard",
+        "agents",
+        "model-routing"
+      ],
+      "due": "2026-04-14",
+      "points": 2,
+      "auto": false
+    },
+    {
+      "id": "T-089",
+      "title": "Yeni View: Otomasyon Merkezi (cron + auto tasks)",
+      "description": "Sidebar'a 'Otomasyon' menü öğesi ekle. Yeni AutomationView.jsx: (1) Cron zamanlamaları tablosu, (2) auto:true görevler listesi, (3) Son task-runner log satırları, (4) Bir sonraki çalışma zamanı countdown.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Lucius",
+      "tags": [
+        "dashboard",
+        "automation",
+        "cron",
+        "new-view"
+      ],
+      "due": "2026-04-16",
+      "points": 3,
+      "auto": false
+    },
+    {
+      "id": "T-090",
+      "title": "TokenUsage widget — model listesini güncelle",
+      "description": "WEEKLY_BUDGET hardcode'u kaldır, /api/tokens'tan oku. tasks_by_model'e minimax/haiku/flash/sonnet/opus ekle. Gemini ve Minimax için renk tanımla.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Lucius",
+      "tags": [
+        "dashboard",
+        "token",
+        "widget"
+      ],
+      "due": "2026-04-18",
+      "points": 2,
+      "auto": false
+    },
+    {
+      "id": "T-091",
+      "title": "Overview — Sistem kartına aktif cron sayacı ekle",
+      "description": "Overview.jsx'e cron durumu bilgisi: bugün kaç cron çalıştı, son çalışma zamanı. /api/activity'den cron event'leri filtrele.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Lucius",
+      "tags": [
+        "dashboard",
+        "overview",
+        "cron"
+      ],
+      "due": "2026-04-20",
+      "points": 1,
+      "auto": false
+    },
+    {
+      "id": "T-092",
+      "title": "HA View — bağlantı koptuğunda graceful fallback",
+      "description": "HomeAssistantView.jsx'te error state iyileştir: HA URL ve bağlantı durumu göster, 'Yeniden Bağlan' butonu, son başarılı bağlantı zamanı. connected=false'ta son değerleri grayed-out göster.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Lucius",
+      "tags": [
+        "dashboard",
+        "ha",
+        "ux"
+      ],
+      "due": "2026-04-23",
+      "points": 1,
+      "auto": false
     }
   ]
 }
