@@ -126,10 +126,27 @@ export default function AgentStatus() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  async function fetchAgents() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/agents')
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const data = await res.json()
+      if (data.agents && data.agents.length > 0) {
+        setAgents(data.agents)
+        setError(null)
+      }
+    } catch (err) {
+      setError('Ajan verisi alınamadı: ' + err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    // Agents data is not currently provided by the API
-    // Display default agent with "Data unavailable" message
-    setLoading(false)
+    fetchAgents()
+    const interval = setInterval(fetchAgents, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   const activeCount = agents.filter(a => a.status === 'active').length

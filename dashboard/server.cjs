@@ -403,7 +403,24 @@ function getStats() {
 }
 
 // --- Stats history (last 24h, sampled every 5 min = max 288 entries) ---
-const statsHistory = []
+const STATS_HISTORY_FILE = path.join(__dirname, 'logs', 'stats-history.json')
+
+function loadStatsHistory() {
+  try {
+    const raw = fs.readFileSync(STATS_HISTORY_FILE, 'utf8')
+    const arr = JSON.parse(raw)
+    if (Array.isArray(arr)) return arr.slice(-config.HISTORY_MAX_RECORDS)
+  } catch {}
+  return []
+}
+
+function saveStatsHistory() {
+  try {
+    fs.writeFileSync(STATS_HISTORY_FILE, JSON.stringify(statsHistory), 'utf8')
+  } catch {}
+}
+
+const statsHistory = loadStatsHistory()
 
 // --- Health / uptime tracking ---
 const SERVER_START = Date.now()
@@ -586,6 +603,7 @@ function recordStats() {
   const s = getStats()
   statsHistory.push({ t: s.timestamp, cpu: s.cpuPercent, mem: s.memPercent, disk: s.diskPercent })
   if (statsHistory.length > config.HISTORY_MAX_RECORDS) statsHistory.shift()
+  saveStatsHistory()
 }
 
 // Record immediately on startup, then every 5 minutes
@@ -823,7 +841,7 @@ function handleRequest(req, res) {
   if (url === '/api/memory') {
     const files = []
     try {
-      const memDir = path.join(__dirname, '..', 'memory')
+      const memDir = path.join(os.homedir(), '.claude', 'projects', '-home-sefa', 'memory')
       const entries = fs.readdirSync(memDir).filter(f => f.endsWith('.md')).sort()
       for (const f of entries) {
         try {
@@ -854,23 +872,48 @@ function handleRequest(req, res) {
 
   // --- FreeRide Skill ---
   if (url === '/api/skills/freeride/status' && req.method === 'GET') {
-    const ocConf = path.join(os.homedir(), '.openclaw', 'openclaw.json')
-    const cacheFile = path.join(os.homedir(), '.openclaw', '.freeride-cache.json')
-    let currentModel = null, fallbacks = [], cacheInfo = null
+    // Alfred (Claude Code) oturum bilgisi — gerçek veri
+    const memDir = path.join(os.homedir(), '.claude', 'projects', '-home-sefa', 'memory')
+    let memoryFiles = []
     try {
-      const cfg = JSON.parse(fs.readFileSync(ocConf, 'utf8'))
-      currentModel = cfg?.agents?.defaults?.model?.primary || null
-      fallbacks = cfg?.agents?.defaults?.model?.fallbacks || []
+      memoryFiles = fs.readdirSync(memDir).filter(f => f.endsWith('.md') && f !== 'MEMORY.md')
     } catch {}
+
+    // Son log aktivitesi
+    const logDir = path.join(os.homedir(), 'openclaw', 'logs')
+    let lastActivity = null
     try {
-      const cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'))
-      const cachedAt = new Date(cache.cached_at)
-      const ageMs = Date.now() - cachedAt.getTime()
-      const ageMin = Math.round(ageMs / 60000)
-      cacheInfo = { count: (cache.models || []).length, cachedAt: cache.cached_at, ageMin }
+      const logFile = path.join(logDir, 'telegram-bot.log')
+      const stat = fs.statSync(logFile)
+      lastActivity = stat.mtime.toISOString()
     } catch {}
+
+    // Aktif görevler (TASKS.json'dan in_progress)
+    let activeTasks = []
+    try {
+      const tasksRaw = fs.readFileSync(config.TASKS_JSON_PATH, 'utf8')
+      const tasksData = JSON.parse(tasksRaw)
+      activeTasks = (tasksData.tasks || []).filter(t => t.status === 'in_progress')
+    } catch {}
+
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ currentModel, fallbacks, cacheInfo, run: frState }))
+    res.end(JSON.stringify({
+      alfred: {
+        model: 'claude-sonnet-4-6',
+        role: 'Orkestratör / İkinci Beyin',
+        platform: 'Claude Code CLI',
+        location: 'ataraxia (RPi 400)',
+        owner: 'Master Sefa',
+      },
+      memory: {
+        count: memoryFiles.length,
+        files: memoryFiles,
+        dir: memDir,
+      },
+      activeTasks,
+      lastActivity,
+      serverUptime: Math.floor((Date.now() - SERVER_START) / 1000),
+    }))
     return
   }
 
@@ -1471,6 +1514,65 @@ function handleRequest(req, res) {
       cgroup: cgroupInfo,
       env: process.env.NODE_ENV || 'development',
     }))
+    return
+  }
+
+  // API: agents — real Docker containers + systemd services
+  if (url === '/api/agents' && req.method === 'GET') {
+    const agents = []
+
+    // Docker containers
+    try {
+      const raw = execSync(
+        'docker ps --format "{{.Names}}|{{.Image}}|{{.Status}}|{{.Ports}}" 2>/dev/null',
+        { timeout: 4000 }
+      ).toString().trim()
+      if (raw) {
+        for (const line of raw.split('\n')) {
+          const [name, image, status, ports] = line.split('|')
+          const isUp = status && status.startsWith('Up')
+          agents.push({
+            id: `docker-${name}`,
+            name,
+            role: 'Docker Servisi',
+            type: 'docker',
+            image: image || null,
+            status: isUp ? 'active' : 'error',
+            uptime: status || '—',
+            ports: ports || null,
+            description: image ? image.split('/').pop().split(':')[0] : name,
+            tags: ['docker'],
+          })
+        }
+      }
+    } catch {}
+
+    // Key systemd services
+    const SYSTEMD_SERVICES = [
+      { unit: 'ataraxia-dashboard.service', name: 'Ataraxia Dashboard', role: 'Dashboard', tags: ['systemd', 'dashboard'] },
+      { unit: 'pihole-FTL.service',         name: 'Pi-hole FTL',        role: 'DNS Filtre',  tags: ['systemd', 'dns'] },
+      { unit: 'unbound.service',            name: 'Unbound',            role: 'DNS Resolver', tags: ['systemd', 'dns'] },
+    ]
+    for (const svc of SYSTEMD_SERVICES) {
+      let svcStatus = 'inactive'
+      try {
+        svcStatus = execSync(`systemctl is-active ${svc.unit} 2>/dev/null`, { timeout: 2000 }).toString().trim()
+      } catch {}
+      agents.push({
+        id: `systemd-${svc.unit}`,
+        name: svc.name,
+        role: svc.role,
+        type: 'systemd',
+        status: svcStatus === 'active' ? 'active' : 'idle',
+        uptime: svcStatus,
+        ports: null,
+        description: svc.unit,
+        tags: svc.tags,
+      })
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ agents, updatedAt: new Date().toISOString() }))
     return
   }
 

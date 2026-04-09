@@ -1,199 +1,166 @@
-import { useState, useEffect, useRef } from 'react'
-import { Zap, RefreshCw, Play, Loader2, CheckCircle2, XCircle, Database, Cpu } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Bot, RefreshCw, Brain, Clock, CheckCircle2, Loader2, FileText, Zap } from 'lucide-react'
 
-const COMMANDS = [
-  { id: 'status', label: 'Durum', desc: 'Mevcut model yapılandırmasını göster' },
-  { id: 'list', label: 'Model Listesi', desc: 'Ücretsiz modelleri listele' },
-  { id: 'auto', label: 'Otomatik Seç', desc: 'En iyi ücretsiz modeli otomatik seç' },
-  { id: 'refresh', label: 'Önbelleği Yenile', desc: 'Model önbelleğini zorla yenile' },
-  { id: 'fallbacks', label: 'Yedekler', desc: 'Yedek modelleri yapılandır' },
-]
+function formatUptime(sec) {
+  if (sec < 60) return `${sec}sn`
+  if (sec < 3600) return `${Math.floor(sec / 60)}dk`
+  const h = Math.floor(sec / 3600)
+  const m = Math.floor((sec % 3600) / 60)
+  return `${h}sa ${m}dk`
+}
+
+function formatTimeAgo(iso) {
+  if (!iso) return '—'
+  const diff = Date.now() - new Date(iso).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'az önce'
+  if (mins < 60) return `${mins}dk önce`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours}sa önce`
+  return `${Math.floor(hours / 24)}g önce`
+}
+
+const PRIORITY_COLOR = {
+  high:   'text-ax-red bg-ax-red/10 border-ax-red/25',
+  medium: 'text-ax-amber bg-ax-amber/10 border-ax-amber/25',
+  low:    'text-ax-dim bg-ax-muted border-ax-border',
+}
 
 export default function FreeRideView() {
-  const [status, setStatus] = useState(null)
-  const [output, setOutput] = useState(null)
-  const [running, setRunning] = useState(false)
-  const [error, setError] = useState(null)
-  const pollRef = useRef(null)
-  const outputRef = useRef(null)
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   async function fetchStatus() {
+    setLoading(true)
     try {
-      const r = await fetch('/api/skills/freeride/status')
-      const d = await r.json()
-      setStatus(d)
-      if (d.run?.running !== running) setRunning(d.run?.running || false)
+      const res = await fetch('/api/skills/freeride/status')
+      if (res.ok) setData(await res.json())
     } catch {}
-  }
-
-  async function fetchOutput() {
-    try {
-      const r = await fetch('/api/skills/freeride/output')
-      const d = await r.json()
-      setOutput(d)
-      setRunning(d.running)
-      if (!d.running) {
-        clearInterval(pollRef.current)
-        pollRef.current = null
-        fetchStatus()
-      }
-    } catch {}
+    setLoading(false)
   }
 
   useEffect(() => {
     fetchStatus()
-    return () => { if (pollRef.current) clearInterval(pollRef.current) }
+    const iv = setInterval(fetchStatus, 60000)
+    return () => clearInterval(iv)
   }, [])
 
-  useEffect(() => {
-    if (outputRef.current) {
-      outputRef.current.scrollTop = outputRef.current.scrollHeight
-    }
-  }, [output?.output])
-
-  async function runCommand(cmd) {
-    setError(null)
-    try {
-      const r = await fetch('/api/skills/freeride/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command: cmd }),
-      })
-      if (!r.ok) {
-        const d = await r.json()
-        setError(d.error || 'Hata')
-        return
-      }
-      setRunning(true)
-      // Poll output every 500ms
-      pollRef.current = setInterval(fetchOutput, 500)
-    } catch (e) {
-      setError(e.message)
-    }
-  }
-
-  const currentModel = status?.currentModel
-  const fallbacks = status?.fallbacks || []
-  const cacheInfo = status?.cacheInfo
-  const out = output || status?.run
+  const alfred = data?.alfred
+  const memory = data?.memory
+  const activeTasks = data?.activeTasks || []
+  const serverUptime = data?.serverUptime
 
   return (
     <div className="p-4 sm:p-6 space-y-5 max-w-4xl">
-      <div className="flex items-center gap-2">
-        <Zap size={18} className="text-ax-accent" />
-        <h1 className="text-ax-heading text-xl font-bold">FreeRide</h1>
-        <span className="text-xs text-ax-dim bg-ax-muted px-2 py-0.5 rounded-full">OpenRouter Free AI</span>
-      </div>
-      <p className="text-ax-dim text-sm">OpenRouter üzerinden ücretsiz AI modellerini yönet ve OpenClaw yapılandırmasını güncelle.</p>
-
-      {/* Config status */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="p-4 rounded-xl bg-ax-panel border border-ax-border space-y-2">
-          <div className="flex items-center gap-2 text-ax-dim text-xs font-medium uppercase tracking-wider">
-            <Cpu size={12} />
-            Aktif Model
-          </div>
-          <p className="text-ax-heading text-sm font-mono break-all">
-            {currentModel || <span className="text-ax-subtle italic">Yapılandırılmamış</span>}
-          </p>
+      {/* Başlık */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Bot size={18} className="text-ax-accent" />
+          <h1 className="text-ax-heading text-xl font-bold">Alfred Oturumu</h1>
         </div>
-        <div className="p-4 rounded-xl bg-ax-panel border border-ax-border space-y-2">
-          <div className="flex items-center gap-2 text-ax-dim text-xs font-medium uppercase tracking-wider">
-            <Database size={12} />
-            Önbellek
+        <button
+          onClick={fetchStatus}
+          className="p-2 rounded-lg bg-ax-panel border border-ax-border hover:bg-ax-muted transition-colors"
+        >
+          <RefreshCw size={13} className={`text-ax-dim ${loading ? 'animate-spin' : ''}`} />
+        </button>
+      </div>
+
+      {loading && !data && (
+        <div className="flex items-center gap-2 text-ax-dim text-sm">
+          <Loader2 size={14} className="animate-spin" />
+          Yükleniyor...
+        </div>
+      )}
+
+      {alfred && (
+        <>
+          {/* Model kartı */}
+          <div className="p-5 rounded-xl bg-ax-panel border border-ax-accent/30 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-ax-accent/10 border border-ax-accent/25 flex items-center justify-center shrink-0">
+                <Bot size={20} className="text-ax-accent" />
+              </div>
+              <div>
+                <p className="text-ax-heading font-bold">{alfred.owner ? `Alfred — ${alfred.owner}` : 'Alfred'}</p>
+                <p className="text-ax-dim text-xs">{alfred.role}</p>
+              </div>
+              <span className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium text-ax-green bg-ax-green/10 border-ax-green/25">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ax-green opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-ax-green" />
+                </span>
+                Aktif
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: 'Model',    value: alfred.model,    icon: Zap },
+                { label: 'Platform', value: alfred.platform, icon: Bot },
+                { label: 'Sistem',   value: alfred.location, icon: Clock },
+                { label: 'Uptime',   value: serverUptime != null ? formatUptime(serverUptime) : '—', icon: Clock },
+              ].map(({ label, value, icon: Icon }) => (
+                <div key={label} className="rounded-lg bg-ax-bg border border-ax-border p-3 space-y-1">
+                  <div className="flex items-center gap-1.5 text-ax-dim text-[10px] font-medium uppercase tracking-wider">
+                    <Icon size={10} />
+                    {label}
+                  </div>
+                  <p className="text-ax-heading text-xs font-mono truncate">{value || '—'}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          {cacheInfo ? (
-            <p className="text-ax-heading text-sm">
-              {cacheInfo.count} model &bull; {cacheInfo.ageMin < 60
-                ? `${cacheInfo.ageMin}dk önce`
-                : `${Math.round(cacheInfo.ageMin / 60)}sa önce`}
+
+          {/* Aktif görevler */}
+          <div className="space-y-2">
+            <p className="text-ax-dim text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">
+              <CheckCircle2 size={11} />
+              Aktif Görevler ({activeTasks.length})
             </p>
-          ) : (
-            <p className="text-ax-subtle text-sm italic">Önbellek yok</p>
-          )}
-        </div>
-      </div>
-
-      {/* Fallbacks */}
-      {fallbacks.length > 0 && (
-        <div className="p-4 rounded-xl bg-ax-panel border border-ax-border">
-          <p className="text-ax-dim text-xs font-medium uppercase tracking-wider mb-2">Yedek Modeller ({fallbacks.length})</p>
-          <div className="flex flex-wrap gap-1.5">
-            {fallbacks.slice(0, 8).map(fb => (
-              <span key={fb} className="text-xs bg-ax-muted border border-ax-border text-ax-dim px-2 py-0.5 rounded font-mono">{fb}</span>
-            ))}
-            {fallbacks.length > 8 && (
-              <span className="text-xs text-ax-subtle">+{fallbacks.length - 8} daha</span>
+            {activeTasks.length === 0 ? (
+              <p className="text-ax-subtle text-sm italic px-1">Şu an aktif görev yok.</p>
+            ) : (
+              activeTasks.map(t => (
+                <div key={t.id} className="flex items-start gap-3 p-3.5 rounded-xl bg-ax-panel border border-ax-border">
+                  <Loader2 size={14} className="text-ax-accent animate-spin mt-0.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-ax-heading text-sm font-medium truncate">{t.title}</p>
+                    {t.description && <p className="text-ax-dim text-xs mt-0.5 line-clamp-2">{t.description}</p>}
+                  </div>
+                  <span className={`shrink-0 px-2 py-0.5 rounded-full border text-[10px] font-medium ${PRIORITY_COLOR[t.priority] || PRIORITY_COLOR.low}`}>
+                    {t.priority}
+                  </span>
+                </div>
+              ))
             )}
           </div>
-        </div>
-      )}
 
-      {/* Commands */}
-      <div className="grid gap-2">
-        <p className="text-ax-dim text-xs font-medium uppercase tracking-wider">Komutlar</p>
-        {COMMANDS.map(c => (
-          <div key={c.id} className="flex items-center gap-4 p-3.5 rounded-xl bg-ax-panel border border-ax-border">
-            <div className="flex-1">
-              <p className="text-ax-heading text-sm font-medium">{c.label}</p>
-              <p className="text-ax-dim text-xs">{c.desc}</p>
-            </div>
-            <button
-              onClick={() => runCommand(c.id)}
-              disabled={running}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ax-accent/15 border border-ax-accent/30 text-ax-accent text-xs font-medium hover:bg-ax-accent/25 transition-colors disabled:opacity-40"
-            >
-              {running && out?.command === c.id
-                ? <Loader2 size={12} className="animate-spin" />
-                : <Play size={12} />}
-              Çalıştır
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {error && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-ax-red/10 border border-ax-red/30 text-ax-red text-sm">
-          <XCircle size={14} />
-          {error}
-        </div>
-      )}
-
-      {/* Output console */}
-      {out && (out.output || out.running) && (
-        <div className="rounded-xl bg-ax-surface border border-ax-border overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-ax-border">
-            <div className="flex items-center gap-2">
-              <span className="text-ax-dim text-xs font-medium">Çıktı</span>
-              {out.command && <span className="text-xs bg-ax-muted px-2 py-0.5 rounded text-ax-subtle font-mono">freeride {out.command}</span>}
-            </div>
-            <div className="flex items-center gap-2">
-              {out.running && <Loader2 size={12} className="animate-spin text-ax-accent" />}
-              {!out.running && out.exitCode === 0 && <CheckCircle2 size={13} className="text-ax-green" />}
-              {!out.running && out.exitCode !== null && out.exitCode !== 0 && <XCircle size={13} className="text-ax-red" />}
-              {out.lastRun && (
-                <span className="text-xs text-ax-subtle">
-                  {new Date(out.lastRun).toLocaleTimeString('tr-TR')}
+          {/* Hafıza */}
+          <div className="space-y-2">
+            <p className="text-ax-dim text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">
+              <Brain size={11} />
+              Hafıza ({memory?.count ?? 0} dosya)
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {(memory?.files || []).map(f => (
+                <span key={f} className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-ax-panel border border-ax-border text-ax-dim text-xs">
+                  <FileText size={10} className="text-ax-purple" />
+                  {f.replace('.md', '')}
                 </span>
+              ))}
+              {(memory?.count === 0) && (
+                <p className="text-ax-subtle text-xs italic">Hafıza dosyası bulunamadı.</p>
               )}
             </div>
           </div>
-          <pre
-            ref={outputRef}
-            className="p-4 text-xs text-ax-text font-mono whitespace-pre-wrap max-h-72 overflow-y-auto leading-relaxed"
-          >
-            {out.output || (out.running ? 'Çalışıyor...' : '')}
-          </pre>
-        </div>
-      )}
 
-      <button
-        onClick={fetchStatus}
-        className="flex items-center gap-1.5 text-xs text-ax-dim hover:text-ax-text transition-colors"
-      >
-        <RefreshCw size={11} />
-        Durumu Yenile
-      </button>
+          {/* Son aktivite */}
+          <p className="text-ax-subtle text-xs">
+            Son aktivite: {formatTimeAgo(data.lastActivity)}
+          </p>
+        </>
+      )}
     </div>
   )
 }

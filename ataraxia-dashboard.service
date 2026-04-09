@@ -8,8 +8,8 @@ Wants=network-online.target
 Type=simple
 User=sefa
 Group=sefa
-WorkingDirectory=/home/sefa/.openclaw/workspace/dashboard
-ExecStart=/usr/bin/node /home/sefa/.openclaw/workspace/dashboard/server.cjs
+WorkingDirectory=/home/sefa/alfred-hub/command-center/dashboard
+ExecStart=/usr/bin/node /home/sefa/alfred-hub/command-center/dashboard/server.cjs
 ExecStop=/bin/kill -SIGTERM $MAINPID
 Restart=on-failure
 RestartSec=5s
@@ -22,7 +22,7 @@ FinalKillSignal=SIGKILL
 
 # Environment
 Environment=NODE_ENV=production
-EnvironmentFile=-/home/sefa/.openclaw/workspace/dashboard/.env
+EnvironmentFile=-/home/sefa/alfred-hub/command-center/dashboard/.env
 
 # Stdout/Stderr logging
 StandardOutput=journal
@@ -30,7 +30,7 @@ StandardError=journal
 SyslogIdentifier=ataraxia-dashboard
 
 # Resource limits (cgroup v2 isolation)
-MemoryMax=512M
+MemoryMax=256M
 MemorySwapMax=0
 CPUQuota=80%
 TasksMax=128
@@ -39,9 +39,9 @@ LimitNOFILE=65536
 # Security hardening
 NoNewPrivileges=yes
 ProtectSystem=strict
-ReadWritePaths=/home/sefa/.openclaw/workspace
+ReadWritePaths=/home/sefa/alfred-hub/command-center
 PrivateTmp=yes
-ProtectHome=read-only
+ProtectHome=false
 
 [Install]
 WantedBy=multi-user.target
