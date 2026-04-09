@@ -648,17 +648,29 @@ setTimeout(() => {
 }, 10000) // 10s after boot before first check
 
 // --- Serve static file ---
+function injectToken(html) {
+  const token = config.DASHBOARD_TOKEN || ''
+  if (!token) return html
+  const script = `<script>window.__DASHBOARD_TOKEN='${token}';</script>`
+  return html.toString().replace('</head>', `${script}</head>`)
+}
+
 function serveFile(filePath, res) {
   fs.readFile(filePath, (err, data) => {
     if (err) {
       // SPA fallback: serve index.html
       fs.readFile(path.join(DIST, 'index.html'), (err2, html) => {
         res.writeHead(err2 ? 404 : 200, { 'Content-Type': 'text/html' })
-        res.end(err2 ? 'Not Found' : html)
+        res.end(err2 ? 'Not Found' : injectToken(html))
       })
       return
     }
     const ext = path.extname(filePath)
+    if (ext === '.html') {
+      res.writeHead(200, { 'Content-Type': 'text/html' })
+      res.end(injectToken(data))
+      return
+    }
     res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' })
     res.end(data)
   })
@@ -685,17 +697,46 @@ function handleRequest(req, res) {
   const allowed = ['http://localhost:4173', 'http://192.168.1.91:4173', 'http://127.0.0.1:4173']
   if (allowed.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin)
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   }
   if (req.method === 'OPTIONS') {
     res.writeHead(204)
     res.end()
     return
   }
+
   // No-cache for HTML files
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   const url = req.url.split('?')[0]
+
+  // --- Bearer Token Authentication (sadece /api/* rotaları) ---
+  const dashboardToken = config.DASHBOARD_TOKEN
+  const isApiRoute = url.startsWith('/api/')
+  const skipAuthPaths = [
+    '/health', '/api/health',
+    '/api/stats', '/api/stats/history',
+    '/api/agents', '/api/services',
+    '/api/activity', '/api/tasks',
+    '/api/tokens', '/api/memory',
+  ]
+  if (dashboardToken && isApiRoute && !skipAuthPaths.includes(url)) {
+    // Bearer header veya ?token= query param
+    const authHeader = req.headers.authorization || ''
+    let token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!token) {
+      const qs = req.url.split('?')[1] || ''
+      token = new URLSearchParams(qs).get('token')
+    }
+    if (!token || token !== dashboardToken) {
+      res.writeHead(401, {
+        'Content-Type': 'application/json',
+        'WWW-Authenticate': 'Bearer realm="Ataraxia Dashboard"',
+      })
+      res.end(JSON.stringify({ error: 'Yetkisiz erişim', status: 401 }))
+      return
+    }
+  }
   const tasksFile = path.join(__dirname, '..', 'TASKS.json')
 
   // API: recent activity (görev değişiklikleri, git commits, cron logları)
@@ -758,26 +799,16 @@ function handleRequest(req, res) {
       }
     } catch {}
 
-    // 3. Cron logları (son task-worker logları)
+    // 3. Cron logları (sistemd cron kayıtları)
     try {
-      const logDir = path.join(os.homedir(), 'openclaw', 'logs')
-      const files = fs.readdirSync(logDir)
-        .filter(f => f.startsWith('task-worker-'))
-        .sort()
-        .slice(-3)
-      for (const f of files) {
-        const content = fs.readFileSync(path.join(logDir, f), 'utf8')
-        const match = content.match(/Working on: (T-\d+) — (.+)/)
-        if (match) {
-          const dateMatch = f.match(/(\d{8})-(\d{4})/)
-          const when = dateMatch
-            ? `${dateMatch[1].slice(0,4)}-${dateMatch[1].slice(4,6)}-${dateMatch[1].slice(6,8)}T${dateMatch[2].slice(0,2)}:${dateMatch[2].slice(2,4)}:00`
-            : new Date().toISOString()
-          activities.push({
-            type: 'warning', agent: 'Task Worker',
-            action: `${match[1]} "${match[2]}" işlendi`,
-            when,
-          })
+      const cronLog = execSync(
+        'journalctl -u ataraxia-dashboard --no-pager --since "24 hours ago" --grep "backup\\|cron\\|otomatik" -n 5 --output=short-iso 2>/dev/null',
+        { encoding: 'utf8', timeout: 3000 }
+      ).trim()
+      for (const line of cronLog.split('\n').filter(Boolean)) {
+        const m = line.match(/^(\S+)\s+\S+\s+\S+\[.*?\]:\s+(.+)$/)
+        if (m) {
+          activities.push({ type: 'info', agent: 'Cron', action: m[2].slice(0, 120), when: m[1] })
         }
       }
     } catch {}
@@ -1237,6 +1268,15 @@ function handleRequest(req, res) {
 
               if (statusChanged) {
                 commitTasksFile(task.id, task.title, task.status)
+
+                // in_progress'e alınınca task-runner'ı hemen tetikle
+                if (updates.status === 'in_progress') {
+                  const runner = spawn('bash', [
+                    path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')
+                  ], { detached: true, stdio: 'ignore' })
+                  runner.unref()
+                  logger.info('Task runner tetiklendi', { taskId: task.id })
+                }
               }
 
               res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -1308,6 +1348,16 @@ function handleRequest(req, res) {
               }
 
               commitTasksFile(task.id, task.title, task.status)
+
+              // Yeni görev in_progress olarak eklenirse hemen tetikle
+              if (task.status === 'in_progress') {
+                const runner = spawn('bash', [
+                  path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')
+                ], { detached: true, stdio: 'ignore' })
+                runner.unref()
+                logger.info('Task runner tetiklendi (yeni görev)', { taskId: task.id })
+              }
+
               res.writeHead(201, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify(task))
             })
@@ -1544,11 +1594,104 @@ function handleRequest(req, res) {
     return
   }
 
-  // API: agents — real Docker containers + systemd services
+  // API: agents — Wayne Ağı (Alfred, Lucius, Netrunner, Robin)
   if (url === '/api/agents' && req.method === 'GET') {
-    const agents = []
+    // Görev istatistiklerini TASKS.json'dan hesapla
+    let tasksByAssignee = {}
+    let lastActionByAssignee = {}
+    try {
+      const db = JSON.parse(fs.readFileSync(tasksFile, 'utf8'))
+      for (const t of db.tasks || []) {
+        const assignee = t.assignee || 'Alfred'
+        if (!tasksByAssignee[assignee]) tasksByAssignee[assignee] = { total: 0, done: 0 }
+        tasksByAssignee[assignee].total++
+        if (t.status === 'done') tasksByAssignee[assignee].done++
+        if (t.status === 'in_progress') lastActionByAssignee[assignee] = `${t.id} "${t.title}" üzerinde çalışıyor`
+      }
+    } catch {}
 
-    // Docker containers
+    // Son git commit (Alfred'in son eylemi)
+    let lastGitAction = '—'
+    let lastGitTime = '—'
+    try {
+      const gitOut = execSync('git log --format="%s|%cr" -1', { encoding: 'utf8', cwd: path.join(__dirname, '..') }).trim()
+      const [msg, when] = gitOut.split('|')
+      lastGitAction = msg || '—'
+      lastGitTime = when || '—'
+    } catch {}
+
+    // Dashboard uptime (Alfred'in vekil çalışma süresi)
+    const uptimeSec = Math.floor((Date.now() - SERVER_START) / 1000)
+    const uptimeH = Math.floor(uptimeSec / 3600)
+    const uptimeM = Math.floor((uptimeSec % 3600) / 60)
+    const alfredUptime = uptimeH > 0 ? `${uptimeH}sa ${uptimeM}dk` : `${uptimeM}dk`
+
+    const WAYNE_AGI = [
+      {
+        id: 'alfred',
+        name: 'Alfred',
+        role: 'Orkestratör / İkinci Beyin',
+        model: 'claude-sonnet-4-6',
+        status: 'active',
+        uptime: alfredUptime,
+        description: 'Master Sefa\'nın stratejik koordinatörü. Tüm Wayne Ağı operasyonlarını yönetir.',
+        tags: ['claude-code', 'orchestrator', 'primary'],
+      },
+      {
+        id: 'lucius',
+        name: 'Lucius',
+        role: 'Teknoloji Entegrasyonu',
+        model: 'claude-sonnet-4-6',
+        status: 'idle',
+        uptime: '—',
+        description: 'Yeni araç/framework keşfi, kurulum ve entegrasyon görevleri.',
+        tags: ['tech', 'integration', 'research'],
+      },
+      {
+        id: 'netrunner',
+        name: 'Netrunner',
+        role: 'Güvenlik & Sistem Sağlığı',
+        model: 'claude-sonnet-4-6',
+        status: 'idle',
+        uptime: '—',
+        description: 'Sistem tarama, hardening, log analizi ve güvenlik denetimleri.',
+        tags: ['security', 'sysadmin', 'monitoring'],
+      },
+      {
+        id: 'robin',
+        name: 'Robin',
+        role: 'Araştırma & Strateji',
+        model: 'claude-sonnet-4-6',
+        status: 'idle',
+        uptime: '—',
+        description: 'Araştırma, rapor yazımı, strateji belgesi ve içerik üretimi.',
+        tags: ['research', 'report', 'strategy'],
+      },
+    ]
+
+    const agents = WAYNE_AGI.map(a => {
+      const stats = tasksByAssignee[a.name] || { total: 0, done: 0 }
+      const lastAction = a.id === 'alfred'
+        ? (lastActionByAssignee['Alfred'] || lastGitAction)
+        : (lastActionByAssignee[a.name] || 'Beklemede')
+      const lastActionTime = a.id === 'alfred' ? lastGitTime : '—'
+      return {
+        ...a,
+        tasksTotal: stats.total || '—',
+        tasksToday: '—',
+        lastAction,
+        lastActionTime,
+      }
+    })
+
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ agents, updatedAt: new Date().toISOString() }))
+    return
+  }
+
+  // API: services — Docker containers + systemd (altyapı)
+  if (url === '/api/services' && req.method === 'GET') {
+    const services = []
     try {
       const raw = execSync(
         'docker ps --format "{{.Names}}|{{.Image}}|{{.Status}}|{{.Ports}}" 2>/dev/null',
@@ -1557,49 +1700,17 @@ function handleRequest(req, res) {
       if (raw) {
         for (const line of raw.split('\n')) {
           const [name, image, status, ports] = line.split('|')
-          const isUp = status && status.startsWith('Up')
-          agents.push({
-            id: `docker-${name}`,
-            name,
-            role: 'Docker Servisi',
-            type: 'docker',
-            image: image || null,
-            status: isUp ? 'active' : 'error',
-            uptime: status || '—',
-            ports: ports || null,
-            description: image ? image.split('/').pop().split(':')[0] : name,
-            tags: ['docker'],
-          })
+          services.push({ id: `docker-${name}`, name, type: 'docker', image, status: status?.startsWith('Up') ? 'active' : 'error', uptime: status, ports: ports || null })
         }
       }
     } catch {}
-
-    // Key systemd services
-    const SYSTEMD_SERVICES = [
-      { unit: 'ataraxia-dashboard.service', name: 'Ataraxia Dashboard', role: 'Dashboard', tags: ['systemd', 'dashboard'] },
-      { unit: 'pihole-FTL.service',         name: 'Pi-hole FTL',        role: 'DNS Filtre',  tags: ['systemd', 'dns'] },
-      { unit: 'unbound.service',            name: 'Unbound',            role: 'DNS Resolver', tags: ['systemd', 'dns'] },
-    ]
-    for (const svc of SYSTEMD_SERVICES) {
-      let svcStatus = 'inactive'
-      try {
-        svcStatus = execSync(`systemctl is-active ${svc.unit} 2>/dev/null`, { timeout: 2000 }).toString().trim()
-      } catch {}
-      agents.push({
-        id: `systemd-${svc.unit}`,
-        name: svc.name,
-        role: svc.role,
-        type: 'systemd',
-        status: svcStatus === 'active' ? 'active' : 'idle',
-        uptime: svcStatus,
-        ports: null,
-        description: svc.unit,
-        tags: svc.tags,
-      })
+    for (const unit of ['ataraxia-dashboard.service', 'pihole-FTL.service', 'unbound.service']) {
+      let st = 'inactive'
+      try { st = execSync(`systemctl is-active ${unit} 2>/dev/null`, { timeout: 2000 }).toString().trim() } catch {}
+      services.push({ id: `systemd-${unit}`, name: unit, type: 'systemd', status: st === 'active' ? 'active' : 'idle', uptime: st })
     }
-
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ agents, updatedAt: new Date().toISOString() }))
+    res.end(JSON.stringify({ services, updatedAt: new Date().toISOString() }))
     return
   }
 

@@ -1,14 +1,16 @@
+import apiFetch from './apiFetch'
+
 const BASE_URL = import.meta.env.VITE_HA_URL
 const TOKEN = import.meta.env.VITE_HA_TOKEN
 // Same origin — server.cjs serves both dashboard and /api/stats
 
-const headers = {
+const haHeaders = {
   Authorization: `Bearer ${TOKEN}`,
   'Content-Type': 'application/json',
 }
 
 async function request(path) {
-  const res = await fetch(`${BASE_URL}/api${path}`, { headers })
+  const res = await fetch(`${BASE_URL}/api${path}`, { headers: haHeaders })
   if (!res.ok) throw new Error(`HA API ${res.status}: ${path}`)
   return res.json()
 }
@@ -38,7 +40,7 @@ export function numericState(entity) {
  * Fetch recent activity from our own API (tasks, git, cron logs).
  */
 export async function getActivity() {
-  const res = await fetch('/api/activity')
+  const res = await apiFetch('/api/activity')
   if (!res.ok) throw new Error(`Activity API ${res.status}`)
   const data = await res.json()
   return data.activities || []
@@ -49,7 +51,7 @@ export async function getActivity() {
  * Returns { cpuPercent, memPercent, memUsedMB, memTotalMB, diskPercent, uptimeHuman }
  */
 export async function getSystemStats() {
-  const res = await fetch('/api/stats')
+  const res = await apiFetch('/api/stats')
   if (!res.ok) throw new Error(`Stats API ${res.status}`)
   return res.json()
 }
@@ -58,7 +60,7 @@ export async function getSystemStats() {
  * Fetch tasks from TASKS.json via API.
  */
 export async function getTasks() {
-  const res = await fetch('/api/tasks')
+  const res = await apiFetch('/api/tasks')
   if (!res.ok) throw new Error(`Tasks API ${res.status}`)
   const data = await res.json()
   return data.tasks || []
@@ -68,7 +70,7 @@ export async function getTasks() {
  * Add a new task via API. Returns the created task.
  */
 export async function addTask(task) {
-  const res = await fetch('/api/tasks', {
+  const res = await apiFetch('/api/tasks', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(task),
@@ -81,7 +83,7 @@ export async function addTask(task) {
  * Update a task's status (or other fields) via PUT API.
  */
 export async function updateTask(taskId, updates) {
-  const res = await fetch(`/api/tasks/${taskId}`, {
+  const res = await apiFetch(`/api/tasks/${taskId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(updates),
@@ -94,7 +96,7 @@ export async function updateTask(taskId, updates) {
  * Add a note to a task.
  */
 export async function addTaskNote(taskId, text) {
-  const res = await fetch(`/api/tasks/${taskId}/notes`, {
+  const res = await apiFetch(`/api/tasks/${taskId}/notes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text }),
