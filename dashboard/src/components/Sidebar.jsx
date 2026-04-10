@@ -4,32 +4,25 @@ import {
   LayoutDashboard,
   Bot,
   ListTodo,
-  Wrench,
   BrainCircuit,
   ScrollText,
-  Settings,
   Zap,
   ChevronRight,
   Menu,
   X,
-  Sparkles,
-  Lightbulb,
+  Timer,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'overview',  label: 'Genel Bakış',  icon: LayoutDashboard },
-  { id: 'agents',    label: 'Ajanlar',      icon: Bot },
-  { id: 'tasks',     label: 'Görevler',     icon: ListTodo },
-  { id: 'tools',     label: 'Araçlar',      icon: Wrench },
-  { id: 'ha',        label: 'Otomasyon',    icon: Lightbulb },
-  { id: 'memory',    label: 'Hafıza',       icon: BrainCircuit },
-  { id: 'logs',      label: 'Kayıtlar',     icon: ScrollText },
-  // { id: 'freeride',  label: 'FreeRide',     icon: Sparkles }, // openclaw-only
+  { id: 'overview',    label: 'Genel Bakış', icon: LayoutDashboard },
+  { id: 'agents',      label: 'Ajanlar',     icon: Bot },
+  { id: 'tasks',       label: 'Görevler',    icon: ListTodo },
+  { id: 'memory',      label: 'Hafıza',      icon: BrainCircuit },
+  { id: 'logs',        label: 'Kayıtlar',    icon: ScrollText },
+  { id: 'automation',  label: 'Otomasyon',   icon: Timer },
 ]
 
-const BOTTOM_ITEMS = [
-  { id: 'settings', label: 'Ayarlar', icon: Settings },
-]
+const BOTTOM_ITEMS = []
 
 function NavItem({ item, active, onClick }) {
   const Icon = item.icon
@@ -99,13 +92,10 @@ function SidebarContent({ activeView, onNavigate, onClose }) {
       </div>
 
       {/* Bottom */}
-      <div className="px-2 pb-4 border-t border-ax-border pt-3 space-y-2">
+      <div className="px-2 pb-4 border-t border-ax-border pt-3">
         <div className="px-1">
           <ThemeToggle />
         </div>
-        {BOTTOM_ITEMS.map(item => (
-          <NavItem key={item.id} item={item} active={activeView === item.id} onClick={handleNav} />
-        ))}
       </div>
     </>
   )

@@ -1535,7 +1535,8 @@
       "id": "T-089",
       "title": "Yeni View: Otomasyon Merkezi (cron + auto tasks)",
       "description": "Sidebar'a 'Otomasyon' menü öğesi ekle. Yeni AutomationView.jsx: (1) Cron zamanlamaları tablosu, (2) auto:true görevler listesi, (3) Son task-runner log satırları, (4) Bir sonraki çalışma zamanı countdown.",
-      "status": "in_progress",
+      "status": "done",
+      "updated_at": "2026-04-10T09:18:00.000Z",
       "priority": "medium",
       "assignee": "Lucius",
       "tags": [

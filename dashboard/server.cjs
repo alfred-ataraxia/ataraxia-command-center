@@ -719,6 +719,7 @@ function handleRequest(req, res) {
     '/api/agents', '/api/services',
     '/api/activity', '/api/tasks',
     '/api/tokens', '/api/memory',
+    '/api/automation',
   ]
   if (dashboardToken && isApiRoute && !skipAuthPaths.includes(url)) {
     // Bearer header veya ?token= query param
@@ -813,27 +814,50 @@ function handleRequest(req, res) {
       }
     } catch {}
 
+    // 4. task-runner.log'dan DONE satırları
+    try {
+      const trLog = fs.readFileSync(path.join(os.homedir(), 'alfred-hub', 'logs', 'task-runner.log'), 'utf8')
+      const lines = trLog.split('\n').filter(l => l.includes('] DONE:') || l.includes('] ERROR:'))
+      for (const line of lines.slice(-8)) {
+        const m = line.match(/^\[(.+?)\] (DONE|ERROR): (.+)$/)
+        if (m) {
+          activities.push({
+            type: m[2] === 'DONE' ? 'success' : 'error',
+            agent: 'TaskRunner',
+            action: m[3].slice(0, 120),
+            when: new Date(m[1]).toISOString(),
+          })
+        }
+      }
+    } catch {}
+
     // Zamana göre sırala, en yeni önce
     activities.sort((a, b) => new Date(b.when) - new Date(a.when))
 
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ activities: activities.slice(0, 15) }))
+    res.end(JSON.stringify({ activities: activities.slice(0, 12) }))
     return
   }
 
   // API: logs list
   if (url === '/api/logs') {
     const logs = []
-    try {
-      const logDir = path.join(os.homedir(), 'openclaw', 'logs')
-      const files = fs.readdirSync(logDir).sort().reverse().slice(0, 20)
-      for (const f of files) {
-        try {
-          const stat = fs.statSync(path.join(logDir, f))
-          logs.push({ name: f, size: stat.size, mtime: stat.mtime.toISOString() })
-        } catch {}
-      }
-    } catch {}
+    const logDirs = [
+      path.join(os.homedir(), 'alfred-hub', 'logs'),
+      path.join(os.homedir(), 'alfred-hub', 'command-center', 'dashboard', 'logs'),
+    ]
+    for (const logDir of logDirs) {
+      try {
+        const files = fs.readdirSync(logDir).filter(f => f.endsWith('.log') || f.endsWith('.pid')).sort().reverse()
+        for (const f of files) {
+          try {
+            const stat = fs.statSync(path.join(logDir, f))
+            logs.push({ name: f, size: stat.size, mtime: stat.mtime.toISOString(), dir: logDir })
+          } catch {}
+        }
+      } catch {}
+    }
+    logs.sort((a, b) => new Date(b.mtime) - new Date(a.mtime))
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ logs }))
     return
@@ -843,7 +867,11 @@ function handleRequest(req, res) {
   if (url.startsWith('/api/logs/stream')) {
     const qs = new URLSearchParams(req.url.split('?')[1] || '')
     const fileName = (qs.get('file') || '').replace(/[^a-zA-Z0-9._-]/g, '')
-    const logDir = path.join(os.homedir(), 'openclaw', 'logs')
+    const logDirs = [
+      path.join(os.homedir(), 'alfred-hub', 'logs'),
+      path.join(os.homedir(), 'alfred-hub', 'command-center', 'dashboard', 'logs'),
+    ]
+    const logDir = logDirs.find(d => fs.existsSync(path.join(d, fileName))) || logDirs[0]
     const filePath = path.join(logDir, fileName)
 
     if (!fileName || !fs.existsSync(filePath)) {
@@ -1426,6 +1454,13 @@ function handleRequest(req, res) {
             if (Array.isArray(updates.tags)) {
               task.tags = updates.tags.slice(0, 10)
             }
+            if (updates.preferred_model !== undefined) {
+              task.preferred_model = ['claude', 'gemini'].includes(updates.preferred_model)
+                ? updates.preferred_model : 'claude'
+            }
+            if (updates.auto !== undefined) {
+              task.auto = Boolean(updates.auto)
+            }
 
             // Track status changes
             if (oldStatus !== task.status) {
@@ -1599,14 +1634,21 @@ function handleRequest(req, res) {
     // Görev istatistiklerini TASKS.json'dan hesapla
     let tasksByAssignee = {}
     let lastActionByAssignee = {}
+    let modelByAssignee = {}  // ajanın en son görevindeki preferred_model
+    const today = new Date().toISOString().slice(0, 10)
     try {
       const db = JSON.parse(fs.readFileSync(tasksFile, 'utf8'))
       for (const t of db.tasks || []) {
         const assignee = t.assignee || 'Alfred'
-        if (!tasksByAssignee[assignee]) tasksByAssignee[assignee] = { total: 0, done: 0 }
+        if (!tasksByAssignee[assignee]) tasksByAssignee[assignee] = { total: 0, done: 0, today: 0 }
         tasksByAssignee[assignee].total++
-        if (t.status === 'done') tasksByAssignee[assignee].done++
-        if (t.status === 'in_progress') lastActionByAssignee[assignee] = `${t.id} "${t.title}" üzerinde çalışıyor`
+        if (t.status === 'done') {
+          tasksByAssignee[assignee].done++
+          if (t.completed_at && t.completed_at.startsWith(today)) tasksByAssignee[assignee].today++
+        }
+        if (t.status === 'in_progress') lastActionByAssignee[assignee] = `${t.id} — ${t.title}`
+        // preferred_model: son güncellenen görevden al
+        if (t.preferred_model) modelByAssignee[assignee] = t.preferred_model
       }
     } catch {}
 
@@ -1631,7 +1673,6 @@ function handleRequest(req, res) {
         id: 'alfred',
         name: 'Alfred',
         role: 'Orkestratör / İkinci Beyin',
-        model: 'claude-sonnet-4-6',
         status: 'active',
         uptime: alfredUptime,
         description: 'Master Sefa\'nın stratejik koordinatörü. Tüm Wayne Ağı operasyonlarını yönetir.',
@@ -1641,44 +1682,47 @@ function handleRequest(req, res) {
         id: 'lucius',
         name: 'Lucius',
         role: 'Teknoloji Entegrasyonu',
-        model: 'claude-sonnet-4-6',
         status: 'idle',
         uptime: '—',
         description: 'Yeni araç/framework keşfi, kurulum ve entegrasyon görevleri.',
-        tags: ['tech', 'integration', 'research'],
+        tags: ['tech', 'integration'],
       },
       {
         id: 'netrunner',
         name: 'Netrunner',
         role: 'Güvenlik & Sistem Sağlığı',
-        model: 'claude-sonnet-4-6',
         status: 'idle',
         uptime: '—',
         description: 'Sistem tarama, hardening, log analizi ve güvenlik denetimleri.',
-        tags: ['security', 'sysadmin', 'monitoring'],
+        tags: ['security', 'sysadmin'],
       },
       {
         id: 'robin',
         name: 'Robin',
         role: 'Araştırma & Strateji',
-        model: 'claude-sonnet-4-6',
         status: 'idle',
         uptime: '—',
         description: 'Araştırma, rapor yazımı, strateji belgesi ve içerik üretimi.',
-        tags: ['research', 'report', 'strategy'],
+        tags: ['research', 'report'],
       },
     ]
 
+    const MODEL_LABELS = { claude: 'claude-sonnet-4-6', gemini: 'gemini-2.5-pro' }
+
     const agents = WAYNE_AGI.map(a => {
-      const stats = tasksByAssignee[a.name] || { total: 0, done: 0 }
+      const stats = tasksByAssignee[a.name] || { total: 0, done: 0, today: 0 }
+      const rawModel = modelByAssignee[a.name] || 'claude'
+      const model = MODEL_LABELS[rawModel] || rawModel
       const lastAction = a.id === 'alfred'
         ? (lastActionByAssignee['Alfred'] || lastGitAction)
         : (lastActionByAssignee[a.name] || 'Beklemede')
       const lastActionTime = a.id === 'alfred' ? lastGitTime : '—'
       return {
         ...a,
-        tasksTotal: stats.total || '—',
-        tasksToday: '—',
+        model,
+        tasksTotal: stats.total || 0,
+        tasksDone: stats.done || 0,
+        tasksToday: stats.today || 0,
         lastAction,
         lastActionTime,
       }
@@ -1777,6 +1821,82 @@ function handleRequest(req, res) {
       res.end(JSON.stringify(payload))
     } catch (err) {
       sendError(res, 500, 'Health check hatası', { details: err.message })
+    }
+    return
+  }
+
+  // API: automation center (GET /api/automation)
+  if (url === '/api/automation' && req.method === 'GET') {
+    try {
+      // 1. Cron schedules from /etc/crontab
+      const cronSchedules = []
+      try {
+        const crontabContent = fs.readFileSync('/etc/crontab', 'utf8')
+        for (const line of crontabContent.split('\n')) {
+          const trimmed = line.trim()
+          if (!trimmed || trimmed.startsWith('#')) continue
+          const parts = trimmed.split(/\s+/)
+          if (parts.length < 7) continue
+          // crontab format: min hour dom month dow user command...
+          const [min, hour, dom, month, dow, user, ...cmdParts] = parts
+          // only show alfred-hub related crons
+          const cmd = cmdParts.join(' ')
+          if (!cmd.includes('alfred') && !cmd.includes('task-runner') && !cmd.includes('backup')) continue
+          const schedule = `${min} ${hour} ${dom} ${month} ${dow}`
+          cronSchedules.push({ schedule, user, command: cmd, raw: trimmed })
+        }
+      } catch {}
+
+      // 2. Auto:true tasks from TASKS.json
+      const autoTasks = []
+      try {
+        const tasksRaw = fs.readFileSync(path.join(__dirname, '..', 'TASKS.json'), 'utf8')
+        const tasksData = JSON.parse(tasksRaw)
+        const tasks = Array.isArray(tasksData) ? tasksData : (tasksData.tasks || [])
+        for (const t of tasks) {
+          if (t.auto === true) {
+            autoTasks.push({
+              id: t.id,
+              title: t.title,
+              status: t.status,
+              assignee: t.assignee,
+              points: t.points,
+              priority: t.priority,
+              updated_at: t.updated_at,
+            })
+          }
+        }
+      } catch {}
+
+      // 3. Last 50 lines of task-runner.log
+      const taskRunnerLogPath = path.join(os.homedir(), 'alfred-hub', 'logs', 'task-runner.log')
+      let logLines = []
+      try {
+        const logContent = fs.readFileSync(taskRunnerLogPath, 'utf8')
+        logLines = logContent.split('\n').filter(Boolean).slice(-50)
+      } catch {}
+
+      // 4. Next run times: task-runner runs at 09:00 and 21:00 daily
+      const now = new Date()
+      const nextRuns = []
+      for (const hour of [9, 21]) {
+        const next = new Date(now)
+        next.setHours(hour, 0, 0, 0)
+        if (next <= now) next.setDate(next.getDate() + 1)
+        nextRuns.push({ label: `Task Runner ${hour === 9 ? '(sabah)' : '(gece'}`, time: next.toISOString(), hour })
+      }
+      nextRuns.sort((a, b) => new Date(a.time) - new Date(b.time))
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({
+        cronSchedules,
+        autoTasks,
+        logLines,
+        nextRuns,
+        generatedAt: new Date().toISOString(),
+      }))
+    } catch (err) {
+      sendError(res, 500, 'Otomasyon verisi alınamadı', { details: err.message })
     }
     return
   }

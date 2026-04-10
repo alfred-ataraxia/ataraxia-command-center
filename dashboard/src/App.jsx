@@ -6,11 +6,8 @@ import Overview from './components/Overview'
 import AgentStatus from './components/AgentStatus'
 import TaskQueue from './components/TaskQueue'
 import LogsView from './components/LogsView'
-import ToolsView from './components/ToolsView'
 import MemoryView from './components/MemoryView'
-import SettingsView from './components/SettingsView'
-import FreeRideView from './components/FreeRideView'
-import HomeAssistantView from './components/HomeAssistantView'
+import AutomationView from './components/AutomationView'
 import LoginModal from './components/LoginModal'
 import { getToken } from './services/apiFetch'
 
@@ -18,12 +15,9 @@ const VIEWS = {
   overview: Overview,
   agents: AgentStatus,
   tasks: TaskQueue,
-  tools: ToolsView,
   memory: MemoryView,
   logs: LogsView,
-  freeride: FreeRideView,
-  ha: HomeAssistantView,
-  settings: SettingsView,
+  automation: AutomationView,
 }
 
 export default function App() {
@@ -52,4 +46,3 @@ export default function App() {
     </ErrorBoundary>
   )
 }
-// Test: Fri 10 Apr 02:43:43 +03 2026
