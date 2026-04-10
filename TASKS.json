@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-10T00:01:07.881645",
+  "updated_at": "2026-04-10T00:57:21.961Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1390,7 +1390,9 @@
       ],
       "due": "2026-04-16",
       "created_at": "2026-04-09T10:00:00+03:00",
-      "auto": true
+      "auto": true,
+      "preferred_model": "claude",
+      "points": 1
     },
     {
       "id": "T-082",
@@ -1456,7 +1458,9 @@
       ],
       "due": "2026-04-23",
       "created_at": "2026-04-09T10:00:00+03:00",
-      "auto": true
+      "auto": true,
+      "preferred_model": "claude",
+      "points": 1
     },
     {
       "id": "T-086",
@@ -1464,7 +1468,7 @@
       "description": "Homepage'i ataraxia servisleriyle güncelle, widget'ları düzenle.",
       "status": "in_progress",
       "priority": "low",
-      "assignee": "Alfred",
+      "assignee": "Robin",
       "tags": [
         "homepage",
         "dashboard",
@@ -1472,14 +1476,15 @@
       ],
       "due": "2026-04-30",
       "created_at": "2026-04-09T10:00:00+03:00",
-      "auto": false,
+      "auto": true,
       "status_history": [
         {
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-09T20:50:40.563Z"
         }
-      ]
+      ],
+      "preferred_model": "gemini"
     },
     {
       "id": "T-071",
@@ -1530,7 +1535,7 @@
       "id": "T-089",
       "title": "Yeni View: Otomasyon Merkezi (cron + auto tasks)",
       "description": "Sidebar'a 'Otomasyon' menü öğesi ekle. Yeni AutomationView.jsx: (1) Cron zamanlamaları tablosu, (2) auto:true görevler listesi, (3) Son task-runner log satırları, (4) Bir sonraki çalışma zamanı countdown.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Lucius",
       "tags": [
@@ -1541,7 +1546,14 @@
       ],
       "due": "2026-04-16",
       "points": 3,
-      "auto": false
+      "auto": true,
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-10T00:57:21.961Z"
+        }
+      ]
     },
     {
       "id": "T-090",
@@ -1590,6 +1602,40 @@
       "due": "2026-04-23",
       "points": 1,
       "auto": false
+    },
+    {
+      "id": "T-093",
+      "title": "Haftalık sistem raporu",
+      "description": "Sistemin bu haftaki durumunu analiz et: servis durumları, disk kullanımı, güvenlik notları, task-runner aktivitesi. Raporu /home/sefa/alfred-hub/reports/haftalik-rapor-$(date +%Y-%m-%d).md dosyasına yaz.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Robin",
+      "preferred_model": "gemini",
+      "auto": true,
+      "points": 2,
+      "tags": [
+        "rapor",
+        "haftalik",
+        "otomatik"
+      ],
+      "created_at": "2026-04-10T03:53:14.211710"
+    },
+    {
+      "id": "T-094",
+      "title": "Pi-hole blocklist güncelleme",
+      "description": "Pi-hole gravity güncelle: pihole -g komutunu çalıştır, sonucu logla.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Netrunner",
+      "preferred_model": "claude",
+      "auto": true,
+      "points": 1,
+      "tags": [
+        "pihole",
+        "dns",
+        "otomatik"
+      ],
+      "created_at": "2026-04-10T03:53:14.211710"
     }
   ]
 }
