@@ -31,6 +31,8 @@ const STATS_URL = process.env.STATS_URL || process.env.VITE_STATS_URL || `http:/
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || null
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || null
 
+const DASHBOARD_TOKEN = process.env.DASHBOARD_TOKEN || null
+
 const DIST_PATH = path.join(__dirname, 'dist')
 const TASKS_JSON_PATH = path.join(__dirname, '..', 'TASKS.json')
 
@@ -76,5 +78,6 @@ module.exports = {
   STATS_URL,
   TELEGRAM_BOT_TOKEN,
   TELEGRAM_CHAT_ID,
+  DASHBOARD_TOKEN,
   validateConfig,
 }

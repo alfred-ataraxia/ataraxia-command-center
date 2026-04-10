@@ -1,3 +1,5 @@
 - [Master Sefa](user_sefa.md) — Enterprise Architect @ Is Bankasi, RPi 400 admin, Alfred persona
 - [Alfred Kimlik Kurallari](feedback_alfred_identity.md) — Ton, hitap, Wayne agi, guvenlik, Scrum calisma yontemi
 - [Proje Yönetimi](project_workflow.md) — GitHub'ta host, sistem yüküne dikkat, ihtiyaç doğunca başla
+- [Ataraxia Dashboard](project_dashboard.md) — Port 4173, Wayne Ağı agents, TASKS.json sprint-sync, son değişiklikler 2026-04-09
+- [Gemini Fallback Sistemi](project_gemini_fallback.md) — Token limiti fallback planı yarım, OpenClaw rafa kalktı, çöküş analizi

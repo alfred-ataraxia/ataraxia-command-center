@@ -18,7 +18,7 @@
 | B-003 | Go workspace inceleme ve temizlik | 2 | Bekliyor |
 | B-004 | Home Assistant otomasyon review | 3 | Bekliyor |
 | B-005 | WireGuard yapilandirma optimizasyonu | 2 | Bekliyor |
-| B-006 | Sistem yedekleme otomasyonu (cron) | 3 | Bekliyor |
+| B-006 | Sistem yedekleme otomasyonu (cron) | 3 | Tamamlandi |
 | B-014 | ecosystem.config.cjs path duzeltme (PM2 hazırlığı) | 1 | Bekliyor |
 | B-015 | Dashboard basic auth / token koruması | 3 | Bekliyor |
 | B-016 | CORS ve security headers | 1 | Tamamlandi |

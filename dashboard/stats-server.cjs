@@ -135,6 +135,18 @@ const server = http.createServer((req, res) => {
     originalEnd.apply(res, args)
   }
 
+  // --- Bearer Token Authentication ---
+  const dashboardToken = process.env.DASHBOARD_TOKEN
+  if (dashboardToken && req.url !== '/health') {
+    const authHeader = req.headers.authorization || ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!token || token !== dashboardToken) {
+      res.writeHead(401, { 'WWW-Authenticate': 'Bearer realm="Ataraxia Stats"' })
+      res.end(JSON.stringify({ error: 'Yetkisiz erişim', status: 401 }))
+      return
+    }
+  }
+
   if (req.url === '/api/stats' && req.method === 'GET') {
     res.writeHead(200)
     res.end(JSON.stringify(getStats()))

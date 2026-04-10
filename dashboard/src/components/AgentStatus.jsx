@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Bot, Cpu, Clock, MessageSquare, RefreshCw, ExternalLink, AlertCircle } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 // Default agents when data cannot be fetched
 const DEFAULT_AGENTS = [

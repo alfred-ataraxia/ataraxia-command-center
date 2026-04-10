@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Wrench, RotateCcw, Trash2, Hammer, CheckCircle2, Loader2 } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 const TOOLS = [
   { id: 'restart', label: 'Dashboard Yeniden Başlat', desc: 'server.cjs sunucusunu yeniden başlatır', icon: RotateCcw, action: 'restart' },
@@ -13,7 +14,7 @@ export default function ToolsView() {
   async function runAction(id, action) {
     setStatus(s => ({ ...s, [id]: 'running' }))
     try {
-      const res = await fetch(`/api/actions/${action}`, { method: 'POST' })
+      const res = await apiFetch(`/api/actions/${action}`, { method: 'POST' })
       if (res.ok) {
         setStatus(s => ({ ...s, [id]: 'done' }))
       } else {

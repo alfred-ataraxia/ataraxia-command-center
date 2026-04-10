@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrainCircuit, RefreshCw, FileText } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 export default function MemoryView() {
   const [memories, setMemories] = useState([])
@@ -8,7 +9,7 @@ export default function MemoryView() {
   async function fetchMemories() {
     setLoading(true)
     try {
-      const res = await fetch('/api/memory')
+      const res = await apiFetch('/api/memory')
       if (res.ok) {
         const data = await res.json()
         setMemories(data.files || [])

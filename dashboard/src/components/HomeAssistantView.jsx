@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Lightbulb, Zap, Thermometer, RefreshCw, AlertCircle, Wifi, WifiOff } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 export default function HomeAssistantView() {
   const [devices, setDevices] = useState([])
@@ -16,7 +17,7 @@ export default function HomeAssistantView() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/ha/devices')
+      const res = await apiFetch('/api/ha/devices')
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       setDevices(data.devices || [])
@@ -38,7 +39,7 @@ export default function HomeAssistantView() {
     )
 
     try {
-      const res = await fetch(`/api/ha/devices/${device.id}/toggle`, {
+      const res = await apiFetch(`/api/ha/devices/${device.id}/toggle`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: device.state === 'on' ? 'turn_off' : 'turn_on' }),

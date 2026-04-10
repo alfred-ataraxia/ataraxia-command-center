@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import apiFetch from '../services/apiFetch'
 import {
   AreaChart,
   Area,
@@ -41,7 +42,7 @@ export default function SystemMetricsChart() {
   const [error, setError] = useState(false)
 
   const fetchHistory = () => {
-    fetch('/api/stats/history')
+    apiFetch('/api/stats/history')
       .then(r => r.json())
       .then(raw => {
         const mapped = raw.map(d => ({

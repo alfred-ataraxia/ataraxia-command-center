@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Zap, TrendingDown, AlertTriangle } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 const WEEKLY_BUDGET = 35000
 
@@ -45,7 +46,7 @@ export default function TokenUsage() {
   useEffect(() => {
     const fetchTokenData = async () => {
       try {
-        const response = await fetch('/api/tokens')
+        const response = await apiFetch('/api/tokens')
         if (!response.ok) throw new Error('Token API failed')
         const data = await response.json()
         setTokenData(data)

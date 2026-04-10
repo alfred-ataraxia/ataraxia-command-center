@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Bot, RefreshCw, Brain, Clock, CheckCircle2, Loader2, FileText, Zap } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 function formatUptime(sec) {
   if (sec < 60) return `${sec}sn`
@@ -33,7 +34,7 @@ export default function FreeRideView() {
   async function fetchStatus() {
     setLoading(true)
     try {
-      const res = await fetch('/api/skills/freeride/status')
+      const res = await apiFetch('/api/skills/freeride/status')
       if (res.ok) setData(await res.json())
     } catch {}
     setLoading(false)

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { ScrollText, RefreshCw, FileText, Clock, Radio, PauseCircle, PlayCircle, Trash2 } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes}B`
@@ -39,7 +40,7 @@ export default function LogsView() {
   async function fetchFiles() {
     setLoading(true)
     try {
-      const res = await fetch('/api/logs')
+      const res = await apiFetch('/api/logs')
       if (res.ok) {
         const data = await res.json()
         const list = data.logs || []
