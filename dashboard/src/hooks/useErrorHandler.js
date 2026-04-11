@@ -1,4 +1,4 @@
-import { useToast } from '../components/ToastContainer'
+import { useToast } from '../components/useToast'
 
 export function useErrorHandler() {
   const { addToast } = useToast()

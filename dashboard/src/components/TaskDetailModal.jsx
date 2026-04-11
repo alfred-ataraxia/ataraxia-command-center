@@ -11,8 +11,16 @@ import {
   MessageSquare,
   Send,
   ArrowRight,
+  Zap,
+  Cpu,
 } from 'lucide-react'
 import { addTaskNote, updateTask } from '../services/haService'
+
+const AGENTS = ['Alfred', 'Lucius', 'Robin', 'Netrunner']
+const MODELS = [
+  { value: 'claude', label: 'Claude (Sonnet)' },
+  { value: 'gemini', label: 'Gemini 2.5 Pro' },
+]
 
 const STATUS_CONFIG = {
   in_progress: { icon: AlertCircle, label: 'Devam Ediyor', color: 'text-ax-amber', bg: 'bg-ax-amber/10', border: 'border-ax-amber/20' },
@@ -85,11 +93,29 @@ export default function TaskDetailModal({ task, onClose, onUpdated }) {
   const [noteText, setNoteText] = useState('')
   const [saving, setSaving] = useState(false)
   const [statusUpdating, setStatusUpdating] = useState(false)
+  const [fieldSaving, setFieldSaving] = useState(null)
+
+  // Local state for editable fields so UI doesn't snap back on save
+  const [assignee, setAssignee] = useState(task.assignee || 'Alfred')
+  const [preferredModel, setPreferredModel] = useState(task.preferred_model || 'claude')
+  const [autoRun, setAutoRun] = useState(!!task.auto)
 
   const priority = PRIORITY_CONFIG[task.priority] ?? PRIORITY_CONFIG.low
   const flow = STATUS_FLOW[task.status] ?? STATUS_FLOW.pending
   const notes = task.notes || []
   const history = task.status_history || []
+
+  async function handleFieldChange(field, value, localSetter) {
+    localSetter(value)
+    setFieldSaving(field)
+    try {
+      await updateTask(task.id, { [field]: value })
+      onUpdated()
+    } catch {
+      // revert on error
+    }
+    setFieldSaving(null)
+  }
 
   async function handleAddNote(e) {
     e.preventDefault()
@@ -153,7 +179,6 @@ export default function TaskDetailModal({ task, onClose, onUpdated }) {
 
           {/* Meta */}
           <div className="flex flex-wrap gap-3 text-xs">
-            <span className="flex items-center gap-1.5 text-ax-dim"><Bot size={12} />{task.agent || task.assignee || '—'}</span>
             <span className={`flex items-center gap-1.5 ${
               getDeadlineStatus(task.due, task.status) === 'overdue' ? 'text-ax-red font-medium' :
               getDeadlineStatus(task.due, task.status) === 'today' ? 'text-ax-amber font-medium' :
@@ -163,6 +188,61 @@ export default function TaskDetailModal({ task, onClose, onUpdated }) {
               Son: {task.due || '—'}
             </span>
             <span className="flex items-center gap-1.5 text-ax-dim"><Clock size={12} />Oluşturuldu: {formatDate(task.created_at)}</span>
+          </div>
+
+          {/* Otomasyon Ayarları */}
+          <div className="rounded-xl bg-ax-surface border border-ax-border p-4 space-y-3">
+            <h3 className="text-ax-dim text-[10px] font-semibold uppercase tracking-wider">Otomasyon Ayarları</h3>
+
+            {/* Ajan */}
+            <div className="flex items-center justify-between gap-3">
+              <label className="flex items-center gap-1.5 text-ax-dim text-xs shrink-0">
+                <Bot size={12} /> Ajan
+              </label>
+              <select
+                value={assignee}
+                disabled={fieldSaving === 'assignee'}
+                onChange={e => handleFieldChange('assignee', e.target.value, setAssignee)}
+                className="flex-1 max-w-[160px] px-2 py-1 rounded-lg bg-ax-bg border border-ax-border text-ax-text text-xs focus:outline-none focus:border-ax-accent/50 disabled:opacity-50"
+              >
+                {AGENTS.map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
+            </div>
+
+            {/* Model */}
+            <div className="flex items-center justify-between gap-3">
+              <label className="flex items-center gap-1.5 text-ax-dim text-xs shrink-0">
+                <Cpu size={12} /> Model
+              </label>
+              <select
+                value={preferredModel}
+                disabled={fieldSaving === 'preferred_model'}
+                onChange={e => handleFieldChange('preferred_model', e.target.value, setPreferredModel)}
+                className="flex-1 max-w-[160px] px-2 py-1 rounded-lg bg-ax-bg border border-ax-border text-ax-text text-xs focus:outline-none focus:border-ax-accent/50 disabled:opacity-50"
+              >
+                {MODELS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+              </select>
+            </div>
+
+            {/* Auto toggle */}
+            <div className="flex items-center justify-between gap-3">
+              <label className="flex items-center gap-1.5 text-ax-dim text-xs">
+                <Zap size={12} /> Otomatik çalıştır
+              </label>
+              <button
+                disabled={fieldSaving === 'auto'}
+                onClick={() => handleFieldChange('auto', !autoRun, setAutoRun)}
+                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 transition-colors duration-200 focus:outline-none disabled:opacity-50 ${
+                  autoRun
+                    ? 'bg-ax-amber border-ax-amber/60'
+                    : 'bg-ax-muted border-ax-border'
+                }`}
+              >
+                <span className={`inline-block h-3.5 w-3.5 translate-y-[-1px] rounded-full bg-white shadow transition-transform duration-200 ${
+                  autoRun ? 'translate-x-4' : 'translate-x-0'
+                }`} />
+              </button>
+            </div>
           </div>
 
           {/* Tags */}

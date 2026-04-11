@@ -33,11 +33,9 @@ export default function LogsView() {
   const [loading, setLoading]   = useState(true)
   const esRef    = useRef(null)
   const bottomRef = useRef(null)
-  const liveRef   = useRef(live)
-  liveRef.current = live
 
   // Fetch file list
-  async function fetchFiles() {
+  const fetchFiles = useCallback(async () => {
     setLoading(true)
     try {
       const res = await apiFetch('/api/logs')
@@ -47,11 +45,16 @@ export default function LogsView() {
         setFiles(list)
         if (list.length > 0 && !selected) setSelected(list[0].name)
       }
-    } catch {}
-    setLoading(false)
-  }
+    } catch {
+      setFiles([])
+    } finally {
+      setLoading(false)
+    }
+  }, [selected])
 
-  useEffect(() => { fetchFiles() }, [])
+  useEffect(() => {
+    void fetchFiles()
+  }, [fetchFiles])
 
   // Connect SSE when file selected
   useEffect(() => {
@@ -77,7 +80,9 @@ export default function LogsView() {
           const newLines = msg.content.split('\n').filter(Boolean)
           setLines(prev => [...prev, ...newLines])
         }
-      } catch {}
+      } catch {
+        setConnected(false)
+      }
     }
 
     es.onerror = () => setConnected(false)

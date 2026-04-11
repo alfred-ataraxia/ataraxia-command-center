@@ -1,5 +1,8 @@
 # MEMORY.md - Long-Term Memory (TIER 3)
 
+> Canonical shared memory moved to `/home/sefa/master-memory`.
+> Bu dosya tarihsel referans olarak kalabilir; yeni kalıcı güncellemeleri önce kanonik ortak hafızaya yaz.
+
 **Persistence Rule:** Never discard. These facts are permanent.
 
 ## Master Sefa - Core Profile

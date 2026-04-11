@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ListTodo,
   Clock,
@@ -22,7 +22,7 @@ import {
 } from 'lucide-react'
 import { getTasks, addTask, updateTask } from '../services/haService'
 import TaskDetailModal from './TaskDetailModal'
-import { useToast } from './ToastContainer'
+import { useToast } from './useToast'
 import TaskSkeleton from './TaskSkeleton'
 
 const STATUS_MAP = {
@@ -129,7 +129,7 @@ function TaskRow({ task, onStatusChange, onDragStart, dragging, onOpen }) {
         onDragStart(task.id)
       }}
       className={[
-        'group flex flex-col sm:flex-row items-start gap-3 sm:gap-4 p-4 rounded-xl border transition-all cursor-pointer select-none',
+        'group flex flex-col items-start gap-3 p-4 rounded-xl border transition-all cursor-pointer select-none relative',
         dragging === task.id
           ? 'opacity-40 scale-[0.98]'
           : deadlineStatus === 'overdue'
@@ -141,38 +141,42 @@ function TaskRow({ task, onStatusChange, onDragStart, dragging, onOpen }) {
                 : 'bg-ax-panel border-ax-border hover:border-ax-muted',
       ].join(' ')}
     >
-      <GripVertical size={14} className="text-ax-subtle mt-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-      <StatusIcon size={16} className={`${status.iconClass} mt-0.5 shrink-0`} />
-
-      <div className="flex-1 min-w-0 space-y-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[10px] text-ax-subtle">{task.id}</span>
-          <p className={`text-sm font-medium ${task.status === 'done' ? 'line-through text-ax-dim' : 'text-ax-heading'}`}>
-            {task.title}
-          </p>
+      <div className="flex flex-row items-start gap-2.5 w-full">
+        <div className="flex items-center gap-1 shrink-0 mt-0.5">
+          <GripVertical size={14} className="text-ax-subtle opacity-0 group-hover:opacity-100 transition-opacity cursor-grab" />
+          <StatusIcon size={16} className={`${status.iconClass}`} />
         </div>
-        {task.description && (
-          <p className="text-xs text-ax-dim leading-relaxed">{task.description}</p>
-        )}
-        <div className="flex flex-wrap items-center gap-2">
-          {task.tags.length > 0 && task.tags.map(tag => (
-            <span key={tag} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-ax-muted border border-ax-border text-[10px] text-ax-subtle">
-              <Tag size={8} />
-              {tag}
-            </span>
-          ))}
-          <button
-            onClick={handleStatusChange}
-            disabled={updating}
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-medium transition-colors ${flow.btnClass} disabled:opacity-40`}
-          >
-            <RefreshCw size={8} className={updating ? 'animate-spin' : ''} />
-            {updating ? '...' : flow.label}
-          </button>
+
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-mono text-[10px] text-ax-subtle">{task.id}</span>
+            <p className={`text-sm font-medium ${task.status === 'done' ? 'line-through text-ax-dim' : 'text-ax-heading'}`}>
+              {task.title}
+            </p>
+          </div>
+          {task.description && (
+            <p className="text-xs text-ax-dim leading-relaxed">{task.description}</p>
+          )}
+          <div className="flex flex-wrap items-center gap-2">
+            {task.tags.length > 0 && task.tags.map(tag => (
+              <span key={tag} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-ax-muted border border-ax-border text-[10px] text-ax-subtle">
+                <Tag size={8} />
+                {tag}
+              </span>
+            ))}
+            <button
+              onClick={handleStatusChange}
+              disabled={updating}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-medium transition-colors ${flow.btnClass} disabled:opacity-40`}
+            >
+              <RefreshCw size={8} className={updating ? 'animate-spin' : ''} />
+              {updating ? '...' : flow.label}
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="flex sm:flex-col items-center sm:items-end gap-2 shrink-0 flex-wrap">
+      <div className="flex items-center justify-between gap-2 flex-wrap w-full mt-1 pt-3 border-t border-ax-border/40">
         <span className={`px-2 py-0.5 rounded-full border text-[10px] font-medium ${priority.class}`}>
           {priority.label}
         </span>
@@ -207,7 +211,8 @@ function TaskRow({ task, onStatusChange, onDragStart, dragging, onOpen }) {
   )
 }
 
-function DropZone({ status, label, icon: Icon, iconClass, badgeClass, count, children, onDrop, dragOver, onDragOver, onDragLeave }) {
+function DropZone({ status, label, icon, iconClass, badgeClass, count, children, onDrop, dragOver, onDragOver, onDragLeave }) {
+  const StatusIcon = icon
   return (
     <section
       className="space-y-3"
@@ -220,7 +225,7 @@ function DropZone({ status, label, icon: Icon, iconClass, badgeClass, count, chi
       }}
     >
       <div className="flex items-center gap-2">
-        <Icon size={13} className={iconClass} />
+        <StatusIcon size={13} className={iconClass} />
         <h2 className="text-ax-text text-xs font-semibold uppercase tracking-wider">{label}</h2>
         <span className={`px-1.5 py-0.5 rounded border text-[10px] font-medium ${badgeClass}`}>{count}</span>
       </div>
@@ -370,20 +375,33 @@ function FilterPanel({ filters, onFilterChange, allTags, allAssignees }) {
             </div>
           </div>
 
-          {/* Auto Filter */}
+          {/* Auto + Done Filters */}
           <div className="space-y-2">
-            <p className="text-ax-text text-xs font-semibold uppercase">Otomasyon</p>
-            <button
-              onClick={() => onFilterChange('auto', !filters.auto)}
-              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
-                filters.auto
-                  ? 'bg-ax-amber text-white border-ax-amber'
-                  : 'bg-ax-bg border-ax-border text-ax-text hover:bg-ax-muted'
-              }`}
-            >
-              <Zap size={12} />
-              {filters.auto ? 'Yalnızca otomatik' : 'Tüm görevler'}
-            </button>
+            <p className="text-ax-text text-xs font-semibold uppercase">Görünüm</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => onFilterChange('auto', !filters.auto)}
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                  filters.auto
+                    ? 'bg-ax-amber text-white border-ax-amber'
+                    : 'bg-ax-bg border-ax-border text-ax-text hover:bg-ax-muted'
+                }`}
+              >
+                <Zap size={12} />
+                Yalnızca otomatik
+              </button>
+              <button
+                onClick={() => onFilterChange('hideDone', !filters.hideDone)}
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                  !filters.hideDone
+                    ? 'bg-ax-green text-white border-ax-green'
+                    : 'bg-ax-bg border-ax-border text-ax-text hover:bg-ax-muted'
+                }`}
+              >
+                <CheckCircle2 size={12} />
+                Tamamlananları göster
+              </button>
+            </div>
           </div>
 
           {/* Tag Filter */}
@@ -459,6 +477,17 @@ function FilterPanel({ filters, onFilterChange, allTags, allAssignees }) {
 
 export default function TaskQueue() {
   const { addToast } = useToast()
+  const initialFilters = () => {
+    const params = new URLSearchParams(window.location.search)
+    return {
+      search: params.get('search') || '',
+      priority: params.get('priority')?.split(',').filter(Boolean) || [],
+      tags: params.get('tags')?.split(',').filter(Boolean) || [],
+      assignee: params.get('assignee')?.split(',').filter(Boolean) || [],
+      auto: params.get('auto') === 'true',
+      hideDone: params.get('hideDone') !== 'false',
+    }
+  }
   const [tasks, setTasks]     = useState([])
   const [loading, setLoading] = useState(true)
   const [dragging, setDragging] = useState(null)
@@ -468,26 +497,7 @@ export default function TaskQueue() {
     return localStorage.getItem('hideCompletedTasks') === 'true'
   })
   const [activeTab, setActiveTab] = useState('active')
-  const [filters, setFilters] = useState({
-    search: '',
-    priority: [],
-    tags: [],
-    assignee: [],
-    auto: false,
-  })
-
-  // Load filters from URL params
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const newFilters = {
-      search: params.get('search') || '',
-      priority: params.get('priority')?.split(',').filter(Boolean) || [],
-      tags: params.get('tags')?.split(',').filter(Boolean) || [],
-      assignee: params.get('assignee')?.split(',').filter(Boolean) || [],
-      auto: params.get('auto') === 'true',
-    }
-    setFilters(newFilters)
-  }, [])
+  const [filters, setFilters] = useState(initialFilters)
 
   function handleHideCompletedToggle() {
     const newValue = !hideCompleted
@@ -501,7 +511,14 @@ export default function TaskQueue() {
   function updateFilters(key, value) {
     let newFilters
     if (key === 'clear') {
-      newFilters = { search: '', priority: [], tags: [], assignee: [] }
+      newFilters = {
+        search: '',
+        priority: [],
+        tags: [],
+        assignee: [],
+        auto: false,
+        hideDone: true,
+      }
     } else {
       newFilters = { ...filters, [key]: value }
     }
@@ -513,6 +530,8 @@ export default function TaskQueue() {
     if (newFilters.priority.length) params.set('priority', newFilters.priority.join(','))
     if (newFilters.tags.length) params.set('tags', newFilters.tags.join(','))
     if (newFilters.assignee.length) params.set('assignee', newFilters.assignee.join(','))
+    if (newFilters.auto) params.set('auto', 'true')
+    if (newFilters.hideDone === false) params.set('hideDone', 'false')
 
     const query = params.toString()
     window.history.replaceState(null, '', query ? `?${query}` : '/')
@@ -557,6 +576,11 @@ export default function TaskQueue() {
         return false
       }
 
+      // Done gizle
+      if (filters.hideDone && task.status === 'done') {
+        return false
+      }
+
       return true
     })
   }
@@ -567,14 +591,20 @@ export default function TaskQueue() {
       setTasks(raw.map(normalizeTask))
     } catch {
       // keep existing tasks on error
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   useEffect(() => {
-    loadTasks()
+    const timer = setTimeout(() => {
+      void loadTasks()
+    }, 0)
     const t = setInterval(loadTasks, 30_000)
-    return () => clearInterval(t)
+    return () => {
+      clearTimeout(timer)
+      clearInterval(t)
+    }
   }, [])
 
   async function handleDrop(taskId, newStatus) {
@@ -632,7 +662,7 @@ export default function TaskQueue() {
 
   return (
     <div
-      className="p-4 sm:p-6 space-y-6 max-w-4xl"
+      className="p-4 sm:p-6 space-y-6 max-w-7xl 2xl:max-w-[1600px] w-full mx-auto"
       onDragEnd={() => { setDragging(null); setDragOver(null) }}
     >
       <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
@@ -730,32 +760,34 @@ export default function TaskQueue() {
           {loading ? (
             <TaskSkeleton />
           ) : (
-            COLUMNS.map(col => (
-              <DropZone
-                key={col.status}
-                status={col.status}
-                label={col.label}
-                icon={col.icon}
-                iconClass={col.iconClass}
-                badgeClass={col.badgeClass}
-                count={col.items.length}
-                onDrop={handleDrop}
-                dragOver={dragOver}
-                onDragOver={setDragOver}
-                onDragLeave={() => setDragOver(null)}
-              >
-                {col.items.map(t => (
-                  <TaskRow
-                    key={t.id}
-                    task={t}
-                    onStatusChange={loadTasks}
-                    onDragStart={setDragging}
-                    dragging={dragging}
-                    onOpen={setSelectedTask}
-                  />
-                ))}
-              </DropZone>
-            ))
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+              {COLUMNS.map(col => (
+                <DropZone
+                  key={col.status}
+                  status={col.status}
+                  label={col.label}
+                  icon={col.icon}
+                  iconClass={col.iconClass}
+                  badgeClass={col.badgeClass}
+                  count={col.items.length}
+                  onDrop={handleDrop}
+                  dragOver={dragOver}
+                  onDragOver={setDragOver}
+                  onDragLeave={() => setDragOver(null)}
+                >
+                  {col.items.map(t => (
+                    <TaskRow
+                      key={t.id}
+                      task={t}
+                      onStatusChange={loadTasks}
+                      onDragStart={setDragging}
+                      dragging={dragging}
+                      onOpen={setSelectedTask}
+                    />
+                  ))}
+                </DropZone>
+              ))}
+            </div>
           )}
         </>
       )}
@@ -801,7 +833,7 @@ export default function TaskQueue() {
               const fresh = normalized.find(t => t.id === selectedTask.id)
               if (fresh) setSelectedTask(fresh)
             } catch {
-              loadTasks()
+              void loadTasks()
             }
           }}
         />

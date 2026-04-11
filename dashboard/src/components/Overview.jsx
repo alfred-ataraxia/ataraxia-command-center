@@ -1,342 +1,284 @@
 import { useState, useEffect } from 'react'
-import {
-  Bot,
-  Activity,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Circle,
-  Cpu,
-  MemoryStick,
-  HardDrive,
-  RefreshCw,
-  WifiOff,
-} from 'lucide-react'
-import { useHA } from '../hooks/useHA'
-import SystemMetricsChart from './SystemMetricsChart'
-import TokenUsage from './TokenUsage'
+import { Cpu, MemoryStick, HardDrive, Clock, AlertCircle, ListTodo, CheckCircle2, Circle, Activity, BellRing, Siren } from 'lucide-react'
+import { getSystemStats } from '../services/haService'
+import apiFetch from '../services/apiFetch'
+import StatsChart from './StatsChart'
 
-const STAT_SCHEMA = [
-  {
-    label: 'İşlemci Kullanımı',
-    key: 'cpuPercent',
-    unit: '%',
-    icon: Cpu,
-    bg: 'bg-ax-accent/10',
-    border: 'border-ax-accent/20',
-    iconColor: 'text-ax-accent',
-  },
-  {
-    label: 'Bellek',
-    key: 'memPercent',
-    unit: '%',
-    icon: MemoryStick,
-    bg: 'bg-ax-cyan/10',
-    border: 'border-ax-cyan/20',
-    iconColor: 'text-ax-cyan',
-  },
-  {
-    label: 'Disk Kullanımı',
-    key: 'diskPercent',
-    unit: '%',
-    icon: HardDrive,
-    bg: 'bg-ax-amber/10',
-    border: 'border-ax-amber/20',
-    iconColor: 'text-ax-amber',
-  },
-  {
-    label: 'Swap',
-    key: 'swapPercent',
-    unit: '%',
-    icon: HardDrive,
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500/20',
-    iconColor: 'text-purple-400',
-  },
-  {
-    label: 'Çalışma Süresi',
-    key: 'uptimeHuman',
-    unit: '',
-    icon: Clock,
-    bg: 'bg-ax-green/10',
-    border: 'border-ax-green/20',
-    iconColor: 'text-ax-green',
-    isText: true,
-  },
-]
-
-function buildStats(sysStats) {
-  return STAT_SCHEMA.map(s => {
-    const raw = sysStats?.[s.key]
-    const value = raw !== undefined ? raw : null
-    return { ...s, value }
-  })
-}
-
-const RESOURCE_ICONS = {
-  'İşlemci': Cpu,
-  'Bellek':  MemoryStick,
-  'Disk':    HardDrive,
-}
-
-// Agents data is now fetched dynamically from /api/process
-// Fallback when data is unavailable
-const DEFAULT_AGENTS = [
-  { name: 'Alfred',   role: 'Orkestratör',  status: 'idle',  model: 'claude-sonnet-4-6' },
-]
-
-function formatTimeAgo(dateStr) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60_000)
-  if (mins < 1) return 'az önce'
-  if (mins < 60) return `${mins}dk önce`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}sa önce`
-  return `${Math.floor(hours / 24)}g önce`
-}
-
-function StatCard({ stat, loading }) {
-  const Icon = stat.icon
-  const displayValue = stat.value !== null
-    ? stat.isText ? stat.value : `${Math.round(stat.value)}${stat.unit}`
-    : '—'
-  return (
-    <div className={`rounded-xl p-4 bg-ax-panel border ${stat.border} flex flex-col gap-3`}>
-      <div className="flex items-center justify-between">
-        <span className="text-ax-dim text-xs font-medium uppercase tracking-wider">{stat.label}</span>
-        <div className={`p-1.5 rounded-lg ${stat.bg}`}>
-          <Icon size={14} className={stat.iconColor} />
-        </div>
-      </div>
-      <div>
-        {loading ? (
-          <>
-            <div className="h-8 w-20 rounded-md bg-ax-muted animate-pulse" />
-            <div className="h-3 w-24 rounded mt-1.5 bg-ax-muted animate-pulse" />
-          </>
-        ) : (
-          <>
-            <p className="text-ax-heading text-2xl font-bold tabular-nums">{displayValue}</p>
-            <p className="text-ax-dim text-xs mt-0.5">
-              {stat.value !== null ? 'canlı veri' : 'sensör erişilemez'}
-            </p>
-          </>
-        )}
-      </div>
-    </div>
-  )
+function timeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime()
+  const m = Math.floor(diff / 60000)
+  if (m < 1) return 'az önce'
+  if (m < 60) return `${m}dk önce`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}sa önce`
+  return `${Math.floor(h / 24)}g önce`
 }
 
 function ActivityDot({ type }) {
-  if (type === 'success') return <CheckCircle2 size={14} className="text-ax-green shrink-0 mt-0.5" />
-  if (type === 'warning') return <AlertCircle  size={14} className="text-ax-amber  shrink-0 mt-0.5" />
-  return <Circle size={14} className="text-ax-accent shrink-0 mt-0.5" />
+  if (type === 'success') return <CheckCircle2 size={12} className="text-ax-green shrink-0 mt-0.5" />
+  if (type === 'error')   return <AlertCircle  size={12} className="text-ax-red   shrink-0 mt-0.5" />
+  return <Circle size={12} className="text-ax-dim shrink-0 mt-0.5" />
 }
 
-function ResourceBar({ resource }) {
-  const Icon = RESOURCE_ICONS[resource.label] ?? Cpu
-  const value = resource.value
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <Icon size={12} className="text-ax-dim" />
-          <span className="text-xs text-ax-dim">{resource.label}</span>
-        </div>
-        <span className="text-xs text-ax-text tabular-nums">
-          {value !== null ? `${Math.round(value)}%` : '—'}
-        </span>
-      </div>
-      <div className="h-1.5 rounded-full bg-ax-muted overflow-hidden">
-        <div
-          className={`h-full rounded-full ${resource.color} transition-all duration-700`}
-          style={{ width: value !== null ? `${value}%` : '0%' }}
-        />
-      </div>
-    </div>
-  )
-}
+const STATS = [
+  { key: 'cpuPercent',  label: 'CPU',   unit: '%', icon: Cpu,         color: 'text-ax-accent',  bar: 'bg-ax-accent'  },
+  { key: 'memPercent',  label: 'RAM',   unit: '%', icon: MemoryStick, color: 'text-ax-cyan',    bar: 'bg-ax-cyan'    },
+  { key: 'diskPercent', label: 'Disk',  unit: '%', icon: HardDrive,   color: 'text-ax-amber',   bar: 'bg-ax-amber'   },
+  { key: 'swapPercent', label: 'Swap',  unit: '%', icon: HardDrive,   color: 'text-purple-400', bar: 'bg-purple-400' },
+]
 
-function AgentBadge({ status }) {
-  if (status === 'active') {
-    return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-ax-green">
-        <span className="relative flex h-1.5 w-1.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ax-green opacity-75" />
-          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-ax-green" />
-        </span>
-        Aktif
-      </span>
-    )
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 text-xs text-ax-dim">
-      <span className="h-1.5 w-1.5 rounded-full bg-ax-subtle" />
-      Boşta
-    </span>
-  )
-}
+function pct(v) { return v != null ? Math.round(v) : null }
 
 export default function Overview() {
+  const [stats, setStats] = useState(null)
+  const [uptime, setUptime] = useState(null)
+  const [error, setError] = useState(false)
   const [now, setNow] = useState(new Date())
+  const [taskSummary, setTaskSummary] = useState(null)
+  const [activities, setActivities] = useState([])
+  const [alerts, setAlerts] = useState([])
+  const [notifications, setNotifications] = useState([])
+
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30_000)
+    const tick = setInterval(() => setNow(new Date()), 30_000)
+    return () => clearInterval(tick)
+  }, [])
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const d = await getSystemStats()
+        setStats(d)
+        setUptime(d.uptimeHuman ?? null)
+        setError(false)
+      } catch {
+        setError(true)
+      }
+    }
+    async function fetchTasks() {
+      try {
+        const res = await apiFetch('/api/tasks')
+        if (res.ok) {
+          const d = await res.json()
+          const tasks = d.tasks || []
+          setTaskSummary({
+            pending: tasks.filter(t => t.status === 'pending').length,
+            inProgress: tasks.filter(t => t.status === 'in_progress').length,
+            done: tasks.filter(t => t.status === 'done').length,
+          })
+        }
+      } catch {
+        setTaskSummary(null)
+      }
+    }
+    async function fetchActivity() {
+      try {
+        const res = await apiFetch('/api/activity')
+        if (res.ok) {
+          const d = await res.json()
+          setActivities(d.activities || [])
+        }
+      } catch {
+        setActivities([])
+      }
+    }
+    async function fetchAlerts() {
+      try {
+        const res = await apiFetch('/api/alerts')
+        if (res.ok) {
+          const d = await res.json()
+          setAlerts(d.alerts || [])
+        }
+      } catch {
+        setAlerts([])
+      }
+    }
+    async function fetchNotifications() {
+      try {
+        const res = await apiFetch('/api/notifications')
+        if (res.ok) {
+          const d = await res.json()
+          setNotifications(d.notifications || [])
+        }
+      } catch {
+        setNotifications([])
+      }
+    }
+    fetchStats()
+    fetchTasks()
+    fetchActivity()
+    fetchAlerts()
+    fetchNotifications()
+    const t = setInterval(() => {
+      fetchStats()
+      fetchTasks()
+      fetchActivity()
+      fetchAlerts()
+      fetchNotifications()
+    }, 30_000)
     return () => clearInterval(t)
   }, [])
 
-  const { resources, systemStats, activity, loading: haLoading, error: haError, lastUpdated } = useHA()
-
-  const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
-  const dateStr = now.toLocaleDateString('tr-TR', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-
-  const liveStats = buildStats(systemStats)
-  const liveResources = resources ?? [
-    { label: 'İşlemci', key: 'cpu',  value: null, color: 'bg-ax-accent' },
-    { label: 'Bellek',  key: 'mem',  value: null, color: 'bg-ax-cyan' },
-    { label: 'Disk',    key: 'disk', value: null, color: 'bg-ax-green' },
-  ]
-
-  const liveActivity = Array.isArray(activity)
-    ? activity.slice(0, 10).map((entry, i) => ({
-        id: i,
-        type: entry.type || 'info',
-        agent: entry.agent || 'Sistem',
-        action: entry.action || '',
-        time: formatTimeAgo(entry.when),
-      }))
-    : []
-
-  // Alarm detection
-  const alarms = []
-  if (systemStats?.cpuPercent >= 90) alarms.push({ label: 'CPU', value: systemStats.cpuPercent, icon: Cpu })
-  if (systemStats?.memPercent >= 85) alarms.push({ label: 'RAM', value: systemStats.memPercent, icon: MemoryStick })
-  if (systemStats?.diskPercent >= 90) alarms.push({ label: 'Disk', value: systemStats.diskPercent, icon: HardDrive })
+  const alarms = STATS.filter(s => stats?.[s.key] >= 85)
 
   return (
-    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl">
-      {/* Alarm banner */}
+    <div className="p-4 sm:p-6 space-y-6 max-w-3xl">
+
+      {/* Başlık */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-ax-heading text-xl font-bold">Genel Bakış</h1>
+          <p className="text-ax-dim text-sm mt-0.5">
+            {now.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ax-panel border border-ax-border">
+          <Clock size={13} className="text-ax-dim" />
+          <span className="text-ax-text text-sm tabular-nums">
+            {now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        </div>
+      </div>
+
+      {/* Alarm */}
       {alarms.length > 0 && (
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-red-500/10 border border-red-500/30 animate-pulse">
-          <AlertCircle size={18} className="text-red-400 shrink-0" />
-          <div className="flex-1">
-            <p className="text-red-300 text-sm font-semibold">Sistem Uyarısı</p>
-            <p className="text-red-400/80 text-xs mt-0.5">
-              {alarms.map(a => `${a.label} %${a.value}`).join(' · ')} — Kaynak kullanımı kritik seviyede!
-            </p>
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-red-500/10 border border-red-500/30">
+          <AlertCircle size={16} className="text-red-400 shrink-0" />
+          <p className="text-red-300 text-sm">
+            {alarms.map(a => `${a.label} %${pct(stats[a.key])}`).join(' · ')} — yüksek kullanım
+          </p>
+        </div>
+      )}
+
+      {/* Stat kartları */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {STATS.map(s => {
+          const val = pct(stats?.[s.key])
+          const Icon = s.icon
+          return (
+            <div key={s.key} className="rounded-xl bg-ax-panel border border-ax-border p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-ax-dim text-xs font-medium">{s.label}</span>
+                <Icon size={13} className={s.color} />
+              </div>
+              {val != null ? (
+                <>
+                  <p className={`text-2xl font-bold tabular-nums ${s.color}`}>{val}%</p>
+                  <div className="h-1.5 rounded-full bg-ax-muted overflow-hidden">
+                    <div className={`h-full rounded-full ${s.bar} transition-all duration-700`} style={{ width: `${val}%` }} />
+                  </div>
+                </>
+              ) : (
+                <p className="text-ax-subtle text-sm">{error ? 'hata' : '...'}</p>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Grafik */}
+      <StatsChart />
+
+      {/* Görev özeti */}
+      {taskSummary && (
+        <div className="rounded-xl bg-ax-panel border border-ax-border p-4 flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <ListTodo size={14} className="text-ax-dim" />
+            <span className="text-ax-dim text-xs font-medium">Görevler</span>
+          </div>
+          <div className="flex gap-5 text-xs">
+            <span><span className="text-ax-amber font-bold">{taskSummary.inProgress}</span> <span className="text-ax-dim">aktif</span></span>
+            <span><span className="text-ax-text font-bold">{taskSummary.pending}</span> <span className="text-ax-dim">bekleyen</span></span>
+            <span><span className="text-ax-green font-bold">{taskSummary.done}</span> <span className="text-ax-dim">tamamlandı</span></span>
           </div>
         </div>
       )}
 
-      {/* Başlık */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-ax-heading text-xl sm:text-2xl font-bold tracking-tight">Genel Bakış</h1>
-          <p className="text-ax-dim text-sm mt-0.5">{dateStr}</p>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ax-panel border border-ax-border">
-          <Clock size={13} className="text-ax-dim" />
-          <span className="text-ax-text text-sm tabular-nums">{timeStr}</span>
-        </div>
-      </div>
-
-      {/* İstatistik kartları */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-        {liveStats.map(stat => (
-          <StatCard key={stat.key} stat={stat} loading={haLoading && !lastUpdated} />
-        ))}
-      </div>
-
-      {/* Sistem metrikleri grafiği */}
-      <SystemMetricsChart />
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Son aktiviteler */}
-        <div className="xl:col-span-2 rounded-xl bg-ax-panel border border-ax-border p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Activity size={14} className="text-ax-accent" />
-              <h2 className="text-ax-heading text-sm font-semibold">Son Aktiviteler</h2>
+      {/* Son aktiviteler */}
+      {(alerts.length > 0 || notifications.length > 0) && (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Siren size={14} className="text-ax-red" />
+              <h2 className="text-ax-heading text-sm font-semibold">Operasyon Uyarıları</h2>
             </div>
-            <span className="text-ax-dim text-xs">
-              {haLoading && !lastUpdated ? 'yükleniyor...' : `${liveActivity.length} olay`}
-            </span>
-          </div>
-          <div className="space-y-3">
-            {liveActivity.length > 0 ? (
-              liveActivity.map(event => (
-                <div key={event.id} className="flex items-start gap-2.5">
-                  <ActivityDot type={event.type} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-ax-text text-xs leading-relaxed">
-                      <span className="text-ax-accent2 font-medium">{event.agent}</span>
-                      {' — '}{event.action}
-                    </p>
-                  </div>
-                  <span className="text-ax-subtle text-xs shrink-0">{event.time}</span>
-                </div>
-              ))
+            {alerts.length === 0 ? (
+              <p className="text-ax-dim text-sm">Aktif uyarı yok.</p>
             ) : (
-              <p className="text-ax-dim text-xs">
-                {haError ? 'Aktivite API erişilemedi' : 'Henüz aktivite yok'}
-              </p>
+              <div className="space-y-2">
+                {alerts.slice(0, 4).map((alert) => (
+                  <div
+                    key={alert.id}
+                    className={`rounded-lg border px-3 py-2 ${
+                      alert.severity === 'critical'
+                        ? 'border-ax-red/30 bg-ax-red/10'
+                        : 'border-ax-amber/30 bg-ax-amber/10'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className={`text-xs font-semibold ${alert.severity === 'critical' ? 'text-ax-red' : 'text-ax-amber'}`}>
+                        {alert.title}
+                      </span>
+                      <span className="text-[10px] text-ax-subtle">{timeAgo(alert.timestamp)}</span>
+                    </div>
+                    <p className="text-xs text-ax-dim mt-1">{alert.message}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <BellRing size={14} className="text-ax-accent" />
+              <h2 className="text-ax-heading text-sm font-semibold">Bildirim Akışı</h2>
+            </div>
+            {notifications.length === 0 ? (
+              <p className="text-ax-dim text-sm">Henüz bildirim oluşmadı.</p>
+            ) : (
+              <div className="space-y-2">
+                {notifications.slice(0, 5).map((notification) => (
+                  <div key={notification.id} className="rounded-lg border border-ax-border bg-ax-surface px-3 py-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-xs font-semibold text-ax-heading">{notification.title}</span>
+                      <span className="text-[10px] text-ax-subtle">{timeAgo(notification.timestamp)}</span>
+                    </div>
+                    <p className="text-xs text-ax-dim mt-1">{notification.message}</p>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
+      )}
 
-        {/* Sağ sütun */}
-        <div className="space-y-4">
-          {/* Token Kullanımı */}
-          <TokenUsage />
-
-          {/* Sistem kaynakları */}
-          <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Cpu size={14} className="text-ax-cyan" />
-                <h2 className="text-ax-heading text-sm font-semibold">Sistem Kaynakları</h2>
-              </div>
-              {haError ? (
-                <span className="flex items-center gap-1 text-[10px] text-ax-amber">
-                  <WifiOff size={10} /> API çevrimdışı
-                </span>
-              ) : haLoading && !lastUpdated ? (
-                <RefreshCw size={10} className="text-ax-dim animate-spin" />
-              ) : lastUpdated ? (
-                <span className="text-[10px] text-ax-subtle">
-                  {lastUpdated.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                </span>
-              ) : null}
-            </div>
-            <div className="space-y-3">
-              {liveResources.map(r => <ResourceBar key={r.label} resource={r} />)}
-            </div>
+      {activities.length > 0 && (
+        <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Activity size={14} className="text-ax-accent" />
+            <h2 className="text-ax-heading text-sm font-semibold">Son Aktiviteler</h2>
           </div>
-
-          {/* Ajan kadrosu */}
-          <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Bot size={14} className="text-ax-purple" />
-              <h2 className="text-ax-heading text-sm font-semibold">Sistem</h2>
-            </div>
-            <div className="space-y-3">
-              {DEFAULT_AGENTS.map(agent => (
-                <div key={agent.name} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-ax-muted border border-ax-border flex items-center justify-center">
-                      <Bot size={12} className="text-ax-dim" />
-                    </div>
-                    <div>
-                      <p className="text-ax-text text-xs font-medium">{agent.name}</p>
-                      <p className="text-ax-subtle text-[10px]">{agent.role}</p>
-                    </div>
-                  </div>
-                  <AgentBadge status={agent.status} />
+          <div className="space-y-2">
+            {activities.slice(0, 8).map((a, i) => (
+              <div key={i} className="flex items-start gap-2.5">
+                <ActivityDot type={a.type} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-ax-accent2 text-xs font-medium">{a.agent}</span>
+                  <span className="text-ax-dim text-xs"> — {a.action}</span>
                 </div>
-              ))}
-            </div>
+                <span className="text-ax-subtle text-[10px] shrink-0">{timeAgo(a.when)}</span>
+              </div>
+            ))}
           </div>
         </div>
+      )}
+
+      {/* Uptime + hata */}
+      <div className="flex items-center gap-3 text-xs text-ax-dim">
+        {uptime && <span>Çalışma süresi: <span className="text-ax-text">{uptime}</span></span>}
+        {error && <span className="text-ax-amber">Stats API erişilemedi</span>}
       </div>
+
     </div>
   )
 }

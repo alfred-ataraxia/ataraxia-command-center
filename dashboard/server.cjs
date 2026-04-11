@@ -402,6 +402,67 @@ function getStats() {
   }
 }
 
+function buildAlerts(stats = getStats()) {
+  const alerts = []
+
+  const metricRules = [
+    { key: 'cpuPercent', label: 'CPU', warn: 80, critical: 90 },
+    { key: 'memPercent', label: 'RAM', warn: 80, critical: 90 },
+    { key: 'diskPercent', label: 'Disk', warn: 85, critical: 95 },
+    { key: 'swapPercent', label: 'Swap', warn: 25, critical: 50 },
+  ]
+
+  for (const rule of metricRules) {
+    const value = stats?.[rule.key]
+    if (typeof value !== 'number') continue
+
+    let severity = null
+    if (value >= rule.critical) severity = 'critical'
+    else if (value >= rule.warn) severity = 'warning'
+    if (!severity) continue
+
+    alerts.push({
+      id: `${rule.key}-${severity}`,
+      source: 'system',
+      severity,
+      metric: rule.key,
+      title: `${rule.label} yüksek kullanım`,
+      message: `${rule.label} kullanımı %${value}`,
+      value,
+      threshold: severity === 'critical' ? rule.critical : rule.warn,
+      timestamp: stats.timestamp || new Date().toISOString(),
+    })
+  }
+
+  const unhealthyNotifications = notifications
+    .filter((notification) => ['cron_alert', 'system_warning'].includes(notification.type))
+    .slice(0, 3)
+    .map((notification) => ({
+      id: `notification-${notification.id}`,
+      source: 'notification',
+      severity: notification.type === 'cron_alert' ? 'critical' : 'warning',
+      title: notification.title,
+      message: notification.message,
+      timestamp: notification.timestamp,
+    }))
+
+  alerts.push(...unhealthyNotifications)
+
+  if (circuitBreakers.stats.isOpen()) {
+    alerts.push({
+      id: 'stats-circuit-open',
+      source: 'system',
+      severity: 'critical',
+      title: 'Stats servisi devre dışı',
+      message: 'Circuit breaker açık. Dashboard fallback verisi kullanıyor.',
+      timestamp: new Date().toISOString(),
+      circuit_breaker: circuitBreakers.stats.getStatus(),
+    })
+  }
+
+  return alerts.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+}
+
 // --- Stats history (last 24h, sampled every 5 min = max 288 entries) ---
 const STATS_HISTORY_FILE = path.join(__dirname, 'logs', 'stats-history.json')
 
@@ -606,9 +667,9 @@ function recordStats() {
   saveStatsHistory()
 }
 
-// Record immediately on startup, then every 5 minutes
+// Record immediately on startup, then per configured interval
 recordStats()
-setInterval(recordStats, 5 * 60 * 1000)
+setInterval(recordStats, config.STATS_HISTORY_INTERVAL)
 
 // --- Dashboard availability self-check every 5 minutes ---
 function runHealthCheck() {
@@ -644,7 +705,7 @@ function handleHealthFail(reason) {
 
 // Start health checks after server is up
 setTimeout(() => {
-  setInterval(runHealthCheck, 5 * 60 * 1000)
+  setInterval(runHealthCheck, config.STATS_HISTORY_INTERVAL)
 }, 10000) // 10s after boot before first check
 
 // --- Serve static file ---
@@ -720,6 +781,7 @@ function handleRequest(req, res) {
     '/api/activity', '/api/tasks',
     '/api/tokens', '/api/memory',
     '/api/automation',
+    '/api/alerts', '/api/notifications',
   ]
   if (dashboardToken && isApiRoute && !skipAuthPaths.includes(url)) {
     // Bearer header veya ?token= query param
@@ -1068,7 +1130,27 @@ function handleRequest(req, res) {
   // API: notifications (GET /api/notifications)
   if (url === '/api/notifications' && req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ notifications }))
+    res.end(JSON.stringify({
+      notifications,
+      unread: notifications.filter((notification) => {
+        const ageMs = Date.now() - new Date(notification.timestamp).getTime()
+        return ageMs < 24 * 60 * 60 * 1000
+      }).length,
+      timestamp: new Date().toISOString(),
+    }))
+    return
+  }
+
+  // API: alerts (GET /api/alerts)
+  if (url === '/api/alerts' && req.method === 'GET') {
+    const alerts = buildAlerts()
+    const summary = {
+      total: alerts.length,
+      critical: alerts.filter((alert) => alert.severity === 'critical').length,
+      warning: alerts.filter((alert) => alert.severity === 'warning').length,
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ alerts, summary, timestamp: new Date().toISOString() }))
     return
   }
 

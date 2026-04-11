@@ -1466,7 +1466,7 @@
       "id": "T-086",
       "title": "Homepage dashboard özelleştirme",
       "description": "Homepage'i ataraxia servisleriyle güncelle, widget'ları düzenle.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "low",
       "assignee": "Robin",
       "tags": [
@@ -1484,7 +1484,8 @@
           "at": "2026-04-09T20:50:40.563Z"
         }
       ],
-      "preferred_model": "gemini"
+      "preferred_model": "gemini",
+      "completed_at": "2026-04-10T21:12:19.433576"
     },
     {
       "id": "T-071",

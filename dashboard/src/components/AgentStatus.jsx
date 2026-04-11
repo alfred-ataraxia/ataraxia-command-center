@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Bot, Cpu, Clock, MessageSquare, RefreshCw, ExternalLink, AlertCircle } from 'lucide-react'
-import apiFetch from '../services/apiFetch'
 
 // Default agents when data cannot be fetched
 const DEFAULT_AGENTS = [
@@ -163,8 +162,14 @@ export default function AgentStatus() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Clock size={13} className="text-ax-dim" />
-          <span className="text-ax-dim text-xs">Her 30 saniyede otomatik yenilenir</span>
+          {loading ? (
+            <RefreshCw size={13} className="text-ax-dim animate-spin" />
+          ) : (
+            <Clock size={13} className="text-ax-dim" />
+          )}
+          <span className="text-ax-dim text-xs">
+            {loading ? 'Ajan verileri yenileniyor' : 'Her 30 saniyede otomatik yenilenir'}
+          </span>
         </div>
       </div>
 
