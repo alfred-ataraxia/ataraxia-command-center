@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T02:56:11.495Z",
+  "updated_at": "2026-04-12T02:57:23.451Z",
   "tasks": [
     {
       "id": "T-021",
@@ -1694,7 +1694,7 @@
       "id": "T-091",
       "title": "Overview — Sistem kartına aktif cron sayacı ekle",
       "description": "Overview.jsx'e cron durumu bilgisi: bugün kaç cron çalıştı, son çalışma zamanı. /api/activity'den cron event'leri filtrele.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
@@ -1711,6 +1711,11 @@
           "to": "in_progress",
           "at": "2026-04-12T01:25:46.226Z",
           "note": "Alfred'a yönlendirildi"
+        },
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T02:57:23.451Z"
         }
       ]
     },
