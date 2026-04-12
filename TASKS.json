@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T03:02:30.864Z",
+  "updated_at": "2026-04-12T03:03:18.261Z",
   "tasks": [
     {
       "id": "T-021",
@@ -1619,7 +1619,7 @@
       "id": "T-087",
       "title": "TaskQueue — auto:true badge ve filtresi ekle",
       "description": "normalizeTask() fonksiyonuna auto field'ı ekle. TaskRow'a ⚡ rozet koy (ax-amber rengi, 'Otomatik' tooltip). FilterPanel'a 'Otomatik Görevler' toggle switch ekle. getFilteredTasks()'a auto filtresi entegre et.",
-      "status": "done",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Lucius",
       "tags": [
@@ -1631,7 +1631,14 @@
       "due": "2026-04-12",
       "points": 2,
       "auto": false,
-      "completed_at": "2026-04-10T00:01:07.881581"
+      "completed_at": "2026-04-10T00:01:07.881581",
+      "status_history": [
+        {
+          "from": "done",
+          "to": "in_progress",
+          "at": "2026-04-12T03:03:18.261Z"
+        }
+      ]
     },
     {
       "id": "T-088",
