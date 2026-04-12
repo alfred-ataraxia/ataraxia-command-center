@@ -1,7 +1,23 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-11T17:40:01.028Z",
+  "updated_at": "2026-04-12T01:25:26.332Z",
   "tasks": [
+    {
+      "id": "T-017",
+      "title": "OrchestrationView görev dağıtım bugları",
+      "description": "1) Status history from değeri yanlış (task.status atamadan önce yakalanmalı) 2) Telegram \"Görev Tamamlandı\" yerine \"Görev Atandı\" demeli 3) addNotification type \"task_complete\" yerine \"task_assigned\" olmalı",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "bugfix",
+        "orchestration"
+      ],
+      "due": "2026-04-12",
+      "created_at": "2026-04-12T01:10:00+03:00",
+      "auto": true
+    },
     {
       "id": "T-001",
       "title": "Dashboard canlı veri entegrasyonu",
@@ -1390,9 +1406,28 @@
       ],
       "due": "2026-04-16",
       "created_at": "2026-04-09T10:00:00+03:00",
-      "auto": true,
+      "auto": false,
       "preferred_model": "claude",
-      "points": 1
+      "points": 1,
+      "updated_at": "2026-04-12T04:17:46.147735",
+      "notes": [
+        {
+          "at": "2026-04-12T04:07:05.604746",
+          "text": "Orkestratör tarafından Lucius ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T04:07:14.060282",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T04:17:38.493479",
+          "text": "Orkestratör tarafından Lucius ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T04:17:46.147735",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        }
+      ]
     },
     {
       "id": "T-082",
@@ -1458,7 +1493,7 @@
       ],
       "due": "2026-04-23",
       "created_at": "2026-04-09T10:00:00+03:00",
-      "auto": true,
+      "auto": false,
       "preferred_model": "claude",
       "points": 1
     },
@@ -1476,7 +1511,7 @@
       ],
       "due": "2026-04-30",
       "created_at": "2026-04-09T10:00:00+03:00",
-      "auto": true,
+      "auto": false,
       "status_history": [
         {
           "from": "pending",
@@ -1548,7 +1583,7 @@
       ],
       "due": "2026-04-16",
       "points": 3,
-      "auto": true,
+      "auto": false,
       "status_history": [
         {
           "from": "pending",
@@ -1609,11 +1644,11 @@
       "id": "T-093",
       "title": "Haftalık sistem raporu",
       "description": "Sistemin bu haftaki durumunu analiz et: servis durumları, disk kullanımı, güvenlik notları, task-runner aktivitesi. Raporu /home/sefa/alfred-hub/reports/haftalik-rapor-$(date +%Y-%m-%d).md dosyasına yaz.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "assignee": "Robin",
       "preferred_model": "gemini",
-      "auto": true,
+      "auto": false,
       "points": 2,
       "tags": [
         "rapor",
@@ -1621,7 +1656,7 @@
         "otomatik"
       ],
       "created_at": "2026-04-10T03:53:14.211710",
-      "updated_at": "2026-04-12T02:53:02.449201",
+      "updated_at": "2026-04-12T03:57:04.449670",
       "notes": [
         {
           "at": "2026-04-11T21:02:26.481500",
@@ -1886,14 +1921,63 @@
         {
           "at": "2026-04-12T02:53:02.449201",
           "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T03:03:50.642704",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T03:04:03.390618",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T03:14:50.875500",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T03:15:04.252222",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T03:24:57.806010",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T03:25:14.505337",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T03:35:50.650042",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T03:36:06.796641",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T03:45:54.875872",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T03:46:10.555152",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T03:56:50.912429",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T03:57:04.449670",
+          "text": "Görev başarıyla tamamlandı."
         }
-      ]
+      ],
+      "completed_at": "2026-04-12T03:57:04.449670"
     },
     {
       "id": "T-094",
       "title": "Pi-hole blocklist güncelleme",
       "description": "Pi-hole gravity güncelle: pihole -g komutunu çalıştır, sonucu logla.",
-      "status": "in_progress",
+      "status": "done",
       "priority": "low",
       "assignee": "Netrunner",
       "preferred_model": "claude",
@@ -1904,7 +1988,14 @@
         "dns",
         "otomatik"
       ],
-      "created_at": "2026-04-10T03:53:14.211710"
+      "created_at": "2026-04-10T03:53:14.211710",
+      "status_history": [
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-12T01:25:26.332Z"
+        }
+      ]
     },
     {
       "id": "T-093",
