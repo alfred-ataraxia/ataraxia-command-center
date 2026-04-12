@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T18:47:02.119137",
+  "updated_at": "2026-04-12T18:04:09.495Z",
   "tasks": [
     {
       "id": "T-018",
@@ -1513,7 +1513,7 @@
       "id": "T-088",
       "title": "AgentStatus — gerçek model routing'i yansıt",
       "description": "server.cjs WAYNE_AGI array'inde model alanlarını güncelleştir. Robin için model='gemini-2.5-pro', diğerleri için routing'e göre güncelle. AgentCard'a model chip'i ekle.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -1529,8 +1529,14 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-12T03:20:39.486Z"
+        },
+        {
+          "at": "2026-04-12T19:30:02.149906",
+          "from": "pending",
+          "to": "in_progress"
         }
-      ]
+      ],
+      "started_at": "2026-04-12T19:30:02.149841"
     },
     {
       "id": "T-089",
@@ -1561,7 +1567,7 @@
       "id": "T-090",
       "title": "TokenUsage widget — model listesini güncelle",
       "description": "WEEKLY_BUDGET hardcode'u kaldır, /api/tokens'tan oku. tasks_by_model'e minimax/haiku/flash/sonnet/opus ekle. Gemini ve Minimax için renk tanımla.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
@@ -1571,7 +1577,15 @@
       ],
       "due": "2026-04-18",
       "points": 2,
-      "auto": false
+      "auto": false,
+      "started_at": "2026-04-12T20:00:01.863180",
+      "status_history": [
+        {
+          "at": "2026-04-12T20:00:01.863245",
+          "from": "pending",
+          "to": "in_progress"
+        }
+      ]
     },
     {
       "id": "T-091",
@@ -1601,22 +1615,6 @@
           "at": "2026-04-12T02:57:23.451Z"
         }
       ]
-    },
-    {
-      "id": "T-092",
-      "title": "HA View — bağlantı koptuğunda graceful fallback",
-      "description": "HomeAssistantView.jsx'te error state iyileştir: HA URL ve bağlantı durumu göster, 'Yeniden Bağlan' butonu, son başarılı bağlantı zamanı. connected=false'ta son değerleri grayed-out göster.",
-      "status": "pending",
-      "priority": "low",
-      "assignee": "Alfred",
-      "tags": [
-        "dashboard",
-        "ha",
-        "ux"
-      ],
-      "due": "2026-04-23",
-      "points": 1,
-      "auto": false
     },
     {
       "id": "T-093",
@@ -1999,7 +1997,7 @@
       "id": "T-096",
       "title": "Kokpit — Git repos hatası düzelt (master-memory)",
       "description": "master-memory reposunda branch — gösteriyor ve error: true veriyor. Git path kontrol et.",
-      "status": "pending",
+      "status": "deleted",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -2007,7 +2005,20 @@
         "api"
       ],
       "due": "2026-04-13",
-      "auto": false
+      "auto": false,
+      "started_at": "2026-04-12T21:00:01.391225",
+      "status_history": [
+        {
+          "at": "2026-04-12T21:00:01.391288",
+          "from": "pending",
+          "to": "in_progress"
+        },
+        {
+          "from": "in_progress",
+          "to": "deleted",
+          "at": "2026-04-12T18:04:09.495Z"
+        }
+      ]
     },
     {
       "id": "T-097",
