@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T18:05:20.120Z",
+  "updated_at": "2026-04-12T18:30:28.124Z",
   "tasks": [
     {
       "id": "T-018",
@@ -2302,7 +2302,7 @@
       "id": "T-107",
       "title": "TASKS.json — eski done görevleri arşivle",
       "description": "66 tane done görev var. Bunları ayrı bir arşiv dosyasına taşı ve TASKS.json'u temizle.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
@@ -2310,7 +2310,14 @@
         "tasks"
       ],
       "due": "2026-04-15",
-      "auto": false
+      "auto": false,
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T18:30:28.124Z"
+        }
+      ]
     }
   ]
 }
