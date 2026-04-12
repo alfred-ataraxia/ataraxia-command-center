@@ -1467,7 +1467,7 @@
       "id": "T-087",
       "title": "TaskQueue — auto:true badge ve filtresi ekle",
       "description": "normalizeTask() fonksiyonuna auto field'ı ekle. TaskRow'a ⚡ rozet koy (ax-amber rengi, 'Otomatik' tooltip). FilterPanel'a 'Otomatik Görevler' toggle switch ekle. getFilteredTasks()'a auto filtresi entegre et.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -1495,9 +1495,14 @@
           "from": "in_progress",
           "to": "pending",
           "at": "2026-04-12T15:41:25.063Z"
+        },
+        {
+          "at": "2026-04-12T18:52:25.349594",
+          "from": "pending",
+          "to": "in_progress"
         }
       ],
-      "started_at": "2026-04-12T18:18:32.754860"
+      "started_at": "2026-04-12T18:52:25.349530"
     },
     {
       "id": "T-088",
