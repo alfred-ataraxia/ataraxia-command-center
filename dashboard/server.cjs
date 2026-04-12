@@ -831,12 +831,12 @@ function handleRequest(req, res) {
     '/api/automation',
     '/api/alerts', '/api/notifications',
     '/api/orchestration/cost', '/api/orchestration/activity', '/api/orchestration/distribute',
-    '/api/git/repos',
+    '/api/git/repos', '/api/ai-status',
   ]
   
   // Paths that start with these prefixes are also allowed without auth
   const skipAuthPrefixes = [
-    '/api/tasks/', '/api/git/repos',
+    '/api/tasks/', '/api/git/repos', '/api/ai-status',
   ]
   const isSkipAuth = skipAuthPaths.includes(url) || skipAuthPrefixes.some(p => url.startsWith(p))
   if (dashboardToken && isApiRoute && !isSkipAuth) {
