@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T21:46:33.027Z",
+  "updated_at": "2026-04-12T21:46:37.000Z",
   "tasks": [
     {
       "id": "T-018",
@@ -221,12 +221,19 @@
       "id": "T-011",
       "title": "Dashbordaki Loglar",
       "description": "Dashboarddaki loglar ve kayıtlar hatalı gözüküyor",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-12T21:46:33.027Z"
+      "created_at": "2026-04-12T21:46:33.027Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T21:46:37.000Z"
+        }
+      ]
     }
   ]
 }
