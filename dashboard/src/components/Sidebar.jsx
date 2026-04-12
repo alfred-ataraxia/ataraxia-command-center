@@ -11,9 +11,10 @@ import {
 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'overview', label: 'Kokpit', icon: LayoutDashboard },
-  { id: 'tasks',    label: 'Operasyon', icon: Activity },
-  { id: 'memory',   label: 'Sistem', icon: Settings },
+  { id: 'overview',      label: 'Kokpit',        icon: LayoutDashboard },
+  { id: 'orchestration', label: 'Orkestrasyon', icon: Zap },
+  { id: 'tasks',          label: 'Operasyon',    icon: Activity },
+  { id: 'memory',         label: 'Sistem',       icon: Settings },
 ]
 
 function NavItem({ item, active, onClick }) {

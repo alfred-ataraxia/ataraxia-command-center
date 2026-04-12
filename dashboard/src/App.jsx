@@ -8,6 +8,7 @@ import TaskQueue from './components/TaskQueue'
 import LogsView from './components/LogsView'
 import MemoryView from './components/MemoryView'
 import AutomationView from './components/AutomationView'
+import OrchestrationView from './components/OrchestrationView'
 import LoginModal from './components/LoginModal'
 import { getToken } from './services/apiFetch'
 
@@ -18,6 +19,7 @@ const VIEWS = {
   memory: MemoryView,
   logs: LogsView,
   automation: AutomationView,
+  orchestration: OrchestrationView,
 }
 
 export default function App() {

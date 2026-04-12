@@ -560,6 +560,54 @@ function sendTelegramNotification(taskId, taskTitle, completionTime) {
   req.end()
 }
 
+function sendTelegramAssignNotification(taskId, agentId, taskTitle, assignTime) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN
+  const chatId = process.env.TELEGRAM_CHAT_ID
+
+  if (!botToken || !chatId) {
+    console.warn('TELEGRAM_BOT_TOKEN veya TELEGRAM_CHAT_ID ayarlanmamış')
+    return
+  }
+
+  const message = `📋 *Görev Atandı*\n\n` +
+    `🆔 ID: ${taskId}\n` +
+    `👤 Ajan: ${agentId}\n` +
+    `📝 Başlık: ${taskTitle}\n` +
+    `⏰ Atama: ${new Date(assignTime).toLocaleString('tr-TR')}`
+
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage`
+  const data = JSON.stringify({
+    chat_id: chatId,
+    text: message,
+    parse_mode: 'Markdown'
+  })
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': data.length
+    }
+  }
+
+  const req = https.request(url, options, (res) => {
+    let body = ''
+    res.on('data', chunk => { body += chunk })
+    res.on('end', () => {
+      if (res.statusCode !== 200) {
+        console.error('Telegram API hatası:', res.statusCode, body)
+      }
+    })
+  })
+
+  req.on('error', (err) => {
+    console.error('Telegram gönderme hatası:', err.message)
+  })
+
+  req.write(data)
+  req.end()
+}
+
 // Git commit helper (T-031 integration)
 function commitTasksFile(taskId, taskTitle, newStatus) {
   try {
@@ -782,6 +830,7 @@ function handleRequest(req, res) {
     '/api/tokens', '/api/memory',
     '/api/automation',
     '/api/alerts', '/api/notifications',
+    '/api/orchestration/cost', '/api/orchestration/activity', '/api/orchestration/distribute',
   ]
   if (dashboardToken && isApiRoute && !skipAuthPaths.includes(url)) {
     // Bearer header veya ?token= query param
@@ -1737,6 +1786,199 @@ function handleRequest(req, res) {
     return
   }
 
+  // API: orchestration — cost & budget tracking
+  if (url === '/api/orchestration/cost' && req.method === 'GET') {
+    // Budget limits from config
+    const DAILY_LIMIT = 5.00
+    const MONTHLY_LIMIT = 100.00
+    const DAILY_SOFT = 3.75
+    const MONTHLY_SOFT = 75.00
+    
+    // Calculate approximate token usage from TASKS.json activity
+    let todayTokens = 0
+    let monthTokens = 0
+    const today = new Date().toISOString().slice(0, 10)
+    const thisMonth = today.slice(0, 7)
+    
+    try {
+      const db = JSON.parse(fs.readFileSync(tasksFile, 'utf8'))
+      for (const t of db.tasks || []) {
+        if (t.completed_at) {
+          const ct = t.completed_at.slice(0, 10)
+          const mt = t.completed_at.slice(0, 7)
+          const pts = t.points || 1
+          if (ct === today) todayTokens += pts * 100
+          if (mt === thisMonth) monthTokens += pts * 100
+        }
+      }
+    } catch {}
+    
+    // Estimate cost (approx $0.001 per 100 tokens)
+    const todayCost = todayTokens * 0.001
+    const monthCost = monthTokens * 0.001
+    
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({
+      daily: {
+        used: todayCost,
+        limit: DAILY_LIMIT,
+        soft: DAILY_SOFT,
+        percent: Math.round((todayCost / DAILY_LIMIT) * 100),
+        warning: todayCost >= DAILY_SOFT,
+      },
+      monthly: {
+        used: monthCost,
+        limit: MONTHLY_LIMIT,
+        soft: MONTHLY_SOFT,
+        percent: Math.round((monthCost / MONTHLY_LIMIT) * 100),
+        warning: monthCost >= MONTHLY_SOFT,
+      },
+      tokens: { today: todayTokens, month: monthTokens },
+      updatedAt: new Date().toISOString(),
+    }))
+    return
+  }
+
+  // API: orchestration — distribute task to agent
+  if (url === '/api/orchestration/distribute' && req.method === 'POST') {
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('end', () => {
+      try {
+        const { taskId, agentId, command } = JSON.parse(body)
+        
+        if (!taskId || !agentId) {
+          return sendError(res, 400, 'taskId ve agentId zorunludur')
+        }
+        
+        // Read TASKS.json and update assignee
+        const db = JSON.parse(fs.readFileSync(tasksFile, 'utf8'))
+        const task = db.tasks.find(t => t.id === taskId)
+        if (!task) {
+          return sendError(res, 404, `Görev ${taskId} bulunamadı`)
+        }
+        
+        const oldAssignee = task.assignee
+        const oldStatus = task.status
+        task.assignee = agentId
+        task.status = 'in_progress'
+        task.status_history = task.status_history || []
+        task.status_history.push({
+          from: oldStatus,
+          to: 'in_progress',
+          at: new Date().toISOString(),
+          note: `${agentId}'a yönlendirildi${command ? `: ${command}` : ''}`
+        })
+        db.updated_at = new Date().toISOString()
+        
+        fs.writeFileSync(tasksFile, JSON.stringify(db, null, 2) + '\n')
+        
+        // Notify via Telegram
+        const assignTime = new Date().toISOString()
+        sendTelegramAssignNotification(task.id, agentId, task.title, assignTime)
+        addNotification('task_assigned', `${task.id} → ${agentId}`, task.title, task.id)
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({
+          ok: true,
+          taskId,
+          agentId,
+          previousAssignee: oldAssignee,
+          message: `${taskId} başarıyla ${agentId}'a yönlendirildi`
+        }))
+      } catch (err) {
+        sendError(res, 500, 'Görev dağıtım hatası', { details: err.message })
+      }
+    })
+    return
+  }
+
+  // API: orchestration — activity from shared-notes
+  if (url === '/api/orchestration/activity' && req.method === 'GET') {
+    const sharedNotesPath = path.join(os.homedir(), 'master-memory', 'inbox', 'shared-notes.md')
+    let activities = []
+    
+    try {
+      const content = fs.readFileSync(sharedNotesPath, 'utf8')
+      const blocks = content.split(/\n## /)
+      
+      for (const block of blocks) {
+        if (!block.trim() || block.startsWith('# Shared Notes')) continue
+        const lines = block.split('\n')
+        const headerMatch = lines[0].match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[^|]*)\s*\|\s*(\w+)/)
+        if (headerMatch) {
+          const rawTime = headerMatch[1].trim()
+          const agent = headerMatch[2]
+          const noteLines = lines.slice(1)
+          
+          // Extract Alan and Not fields
+          const alanLine = noteLines.find(l => l.includes('- Alan:'))
+          const notLine = noteLines.find(l => l.includes('- Not:'))
+          
+          const field = alanLine ? alanLine.replace(/^\s*- Alan:\s*/, '').trim() : ''
+          // Get note text, handling both simple and multi-line formats
+          let note = notLine ? notLine.replace(/^\s*- Not:\s*/, '').trim() : ''
+          if (!note && noteLines.length > 1) {
+            // Multi-line: collect non-empty, non-tag lines
+            note = noteLines.filter(l => l.trim() && !l.includes('- Alan:') && !l.includes('- **')).map(l => l.replace(/^\s*/, '').replace(/^- /, '')).join(' ').trim()
+          }
+          
+          // Parse timestamp safely - some entries have invalid dates
+          let ts = rawTime
+          try {
+            const d = new Date(rawTime)
+            if (isNaN(d.getTime())) throw new Error('Invalid date')
+            ts = d.toISOString()
+          } catch { ts = rawTime }
+          
+          activities.push({
+            id: rawTime,
+            agent,
+            field,
+            note,
+            time: rawTime,
+            timestamp: ts,
+          })
+        }
+      }
+    } catch (err) {
+      console.error('Activity parse error:', err.message)
+    }
+    
+    // Sort by time desc (string sort works for ISO-like timestamps)
+    activities.sort((a, b) => b.time.localeCompare(a.time))
+    
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ activities: activities.slice(0, 20), updatedAt: new Date().toISOString() }))
+    return
+  }
+
+  // API: git repos and recent commits
+  if (url === '/api/git/repos' && req.method === 'GET') {
+    const repos = [
+      { path: path.join(os.homedir(), 'master-memory'), name: 'master-memory' },
+      { path: path.join(os.homedir(), 'alfred-hub'), name: 'alfred-hub' },
+      { path: path.join(os.homedir(), 'scrum'), name: 'scr um' },
+    ]
+    const result = []
+    for (const repo of repos) {
+      try {
+        const commits = execSync('git log --format="%s|%cr|%ci" -5', { encoding: 'utf8', cwd: repo.path }).trim().split('\n')
+        const branch = execSync('git branch --show-current', { encoding: 'utf8', cwd: repo.path }).trim() || 'main'
+        const commitsData = commits.filter(c => c).map(c => {
+          const [msg, rel, date] = c.split('|')
+          return { message: msg, relative: rel, date }
+        })
+        result.push({ name: repo.name, branch, commits: commitsData, path: repo.path })
+      } catch {
+        result.push({ name: repo.name, branch: '—', commits: [], path: repo.path, error: true })
+      }
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ repos: result, updatedAt: new Date().toISOString() }))
+    return
+  }
+
   // API: agents — Wayne Ağı (Alfred, Lucius, Netrunner, Robin)
   if (url === '/api/agents' && req.method === 'GET') {
     // Görev istatistiklerini TASKS.json'dan hesapla
@@ -1868,6 +2110,45 @@ function handleRequest(req, res) {
     }
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ services, updatedAt: new Date().toISOString() }))
+    return
+  }
+
+  // API: service restart
+  if (url === '/api/services/restart' && req.method === 'POST') {
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('end', () => {
+      try {
+        const { serviceId } = JSON.parse(body)
+        if (!serviceId) return sendError(res, 400, 'serviceId zorunlu')
+        
+        let result = {}
+        if (serviceId.startsWith('docker-')) {
+          const container = serviceId.replace('docker-', '')
+          try {
+            execSync(`docker restart ${container}`, { timeout: 30000 })
+            result = { ok: true, message: `${container} yeniden başlatıldı` }
+          } catch (e) {
+            result = { ok: false, message: `Docker hatası: ${e.message}` }
+          }
+        } else if (serviceId.startsWith('systemd-')) {
+          const unit = serviceId.replace('systemd-', '')
+          try {
+            execSync(`systemctl restart ${unit}`, { timeout: 30000 })
+            result = { ok: true, message: `${unit} yeniden başlatıldı` }
+          } catch (e) {
+            result = { ok: false, message: `Systemd hatası: ${e.message}` }
+          }
+        } else {
+          return sendError(res, 400, 'Geçersiz serviceId formatı')
+        }
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(result))
+      } catch (err) {
+        sendError(res, 500, 'Servis yeniden başlatma hatası', { details: err.message })
+      }
+    })
     return
   }
 

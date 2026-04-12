@@ -1,7 +1,71 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T01:25:26.332Z",
+  "updated_at": "2026-04-12T02:35:00.000Z",
   "tasks": [
+    {
+      "id": "T-021",
+      "title": "Netrunner (Codex) barındırma planı",
+      "description": "Codex CLI icin ucunculu barındırma secimi ve kurulum",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "infrastructure",
+        "cloud",
+        "netrunner"
+      ],
+      "due": "2026-04-14",
+      "created_at": "2026-04-12T02:35:00+03:00",
+      "auto": false
+    },
+    {
+      "id": "T-020",
+      "title": "Lucius VPS kurulumu (Cloud)",
+      "description": "Claude CLI icin ikinci bir VM kurulacak (platform TBD)",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "infrastructure",
+        "cloud",
+        "lucius"
+      ],
+      "due": "2026-04-13",
+      "created_at": "2026-04-12T02:35:00+03:00",
+      "auto": false
+    },
+    {
+      "id": "T-019",
+      "title": "Robin VPS kurulumu (Google Cloud)",
+      "description": "E2-micro VMde Ubuntu kur, Gemini CLI + Telegram bot konumlandır",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "infrastructure",
+        "cloud",
+        "robin"
+      ],
+      "due": "2026-04-12",
+      "created_at": "2026-04-12T02:35:00+03:00",
+      "auto": false
+    },
+    {
+      "id": "T-018",
+      "title": "Google Cloud Free Tier kurulumu",
+      "description": "Google Cloud hesabı aç, E2-micro VM oluştur, harici IP al",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Master Sefa",
+      "tags": [
+        "infrastructure",
+        "cloud",
+        "robin"
+      ],
+      "due": "2026-04-12",
+      "created_at": "2026-04-12T02:35:00+03:00",
+      "auto": false
+    },
     {
       "id": "T-017",
       "title": "OrchestrationView görev dağıtım bugları",
@@ -16,7 +80,18 @@
       ],
       "due": "2026-04-12",
       "created_at": "2026-04-12T01:10:00+03:00",
-      "auto": true
+      "auto": false,
+      "updated_at": "2026-04-12T04:27:57.831231",
+      "notes": [
+        {
+          "at": "2026-04-12T04:27:50.637113",
+          "text": "Orkestratör tarafından Alfred ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T04:27:57.831231",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        }
+      ]
     },
     {
       "id": "T-001",
@@ -1614,7 +1689,7 @@
       "description": "Overview.jsx'e cron durumu bilgisi: bugün kaç cron çalıştı, son çalışma zamanı. /api/activity'den cron event'leri filtrele.",
       "status": "pending",
       "priority": "low",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "dashboard",
         "overview",
@@ -1622,7 +1697,15 @@
       ],
       "due": "2026-04-20",
       "points": 1,
-      "auto": false
+      "auto": false,
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T01:25:46.226Z",
+          "note": "Alfred'a yönlendirildi"
+        }
+      ]
     },
     {
       "id": "T-092",
@@ -1981,7 +2064,7 @@
       "priority": "low",
       "assignee": "Netrunner",
       "preferred_model": "claude",
-      "auto": true,
+      "auto": false,
       "points": 1,
       "tags": [
         "pihole",
@@ -2014,7 +2097,7 @@
       "id": "T-094",
       "title": "Dashboard Veri Tutarlılığı Onarımı",
       "description": "Ajan/Model eşleşmeleri ve silinen görev geçmişinin kurtarılması.",
-      "status": "in_progress",
+      "status": "pending",
       "priority": "high",
       "assignee": "Gemini",
       "tags": [
