@@ -3,54 +3,6 @@
   "updated_at": "2026-04-12T07:49:16.759Z",
   "tasks": [
     {
-      "id": "T-021",
-      "title": "Netrunner (Codex) barındırma planı",
-      "description": "Codex CLI icin ucunculu barındırma secimi ve kurulum",
-      "status": "pending",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [
-        "infrastructure",
-        "cloud",
-        "netrunner"
-      ],
-      "due": "2026-04-14",
-      "created_at": "2026-04-12T02:35:00+03:00",
-      "auto": false
-    },
-    {
-      "id": "T-020",
-      "title": "Lucius VPS kurulumu (Cloud)",
-      "description": "Claude CLI icin ikinci bir VM kurulacak (platform TBD)",
-      "status": "pending",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [
-        "infrastructure",
-        "cloud",
-        "lucius"
-      ],
-      "due": "2026-04-13",
-      "created_at": "2026-04-12T02:35:00+03:00",
-      "auto": false
-    },
-    {
-      "id": "T-019",
-      "title": "Robin VPS kurulumu (Google Cloud)",
-      "description": "E2-micro VMde Ubuntu kur, Gemini CLI + Telegram bot konumlandır",
-      "status": "pending",
-      "priority": "high",
-      "assignee": "Alfred",
-      "tags": [
-        "infrastructure",
-        "cloud",
-        "robin"
-      ],
-      "due": "2026-04-12",
-      "created_at": "2026-04-12T02:35:00+03:00",
-      "auto": false
-    },
-    {
       "id": "T-018",
       "title": "Google Cloud Free Tier kurulumu",
       "description": "Google Cloud hesabı aç, E2-micro VM oluştur, harici IP al",
@@ -1487,48 +1439,6 @@
       "auto": false
     },
     {
-      "id": "T-084",
-      "title": "Wayne Ağı Harness meta-skill tasarımı",
-      "description": "Alfred'in alt-ajan ekibini (Lucius/Netrunner/Robin) koordine eden harness skill'i tasarla. N-008.",
-      "status": "done",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [
-        "claude-code",
-        "skill",
-        "wayne-agi"
-      ],
-      "due": "2026-04-23",
-      "created_at": "2026-04-09T10:00:00+03:00",
-      "updated_at": "2026-04-09T20:00:00+03:00",
-      "auto": false
-    },
-    {
-      "id": "T-085",
-      "title": "Pi-hole blocklist güncelleme",
-      "description": "Pi-hole'un blocklist kaynaklarını güncel ve etkin listelerle güncelle.",
-      "status": "in_progress",
-      "priority": "low",
-      "assignee": "Netrunner",
-      "tags": [
-        "pihole",
-        "dns",
-        "security"
-      ],
-      "due": "2026-04-23",
-      "created_at": "2026-04-09T10:00:00+03:00",
-      "auto": false,
-      "preferred_model": "claude",
-      "points": 1,
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-12T07:46:54.062Z"
-        }
-      ]
-    },
-    {
       "id": "T-086",
       "title": "Homepage dashboard özelleştirme",
       "description": "Homepage'i ataraxia servisleriyle güncelle, widget'ları düzenle.",
@@ -1557,7 +1467,7 @@
       "id": "T-087",
       "title": "TaskQueue — auto:true badge ve filtresi ekle",
       "description": "normalizeTask() fonksiyonuna auto field'ı ekle. TaskRow'a ⚡ rozet koy (ax-amber rengi, 'Otomatik' tooltip). FilterPanel'a 'Otomatik Görevler' toggle switch ekle. getFilteredTasks()'a auto filtresi entegre et.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -1575,8 +1485,14 @@
           "from": "done",
           "to": "in_progress",
           "at": "2026-04-12T03:03:18.261Z"
+        },
+        {
+          "at": "2026-04-12T18:18:32.754958",
+          "from": "pending",
+          "to": "in_progress"
         }
-      ]
+      ],
+      "started_at": "2026-04-12T18:18:32.754860"
     },
     {
       "id": "T-088",

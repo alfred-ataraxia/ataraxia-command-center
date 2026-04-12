@@ -831,8 +831,15 @@ function handleRequest(req, res) {
     '/api/automation',
     '/api/alerts', '/api/notifications',
     '/api/orchestration/cost', '/api/orchestration/activity', '/api/orchestration/distribute',
+    '/api/git/repos',
   ]
-  if (dashboardToken && isApiRoute && !skipAuthPaths.includes(url)) {
+  
+  // Paths that start with these prefixes are also allowed without auth
+  const skipAuthPrefixes = [
+    '/api/tasks/', '/api/git/repos',
+  ]
+  const isSkipAuth = skipAuthPaths.includes(url) || skipAuthPrefixes.some(p => url.startsWith(p))
+  if (dashboardToken && isApiRoute && !isSkipAuth) {
     // Bearer header veya ?token= query param
     const authHeader = req.headers.authorization || ''
     let token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
@@ -1478,6 +1485,67 @@ function handleRequest(req, res) {
     return
   }
 
+  // API: start task — /api/tasks/T-001/start
+  const startMatch = url.match(/^\/api\/tasks\/(T-\d+)\/start$/)
+  if (startMatch && req.method === 'POST') {
+    const taskId = startMatch[1]
+    
+    fs.readFile(tasksFile, 'utf8', (err, raw) => {
+      if (err) {
+        const code = err.code === 'ENOENT' ? 404 : 500
+        return sendError(res, code, err.code === 'ENOENT' ? 'TASKS.json bulunamadı' : 'TASKS.json okunamadı')
+      }
+      
+      try {
+        const db = JSON.parse(raw)
+        const task = db.tasks.find(t => t.id === taskId)
+        if (!task) return sendError(res, 404, `Görev ${taskId} bulunamadı`)
+        
+        const oldStatus = task.status
+        const now = new Date().toISOString()
+        
+        // Update task
+        task.status = 'in_progress'
+        task.status_history = task.status_history || []
+        task.status_history.push({ from: oldStatus, to: 'in_progress', at: now, note: 'Dashboard üzerinden başlatıldı' })
+        if (oldStatus === 'pending') task.started_at = now
+        db.updated_at = now
+        
+        // Write to shared-notes.md (Alfred'i haberdar et)
+        const sharedNotesPath = path.join(os.homedir(), 'master-memory', 'inbox', 'shared-notes.md')
+        const noteEntry = `\n## ${now} | Alfred\n- Alan: task-started\n- Not: ${task.id} başlatıldı — ${task.title}\n`
+        
+        try {
+          fs.appendFileSync(sharedNotesPath, noteEntry)
+        } catch (noteErr) {
+          logger.warn('shared-notes yazılamadı', { error: noteErr.message })
+        }
+        
+        // Save TASKS.json
+        fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
+          if (err2) return sendError(res, 500, 'TASKS.json yazılamadı')
+          
+          // Trigger task-runner.sh
+          const runner = spawn('bash', [
+            path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')
+          ], { detached: true, stdio: 'ignore' })
+          runner.unref()
+          logger.info('Task runner tetiklendi (start)', { taskId })
+          
+          // Send Telegram notification
+          sendTelegramAssignNotification(task.id, 'Alfred', task.title, now)
+          addNotification('task_started', `${task.id} Başlatıldı`, task.title, task.id)
+          
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ ok: true, task, triggered: true }))
+        })
+      } catch (parseErr) {
+        sendError(res, 500, 'JSON parse hatası', { details: parseErr.message })
+      }
+    })
+    return
+  }
+
   if (url === '/api/tasks' && req.method === 'POST') {
     let body = ''
     req.on('data', chunk => { body += chunk })
@@ -1639,6 +1707,24 @@ function handleRequest(req, res) {
               // Commit to git
               if (oldStatus !== task.status) {
                 commitTasksFile(task.id, task.title, task.status)
+              }
+
+              // Trigger Alfred when task starts (PUT triggers same as PATCH for in_progress)
+              if (oldStatus !== 'in_progress' && task.status === 'in_progress') {
+                // Write to shared-notes.md (Alfred'i haberdar et)
+                const sharedNotesPath = path.join(os.homedir(), 'master-memory', 'inbox', 'shared-notes.md')
+                const now = new Date().toISOString()
+                const noteEntry = `\n## ${now} | Alfred\n- Alan: task-started\n- Not: ${task.id} başlatıldı — ${task.title}\n`
+                try { fs.appendFileSync(sharedNotesPath, noteEntry) } catch (e) {}
+                
+                // Trigger task-runner.sh
+                const runner = spawn('bash', [path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')], { detached: true, stdio: 'ignore' })
+                runner.unref()
+                logger.info('Task runner tetiklendi (PUT start)', { taskId: task.id })
+                
+                // Telegram bildirimi
+                sendTelegramAssignNotification(task.id, 'Alfred', task.title, now)
+                addNotification('task_started', `${task.id} Başlatıldı`, task.title, task.id)
               }
 
               res.writeHead(200, { 'Content-Type': 'application/json' })
