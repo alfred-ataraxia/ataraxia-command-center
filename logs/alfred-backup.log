@@ -91,3 +91,51 @@ To https://github.com/alfred-ataraxia/ataraxia-command-center
 [2026-04-11 03:00:02]   system-status.md OK
 [2026-04-11 03:00:02] Git commit hazırlanıyor...
 [2026-04-11 03:00:02] Git commit hazırlanıyor...
+[master 4ec545b] chore: otomatik yedek — 2026-04-11 03:00
+ 32 files changed, 1322 insertions(+), 2193 deletions(-)
+ create mode 100644 alfred-memory/feedback_claude_code_ops.md
+ create mode 100644 alfred-memory/feedback_token_budget.md
+ delete mode 100644 dashboard/src/components/FreeRideView.jsx
+ delete mode 100644 dashboard/src/components/HomeAssistantView.jsx
+ delete mode 100644 dashboard/src/components/SettingsView.jsx
+ create mode 100644 dashboard/src/components/StatsChart.jsx
+ delete mode 100644 dashboard/src/components/SystemMetricsChart.jsx
+ delete mode 100644 dashboard/src/components/TokenUsage.jsx
+ delete mode 100644 dashboard/src/components/ToolsView.jsx
+ create mode 100644 dashboard/src/components/useToast.js
+ create mode 100644 scrum/sprints/sprint-02.md
+ create mode 100644 scrum/sprints/sprint-03.md
+[2026-04-11 03:00:02] Commit OK
+[2026-04-11 03:00:02] Commit OK
+To https://github.com/alfred-ataraxia/ataraxia-command-center
+   d7c0727..4ec545b  master -> master
+[2026-04-11 03:00:04] Push OK → GitHub
+[2026-04-11 03:00:04] Push OK → GitHub
+[2026-04-11 03:00:04] === Yedekleme tamamlandı ===
+[2026-04-11 03:00:04] === Yedekleme tamamlandı ===
+[2026-04-12 03:00:01] === Yedekleme başladı ===
+[2026-04-12 03:00:01] === Yedekleme başladı ===
+[2026-04-12 03:00:01] Scrum dosyaları kopyalanıyor...
+[2026-04-12 03:00:01] Scrum dosyaları kopyalanıyor...
+[2026-04-12 03:00:01]   scrum/ OK
+[2026-04-12 03:00:01]   scrum/ OK
+[2026-04-12 03:00:01] Alfred hafızası kopyalanıyor...
+[2026-04-12 03:00:01] Alfred hafızası kopyalanıyor...
+[2026-04-12 03:00:01]   memory/ OK
+[2026-04-12 03:00:01]   memory/ OK
+[2026-04-12 03:00:01] Claude skills ve scripts yedekleniyor...
+[2026-04-12 03:00:01] Claude skills ve scripts yedekleniyor...
+[2026-04-12 03:00:01]   skills/ OK
+[2026-04-12 03:00:01]   skills/ OK
+[2026-04-12 03:00:01]   scripts/ OK
+[2026-04-12 03:00:01]   scripts/ OK
+[2026-04-12 03:00:01] Telegram bot yedekleniyor...
+[2026-04-12 03:00:01] Telegram bot yedekleniyor...
+[2026-04-12 03:00:01]   telegram_bot.py OK
+[2026-04-12 03:00:01]   telegram_bot.py OK
+[2026-04-12 03:00:01] Sistem snapshot alınıyor...
+[2026-04-12 03:00:01] Sistem snapshot alınıyor...
+[2026-04-12 03:00:01]   system-status.md OK
+[2026-04-12 03:00:01]   system-status.md OK
+[2026-04-12 03:00:01] Git commit hazırlanıyor...
+[2026-04-12 03:00:01] Git commit hazırlanıyor...

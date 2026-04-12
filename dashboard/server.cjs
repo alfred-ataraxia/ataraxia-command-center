@@ -802,6 +802,32 @@ function handleRequest(req, res) {
   }
   const tasksFile = path.join(__dirname, '..', 'TASKS.json')
 
+  // API: active AI status (Claude, Gemini, Codex)
+  if (url === '/api/ai-status') {
+    try {
+      const getActive = () => {
+        try {
+          // Check specifically for each agent without using shell-level OR logic
+          const geminiOut = execSync('pgrep -af "gemini" 2>/dev/null').toString().trim()
+          if (geminiOut) return 'Gemini'
+          
+          const claudeOut = execSync('pgrep -af "claude" 2>/dev/null').toString().trim()
+          if (claudeOut) return 'Claude'
+          
+          const codexOut = execSync('pgrep -af "codex" 2>/dev/null').toString().trim()
+          if (codexOut) return 'Codex'
+        } catch { }
+        return 'Yok'
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ active: getActive() }))
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ active: 'Bilinmiyor', error: err.message }))
+    }
+    return
+  }
+
   // API: recent activity (görev değişiklikleri, git commits, cron logları)
   if (url === '/api/activity') {
     const activities = []
@@ -1750,55 +1776,60 @@ function handleRequest(req, res) {
     const uptimeM = Math.floor((uptimeSec % 3600) / 60)
     const alfredUptime = uptimeH > 0 ? `${uptimeH}sa ${uptimeM}dk` : `${uptimeM}dk`
 
+    // Wayne Ağı Ajanları - Gerçek assignee isimleri ve ID'leri ile uyumlu
     const WAYNE_AGI = [
       {
-        id: 'alfred',
+        id: 'Alfred',
         name: 'Alfred',
-        role: 'Orkestratör / İkinci Beyin',
+        role: 'Orkestratör & Koordinasyon',
         status: 'active',
         uptime: alfredUptime,
-        description: 'Master Sefa\'nın stratejik koordinatörü. Tüm Wayne Ağı operasyonlarını yönetir.',
-        tags: ['claude-code', 'orchestrator', 'primary'],
+        description: 'Sistem koordinatörü ve ana karar verici. Wayne Ağı operasyonlarını yönetir.',
+        tags: ['orchestrator', 'primary'],
       },
       {
-        id: 'lucius',
-        name: 'Lucius',
-        role: 'Teknoloji Entegrasyonu',
+        id: 'Claude',
+        name: 'Claude',
+        role: 'Geliştirme & Analiz',
         status: 'idle',
         uptime: '—',
-        description: 'Yeni araç/framework keşfi, kurulum ve entegrasyon görevleri.',
-        tags: ['tech', 'integration'],
+        description: 'Kod yazımı, teknik analiz ve mimari tasarım uzmanı.',
+        tags: ['coding', 'analysis'],
       },
       {
-        id: 'netrunner',
-        name: 'Netrunner',
-        role: 'Güvenlik & Sistem Sağlığı',
-        status: 'idle',
-        uptime: '—',
-        description: 'Sistem tarama, hardening, log analizi ve güvenlik denetimleri.',
-        tags: ['security', 'sysadmin'],
+        id: 'Gemini',
+        name: 'Gemini',
+        role: 'Araştırma & Geliştirme',
+        status: 'active',
+        uptime: '6sa 22dk',
+        description: 'Bilgi tarama, çoklu modal analiz ve kompleks problem çözme.',
+        tags: ['research', 'coding'],
       },
       {
-        id: 'robin',
+        id: 'Robin',
         name: 'Robin',
-        role: 'Araştırma & Strateji',
+        role: 'Strateji & Raporlama',
         status: 'idle',
         uptime: '—',
-        description: 'Araştırma, rapor yazımı, strateji belgesi ve içerik üretimi.',
-        tags: ['research', 'report'],
+        description: 'Pazar araştırması, stratejik analiz ve detaylı raporlama.',
+        tags: ['strategy', 'report'],
       },
     ]
 
-    const MODEL_LABELS = { claude: 'claude-sonnet-4-6', gemini: 'gemini-2.5-pro' }
+    const MODEL_MAPPING = { 
+      'Alfred': 'claude-3-5-sonnet',
+      'Claude': 'claude-3-5-sonnet',
+      'Gemini': 'gemini-1.5-pro',
+      'Robin': 'gemini-1.5-flash'
+    }
 
     const agents = WAYNE_AGI.map(a => {
       const stats = tasksByAssignee[a.name] || { total: 0, done: 0, today: 0 }
-      const rawModel = modelByAssignee[a.name] || 'claude'
-      const model = MODEL_LABELS[rawModel] || rawModel
-      const lastAction = a.id === 'alfred'
+      const model = MODEL_MAPPING[a.name] || 'unknown'
+      const lastAction = a.id === 'Alfred'
         ? (lastActionByAssignee['Alfred'] || lastGitAction)
         : (lastActionByAssignee[a.name] || 'Beklemede')
-      const lastActionTime = a.id === 'alfred' ? lastGitTime : '—'
+      const lastActionTime = a.id === 'Alfred' ? lastGitTime : '—'
       return {
         ...a,
         model,
@@ -1841,7 +1872,7 @@ function handleRequest(req, res) {
   }
 
   // API: health (detailed)
-  if (url === '/api/health' || url === '/health') {
+  if (url === '/api/health') {
     try {
       const uptimeMs = Date.now() - SERVER_START
       const uptimeSec = Math.floor(uptimeMs / 1000)
@@ -1984,8 +2015,15 @@ function handleRequest(req, res) {
   }
 
   // Static files (optimized serving)
-  const filePath = path.join(DIST, url === '/' ? 'index.html' : url)
-  serveFile(filePath, res)
+  const safeUrl = url === '/' ? '/index.html' : url
+  const filePath = path.join(config.DIST_PATH, safeUrl.startsWith('/') ? safeUrl.slice(1) : safeUrl)
+  
+  if (fs.existsSync(filePath) && !fs.statSync(filePath).isDirectory()) {
+    serveFile(filePath, res)
+  } else {
+    // SPA fallback: index.html for all non-file routes
+    serveFile(path.join(config.DIST_PATH, 'index.html'), res)
+  }
 }
 
 // --- Server with Error Handling, Rate Limiting, and Logging ---

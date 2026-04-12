@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-10T00:57:21.961Z",
+  "updated_at": "2026-04-11T17:40:01.028Z",
   "tasks": [
     {
       "id": "T-001",
@@ -1620,13 +1620,280 @@
         "haftalik",
         "otomatik"
       ],
-      "created_at": "2026-04-10T03:53:14.211710"
+      "created_at": "2026-04-10T03:53:14.211710",
+      "updated_at": "2026-04-12T02:53:02.449201",
+      "notes": [
+        {
+          "at": "2026-04-11T21:02:26.481500",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T21:02:38.882166",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T21:12:50.686393",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T21:13:02.445253",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T21:23:50.635657",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T21:24:02.757910",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T21:34:50.622792",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T21:35:04.838139",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T21:45:50.618909",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T21:46:03.882194",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T21:56:50.610915",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T21:57:04.329067",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T22:07:50.626270",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T22:08:03.641524",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T22:18:50.638300",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T22:19:05.514281",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T22:29:50.634158",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T22:30:04.926444",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T22:40:50.622672",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T22:41:04.616136",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T22:51:50.661101",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T22:52:04.316822",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T23:02:50.913187",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T23:03:04.356263",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T23:13:50.684442",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T23:14:04.011239",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T23:24:50.643695",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T23:25:05.023456",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T23:35:50.625235",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T23:36:04.210300",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T23:46:50.668212",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T23:47:02.978231",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-11T23:57:50.616526",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-11T23:58:03.553505",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T00:08:50.626465",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T00:09:05.152927",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T00:19:50.632088",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T00:20:04.348374",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T00:30:50.620117",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T00:31:04.092600",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T00:41:50.609166",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T00:42:03.592262",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T00:52:50.757193",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T00:53:02.979546",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T01:03:50.669911",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T01:04:04.255697",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T01:14:50.621090",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T01:15:02.811507",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T01:25:50.971671",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T01:26:07.760429",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T01:37:21.511096",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T01:37:37.054311",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T01:47:50.686472",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T01:48:06.702530",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T01:57:51.645282",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T01:58:09.018461",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T02:08:50.679190",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T02:09:03.365612",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T02:19:50.635121",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T02:20:03.238715",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T02:30:50.703379",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T02:31:03.560214",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T02:41:50.683100",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T02:42:04.746694",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        },
+        {
+          "at": "2026-04-12T02:52:50.644784",
+          "text": "Orkestratör tarafından Robin ajanı atandı."
+        },
+        {
+          "at": "2026-04-12T02:53:02.449201",
+          "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        }
+      ]
     },
     {
       "id": "T-094",
       "title": "Pi-hole blocklist güncelleme",
       "description": "Pi-hole gravity güncelle: pihole -g komutunu çalıştır, sonucu logla.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "low",
       "assignee": "Netrunner",
       "preferred_model": "claude",
@@ -1638,6 +1905,33 @@
         "otomatik"
       ],
       "created_at": "2026-04-10T03:53:14.211710"
+    },
+    {
+      "id": "T-093",
+      "title": "Kanonik Ortak Hafıza Kurulumu",
+      "description": "master-memory dizini ve senkronizasyon protokolü.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Gemini",
+      "tags": [
+        "memory"
+      ],
+      "due": "2026-04-11",
+      "created_at": "2026-04-11T17:40:01.028Z"
+    },
+    {
+      "id": "T-094",
+      "title": "Dashboard Veri Tutarlılığı Onarımı",
+      "description": "Ajan/Model eşleşmeleri ve silinen görev geçmişinin kurtarılması.",
+      "status": "in_progress",
+      "priority": "high",
+      "assignee": "Gemini",
+      "tags": [
+        "fix",
+        "dashboard"
+      ],
+      "due": "2026-04-11",
+      "created_at": "2026-04-11T17:40:01.028Z"
     }
   ]
 }

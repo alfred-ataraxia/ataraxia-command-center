@@ -6,11 +6,36 @@ Sefa ile Telegram'dan doğrudan konuşma
 
 import os
 import subprocess
+import socket
+import json
+import asyncio
 from datetime import datetime
 import requests
-import json
 import time
 import glob
+from aiohttp import web
+
+SOCKET_PATH = "/tmp/lattice.sock"
+
+def send_to_lattice(action, agent="claude", command="", chat_id=None):
+    """Orchestrator'a görev gönderir (chat_id ile birlikte)"""
+    try:
+        payload = {
+            "action": action,
+            "agent": agent,
+            "command": command,
+            "chat_id": chat_id,
+            "timestamp": datetime.now().isoformat()
+        }
+        client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        client.settimeout(2)
+        client.connect(SOCKET_PATH)
+        client.send(json.dumps(payload).encode())
+        client.close()
+        return True
+    except Exception as e:
+        log_msg(f"LATTICE IPC ERROR: {e}")
+        return False
 
 def load_env():
     env_path = "/home/sefa/alfred-hub/command-center/dashboard/.env"
@@ -58,42 +83,21 @@ def send_message(chat_id, text, parse_mode="Markdown"):
         return False
 
 def call_claude(chat_id, prompt):
-    """Call Claude Code CLI with conversation history (Haiku model)"""
+    """Görevi Orchestrator'a (Node.js) devreder"""
     if chat_id not in CONVERSATIONS:
         CONVERSATIONS[chat_id] = []
     CONVERSATIONS[chat_id].append({"role": "user", "content": prompt})
 
-    history = CONVERSATIONS[chat_id][-MAX_HISTORY:]
-
-    if len(history) > 1:
-        context = "Aşağıdaki konuşma geçmişini bağlam olarak kullan:\n\n"
-        for msg in history[:-1]:
-            role = "Kullanıcı" if msg["role"] == "user" else "Alfred"
-            context += f"{role}: {msg['content']}\n\n"
-        full_prompt = context + f"Kullanıcı: {prompt}"
+    # Kontekst hazırlığı (Hafifletilmiş)
+    full_command = f"claude --model haiku -p \"{prompt.replace('\"', '\\\"')}\""
+    
+    # Orchestrator'a sinyal gönder (chat_id ile birlikte)
+    success = send_to_lattice("NEW_TASK", agent="claude", command=full_command, chat_id=chat_id)
+    
+    if success:
+        return "⚡ Görev Orchestrator'a iletildi. İşleniyor..."
     else:
-        full_prompt = prompt
-
-    try:
-        result = subprocess.run(
-            ["claude", "--model", "haiku", "-p", full_prompt],
-            capture_output=True,
-            text=True,
-            timeout=60
-        )
-        output = result.stdout.strip()
-        if result.returncode != 0:
-            output = result.stderr.strip() or "Hata"
-        output = output[:4000]
-
-        CONVERSATIONS[chat_id].append({"role": "assistant", "content": output})
-        return output
-    except subprocess.TimeoutExpired:
-        return "⏱️ Timeout (60s). Daha sonra tekrar dene."
-    except FileNotFoundError:
-        return "❌ Claude Code CLI bulunamadı. `claude` komutunu kur."
-    except Exception as e:
-        return f"❌ Hata: {str(e)[:100]}"
+        return "❌ Orchestrator bağlantı hatası. Lütfen servisi kontrol et."
 
 def handle_message(chat_id, text):
     """Handle messages"""
@@ -140,6 +144,14 @@ def handle_command(chat_id, text):
         CONVERSATIONS.pop(chat_id, None)
         send_message(chat_id, "🧹 Konuşma geçmişi temizlendi.")
         log_msg(f"CLEAR: chat_id={chat_id}")
+
+    elif cmd == "/stop":
+        success = send_to_lattice("KILL_CURRENT")
+        if success:
+            send_to_lattice("KILL_CURRENT") # Double check
+            send_message(chat_id, "🛑 Aktif tüm süreçler durduruldu.")
+        else:
+            send_message(chat_id, "❌ Durdurma komutu gönderilemedi.")
 
     elif cmd == "/status":
         response = call_claude(chat_id, "Sistem durumu: RAM, disk, Docker container sayısı. Kısa, bullet format.")
@@ -241,14 +253,36 @@ def poll_updates(offset=0):
             log_msg(f"POLL ERROR: {e}")
             time.sleep(5)
 
-if __name__ == "__main__":
-    log_msg("=== Bot başlatıldı (Güvenlik Revizyonu 1.1) ===")
-    print("🦇 Alfred Telegram Bot — Claude Mode (Secure)")
-    print("@ataraxia_alfred_bot aktif")
-    print("Ctrl+C ile durdur\n")
-
+# --- Webhook ve Async Başlatıcı ---
+async def handle_callback(request):
     try:
-        poll_updates()
-    except KeyboardInterrupt:
-        log_msg("Bot kapatıldı")
-        print("\n👋 Bot kapatıldı")
+        data = await request.json()
+        chat_id = data.get("chat_id")
+        message = data.get("message", "")
+        status = data.get("status", "info")
+        prefix = "✅" if status == "success" else "ℹ️"
+        requests.post(f"{API_URL}/sendMessage", json={
+            "chat_id": chat_id,
+            "text": f"{prefix} **Lattice Yanıtı:**\n\n{message}"[:4096],
+            "parse_mode": "Markdown"
+        })
+        return web.Response(text="OK")
+    except:
+        return web.Response(text="Error", status=500)
+
+async def main_loop():
+    # Webhook sunucusunu başlat
+    app = web.Application()
+    app.router.add_post('/callback', handle_callback)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '127.0.0.1', 8001)
+    await site.start()
+    
+    # Mevcut polling döngüsünü asenkron çalıştır
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, poll_updates)
+
+if __name__ == "__main__":
+    log_msg("=== Bot başlatıldı (Webhook Aktif) ===")
+    asyncio.run(main_loop())
