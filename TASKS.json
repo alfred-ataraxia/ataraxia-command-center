@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T18:04:09.495Z",
+  "updated_at": "2026-04-12T18:04:41.688Z",
   "tasks": [
     {
       "id": "T-018",
@@ -2140,7 +2140,7 @@
       "id": "T-105",
       "title": "TaskQueue — mobil responsive test",
       "description": "Mobil telefondan görevler sayfası düzgün görünüyor mu? Açılır kartlar, butonlar, filtreler mobilde kullanışlı mı?",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [
@@ -2149,7 +2149,14 @@
         "ui"
       ],
       "due": "2026-04-14",
-      "auto": false
+      "auto": false,
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T18:04:41.688Z"
+        }
+      ]
     },
     {
       "id": "T-106",
