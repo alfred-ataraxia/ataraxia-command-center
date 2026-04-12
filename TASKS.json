@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T15:41:25.063Z",
+  "updated_at": "2026-04-12T18:47:02.119137",
   "tasks": [
     {
       "id": "T-018",
@@ -1984,6 +1984,179 @@
           "at": "2026-04-12T07:49:16.759Z"
         }
       ]
+    },
+    {
+      "id": "T-096",
+      "title": "Kokpit — Git repos hatası düzelt (master-memory)",
+      "description": "master-memory reposunda branch — gösteriyor ve error: true veriyor. Git path kontrol et.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "api"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-097",
+      "title": "Kokpit — Sistem Akışı (events) bölümünü düzelt",
+      "description": "activity API'den gelen verileri kontrol et. Görev değişiklikleri, cron logları düzgün görünmüyor.",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "api"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-098",
+      "title": "Dashboard — Logs sayfası doğrulaması",
+      "description": "Logs sayfası düzgün çalışıyor mu kontrol et. /api/logs endpoint'i tüm log dosyalarını listeliyor mu?",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "logs"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-099",
+      "title": "Morning Briefing — 07:00 Telegram testi",
+      "description": "Sabah 07:00'de Telegram'a hava durumu, takvim, öncelikler gidiyor mu? Test et veya yarın kontrol et.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "cron",
+        "telegram",
+        "daily"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-100",
+      "title": "Evening Report — 23:00 Telegram testi",
+      "description": "Akşam 23:00'de günlük özet, görevler, sistem durumu Telegram'a geliyor mu? Test et veya yarın kontrol et.",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "cron",
+        "telegram",
+        "daily"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-101",
+      "title": "Alfred Runner — 30 dakika görev alma testi",
+      "description": "Alfred her 30 dakikada bir pending görev alıyor mu? Telegram'a bildirim gidiyor mu? Throttle mekanizması doğru çalışıyor mu?",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "cron",
+        "tasks",
+        "alfred"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-102",
+      "title": "Task Watchdog — Telegram bildirimi doğrulaması",
+      "description": "Watchdog her 30 dakikada çalışıyor mu? Alfred'e atanmış aktif görevler Telegram'a bildiriliyor mu?",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "cron",
+        "telegram",
+        "watchdog"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-103",
+      "title": "Dashboard — Docker servisleri doğru gösterimi",
+      "description": "Docker servisleri listesi doğru mu? container isimleri ve durumları gerçek durumla uyumlu mu?",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "docker"
+      ],
+      "due": "2026-04-14",
+      "auto": false
+    },
+    {
+      "id": "T-104",
+      "title": "Overview — açılır kart tasarımı stabillik testi",
+      "description": "Sistem metrikleri, git, servisler bölümleri stabil çalışıyor mu? Error state'ler düzgün gösteriliyor mu?",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "ui"
+      ],
+      "due": "2026-04-14",
+      "auto": false
+    },
+    {
+      "id": "T-105",
+      "title": "TaskQueue — mobil responsive test",
+      "description": "Mobil telefondan görevler sayfası düzgün görünüyor mu? Açılır kartlar, butonlar, filtreler mobilde kullanışlı mı?",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "mobile",
+        "ui"
+      ],
+      "due": "2026-04-14",
+      "auto": false
+    },
+    {
+      "id": "T-106",
+      "title": "Overview — uptime ve sistem metrikleri doğruluğu",
+      "description": "RAM, CPU, Disk yüzdeleri gerçek değerlerle uyumlu mu? Uptime bilgisi doğru mu?",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "dashboard",
+        "metrics"
+      ],
+      "due": "2026-04-13",
+      "auto": false
+    },
+    {
+      "id": "T-107",
+      "title": "TASKS.json — eski done görevleri arşivle",
+      "description": "66 tane done görev var. Bunları ayrı bir arşiv dosyasına taşı ve TASKS.json'u temizle.",
+      "status": "pending",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "cleanup",
+        "tasks"
+      ],
+      "due": "2026-04-15",
+      "auto": false
     }
   ]
 }
