@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T03:20:39.486Z",
+  "updated_at": "2026-04-12T07:44:58.403Z",
   "tasks": [
     {
       "id": "T-021",
@@ -70,7 +70,7 @@
       "id": "T-017",
       "title": "OrchestrationView görev dağıtım bugları",
       "description": "1) Status history from değeri yanlış (task.status atamadan önce yakalanmalı) 2) Telegram \"Görev Tamamlandı\" yerine \"Görev Atandı\" demeli 3) addNotification type \"task_complete\" yerine \"task_assigned\" olmalı",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [
@@ -90,6 +90,13 @@
         {
           "at": "2026-04-12T04:27:57.831231",
           "text": "HATA: Ajan yürütme sırasında başarısız oldu. Logları kontrol edin."
+        }
+      ],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T07:44:58.403Z"
         }
       ]
     },
@@ -394,95 +401,6 @@
           "at": "2026-04-07T17:00:00.000Z"
         }
       ],
-      "auto": false
-    },
-    {
-      "id": "T-017",
-      "title": "Haftalık otomatik yedekleme",
-      "description": "Her Pazar gece workspace, TASKS.json, dashboard config yedeklensin. Backup scripti + cron job. Son 4 yedek tutulsun.",
-      "status": "done",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [
-        "cron",
-        "yedekleme",
-        "sistem"
-      ],
-      "due": "2026-04-09",
-      "created_at": "2026-04-06T16:30:00+03:00",
-      "auto": false
-    },
-    {
-      "id": "T-018",
-      "title": "OpenClaw skill entegrasyonu - free-ride",
-      "description": "skills/free-ride klasöründeki skill'i dashboard'dan tetiklenebilir hale getir. Skill durumu ve çıktısı dashboard'da görünsün.",
-      "status": "done",
-      "priority": "low",
-      "assignee": "Alfred",
-      "tags": [
-        "openclaw",
-        "skills"
-      ],
-      "due": "2026-04-10",
-      "created_at": "2026-04-06T16:30:00+03:00",
-      "auto": false
-    },
-    {
-      "id": "T-019",
-      "title": "Dashboard PWA desteği",
-      "description": "Progressive Web App manifest + service worker ekle. Telefonda ana ekrana eklenebilsin, offline'da temel bilgi göstersin.",
-      "status": "done",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [
-        "dashboard",
-        "mobile",
-        "pwa"
-      ],
-      "due": "2026-04-09",
-      "created_at": "2026-04-06T16:30:00+03:00",
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-07T05:19:47.064Z"
-        },
-        {
-          "from": "in_progress",
-          "to": "done",
-          "at": "2026-04-07T09:40:00.000Z"
-        }
-      ],
-      "auto": false
-    },
-    {
-      "id": "T-020",
-      "title": "Görev öncelik sıralaması ve drag-drop",
-      "description": "Görev kuyruğunda drag-drop ile sıralama. Öncelik değiştirme. Görevler önceliğe göre otomatik sıralansın.",
-      "status": "done",
-      "priority": "low",
-      "assignee": "Alfred",
-      "tags": [
-        "dashboard",
-        "ui"
-      ],
-      "due": "2026-04-10",
-      "created_at": "2026-04-06T16:30:00+03:00",
-      "auto": false
-    },
-    {
-      "id": "T-021",
-      "title": "Sidebar aktif sayfa renklendirme düzeltmesi",
-      "description": "Sidebar menüde tıklanan sayfa doğru vurgulanacak, diğer sayfaların içeriği yüklenecek (agents, logs, tools vb.)",
-      "status": "done",
-      "priority": "high",
-      "assignee": "Alfred",
-      "tags": [
-        "dashboard",
-        "ui"
-      ],
-      "due": "2026-04-07",
-      "created_at": "2026-04-06T15:10:03.000Z",
       "auto": false
     },
     {
@@ -1487,7 +1405,7 @@
       "description": "Claude Code hook olarak tehlikeli komutlar için onay diyaloğu. awesome-claude-code N-002.",
       "status": "done",
       "priority": "medium",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "claude-code",
         "hook",
@@ -1504,7 +1422,7 @@
       "description": "Claude Code statusline'a git branch ve sistem metriklerini ekle. N-005.",
       "status": "pending",
       "priority": "low",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "claude-code",
         "statusline",
@@ -1629,23 +1547,12 @@
       "completed_at": "2026-04-10T21:12:19.433576"
     },
     {
-      "id": "T-071",
-      "title": "Dashboard son kayıtlar",
-      "description": "Son kayıtlar kısmı hatalı ya da yanlış eğer verimli olacaksa ve gerekliyse token çok yakmayacak şekilde entegre edelim",
-      "status": "done",
-      "priority": "high",
-      "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-09T10:19:01.117Z"
-    },
-    {
       "id": "T-087",
       "title": "TaskQueue — auto:true badge ve filtresi ekle",
       "description": "normalizeTask() fonksiyonuna auto field'ı ekle. TaskRow'a ⚡ rozet koy (ax-amber rengi, 'Otomatik' tooltip). FilterPanel'a 'Otomatik Görevler' toggle switch ekle. getFilteredTasks()'a auto filtresi entegre et.",
-      "status": "in_progress",
+      "status": "pending",
       "priority": "high",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "dashboard",
         "ux",
@@ -1668,9 +1575,9 @@
       "id": "T-088",
       "title": "AgentStatus — gerçek model routing'i yansıt",
       "description": "server.cjs WAYNE_AGI array'inde model alanlarını güncelleştir. Robin için model='gemini-2.5-pro', diğerleri için routing'e göre güncelle. AgentCard'a model chip'i ekle.",
-      "status": "in_progress",
+      "status": "pending",
       "priority": "medium",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "dashboard",
         "agents",
@@ -1694,7 +1601,7 @@
       "status": "done",
       "updated_at": "2026-04-10T09:18:00.000Z",
       "priority": "medium",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "dashboard",
         "automation",
@@ -1718,7 +1625,7 @@
       "description": "WEEKLY_BUDGET hardcode'u kaldır, /api/tokens'tan oku. tasks_by_model'e minimax/haiku/flash/sonnet/opus ekle. Gemini ve Minimax için renk tanımla.",
       "status": "pending",
       "priority": "low",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "dashboard",
         "token",
@@ -1763,7 +1670,7 @@
       "description": "HomeAssistantView.jsx'te error state iyileştir: HA URL ve bağlantı durumu göster, 'Yeniden Bağlan' butonu, son başarılı bağlantı zamanı. connected=false'ta son değerleri grayed-out göster.",
       "status": "pending",
       "priority": "low",
-      "assignee": "Lucius",
+      "assignee": "Alfred",
       "tags": [
         "dashboard",
         "ha",
@@ -2131,53 +2038,17 @@
       ]
     },
     {
-      "id": "T-093",
-      "title": "Kanonik Ortak Hafıza Kurulumu",
-      "description": "master-memory dizini ve senkronizasyon protokolü.",
-      "status": "done",
-      "priority": "high",
-      "assignee": "Gemini",
-      "tags": [
-        "memory"
-      ],
-      "due": "2026-04-11",
-      "created_at": "2026-04-11T17:40:01.028Z"
-    },
-    {
-      "id": "T-094",
-      "title": "Dashboard Veri Tutarlılığı Onarımı",
-      "description": "Ajan/Model eşleşmeleri ve silinen görev geçmişinin kurtarılması.",
-      "status": "pending",
-      "priority": "high",
-      "assignee": "Gemini",
-      "tags": [
-        "fix",
-        "dashboard"
-      ],
-      "due": "2026-04-11",
-      "created_at": "2026-04-11T17:40:01.028Z"
-    },
-    {
-      "id": "T-087",
-      "title": "Görev ve otomasyon sistemi",
-      "description": "Görev ekleme ve düzenleme sistemleri çok karışık çok fazla seçenek ver sadeleştirelim. Bir de eskiden kalma bilgiler var onlardan kurtulalım. Ayrıca optimize çalışan bir görev yapısı kuralım",
-      "status": "pending",
-      "priority": "medium",
+      "id": "T-095",
+      "title": "Görev sistemi sadeleştirme",
+      "status": "in_progress",
       "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-12T03:02:30.864Z"
-    },
-    {
-      "id": "T-088",
-      "title": "Dashboard Veri Tutarlılığı Onarımı",
-      "description": "Analiz ey",
-      "status": "pending",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-12T03:20:31.005Z"
+      "priority": "high",
+      "auto": false,
+      "created_at": "2026-04-12T07:40:00+03:00",
+      "description": "Task sistemi sadeleştirildi: duplicate temizlendi, yapı basitleştirildi",
+      "tags": [
+        "system"
+      ]
     }
   ]
 }
