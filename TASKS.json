@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T07:46:54.062Z",
+  "updated_at": "2026-04-12T07:49:16.759Z",
   "tasks": [
     {
       "id": "T-021",
@@ -2047,7 +2047,7 @@
     {
       "id": "T-095",
       "title": "Görev sistemi sadeleştirme",
-      "status": "in_progress",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "high",
       "auto": false,
@@ -2055,6 +2055,13 @@
       "description": "Task sistemi sadeleştirildi: duplicate temizlendi, yapı basitleştirildi",
       "tags": [
         "system"
+      ],
+      "status_history": [
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-12T07:49:16.759Z"
+        }
       ]
     }
   ]
