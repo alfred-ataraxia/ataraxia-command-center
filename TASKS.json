@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T03:20:31.005Z",
+  "updated_at": "2026-04-12T03:20:39.486Z",
   "tasks": [
     {
       "id": "T-021",
@@ -1668,7 +1668,7 @@
       "id": "T-088",
       "title": "AgentStatus — gerçek model routing'i yansıt",
       "description": "server.cjs WAYNE_AGI array'inde model alanlarını güncelleştir. Robin için model='gemini-2.5-pro', diğerleri için routing'e göre güncelle. AgentCard'a model chip'i ekle.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Lucius",
       "tags": [
@@ -1678,7 +1678,14 @@
       ],
       "due": "2026-04-14",
       "points": 2,
-      "auto": false
+      "auto": false,
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T03:20:39.486Z"
+        }
+      ]
     },
     {
       "id": "T-089",
