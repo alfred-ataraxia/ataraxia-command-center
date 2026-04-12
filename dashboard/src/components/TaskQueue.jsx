@@ -89,6 +89,11 @@ function TaskCard({ task, onToggle, onDelete }) {
             <span className={`px-1.5 py-0.5 rounded border text-[10px] font-medium ${priority.class}`}>
               {priority.label}
             </span>
+            {task.auto && (
+              <span title="Otomatik Görev" className="px-1.5 py-0.5 rounded bg-ax-amber/20 border border-ax-amber/40 text-ax-amber text-[10px] font-bold">
+                ⚡ Otomatik
+              </span>
+            )}
           </div>
           <p className={`text-sm font-medium mt-0.5 ${task.status === 'done' ? 'line-through text-ax-dim' : 'text-ax-heading'}`}>
             {task.title}
@@ -279,6 +284,7 @@ export default function TaskQueue() {
   const [search, setSearch] = useState('')
   const [hideDone, setHideDone] = useState(true)
   const [priorityFilter, setPriorityFilter] = useState('')
+  const [autoFilter, setAutoFilter] = useState(false)
 
   const loadTasks = useCallback(async () => {
     try {
@@ -317,6 +323,7 @@ export default function TaskQueue() {
       if (!t.title.toLowerCase().includes(q) && !t.id.toLowerCase().includes(q)) return false
     }
     if (priorityFilter && t.priority !== priorityFilter) return false
+    if (autoFilter && !t.auto) return false
     return true
   })
 
@@ -381,6 +388,17 @@ export default function TaskQueue() {
           }`}
         >
           {hideDone ? '✓ Tamamlananlar gizli' : 'Tamamlananlar görünür'}
+        </button>
+
+        <button
+          onClick={() => setAutoFilter(!autoFilter)}
+          className={`px-3 py-2 rounded-lg border text-xs font-medium transition-colors ${
+            autoFilter
+              ? 'bg-ax-amber/15 border-ax-amber/30 text-ax-amber'
+              : 'bg-ax-panel border-ax-border text-ax-dim'
+          }}`}
+        >
+          ⚡ Otomatik {autoFilter ? ' (filtreli)' : ''}
         </button>
       </div>
 
