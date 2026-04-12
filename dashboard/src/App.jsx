@@ -3,23 +3,15 @@ import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './components/ToastContainer'
 import Sidebar from './components/Sidebar'
 import Overview from './components/Overview'
-import AgentStatus from './components/AgentStatus'
 import TaskQueue from './components/TaskQueue'
 import LogsView from './components/LogsView'
-import MemoryView from './components/MemoryView'
-import AutomationView from './components/AutomationView'
-import OrchestrationView from './components/OrchestrationView'
 import LoginModal from './components/LoginModal'
 import { getToken } from './services/apiFetch'
 
 const VIEWS = {
   overview: Overview,
-  agents: AgentStatus,
   tasks: TaskQueue,
-  memory: MemoryView,
   logs: LogsView,
-  automation: AutomationView,
-  orchestration: OrchestrationView,
 }
 
 export default function App() {
