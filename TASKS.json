@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T18:04:41.688Z",
+  "updated_at": "2026-04-12T18:05:20.120Z",
   "tasks": [
     {
       "id": "T-018",
@@ -2126,7 +2126,7 @@
       "id": "T-104",
       "title": "Overview — açılır kart tasarımı stabillik testi",
       "description": "Sistem metrikleri, git, servisler bölümleri stabil çalışıyor mu? Error state'ler düzgün gösteriliyor mu?",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
@@ -2134,7 +2134,14 @@
         "ui"
       ],
       "due": "2026-04-14",
-      "auto": false
+      "auto": false,
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-12T18:05:20.120Z"
+        }
+      ]
     },
     {
       "id": "T-105",
