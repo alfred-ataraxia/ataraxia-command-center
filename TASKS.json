@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T22:47:49.320Z",
+  "updated_at": "2026-04-13T22:48:06.299Z",
   "tasks": [
     {
       "id": "T-018",
@@ -42,6 +42,17 @@
       "notes": [
         "6 Docker container çalışıyor: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. RAM: 1.8/3.7Gi kullanımda (1.9Gi available). Disk: 231G toplam, 30G kullanılmış, %14 kullanım oranı. Tüm servisler sağlıklı."
       ]
+    },
+    {
+      "id": "T-003",
+      "title": "Görev Silmek",
+      "description": "Görev silme butonu mobilde çalışmıyor",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-13T22:48:06.299Z"
     }
   ]
 }
