@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T10:25:42.175Z",
+  "updated_at": "2026-04-13T10:26:00.141Z",
   "tasks": [
     {
       "id": "T-018",
@@ -344,12 +344,19 @@
       "id": "T-016",
       "title": "Görev",
       "description": "Görev yapısını iyileştir eski görevler ne zaman yapılıyor zaman damgası koy. Ve görevlerin içine hangi işlemlerin gerçekleştiğini yazabilirsin öyle bir yapı kuralım yapılan görevleri daha iyi bir şekilde takip edebileyim",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-13T10:25:42.175Z"
+      "created_at": "2026-04-13T10:25:42.175Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-13T10:26:00.141Z"
+        }
+      ]
     }
   ]
 }
