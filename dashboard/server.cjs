@@ -832,6 +832,7 @@ function handleRequest(req, res) {
     '/api/alerts', '/api/notifications',
     '/api/orchestration/cost', '/api/orchestration/activity', '/api/orchestration/distribute',
     '/api/git/repos', '/api/ai-status',
+    '/api/cron/count', '/api/system/crontab',
   ]
   
   // Paths that start with these prefixes are also allowed without auth
@@ -1240,6 +1241,19 @@ function handleRequest(req, res) {
   if (url === '/api/stats/history') {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify(statsHistory))
+    return
+  }
+
+  // API: cron job count
+  if (url === '/api/cron/count') {
+    const { execSync } = require('child_process')
+    try {
+      const output = execSync('crontab -l 2>/dev/null | grep -v "^#" | grep -v "^$" | wc -l', { encoding: 'utf8' })
+      const count = parseInt(output.trim() || '0', 10)
+      sendJson(res, 200, { count })
+    } catch {
+      sendJson(res, 200, { count: 0 })
+    }
     return
   }
 
@@ -1658,7 +1672,7 @@ function handleRequest(req, res) {
             const oldStatus = task.status
 
             // Validate and apply updates
-            if (updates.status && ['pending', 'in_progress', 'done'].includes(updates.status)) {
+            if (updates.status && ['pending', 'in_progress', 'done', 'deleted'].includes(updates.status)) {
               task.status = updates.status
             }
             if (updates.priority && ['low', 'medium', 'high'].includes(updates.priority)) {

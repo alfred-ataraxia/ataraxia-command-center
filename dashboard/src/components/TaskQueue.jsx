@@ -299,7 +299,7 @@ export default function TaskQueue() {
 
   useEffect(() => {
     loadTasks()
-    const interval = setInterval(loadTasks, 30_000)
+    const interval = setInterval(loadTasks, 60_000)
     return () => clearInterval(interval)
   }, [loadTasks])
 

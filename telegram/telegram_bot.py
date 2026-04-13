@@ -83,21 +83,36 @@ def send_message(chat_id, text, parse_mode="Markdown"):
         return False
 
 def call_claude(chat_id, prompt):
-    """Görevi Orchestrator'a (Node.js) devreder"""
+    """OpenClaw (MiniMax) CLI komutunu doğrudan çalıştırır"""
     if chat_id not in CONVERSATIONS:
         CONVERSATIONS[chat_id] = []
     CONVERSATIONS[chat_id].append({"role": "user", "content": prompt})
 
-    # Kontekst hazırlığı (Hafifletilmiş)
-    full_command = f"claude --model haiku -p \"{prompt.replace('\"', '\\\"')}\""
-    
-    # Orchestrator'a sinyal gönder (chat_id ile birlikte)
-    success = send_to_lattice("NEW_TASK", agent="claude", command=full_command, chat_id=chat_id)
-    
-    if success:
-        return "⚡ Görev Orchestrator'a iletildi. İşleniyor..."
-    else:
-        return "❌ Orchestrator bağlantı hatası. Lütfen servisi kontrol et."
+    try:
+        # OpenClaw kullanımı (Tamamen etkileşimsiz mod)
+        # --accept-risk: Onay bekleyen aşamaları otomatik geçer
+        result = subprocess.run(
+            ["openclaw", "-p", prompt, "--non-interactive", "--accept-risk"],
+            capture_output=True, text=True, timeout=180
+        )
+        stdout = result.stdout or ""
+        stderr = result.stderr or ""
+        response = stdout + "\n" + stderr
+        
+        if not response.strip():
+            response = "⚠️ OpenClaw boş yanıt döndürdü. Yapılandırmayı kontrol edin."
+        
+        # ANSI temizliği
+        import re
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        response = ansi_escape.sub('', response)
+        
+        return response[:4000]
+    except subprocess.TimeoutExpired:
+        return "⏱️ İşlem zaman aşımına uğradı (120 sn)."
+    except Exception as e:
+        log_msg(f"OPENCLAW ERROR: {e}")
+        return f"❌ OpenClaw hatası: {e}"
 
 def handle_message(chat_id, text):
     """Handle messages"""
