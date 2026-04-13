@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T07:29:02.836Z",
+  "updated_at": "2026-04-13T10:25:42.175Z",
   "tasks": [
     {
       "id": "T-018",
@@ -273,7 +273,7 @@
       "id": "T-013",
       "title": "Notları güncelle",
       "description": "Alman gereken notları benimle alakalı şeyleri vs obisidianda doldur",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
@@ -285,13 +285,22 @@
           "to": "in_progress",
           "at": "2026-04-13T07:28:17.372Z"
         }
+      ],
+      "started_at": "2026-04-13T10:45:33+03:00",
+      "completed_at": "2026-04-13T10:45:34+03:00",
+      "notes": [
+        {
+          "text": "Gorev incelendi",
+          "at": "2026-04-13T10:45:34+03:00",
+          "by": "alfred-work"
+        }
       ]
     },
     {
       "id": "T-014",
       "title": "Sil butonu",
       "description": "Bekliyordaki bir taski silmeye çalışıyorum ancak tepki vermiyor",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
@@ -303,7 +312,44 @@
           "to": "in_progress",
           "at": "2026-04-13T07:29:02.836Z"
         }
+      ],
+      "started_at": "2026-04-13T10:45:42+03:00",
+      "completed_at": "2026-04-13T10:45:42+03:00",
+      "notes": [
+        {
+          "text": "Gorev incelendi",
+          "at": "2026-04-13T10:45:42+03:00",
+          "by": "alfred-work"
+        }
       ]
+    },
+    {
+      "id": "T-TEST2",
+      "title": "Test gorev 2 - sistem testi",
+      "status": "done",
+      "assignee": "Alfred",
+      "priority": "medium",
+      "created_at": "2026-04-13T09:48:00+03:00",
+      "started_at": "2026-04-13T12:51:19+03:00",
+      "completed_at": "2026-04-13T13:00:01+03:00",
+      "notes": [
+        {
+          "text": "Alfred tarafindan tamamlandi",
+          "at": "2026-04-13T13:00:01+03:00",
+          "by": "alfred-work"
+        }
+      ]
+    },
+    {
+      "id": "T-016",
+      "title": "Görev",
+      "description": "Görev yapısını iyileştir eski görevler ne zaman yapılıyor zaman damgası koy. Ve görevlerin içine hangi işlemlerin gerçekleştiğini yazabilirsin öyle bir yapı kuralım yapılan görevleri daha iyi bir şekilde takip edebileyim",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-13T10:25:42.175Z"
     }
   ]
 }
