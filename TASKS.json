@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T07:28:15.568Z",
+  "updated_at": "2026-04-13T07:28:17.372Z",
   "tasks": [
     {
       "id": "T-018",
@@ -273,12 +273,19 @@
       "id": "T-013",
       "title": "Notları güncelle",
       "description": "Alman gereken notları benimle alakalı şeyleri vs obisidianda doldur",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-13T07:28:15.568Z"
+      "created_at": "2026-04-13T07:28:15.568Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-13T07:28:17.372Z"
+        }
+      ]
     }
   ]
 }
