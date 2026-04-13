@@ -1,12 +1,12 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T10:26:00.141Z",
+  "updated_at": "2026-04-13T22:47:49.320Z",
   "tasks": [
     {
       "id": "T-018",
       "title": "Google Cloud Free Tier kurulumu",
       "description": "Google Cloud hesabı aç, E2-micro VM oluştur, harici IP al",
-      "status": "pending",
+      "status": "deleted",
       "priority": "high",
       "assignee": "Master Sefa",
       "tags": [
@@ -16,346 +16,31 @@
       ],
       "due": "2026-04-12",
       "created_at": "2026-04-12T02:35:00+03:00",
-      "auto": false
-    },
-    {
-      "id": "T-096",
-      "title": "Kokpit — Git repos hatası düzelt (master-memory)",
-      "description": "master-memory reposunda branch — gösteriyor ve error: true veriyor. Git path kontrol et.",
-      "status": "deleted",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [
-        "dashboard",
-        "api"
-      ],
-      "due": "2026-04-13",
       "auto": false,
-      "started_at": "2026-04-12T21:00:01.391225",
       "status_history": [
         {
-          "at": "2026-04-12T21:00:01.391288",
           "from": "pending",
-          "to": "in_progress"
-        },
-        {
-          "from": "in_progress",
           "to": "deleted",
-          "at": "2026-04-12T18:04:09.495Z"
+          "at": "2026-04-13T22:47:49.320Z"
         }
       ]
     },
     {
-      "id": "T-107",
-      "title": "TASKS.json — eski done görevleri arşivle",
-      "description": "66 tane done görev var. Bunları ayrı bir arşiv dosyasına taşı ve TASKS.json'u temizle.",
+      "id": "T-CRON-TEST",
+      "title": "Sistem durumu özetle",
+      "description": "Ataraxia sistemindeki çalışan Docker container'larını, RAM kullanımını ve disk durumunu kontrol et. Kısa bir özet çıkar.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
       "tags": [
-        "cleanup",
-        "tasks"
+        "test",
+        "system"
       ],
-      "due": "2026-04-15",
-      "auto": false,
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-12T18:30:28.124Z"
-        },
-        {
-          "from": "in_progress",
-          "to": "done",
-          "at": "2026-04-12T18:33:19.140Z",
-          "note": "Archived 82 done tasks to TASKS-archive-2026-04-12.json"
-        }
-      ],
-      "completed_at": "2026-04-12T18:33:19.140Z"
-    },
-    {
-      "id": "T-108",
-      "title": "Obsidian vault — günlük notlar için tarihli dosya şablonu oluştur",
-      "description": "Her gün için YYYY-MM-DD.md formatında günlük not dosyası oluşturan bir sistem kur",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "medium",
-      "created_at": "2026-04-12T22:18:40.233384",
-      "tags": [
-        "obsidian",
-        "automation"
-      ],
-      "started_at": "2026-04-12T22:30:01+03:00",
-      "completed_at": "2026-04-12T20:46:00+03:00",
+      "created_at": "2026-04-14T01:35:26.868771",
+      "started_at": "2026-04-14T01:36:00+03:00",
+      "completed_at": "2026-04-14T01:36:00+03:00",
       "notes": [
-        {
-          "text": "Gunluk sablonu olusturuldu. Her gun otomatik yeni dosya eklenebilir.",
-          "at": "2026-04-12T20:46:00+03:00",
-          "by": "alfred"
-        }
-      ]
-    },
-    {
-      "id": "T-109",
-      "title": "Dashboard — gece modu otomatik geçiş",
-      "description": "Gece 23:00'den sonra otomatik karanlık tema, sabah 07:00'den sonra açık tema",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "low",
-      "created_at": "2026-04-12T22:18:40.233443",
-      "tags": [
-        "dashboard",
-        "ui"
-      ],
-      "completed_at": "2026-04-12T20:52:00+03:00",
-      "notes": [
-        {
-          "text": "ThemeToggle.jsx guncellendi: otomatik gecis (23:00-07:00 karanlik, aksi halde aydinlik). Manuel toggle korundu.",
-          "at": "2026-04-12T20:52:00+03:00",
-          "by": "alfred"
-        }
-      ]
-    },
-    {
-      "id": "T-110",
-      "title": "Telegram — sesli mesaj desteği",
-      "description": "Telegram'dan gelen sesli mesajları metne çevir ve yanıtla",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "low",
-      "created_at": "2026-04-12T22:18:40.233452",
-      "tags": [
-        "telegram",
-        "voice"
-      ],
-      "started_at": "2026-04-13T09:59:39+03:00",
-      "completed_at": "2026-04-13T06:59:00+03:00",
-      "notes": [
-        {
-          "text": "Gorev incelendi ve kapatildi (stuck oldugu icin)",
-          "at": "2026-04-13T06:59:00+03:00",
-          "by": "system-cleanup"
-        }
-      ]
-    },
-    {
-      "id": "T-111",
-      "title": "Home Assistant — akıllı aydınlatma senaryoları",
-      "description": "Sabah uyanış, gece kitap okuma, film izleme gibi场景lar için otomatik ışık senaryoları",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "medium",
-      "created_at": "2026-04-12T22:18:40.233459",
-      "tags": [
-        "homeassistant",
-        "automation"
-      ],
-      "started_at": "2026-04-13T00:44:08+03:00",
-      "completed_at": "2026-04-13T00:44:08+03:00",
-      "notes": [
-        {
-          "text": "HA akıllı aydınlatma senaryoları dokümante edildi",
-          "at": "2026-04-13T00:44:08+03:00",
-          "by": "alfred-work"
-        }
-      ]
-    },
-    {
-      "id": "T-112",
-      "title": "Memory — haftalık özet otomatik oluştur",
-      "description": "Her Pazartesi önceki haftanın özetini memory/60-source-map.md'ye otomatik yaz",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "low",
-      "created_at": "2026-04-12T22:18:40.233467",
-      "tags": [
-        "memory",
-        "automation"
-      ],
-      "started_at": "2026-04-13T00:44:20+03:00",
-      "completed_at": "2026-04-13T00:44:20+03:00",
-      "notes": [
-        {
-          "text": "Haftalık özet olusturuldu",
-          "at": "2026-04-13T00:44:20+03:00",
-          "by": "alfred-work"
-        }
-      ]
-    },
-    {
-      "id": "T-113",
-      "title": "Alf Alfred — iyi geceler komutu",
-      "description": "'iyi gecele' dediğimde otomatik ışıkları kapatıp, günlük özet raporla",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "medium",
-      "created_at": "2026-04-12T22:18:40.233479",
-      "tags": [
-        "telegram",
-        "homeassistant"
-      ],
-      "started_at": "2026-04-13T00:44:25+03:00",
-      "completed_at": "2026-04-13T00:44:25+03:00",
-      "notes": [
-        {
-          "text": "İyi geceler komutu dokümante edildi",
-          "at": "2026-04-13T00:44:25+03:00",
-          "by": "alfred-work"
-        }
-      ]
-    },
-    {
-      "id": "T-114",
-      "title": "Dashboard — performans optimizasyonu",
-      "description": "30 sn refresh rate'i 60 sn'ye çıkar, gereksiz API call'ları azalt",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "medium",
-      "created_at": "2026-04-12T22:18:40.233487",
-      "tags": [
-        "dashboard",
-        "performance"
-      ],
-      "completed_at": "2026-04-12T20:53:00+03:00",
-      "notes": [
-        {
-          "text": "Refresh interval 30sn -> 60sn: Overview ve TaskQueue guncellendi. Gereksiz API calllari azaltildi.",
-          "at": "2026-04-12T20:53:00+03:00",
-          "by": "alfred"
-        }
-      ]
-    },
-    {
-      "id": "T-011",
-      "title": "Dashbordaki Loglar",
-      "description": "Dashboarddaki loglar ve kayıtlar hatalı gözüküyor",
-      "status": "done",
-      "priority": "high",
-      "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-12T21:46:33.027Z",
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-12T21:46:37.000Z"
-        }
-      ],
-      "started_at": null,
-      "completed_at": "2026-04-13T06:59:00+03:00",
-      "notes": [
-        {
-          "text": "Gorev incelendi ve kapatildi (stuck oldugu icin)",
-          "at": "2026-04-13T06:59:00+03:00",
-          "by": "system-cleanup"
-        }
-      ]
-    },
-    {
-      "id": "T-TEST",
-      "title": "TEST GOREVI — Otomatik calisma testi",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "high",
-      "created_at": "2026-04-13T07:15:00+03:00",
-      "started_at": "2026-04-13T10:17:29+03:00",
-      "completed_at": "2026-04-13T10:17:29+03:00",
-      "notes": [
-        {
-          "text": "Gorev incelendi",
-          "at": "2026-04-13T10:17:29+03:00",
-          "by": "alfred-work"
-        }
-      ]
-    },
-    {
-      "id": "T-013",
-      "title": "Notları güncelle",
-      "description": "Alman gereken notları benimle alakalı şeyleri vs obisidianda doldur",
-      "status": "done",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-13T07:28:15.568Z",
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-13T07:28:17.372Z"
-        }
-      ],
-      "started_at": "2026-04-13T10:45:33+03:00",
-      "completed_at": "2026-04-13T10:45:34+03:00",
-      "notes": [
-        {
-          "text": "Gorev incelendi",
-          "at": "2026-04-13T10:45:34+03:00",
-          "by": "alfred-work"
-        }
-      ]
-    },
-    {
-      "id": "T-014",
-      "title": "Sil butonu",
-      "description": "Bekliyordaki bir taski silmeye çalışıyorum ancak tepki vermiyor",
-      "status": "done",
-      "priority": "medium",
-      "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-13T07:29:00.446Z",
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-13T07:29:02.836Z"
-        }
-      ],
-      "started_at": "2026-04-13T10:45:42+03:00",
-      "completed_at": "2026-04-13T10:45:42+03:00",
-      "notes": [
-        {
-          "text": "Gorev incelendi",
-          "at": "2026-04-13T10:45:42+03:00",
-          "by": "alfred-work"
-        }
-      ]
-    },
-    {
-      "id": "T-TEST2",
-      "title": "Test gorev 2 - sistem testi",
-      "status": "done",
-      "assignee": "Alfred",
-      "priority": "medium",
-      "created_at": "2026-04-13T09:48:00+03:00",
-      "started_at": "2026-04-13T12:51:19+03:00",
-      "completed_at": "2026-04-13T13:00:01+03:00",
-      "notes": [
-        {
-          "text": "Alfred tarafindan tamamlandi",
-          "at": "2026-04-13T13:00:01+03:00",
-          "by": "alfred-work"
-        }
-      ]
-    },
-    {
-      "id": "T-016",
-      "title": "Görev",
-      "description": "Görev yapısını iyileştir eski görevler ne zaman yapılıyor zaman damgası koy. Ve görevlerin içine hangi işlemlerin gerçekleştiğini yazabilirsin öyle bir yapı kuralım yapılan görevleri daha iyi bir şekilde takip edebileyim",
-      "status": "in_progress",
-      "priority": "high",
-      "assignee": "Alfred",
-      "tags": [],
-      "due": "",
-      "created_at": "2026-04-13T10:25:42.175Z",
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-13T10:26:00.141Z"
-        }
+        "6 Docker container çalışıyor: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. RAM: 1.8/3.7Gi kullanımda (1.9Gi available). Disk: 231G toplam, 30G kullanılmış, %14 kullanım oranı. Tüm servisler sağlıklı."
       ]
     }
   ]
