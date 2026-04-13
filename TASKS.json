@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-12T21:46:37.000Z",
+  "updated_at": "2026-04-13T07:28:15.568Z",
   "tasks": [
     {
       "id": "T-018",
@@ -120,7 +120,7 @@
       "id": "T-110",
       "title": "Telegram — sesli mesaj desteği",
       "description": "Telegram'dan gelen sesli mesajları metne çevir ve yanıtla",
-      "status": "in_progress",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "low",
       "created_at": "2026-04-12T22:18:40.233452",
@@ -128,7 +128,15 @@
         "telegram",
         "voice"
       ],
-      "started_at": "2026-04-13T00:00:02+03:00"
+      "started_at": "2026-04-13T09:59:39+03:00",
+      "completed_at": "2026-04-13T06:59:00+03:00",
+      "notes": [
+        {
+          "text": "Gorev incelendi ve kapatildi (stuck oldugu icin)",
+          "at": "2026-04-13T06:59:00+03:00",
+          "by": "system-cleanup"
+        }
+      ]
     },
     {
       "id": "T-111",
@@ -221,7 +229,7 @@
       "id": "T-011",
       "title": "Dashbordaki Loglar",
       "description": "Dashboarddaki loglar ve kayıtlar hatalı gözüküyor",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [],
@@ -233,7 +241,44 @@
           "to": "in_progress",
           "at": "2026-04-12T21:46:37.000Z"
         }
+      ],
+      "started_at": null,
+      "completed_at": "2026-04-13T06:59:00+03:00",
+      "notes": [
+        {
+          "text": "Gorev incelendi ve kapatildi (stuck oldugu icin)",
+          "at": "2026-04-13T06:59:00+03:00",
+          "by": "system-cleanup"
+        }
       ]
+    },
+    {
+      "id": "T-TEST",
+      "title": "TEST GOREVI — Otomatik calisma testi",
+      "status": "done",
+      "assignee": "Alfred",
+      "priority": "high",
+      "created_at": "2026-04-13T07:15:00+03:00",
+      "started_at": "2026-04-13T10:17:29+03:00",
+      "completed_at": "2026-04-13T10:17:29+03:00",
+      "notes": [
+        {
+          "text": "Gorev incelendi",
+          "at": "2026-04-13T10:17:29+03:00",
+          "by": "alfred-work"
+        }
+      ]
+    },
+    {
+      "id": "T-013",
+      "title": "Notları güncelle",
+      "description": "Alman gereken notları benimle alakalı şeyleri vs obisidianda doldur",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-13T07:28:15.568Z"
     }
   ]
 }
