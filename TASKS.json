@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T23:26:49.728Z",
+  "updated_at": "2026-04-13T23:27:32.112Z",
   "tasks": [
     {
       "id": "T-018",
@@ -69,6 +69,17 @@
       "tags": [],
       "due": "",
       "created_at": "2026-04-13T23:26:49.728Z"
+    },
+    {
+      "id": "T-005",
+      "title": "Silme butonu",
+      "description": "Görev silme butonu hala mobilde çalışmıyor",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-13T23:27:32.112Z"
     }
   ]
 }
