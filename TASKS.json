@@ -1,6 +1,6 @@
 {
   "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T22:48:06.299Z",
+  "updated_at": "2026-04-13T23:26:49.728Z",
   "tasks": [
     {
       "id": "T-018",
@@ -47,12 +47,28 @@
       "id": "T-003",
       "title": "Görev Silmek",
       "description": "Görev silme butonu mobilde çalışmıyor",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-13T22:48:06.299Z",
+      "started_at": "2026-04-14T02:00:00+03:00",
+      "completed_at": "2026-04-14T02:04:00+03:00",
+      "notes": [
+        "Mobil delete butonu sorunu giderildi. Sorunun kaynağı: TaskCard'daki sil butonu window.confirm() kullanıyordu — bu mobil Safari/Chrome'da güvenilir çalışmıyordu. Çözüm: browser confirm() yerine inline onay UI (Sil/İptal butonları) eklendi. handleDeleteConfirm ve handleDeleteCancel fonksiyonları eklendi. handleDelete'a skipConfirm parametresi eklendi ki inline onay akışı tekrar confirm dialog göstermesin."
+      ]
+    },
+    {
+      "id": "T-004",
+      "title": "Test",
+      "description": "Test",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-13T22:48:06.299Z"
+      "created_at": "2026-04-13T23:26:49.728Z"
     }
   ]
 }
