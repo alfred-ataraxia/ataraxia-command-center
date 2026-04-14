@@ -534,16 +534,23 @@
       "created_at": "2026-04-14T22:00:00+03:00"
     },
     {
-      "id": "T-035",
+      "id": "T-048",
       "title": "Skiller",
       "description": "Sana hangi skilleri ekleyebiliriz seni en çok geliştirecek skiller nelerdir detaylı bir araştırma yap ve listele",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-14T19:40:13.509Z"
+      "created_at": "2026-04-14T19:40:13.509Z",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-14T19:45:05.016Z"
+        }
+      ]
     }
   ],
-  "updated_at": "2026-04-14T19:40:18.006Z"
+  "updated_at": "2026-04-14T19:45:05.016Z"
 }
