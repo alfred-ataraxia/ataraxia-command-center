@@ -53,6 +53,7 @@ function normalizeTask(t) {
 function TaskCard({ task, onToggle, onDelete }) {
   const [updating, setUpdating] = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const { addToast } = useToast()
   
   const status = STATUS_CONFIG[task.status] || STATUS_CONFIG.pending
@@ -72,6 +73,26 @@ function TaskCard({ task, onToggle, onDelete }) {
       addToast(`Hata: ${err.message}`, 'error')
     }
     setUpdating(false)
+  }
+
+  function handleDeleteClick(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    setConfirmingDelete(true)
+  }
+
+  function handleDeleteConfirm(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    setConfirmingDelete(false)
+    // Parent's handleDelete shows toast + calls loadTasks
+    onDelete(task.id)
+  }
+
+  function handleDeleteCancel(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    setConfirmingDelete(false)
   }
 
   return (
@@ -134,12 +155,29 @@ function TaskCard({ task, onToggle, onDelete }) {
             <span className="text-[10px] text-ax-subtle">
               Oluşturuldu: {task.created_at ? new Date(task.created_at).toLocaleDateString('tr-TR') : '—'}
             </span>
-            <button
-              onClick={(e) => { e.stopPropagation(); onDelete(task.id) }}
-              className="px-2 py-1 rounded text-[10px] text-ax-red hover:bg-ax-red/10 transition-colors"
-            >
-              Sil
-            </button>
+            {confirmingDelete ? (
+              <div className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
+                <button
+                  onClick={handleDeleteConfirm}
+                  className="px-2 py-1 rounded text-[10px] bg-ax-red/20 text-ax-red hover:bg-ax-red/30 transition-colors font-medium"
+                >
+                  Sil
+                </button>
+                <button
+                  onClick={handleDeleteCancel}
+                  className="px-2 py-1 rounded text-[10px] text-ax-dim hover:bg-ax-muted transition-colors"
+                >
+                  İptal
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleDeleteClick}
+                className="px-2 py-1 rounded text-[10px] text-ax-red hover:bg-ax-red/10 transition-colors"
+              >
+                Sil
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -303,8 +341,8 @@ export default function TaskQueue() {
     return () => clearInterval(interval)
   }, [loadTasks])
 
-  async function handleDelete(taskId) {
-    if (!confirm('Bu görevi sil?')) return
+  async function handleDelete(taskId, skipConfirm = false) {
+    if (!skipConfirm && !confirm('Bu görevi sil?')) return
     try {
       await updateTask(taskId, { status: 'deleted' })
       addToast('Görev silindi', 'success')
