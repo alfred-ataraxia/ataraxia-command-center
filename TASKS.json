@@ -1,34 +1,21 @@
 {
-  "project": "Ataraxia Command Center",
-  "updated_at": "2026-04-13T23:27:32.112Z",
   "tasks": [
     {
       "id": "T-018",
       "title": "Google Cloud Free Tier kurulumu",
-      "description": "Google Cloud hesabı aç, E2-micro VM oluştur, harici IP al",
       "status": "deleted",
       "priority": "high",
       "assignee": "Master Sefa",
       "tags": [
         "infrastructure",
-        "cloud",
-        "robin"
+        "cloud"
       ],
-      "due": "2026-04-12",
       "created_at": "2026-04-12T02:35:00+03:00",
-      "auto": false,
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "deleted",
-          "at": "2026-04-13T22:47:49.320Z"
-        }
-      ]
+      "auto": false
     },
     {
       "id": "T-CRON-TEST",
       "title": "Sistem durumu özetle",
-      "description": "Ataraxia sistemindeki çalışan Docker container'larını, RAM kullanımını ve disk durumunu kontrol et. Kısa bir özet çıkar.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -36,53 +23,310 @@
         "test",
         "system"
       ],
-      "created_at": "2026-04-14T01:35:26.868771",
-      "started_at": "2026-04-14T01:36:00+03:00",
+      "created_at": "2026-04-14T01:35:26+03:00",
       "completed_at": "2026-04-14T01:36:00+03:00",
       "notes": [
-        "6 Docker container çalışıyor: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. RAM: 1.8/3.7Gi kullanımda (1.9Gi available). Disk: 231G toplam, 30G kullanılmış, %14 kullanım oranı. Tüm servisler sağlıklı."
+        "6 Docker container çalışıyor: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. RAM: 1.8/3.7Gi. Disk: 30G/231G, %14."
       ]
     },
     {
       "id": "T-003",
       "title": "Görev Silmek",
-      "description": "Görev silme butonu mobilde çalışmıyor",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
-      "due": "",
-      "created_at": "2026-04-13T22:48:06.299Z",
-      "started_at": "2026-04-14T02:00:00+03:00",
+      "created_at": "2026-04-13T22:48:06+03:00",
       "completed_at": "2026-04-14T02:04:00+03:00",
       "notes": [
-        "Mobil delete butonu sorunu giderildi. Sorunun kaynağı: TaskCard'daki sil butonu window.confirm() kullanıyordu — bu mobil Safari/Chrome'da güvenilir çalışmıyordu. Çözüm: browser confirm() yerine inline onay UI (Sil/İptal butonları) eklendi. handleDeleteConfirm ve handleDeleteCancel fonksiyonları eklendi. handleDelete'a skipConfirm parametresi eklendi ki inline onay akışı tekrar confirm dialog göstermesin."
+        "Mobil delete butonu sorunu giderildi. Inline onay UI eklendi."
       ]
     },
     {
       "id": "T-004",
       "title": "Test",
-      "description": "Test",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
-      "due": "",
-      "created_at": "2026-04-13T23:26:49.728Z",
-      "started_at": "2026-04-13T23:30:00.000Z",
-      "completed_at": "2026-04-13T23:30:00.000Z",
-      "notes": ["Test görevi — içerikte başka bir işlem yapılacak bir şey yoktu."]
+      "created_at": "2026-04-13T23:26:49+03:00",
+      "completed_at": "2026-04-13T23:30:00+03:00",
+      "notes": [
+        "Test görevi tamamlandı."
+      ]
     },
     {
       "id": "T-005",
       "title": "Silme butonu",
-      "description": "Görev silme butonu hala mobilde çalışmıyor",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
-      "due": "",
-      "created_at": "2026-04-13T23:27:32.112Z"
+      "created_at": "2026-04-13T23:27:32+03:00",
+      "completed_at": "2026-04-14T00:00:00+03:00",
+      "notes": [
+        "handleDeleteConfirm'de skipConfirm=true eklendi, çift dialog sorunu giderildi."
+      ]
+    },
+    {
+      "id": "T-010",
+      "title": "~/alfred-hub/logs/ içindeki eski log dosyalarını temizle",
+      "description": "~/alfred-hub/logs/ dizinindeki log dosyalarını listele. 7 günden eski ve boyutu 1MB'ı geçen dosyaları truncate et (sil değil, sadece boşalt: > dosya.log). Hangi dosyalara ne yaptığını raporla.",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "maintenance",
+        "cleanup"
+      ],
+      "created_at": "2026-04-14T11:37:00+03:00",
+      "started_at": "2026-04-14T09:00:00Z",
+      "completed_at": "2026-04-14T09:01:00Z",
+      "auto": false,
+      "points": 1,
+      "notes": [
+        "9 log dosyası tarandı. 7 günden eski dosya yok (en eskisi Apr 12, ~2 günlük). 1MB'dan büyük dosya yok (en büyüğü task-runner.log: 262KB). Temizlik gerektiren dosya bulunamadı."
+      ]
+    },
+    {
+      "id": "T-011",
+      "title": "Scrum backlog'unu analiz et ve önceliklendir",
+      "description": "~/scrum/backlog.md dosyasını oku. Mevcut görevleri değerlendir: hangisi en kritik, hangisi çakışıyor, hangi görev önce yapılmalı? Kısa bir önceliklendirme raporu yaz ve ~/scrum/backlog.md dosyasının sonuna 'Alfred Analizi — [tarih]' başlığıyla ekle.",
+      "status": "done",
+      "started_at": "2026-04-14T09:30:00Z",
+      "completed_at": "2026-04-14T09:31:00Z",
+      "notes": [
+        "backlog.md analiz edildi. Sprint 1 işleri (B-001, B-002) durumu belirsiz — netleştirilmeli. Kritik öncelik: B-009 (.env) ve B-003 (Go workspace). Güvenlik: B-015 + B-016 birlikte yapılmalı. N-002 ve N-007 çakışıyor — biri seçilmeli. Sprint 2 önerisi: B-009, B-003, B-015+B-016, B-005+B-019 sırasıyla."
+      ],
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "scrum",
+        "analysis"
+      ],
+      "created_at": "2026-04-14T11:37:00+03:00",
+      "auto": false,
+      "points": 2
+    },
+    {
+      "id": "T-012",
+      "title": "Alfred hafıza dosyalarını gözden geçir ve eskimiş notları güncelle",
+      "description": "~/.claude/projects/-home-sefa/memory/ dizinindeki tüm .md dosyalarını oku. İçerik olarak güncelliğini yitirmiş, çelişkili veya hatalı bilgi içeren dosyaları tespit et. Her dosya için 'güncellenmeli / güncel / silinmeli' kararını ver ve kısa bir rapor çıkar. Değişiklik yapma, sadece analiz et ve raporla.",
+      "status": "done",
+      "started_at": "2026-04-14T10:00:00Z",
+      "completed_at": "2026-04-14T10:02:00Z",
+      "notes": [
+        "8 dosya analiz edildi. GÜNCEL (5): MEMORY.md, project_workflow.md, feedback_alfred_identity.md, feedback_claude_code_ops.md, feedback_token_budget.md. GÜNCELLENMELİ (2): project_gemini_fallback.md (OpenClaw rafa kalktı yazıyor ama sistem aktif, ayrıca ai-switch.sh stub olabilir), project_dashboard.md (T-087/T-088 referansları eski, mevcut görevler T-016'ya kadar). SİLİNEBİLİR (1): user_sefa.md — MEMORY.md ve workspace/USER.md ile tamamen çakışıyor."
+      ],
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "maintenance"
+      ],
+      "created_at": "2026-04-14T11:37:00+03:00",
+      "auto": false,
+      "points": 2
+    },
+    {
+      "id": "T-013",
+      "title": "Docker servislerinin kaynak kullanımını raporla",
+      "description": "docker stats --no-stream komutuyla her container'ın anlık CPU ve RAM kullanımını al. En çok kaynak tüketen 3 container'ı belirle. Disk kullanımı için docker system df çalıştır. Sonuçları özetle.",
+      "status": "done",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "docker",
+        "monitoring"
+      ],
+      "created_at": "2026-04-14T11:37:00+03:00",
+      "started_at": "2026-04-14T10:30:00+03:00",
+      "completed_at": "2026-04-14T10:30:02+03:00",
+      "auto": false,
+      "points": 1,
+      "notes": [
+        "6 container çalışıyor. CPU: homeassistant %1.61 (en yoğun), wireguard %0.16, nginx-proxy-manager %0.04. RAM (sistem geneli): 2.2Gi/3.7Gi used, 1.5Gi available. Docker disk: 5.88GB images, 60.36MB containers, 2 volumes. Tüm imageler %100 reclaimable."
+      ]
+    },
+    {
+      "id": "T-014",
+      "title": "Evening report script'ini test et ve çalıştır",
+      "description": "~/alfred-hub/scripts/evening-report.sh scriptini oku. Script'in beklediği .env dosyasının mevcut olduğunu doğrula. Sonra scripti çalıştır: bash ~/alfred-hub/scripts/evening-report.sh. Telegram'a rapor gönderildi mi kontrol et ve sonucu bildir.",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "scripts",
+        "telegram"
+      ],
+      "created_at": "2026-04-14T11:37:00+03:00",
+      "auto": false,
+      "points": 1,
+      "started_at": "2026-04-14T11:08:38.982141Z",
+      "completed_at": "2026-04-14T11:08:51.938544Z",
+      "notes": [
+        "Script ve .env dosyası doğrulandı. Script çalıştırıldı ve Telegram'a akşam raporu gönderildi (14:08). JSON hatası yok."
+      ]
+    },
+    {
+      "id": "T-015",
+      "title": "WireGuard VPN durumunu kontrol et",
+      "description": "sudo wg show komutuyla WireGuard arayüzünün aktif olup olmadığını kontrol et. Kaç peer bağlı, son el sıkışma ne zaman? Docker container'da mı yoksa systemd'de mi çalışıyor? Kısa rapor çıkar.",
+      "status": "done",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "network",
+        "vpn"
+      ],
+      "created_at": "2026-04-14T11:37:00+03:00",
+      "auto": false,
+      "points": 1,
+      "completed_at": "2026-04-14T11:30:00+03:00",
+      "notes": [
+        "Docker container (linuxserver/wireguard) olarak çalışıyor, 46 saattir up. wg0 arayüzü: port 51820. 3 peer var — sadece 1 tanesi aktif (endpoint: 46.104.31.200:25720, son handshake: ~3 dk önce, 2.07 GiB gönderilmiş, 68 MiB alınmış). Diğer 2 peer (10.13.13.3 ve 10.13.13.4) endpoint olmadan pasif konfigürasyon."
+      ]
+    },
+    {
+      "id": "T-016",
+      "title": "Pi-hole istatistiklerini raporla",
+      "description": "Pi-hole API'sini kullanarak bugünkü DNS istatistiklerini al: toplam sorgu sayısı, engellenen sorgu sayısı ve engelleme oranı. Pi-hole localhost:80 veya farklı bir portta çalışıyor olabilir, önce Docker ile kontrol et. Sonuçları özetle.",
+      "status": "done",
+      "completed_at": "2026-04-14T12:00:00Z",
+      "notes": [
+        "Bugun (2026-04-14): Toplam sorgu 23,093 — Engellenen 3,987 — Engelleme orani %17.3. Top 5 engellenen domain: dit.whatsapp.net (417), app-analytics-services.com (394), datadoghq.com (370), graph.facebook.com (320), xp.apple.com (316). Pi-hole DNS port 53'te calisiyor, telnet API localhost:5335'te."
+      ]
+    },
+    {
+      "id": "T-020",
+      "title": "OpenClaw RAM kullanımını analiz et",
+      "description": "openclaw-gateway prosesi %41 RAM (1.5GB+) kullanıyor. Şunu yap: 1) ps aux ile openclaw-gateway PID ve tam bellek kullanımını bul, 2) pmap veya /proc/PID/status ile bellek detayına bak, 3) Bu normal mi yoksa leak mi? Eğer uptime 2 günden fazlaysa ve RAM sürekli artıyorsa restart öner. Sonucu özetle: normal/anormal, aksiyon gerekiyor mu?",
+      "assignee": "Alfred",
+      "status": "done",
+      "priority": "high",
+      "points": 1,
+      "created_at": "2026-04-14T15:10:00+03:00",
+      "started_at": "2026-04-14T18:30:00+03:00",
+      "completed_at": "2026-04-14T18:30:00+03:00",
+      "notes": [
+        "VmRSS: 1.54GB, VmData: 1.69GB. Sistem uptime: 2 gün 1.5 saat. RAMused: 2586/3795MB, available: 1208MB. openclaw-gateway ~42% RAM tüketiyor. 2 günlük uptime boyunca bellek sabit — leak yok. Normal V8/Node.js heap davranışı. Aksiyon gerekmiyor."
+      ]
+    },
+    {
+      "id": "T-021",
+      "title": "Sprint-03 durumunu gerçek verilerle güncelle",
+      "description": "Şu iki dosyayı oku: /home/sefa/scrum/sprints/sprint-03.md ve /home/sefa/alfred-hub/command-center/TASKS.json. TASKS.json'daki done görevleri sprint-03.md ile karşılaştır. Sprint-03 görevlerini (S3-01..S3-07) gerçek tamamlanma durumuna göre güncelle. Dosyayı kaydet. Hangi görevler tamamlandı, hangileri hâlâ açık — özet ver.",
+      "assignee": "Alfred",
+      "status": "done",
+      "priority": "medium",
+      "points": 2,
+      "created_at": "2026-04-14T15:10:00+03:00",
+      "notes": [
+        "Sprint-03 backlog analiz edildi: TASKS.json'daki hiçbir done görev (T-010..T-016, T-020) S3-01..S3-07 backlog kalemleriyle eslesmiyor. Sprint-03'taki 7 görevün tamamı hâlâ 'Bekliyor' durumunda. sprint-03.md dosyasında herhangi bir degisiklik gerektiren bir tutarsizlik yok — mevcut durum zaten dogru."
+      ],
+      "started_at": "2026-04-14T19:03:42+03:00",
+      "completed_at": "2026-04-14T19:03:42+03:00"
+    },
+    {
+      "id": "T-022",
+      "title": "master-memory aktif çalışma bağlamını güncelle",
+      "description": "/home/sefa/master-memory/40-active-work.md dosyasını oku. Sprint-03 durumu, son tamamlanan görevler (T-010..T-016 done), OpenClaw pipeline çalışıyor — bu bilgileri yansıt. Tarihleri güncelle. Dosyayı kaydet. Değiştirdiğin satırları özetle.",
+      "assignee": "Alfred",
+      "status": "done",
+      "completed_at": "2026-04-14T16:31:00+03:00",
+      "notes": [],
+      "priority": "medium",
+      "points": 1,
+      "created_at": "2026-04-14T15:10:00+03:00"
+    },
+    {
+      "id": "T-023",
+      "title": "Morning briefing script'ini dry-run ile test et",
+      "description": "/home/sefa/alfred-hub/scripts/morning-briefing.sh dosyasını oku. Script'in ne yapması gerektiğini anla. Gerçekten çalıştırma — bunun yerine: sistem verilerini kendin topla (tarih, uptime, RAM, disk, docker servis sayısı, hava wttr.in/Istanbul?format=%c+%t). Sabah brifing mesajı olarak ne yazılacağını formatla ve raporla. Telegram'a gönderme.",
+      "assignee": "Alfred",
+      "status": "done",
+      "priority": "low",
+      "points": 1,
+      "created_at": "2026-04-14T15:10:00+03:00",
+      "notes": [
+        "Dry-run test: Script okundu. Sistem verileri toplandı (14 Nisan 2026 Salı, uptime 2gün 3saat, load 0.50, RAM %76, disk %14, 6 Docker container). Hava wttr.in hatası — alınamadı. Brifing metni hazırlandı, Telegram'a gönderilmedi. Alfred'in 2 bekleyen görevi var (T-023, T-024)."
+      ],
+      "started_at": "2026-04-14T20:00:00+03:00",
+      "completed_at": "2026-04-14T20:00:02+03:00"
+    },
+    {
+      "id": "T-024",
+      "title": "Docker servis sağlık anomali raporu",
+      "description": "docker ps ile tüm container'ları listele. Şunları kontrol et: 1) Status \"Up\" olmayan var mı? 2) Restart count yüksek olan var mı (docker inspect ile)? 3) 2 günden fazla uptime var mı (bu oturum normal, daha uzunsa şüpheli)? homeassistant, pihole, wireguard, nginx-proxy-manager, portainer, homepage, duckdns — hepsini kontrol et. Anomali yoksa \"Tüm servisler normal\" yaz, varsa detay ver.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "medium",
+      "points": 1,
+      "created_at": "2026-04-14T15:10:00+03:00",
+      "notes": []
+    },
+    {
+      "id": "T-030",
+      "title": "Overview'a İstanbul hava durumu widget'ı ekle",
+      "description": "Dashboard Overview bileşenine hava durumu widget'ı ekle. Adımlar: 1) /home/sefa/alfred-hub/command-center/dashboard/src/components/Overview.jsx dosyasını oku, 2) server.cjs'e /api/weather endpoint'i ekle — wttr.in/Istanbul?format=j1 JSON API'sini kullan, sıcaklık + durum + ikon dönsün, 3) Overview'da sağ üste küçük bir kart ekle: ikon, °C, durum metni. 15 dakikada bir güncelle (server-side cache). Dosyaları kaydet.",
+      "assignee": "Alfred",
+      "status": "deleted",
+      "priority": "medium",
+      "points": 2,
+      "created_at": "2026-04-14T20:00:00+03:00",
+      "notes": [],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "deleted",
+          "at": "2026-04-14T17:28:38.553Z"
+        }
+      ]
+    },
+    {
+      "id": "T-031",
+      "title": "Telegram raporlarını Markdown'a geçir",
+      "description": "Alfred'in mevcut Telegram raporları düz metin. Telegram Bot API Markdown v2 destekliyor. Şunu yap: 1) Bir sonraki görevden itibaren raporlarda *bold*, , ve emoji kullan, 2) Rapor şablonunu güncelle: görev ID'si bold, komut çıktıları code block içinde, özet düz metin. 3) Test olarak bu görevi tamamlarken formatlanmış mesaj gönder. jobs.json'daki prompt'u güncelle — yeni format talimatını ekle.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "medium",
+      "points": 1,
+      "created_at": "2026-04-14T20:00:00+03:00",
+      "notes": []
+    },
+    {
+      "id": "T-032",
+      "title": "Dashboard task formuna öncelik ve due date ekle",
+      "description": "TaskQueue bileşenindeki görev ekleme formunu geliştir. Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/components/TaskQueue.jsx. Ekle: 1) Priority seçici (high/medium/low — renkli badge'ler), 2) Due date input (date picker, opsiyonel). server.cjs'deki POST /api/tasks endpoint'inin bu alanları TASKS.json'a yazmasını sağla. Tasarım: mevcut Tailwind stiliyle uyumlu, sade.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "medium",
+      "points": 2,
+      "created_at": "2026-04-14T20:00:00+03:00",
+      "notes": []
+    },
+    {
+      "id": "T-033",
+      "title": "Sabah brifing cron'u kur — 09:00'da Telegram'a",
+      "description": "jobs.json'a yeni bir cron job ekle: her sabah 09:00'da (Istanbul) çalışır. İçerik: tarih, hava durumu (wttr.in), pending görev sayısı, sistem özeti (RAM/disk), günün motivasyon cümlesi (sabit listeden rastgele seç). Format: Telegram Markdown, güzel, okunabilir. jobs.json dosyasını düzenle — mevcut alfred-task-runner'ı bozmadan yeni job ekle. Job ID: \"morning-briefing\".",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "high",
+      "points": 2,
+      "created_at": "2026-04-14T20:00:00+03:00",
+      "notes": []
+    },
+    {
+      "id": "T-034",
+      "title": "Dashboard'a klavye kısayolları ekle",
+      "description": "App.jsx veya ayrı bir useKeyboard hook'u ile klavye navigasyonu ekle. Kısayollar: 1=Overview, 2=Tasks, 3=Agents, 4=Automation, 5=Memory, 6=Logs. Ayrıca ? tuşu küçük bir kısayol overlay'i açsın (modal). Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/App.jsx. Sade, input alanlarında devre dışı olsun (e.target.tagName check). Kısayol listesini komponentin altında yorum olarak bırak.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "low",
+      "points": 2,
+      "created_at": "2026-04-14T20:00:00+03:00",
+      "notes": []
     }
-  ]
+  ],
+  "updated_at": "2026-04-14T17:28:38.553Z"
 }
