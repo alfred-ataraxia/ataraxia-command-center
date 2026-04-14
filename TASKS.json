@@ -346,8 +346,7 @@
       "title": "Büyük dizin taraması — /home/sefa altında 100MB+ klasörler",
       "description": "Disk israfını tespit et. Adımlar: 1) du -sh /home/sefa/* ile birinci seviye dizinleri sırala, 2) En büyük 5 dizini belirle, 3) Bu 5 dizinin içinde de bir seviye daha in (du -sh /dizin/*), 4) ~/.npm, ~/.cache, ~/.local/share gibi cache dizinleri var mı? 5) /home/sefa/go/pkg/mod ve /home/sefa/go/bin boyutlarını özellikle belirt. Temizlenebilecek şeyleri öneri olarak listele ama silme.",
       "assignee": "Alfred",
-      "status": "in_progress",
-      "started_at": "2026-04-14T22:00:00+03:00",
+      "status": "pending",
       "priority": "medium",
       "points": 1,
       "tags": [
@@ -356,17 +355,8 @@
         "maintenance"
       ],
       "created_at": "2026-04-14T22:00:00+03:00",
-      "completed_at": "2026-04-14T22:00:00+03:00",
-      "notes": [
-        "Swap saglikli: zram+swapfile 4GB toplam, Used: 0B. zram 2GB partition sadece 4K kullaniyor. swappiness=20 (muhafazakar). Sistem RAM 1.7Gi available ile rahat, swap devreye girmiyor."
-      ],
-      "status_history": [
-        {
-          "from": "done",
-          "to": "in_progress",
-          "at": "2026-04-14T19:40:18.006Z"
-        }
-      ]
+      "notes": [],
+      "status_history": []
     },
     {
       "id": "T-037",
@@ -418,7 +408,7 @@
       "title": "Pi-hole blocklist (gravity) güncelleme",
       "description": "Pi-hole blocklist veritabanını güncelle. Adımlar: 1) Pi-hole'un Docker container adını bul (docker ps), 2) docker exec <container> pihole -g komutuyla gravity update başlat, 3) Güncelleme çıktısını oku — kaç domain eklendi/çıkarıldı? 4) Güncelleme başarılı oldu mu kontrol et. 5) Yeni engelleme oranını raporla (öncesi/sonrası karşılaştır). NOT: Pi-hole container adı 'pihole' olabilir, önceki raporlarda bulunamadı — önce container'ı doğrula.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "points": 2,
       "tags": [
@@ -426,7 +416,14 @@
         "security",
         "network"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-14T20:26:47.795Z"
+        }
+      ]
     },
     {
       "id": "T-041",
@@ -537,20 +534,19 @@
       "id": "T-048",
       "title": "Skiller",
       "description": "Sana hangi skilleri ekleyebiliriz seni en çok geliştirecek skiller nelerdir detaylı bir araştırma yap ve listele",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
       "created_at": "2026-04-14T19:40:13.509Z",
-      "status_history": [
-        {
-          "from": "pending",
-          "to": "in_progress",
-          "at": "2026-04-14T19:45:05.016Z"
-        }
+      "status_history": [],
+      "started_at": "2026-04-14T23:04:12.116936+03:00",
+      "completed_at": "2026-04-14T23:07:27.387079+03:00",
+      "notes": [
+        "Skiller araştırması tamamlandı — 40+ skill incelendi, öneriler listelendi"
       ]
     }
   ],
-  "updated_at": "2026-04-14T19:45:05.016Z"
+  "updated_at": "2026-04-14T20:26:47.795Z"
 }
