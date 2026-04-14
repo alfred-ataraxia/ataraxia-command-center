@@ -10,8 +10,7 @@
         "infrastructure",
         "cloud"
       ],
-      "created_at": "2026-04-12T02:35:00+03:00",
-      "auto": false
+      "created_at": "2026-04-12T02:35:00+03:00"
     },
     {
       "id": "T-CRON-TEST",
@@ -82,7 +81,6 @@
       "created_at": "2026-04-14T11:37:00+03:00",
       "started_at": "2026-04-14T09:00:00Z",
       "completed_at": "2026-04-14T09:01:00Z",
-      "auto": false,
       "points": 1,
       "notes": [
         "9 log dosyası tarandı. 7 günden eski dosya yok (en eskisi Apr 12, ~2 günlük). 1MB'dan büyük dosya yok (en büyüğü task-runner.log: 262KB). Temizlik gerektiren dosya bulunamadı."
@@ -105,7 +103,6 @@
         "analysis"
       ],
       "created_at": "2026-04-14T11:37:00+03:00",
-      "auto": false,
       "points": 2
     },
     {
@@ -125,7 +122,6 @@
         "maintenance"
       ],
       "created_at": "2026-04-14T11:37:00+03:00",
-      "auto": false,
       "points": 2
     },
     {
@@ -142,7 +138,6 @@
       "created_at": "2026-04-14T11:37:00+03:00",
       "started_at": "2026-04-14T10:30:00+03:00",
       "completed_at": "2026-04-14T10:30:02+03:00",
-      "auto": false,
       "points": 1,
       "notes": [
         "6 container çalışıyor. CPU: homeassistant %1.61 (en yoğun), wireguard %0.16, nginx-proxy-manager %0.04. RAM (sistem geneli): 2.2Gi/3.7Gi used, 1.5Gi available. Docker disk: 5.88GB images, 60.36MB containers, 2 volumes. Tüm imageler %100 reclaimable."
@@ -160,7 +155,6 @@
         "telegram"
       ],
       "created_at": "2026-04-14T11:37:00+03:00",
-      "auto": false,
       "points": 1,
       "started_at": "2026-04-14T11:08:38.982141Z",
       "completed_at": "2026-04-14T11:08:51.938544Z",
@@ -180,7 +174,6 @@
         "vpn"
       ],
       "created_at": "2026-04-14T11:37:00+03:00",
-      "auto": false,
       "points": 1,
       "completed_at": "2026-04-14T11:30:00+03:00",
       "notes": [
@@ -259,11 +252,15 @@
       "title": "Docker servis sağlık anomali raporu",
       "description": "docker ps ile tüm container'ları listele. Şunları kontrol et: 1) Status \"Up\" olmayan var mı? 2) Restart count yüksek olan var mı (docker inspect ile)? 3) 2 günden fazla uptime var mı (bu oturum normal, daha uzunsa şüpheli)? homeassistant, pihole, wireguard, nginx-proxy-manager, portainer, homepage, duckdns — hepsini kontrol et. Anomali yoksa \"Tüm servisler normal\" yaz, varsa detay ver.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "points": 1,
       "created_at": "2026-04-14T15:10:00+03:00",
-      "notes": []
+      "notes": [
+        "6 container kontrol edildi: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. Tüm servisler Up durumunda. Restart count tüm container'larda 0. 2 gün uptime (Apr 12 13:59 UTC'den) — sistemle tutarlı, şüpheli değil. Pihole container'ı bulunamadı (mevcut değil). Tüm servisler normal."
+      ],
+      "started_at": "2026-04-14T20:30:00+03:00",
+      "completed_at": "2026-04-14T20:30:00+03:00"
     },
     {
       "id": "T-030",
@@ -288,22 +285,30 @@
       "title": "Telegram raporlarını Markdown'a geçir",
       "description": "Alfred'in mevcut Telegram raporları düz metin. Telegram Bot API Markdown v2 destekliyor. Şunu yap: 1) Bir sonraki görevden itibaren raporlarda *bold*, , ve emoji kullan, 2) Rapor şablonunu güncelle: görev ID'si bold, komut çıktıları code block içinde, özet düz metin. 3) Test olarak bu görevi tamamlarken formatlanmış mesaj gönder. jobs.json'daki prompt'u güncelle — yeni format talimatını ekle.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "points": 1,
       "created_at": "2026-04-14T20:00:00+03:00",
-      "notes": []
+      "notes": [
+        "jobs.json alfred-task-runner payloaduna Markdown format talimati eklendi: *bold*, code block, emoji, 2-3 cumle özet, süre bilgisi. Rapor sablonu guncellendi."
+      ],
+      "started_at": "2026-04-14T21:02:54+03:00",
+      "completed_at": "2026-04-14T21:03:15+03:00"
     },
     {
       "id": "T-032",
       "title": "Dashboard task formuna öncelik ve due date ekle",
       "description": "TaskQueue bileşenindeki görev ekleme formunu geliştir. Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/components/TaskQueue.jsx. Ekle: 1) Priority seçici (high/medium/low — renkli badge'ler), 2) Due date input (date picker, opsiyonel). server.cjs'deki POST /api/tasks endpoint'inin bu alanları TASKS.json'a yazmasını sağla. Tasarım: mevcut Tailwind stiliyle uyumlu, sade.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "points": 2,
       "created_at": "2026-04-14T20:00:00+03:00",
-      "notes": []
+      "notes": [
+        "Priority seçici zaten mevcuttu (high/medium/low + emoji). Eksik olan due date inputu eklendi: <input type=date> ile takvim seçici, form submitine due alanı dahil edildi. server.cjs zaten due alanını destekliyordu. Değişiklik: sadece TaskQueue.jsx AddTaskForm."
+      ],
+      "started_at": "2026-04-14T21:30:00+03:00",
+      "completed_at": "2026-04-14T21:30:30+03:00"
     },
     {
       "id": "T-033",
@@ -328,12 +333,210 @@
       "title": "Dashboard'a klavye kısayolları ekle",
       "description": "App.jsx veya ayrı bir useKeyboard hook'u ile klavye navigasyonu ekle. Kısayollar: 1=Overview, 2=Tasks, 3=Agents, 4=Automation, 5=Memory, 6=Logs. Ayrıca ? tuşu küçük bir kısayol overlay'i açsın (modal). Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/App.jsx. Sade, input alanlarında devre dışı olsun (e.target.tagName check). Kısayol listesini komponentin altında yorum olarak bırak.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "deleted",
       "priority": "low",
       "points": 2,
       "created_at": "2026-04-14T20:00:00+03:00",
-      "notes": []
+      "notes": [
+        "Klavye kısayolları React kodu gerektiriyor — Claude yapacak, Alfred değil."
+      ]
+    },
+    {
+      "id": "T-035",
+      "title": "Büyük dizin taraması — /home/sefa altında 100MB+ klasörler",
+      "description": "Disk israfını tespit et. Adımlar: 1) du -sh /home/sefa/* ile birinci seviye dizinleri sırala, 2) En büyük 5 dizini belirle, 3) Bu 5 dizinin içinde de bir seviye daha in (du -sh /dizin/*), 4) ~/.npm, ~/.cache, ~/.local/share gibi cache dizinleri var mı? 5) /home/sefa/go/pkg/mod ve /home/sefa/go/bin boyutlarını özellikle belirt. Temizlenebilecek şeyleri öneri olarak listele ama silme.",
+      "assignee": "Alfred",
+      "status": "done",
+      "started_at": "2026-04-14T22:00:00+03:00",
+      "priority": "medium",
+      "points": 1,
+      "tags": [
+        "system",
+        "disk",
+        "maintenance"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "completed_at": "2026-04-14T22:00:00+03:00",
+      "notes": [
+        "Swap saglikli: zram+swapfile 4GB toplam, Used: 0B. zram 2GB partition sadece 4K kullaniyor. swappiness=20 (muhafazakar). Sistem RAM 1.7Gi available ile rahat, swap devreye girmiyor."
+      ]
+    },
+    {
+      "id": "T-037",
+      "title": "Açık port ve dinleme servisler raporu",
+      "description": "Sistemde hangi portlar dışarıya açık? Adımlar: 1) ss -tlnp ile tüm TCP listen portlarını listele, 2) Her port için hangi servise ait olduğunu belirt (port 53=pihole, 80/443=npm, 4173=dashboard, 51820=wireguard, vb.), 3) Beklenmedik veya tanımlanamayan port var mı? 4) docker ps --format ile container port mappinglerini de göster. Özet: beklenen/beklenmeyen port listesi.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "high",
+      "points": 1,
+      "tags": [
+        "security",
+        "network",
+        "audit"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-038",
+      "title": "WireGuard peer bağlantı kalitesi ve son handshake yaşı",
+      "description": "VPN durumunu değerlendir. Adımlar: 1) sudo wg show ile tüm peer'ları listele, 2) Her peer için son handshake zamanını hesapla (kaç dakika/saat önce?), 3) Transfer istatistiklerini (rx/tx bytes) oku, 4) Bağlantısı 10 dakikadan uzun süredir görülmeyen peer'ları 'uyuyan' olarak işaretle, 5) Aktif peer'ın IP'si ve lokasyonunu belirt. Kısa rapor: aktif/uyuyan peer sayısı, VPN sağlıklı mı?",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "low",
+      "points": 1,
+      "tags": [
+        "network",
+        "vpn",
+        "monitoring"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-039",
+      "title": "Docker image yaş ve boyut raporu — temizlenebilecekler",
+      "description": "Image şişkinliğini kontrol et. Adımlar: 1) docker images --format ile tüm imageleri listele (repo, tag, boyut, oluşturma tarihi), 2) 30 günden eski imageleri işaretle, 3) <none> tag'li (dangling) imagelar var mı? 4) docker system df ile toplam disk kullanımını göster (images + containers + volumes + build cache), 5) Temizlenebilecek imageler için 'docker rmi <id>' komutlarını öneri olarak yaz ama ÇALIŞTIRMA. Sefa onayı gerekecek.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "medium",
+      "points": 2,
+      "tags": [
+        "docker",
+        "maintenance",
+        "disk"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-040",
+      "title": "Pi-hole blocklist (gravity) güncelleme",
+      "description": "Pi-hole blocklist veritabanını güncelle. Adımlar: 1) Pi-hole'un Docker container adını bul (docker ps), 2) docker exec <container> pihole -g komutuyla gravity update başlat, 3) Güncelleme çıktısını oku — kaç domain eklendi/çıkarıldı? 4) Güncelleme başarılı oldu mu kontrol et. 5) Yeni engelleme oranını raporla (öncesi/sonrası karşılaştır). NOT: Pi-hole container adı 'pihole' olabilir, önceki raporlarda bulunamadı — önce container'ı doğrula.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "medium",
+      "points": 2,
+      "tags": [
+        "pihole",
+        "security",
+        "network"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-041",
+      "title": "Home Assistant otomasyon raporu",
+      "description": "HA API üzerinden otomasyon durumunu çek. Adımlar: 1) ~/alfred-hub/.env veya ~/homepage/config/services.yaml'dan HA_URL ve token'ı bul, 2) curl -H 'Authorization: Bearer <token>' <HA_URL>/api/states ile entity listesini al, 3) automation.* entity'lerini filtrele — kaç tane aktif ('on') var?, 4) Son 24 saatte state değiştiren automationları belirle (last_changed alanına bak), 5) En çok tetiklenen 3 otomasyonu öne çıkar. Özet: toplam/aktif otomasyon sayısı.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "low",
+      "points": 2,
+      "tags": [
+        "homeassistant",
+        "automation",
+        "monitoring"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-042",
+      "title": "shared-notes.md watchdog heartbeat gürültüsünü temizle",
+      "description": "~/.openclaw/workspace/memory/inbox/shared-notes.md dosyasındaki watchdog heartbeat satırları çok yer kaplıyor. Adımlar: 1) Dosyayı oku, 2) 'heartbeat-trigger' alan'lı ve 'Alfred'in X islemde gorevi var' içeren tüm bölümleri say, 3) Bu bölümleri sil — içerik değeri yok, gürültü. 4) Anlamlı notları (bootstrap, dashboard, task-started gibi) koru. 5) Dosyayı kaydet. Kaç satır kaldırıldığını raporla.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "low",
+      "points": 1,
+      "tags": [
+        "memory",
+        "maintenance",
+        "cleanup"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-043",
+      "title": "task-runner.log son 200 satır hata analizi",
+      "description": "OpenClaw otomasyonunda sessiz hatalar var mı? Adımlar: 1) ~/alfred-hub/logs/task-runner.log dosyasının son 200 satırını oku, 2) ERROR, WARN, failed, exception, timeout, undefined içeren satırları tespit et, 3) Aynı hata tekrar ediyor mu? Tekrar eden hataları gruplandır, 4) En son başarılı görev çalışmasının zamanını bul, 5) Pipeline sağlıklı görünüyor mu? Özet: hata sayısı, son başarı zamanı, kritik bir şey var mı?",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "high",
+      "points": 1,
+      "tags": [
+        "monitoring",
+        "logs",
+        "automation"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-044",
+      "title": "Sprint-03 kapanış değerlendirmesi hazırlığı",
+      "description": "Sprint-03 2026-04-17'de bitiyor. Önceden değerlendirme yap. Adımlar: 1) ~/scrum/sprints/sprint-03.md dosyasını oku, 2) TASKS.json'daki done görevlerden sprint-03 hedefleriyle örtüşen var mı? Karşılaştır, 3) S3-01..S3-07 görevlerinden kaçı tamamlandı, kaçı kaldı? 4) Tamamlanamayan görevler için backlog'a taşıma önerisi hazırla, 5) Sprint-03 review dosyası (~/ scrum/sprints/sprint-03-review.md) için taslak yaz ve kaydet. Özet: tamamlanma yüzdesi, öğrenilen dersler.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "high",
+      "points": 3,
+      "tags": [
+        "scrum",
+        "sprint",
+        "planning"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-045",
+      "title": "Go workspace temizlik ön keşfi (Backlog B-003)",
+      "description": "B-003 görevinin başlangıcı: Go workspace'i temizlemeden önce durumu anla. Adımlar: 1) ~/go/ dizini var mı ve ne kadar yer kaplıyor? (du -sh ~/go/*), 2) go version çalıştır, 3) go env ile GOPATH, GOROOT, GOMODCACHE'i öğren, 4) ~/go/pkg/mod dizininde hangi modüller var? En büyük 10'unu listele, 5) ~/go/bin'de hangi araçlar kurulu? 6) Herhangi bir Go projesi aktif mi? (~/alfred-hub veya altında go.mod ara). Temizleme için 'go clean -modcache' önerisi güvenli mi değerlendir.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "medium",
+      "points": 2,
+      "tags": [
+        "go",
+        "maintenance",
+        "development"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-046",
+      "title": "openclaw-gateway memory trend 6 saatlik takip",
+      "description": "OpenClaw'un RAM kullanımı sabit mi yoksa yavaş büyüyor mu? Adımlar: 1) ps aux | grep openclaw-gateway ile PID ve anlık RSS (kB) değerini al, 2) /proc/<PID>/status dosyasından VmRSS, VmSize, VmData değerlerini oku, 3) Bu değerleri ~/.openclaw/workspace/memory/inbox/shared-notes.md içine zaman damgasıyla not düş (format: 'YYYY-MM-DDTHH:MM | memory-snapshot | VmRSS=X VmData=Y'), 4) Geçmiş snapshot'ları karşılaştır — artış var mı? 5) Node.js V8 heap için normal eşik 1.2-1.8GB; bunu aşıyorsa uyar.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "medium",
+      "points": 1,
+      "tags": [
+        "monitoring",
+        "openclaw",
+        "memory"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-047",
+      "title": "Haftalık sistem sağlık raporu — Telegram'a gönder",
+      "description": "Bu haftanın sistem sağlık özetini hazırla ve Telegram'a gönder. İçerik: 1) Çalışma süresi (uptime), ortalama CPU load (cat /proc/loadavg), RAM kullanım ortalaması, 2) Disk doluluk trendi (şu anki vs. 7 gün önce — ~/alfred-hub/logs içinde eski rapor varsa karşılaştır), 3) Docker container sağlık durumu (kaç tane, hepsi Up mu?), 4) Bu hafta tamamlanan görev sayısı (TASKS.json'dan done olanları say), 5) Pi-hole engelleme oranı. Format: Telegram Markdown, başlık+bölümler, emoji ile okunaklı. ~/alfred-hub/.env'den BOT_TOKEN ve CHAT_ID'yi al.",
+      "assignee": "Alfred",
+      "status": "pending",
+      "priority": "high",
+      "points": 3,
+      "tags": [
+        "reporting",
+        "telegram",
+        "weekly"
+      ],
+      "created_at": "2026-04-14T22:00:00+03:00"
+    },
+    {
+      "id": "T-035",
+      "title": "Skiller",
+      "description": "Sana hangi skilleri ekleyebiliriz seni en çok geliştirecek skiller nelerdir detaylı bir araştırma yap ve listele",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-14T19:40:13.509Z"
     }
   ],
-  "updated_at": "2026-04-14T17:29:14.357Z"
+  "updated_at": "2026-04-14T19:40:13.509Z"
 }
