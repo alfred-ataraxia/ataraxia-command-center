@@ -310,11 +310,18 @@
       "title": "Sabah brifing cron'u kur — 09:00'da Telegram'a",
       "description": "jobs.json'a yeni bir cron job ekle: her sabah 09:00'da (Istanbul) çalışır. İçerik: tarih, hava durumu (wttr.in), pending görev sayısı, sistem özeti (RAM/disk), günün motivasyon cümlesi (sabit listeden rastgele seç). Format: Telegram Markdown, güzel, okunabilir. jobs.json dosyasını düzenle — mevcut alfred-task-runner'ı bozmadan yeni job ekle. Job ID: \"morning-briefing\".",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "deleted",
       "priority": "high",
       "points": 2,
       "created_at": "2026-04-14T20:00:00+03:00",
-      "notes": []
+      "notes": [],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "deleted",
+          "at": "2026-04-14T17:29:14.357Z"
+        }
+      ]
     },
     {
       "id": "T-034",
@@ -328,5 +335,5 @@
       "notes": []
     }
   ],
-  "updated_at": "2026-04-14T17:28:38.553Z"
+  "updated_at": "2026-04-14T17:29:14.357Z"
 }
