@@ -54,8 +54,9 @@ export default function MemoryView() {
         const data = await res.json()
         // MEMORY.md'yi sona at, diğerlerini type'a göre sırala
         const files = data.files || []
-        const index = files.filter(f => f.name === 'MEMORY.md' || f.name?.toLowerCase().includes('memory.md'))
-        const rest = files.filter(f => !index.includes(f))
+        const isIndex = f => f.name === 'MEMORY.md' || f.name?.toLowerCase() === 'memory.md'
+        const rest = files.filter(f => !isIndex(f))
+        const index = files.filter(isIndex)
         setMemories([...rest, ...index])
       }
     } catch {

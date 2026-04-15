@@ -859,25 +859,33 @@ function handleRequest(req, res) {
   }
   const tasksFile = path.join(__dirname, '..', 'TASKS.json')
 
-  // API: active AI status (Claude, Gemini, Codex)
+  // API: active AI status — OpenClaw gateway health + active CLI agents
   if (url === '/api/ai-status') {
     try {
-      const getActive = () => {
-        try {
-          // Check specifically for each agent without using shell-level OR logic
-          const geminiOut = execSync('pgrep -af "gemini" 2>/dev/null').toString().trim()
-          if (geminiOut) return 'Gemini'
-          
-          const claudeOut = execSync('pgrep -af "claude" 2>/dev/null').toString().trim()
-          if (claudeOut) return 'Claude'
-          
-          const codexOut = execSync('pgrep -af "codex" 2>/dev/null').toString().trim()
-          if (codexOut) return 'Codex'
-        } catch { }
-        return 'Yok'
-      }
+      // Check OpenClaw gateway
+      let openclawStatus = 'down'
+      try {
+        const gwOut = execSync('curl -sf --max-time 2 http://localhost:18789/healthz 2>/dev/null || echo "fail"', { timeout: 3000 }).toString().trim()
+        openclawStatus = gwOut.includes('fail') ? 'down' : 'up'
+      } catch { openclawStatus = 'down' }
+
+      // Check active CLI agents (interactive sessions)
+      const activeAgents = []
+      try {
+        const claudeOut = execSync('pgrep -af "claude" 2>/dev/null', { timeout: 2000 }).toString().trim()
+        if (claudeOut && !claudeOut.includes('server.cjs')) activeAgents.push('Claude Code')
+      } catch {}
+      try {
+        const geminiOut = execSync('pgrep -af "gemini" 2>/dev/null', { timeout: 2000 }).toString().trim()
+        if (geminiOut) activeAgents.push('Gemini CLI')
+      } catch {}
+
+      const active = openclawStatus === 'up'
+        ? (activeAgents.length > 0 ? `OpenClaw + ${activeAgents.join(', ')}` : 'OpenClaw')
+        : (activeAgents.length > 0 ? activeAgents.join(', ') : 'Yok')
+
       res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ active: getActive() }))
+      res.end(JSON.stringify({ active, openclawStatus, activeAgents }))
     } catch (err) {
       res.writeHead(500, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ active: 'Bilinmiyor', error: err.message }))
@@ -915,13 +923,17 @@ function handleRequest(req, res) {
         })
       }
 
-      // Son tamamlanan görevler (max 3)
-      const doneRecent = db.tasks.filter(t => t.status === 'done').slice(-3)
+      // Son tamamlanan görevler (max 5, completed_at'e göre sıralı)
+      const doneRecent = db.tasks
+        .filter(t => t.status === 'done')
+        .sort((a, b) => new Date(b.completed_at || b.updated_at || 0) - new Date(a.completed_at || a.updated_at || 0))
+        .slice(0, 5)
       for (const t of doneRecent) {
         activities.push({
-          type: 'success', agent: t.assignee || 'Alfred',
+          type: 'task_done', agent: t.assignee || 'Alfred',
           action: `${t.id} "${t.title}" tamamlandı`,
-          when: updatedAt,
+          when: t.completed_at || updatedAt,
+          task_id: t.id,
         })
       }
     } catch {}
@@ -984,25 +996,36 @@ function handleRequest(req, res) {
     return
   }
 
-  // API: logs list
+  // API: logs list — sadece aktif/anlamlı loglar
   if (url === '/api/logs') {
+    const EXCLUDE = /^(application-|error-|task-runner|task-watchdog|task-check|alfred-runner|heartbeat|alfred-work)/
     const logs = []
+
+    // OpenClaw aktivite logu — en üstte göster
+    const ocRunsPath = path.join(os.homedir(), '.openclaw', 'cron', 'runs', 'alfred-task-runner.jsonl')
+    if (fs.existsSync(ocRunsPath)) {
+      const stat = fs.statSync(ocRunsPath)
+      logs.push({ name: 'openclaw-activity.log', size: stat.size, mtime: stat.mtime.toISOString(), dir: '__openclaw__', virtual: true })
+    }
+
     const logDirs = [
+      path.join(os.homedir(), 'alfred-hub', 'command-center', 'logs'),
       path.join(os.homedir(), 'alfred-hub', 'logs'),
       path.join(os.homedir(), 'alfred-hub', 'command-center', 'dashboard', 'logs'),
     ]
     for (const logDir of logDirs) {
       try {
-        const files = fs.readdirSync(logDir).filter(f => f.endsWith('.log') || f.endsWith('.pid')).sort().reverse()
+        const files = fs.readdirSync(logDir)
+          .filter(f => f.endsWith('.log') && !EXCLUDE.test(f))
         for (const f of files) {
           try {
             const stat = fs.statSync(path.join(logDir, f))
+            if (stat.size === 0) continue
             logs.push({ name: f, size: stat.size, mtime: stat.mtime.toISOString(), dir: logDir })
           } catch {}
         }
       } catch {}
     }
-    logs.sort((a, b) => new Date(b.mtime) - new Date(a.mtime))
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ logs }))
     return
@@ -1012,7 +1035,63 @@ function handleRequest(req, res) {
   if (url.startsWith('/api/logs/stream')) {
     const qs = new URLSearchParams(req.url.split('?')[1] || '')
     const fileName = (qs.get('file') || '').replace(/[^a-zA-Z0-9._-]/g, '')
+
+    // Sanal OpenClaw aktivite logu
+    if (fileName === 'openclaw-activity.log') {
+      const ocRunsPath = path.join(os.homedir(), '.openclaw', 'cron', 'runs', 'alfred-task-runner.jsonl')
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no',
+      })
+      const sendEvent = (data) => res.write(`data: ${JSON.stringify(data)}\n\n`)
+
+      const readRuns = () => {
+        try {
+          const lines = fs.readFileSync(ocRunsPath, 'utf8').split('\n').filter(Boolean)
+          const MAX = 200
+          const slice = lines.length > MAX ? lines.slice(-MAX) : lines
+          return slice.map(l => {
+            try {
+              const r = JSON.parse(l)
+              const ts = new Date(r.ts).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul', hour12: false })
+              const icon = r.status === 'ok' ? '✅' : r.status === 'error' ? '❌' : '⏳'
+              const summary = (r.summary || r.action || r.status || '').replace(/\n/g, ' ').slice(0, 120)
+              return `[${ts}] ${icon} ${summary}`
+            } catch { return l }
+          }).join('\n')
+        } catch { return '' }
+      }
+
+      sendEvent({ type: 'init', content: readRuns() })
+
+      let lastSize = fs.existsSync(ocRunsPath) ? fs.statSync(ocRunsPath).size : 0
+      const watcher = fs.watch(ocRunsPath, () => {
+        try {
+          const stat = fs.statSync(ocRunsPath)
+          if (stat.size > lastSize) {
+            lastSize = stat.size
+            const lines = fs.readFileSync(ocRunsPath, 'utf8').split('\n').filter(Boolean)
+            const last = lines[lines.length - 1]
+            try {
+              const r = JSON.parse(last)
+              const ts = new Date(r.ts).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul', hour12: false })
+              const icon = r.status === 'ok' ? '✅' : r.status === 'error' ? '❌' : '⏳'
+              const summary = (r.summary || r.action || r.status || '').replace(/\n/g, ' ').slice(0, 120)
+              sendEvent({ type: 'append', content: `[${ts}] ${icon} ${summary}` })
+            } catch {}
+          }
+        } catch {}
+      })
+
+      const heartbeat = setInterval(() => res.write(': heartbeat\n\n'), 15000)
+      req.on('close', () => { clearInterval(heartbeat); watcher.close() })
+      return
+    }
+
     const logDirs = [
+      path.join(os.homedir(), 'alfred-hub', 'command-center', 'logs'),
       path.join(os.homedir(), 'alfred-hub', 'logs'),
       path.join(os.homedir(), 'alfred-hub', 'command-center', 'dashboard', 'logs'),
     ]
@@ -1036,9 +1115,12 @@ function handleRequest(req, res) {
       res.write(`data: ${JSON.stringify(data)}\n\n`)
     }
 
-    // Send existing content in chunks
-    const existing = fs.readFileSync(filePath, 'utf8')
-    sendEvent({ type: 'init', content: existing })
+    // Send existing content — büyük dosyalarda son 500 satır
+    const MAX_LINES = 500
+    const raw = fs.readFileSync(filePath, 'utf8')
+    const lines = raw.split('\n').filter(Boolean)
+    const content = (lines.length > MAX_LINES ? lines.slice(-MAX_LINES) : lines).join('\n')
+    sendEvent({ type: 'init', content })
 
     // Watch for new content
     let lastSize = fs.statSync(filePath).size
@@ -1110,13 +1192,13 @@ function handleRequest(req, res) {
       memoryFiles = fs.readdirSync(memDir).filter(f => f.endsWith('.md') && f !== 'MEMORY.md')
     } catch {}
 
-    // Son log aktivitesi
-    const logDir = path.join(os.homedir(), 'openclaw', 'logs')
+    // Son log aktivitesi — OpenClaw jobs.json son çalışma zamanı
     let lastActivity = null
     try {
-      const logFile = path.join(logDir, 'telegram-bot.log')
-      const stat = fs.statSync(logFile)
-      lastActivity = stat.mtime.toISOString()
+      const jobsFile = path.join(os.homedir(), '.openclaw', 'cron', 'jobs.json')
+      const jobs = JSON.parse(fs.readFileSync(jobsFile, 'utf8'))
+      const lastMs = Math.max(...(jobs.jobs || []).map(j => j.state?.lastRunAtMs || 0).filter(Boolean))
+      if (lastMs > 0) lastActivity = new Date(lastMs).toISOString()
     } catch {}
 
     // Aktif görevler (TASKS.json'dan in_progress)
@@ -1130,9 +1212,9 @@ function handleRequest(req, res) {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({
       alfred: {
-        model: 'claude-sonnet-4-6',
+        model: 'minimax-m2.7 (OpenClaw)',
         role: 'Orkestratör / İkinci Beyin',
-        platform: 'Claude Code CLI',
+        platform: 'OpenClaw Gateway',
         location: 'ataraxia (RPi 400)',
         owner: 'Master Sefa',
       },
@@ -1475,13 +1557,8 @@ function handleRequest(req, res) {
               if (statusChanged) {
                 commitTasksFile(task.id, task.title, task.status)
 
-                // in_progress'e alınınca task-runner'ı hemen tetikle
                 if (updates.status === 'in_progress') {
-                  const runner = spawn('bash', [
-                    path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')
-                  ], { detached: true, stdio: 'ignore' })
-                  runner.unref()
-                  logger.info('Task runner tetiklendi', { taskId: task.id })
+                  logger.info('Task in_progress, OpenClaw sonraki 30dk rununda alacak', { taskId: task.id })
                 }
               }
 
@@ -1539,13 +1616,6 @@ function handleRequest(req, res) {
         fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
           if (err2) return sendError(res, 500, 'TASKS.json yazılamadı')
           
-          // Trigger task-runner.sh
-          const runner = spawn('bash', [
-            path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')
-          ], { detached: true, stdio: 'ignore' })
-          runner.unref()
-          logger.info('Task runner tetiklendi (start)', { taskId })
-          
           // Send Telegram notification
           sendTelegramAssignNotification(task.id, 'Alfred', task.title, now)
           addNotification('task_started', `${task.id} Başlatıldı`, task.title, task.id)
@@ -1592,7 +1662,11 @@ function handleRequest(req, res) {
               return sendError(res, 500, 'Geçersiz TASKS.json formatı')
             }
 
-            const nextId = 'T-' + String(db.tasks.length + 1).padStart(3, '0')
+            const maxNum = db.tasks.reduce((max, t) => {
+              const m = t.id && t.id.match(/^T-(\d+)$/)
+              return m ? Math.max(max, parseInt(m[1], 10)) : max
+            }, 0)
+            const nextId = 'T-' + String(maxNum + 1).padStart(3, '0')
             const task = {
               id: nextId,
               title: newTask.title.trim(),
@@ -1616,13 +1690,8 @@ function handleRequest(req, res) {
 
               commitTasksFile(task.id, task.title, task.status)
 
-              // Yeni görev in_progress olarak eklenirse hemen tetikle
               if (task.status === 'in_progress') {
-                const runner = spawn('bash', [
-                  path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')
-                ], { detached: true, stdio: 'ignore' })
-                runner.unref()
-                logger.info('Task runner tetiklendi (yeni görev)', { taskId: task.id })
+                logger.info('Task in_progress, OpenClaw sonraki rununda alacak', { taskId: task.id })
               }
 
               res.writeHead(201, { 'Content-Type': 'application/json' })
@@ -1697,9 +1766,6 @@ function handleRequest(req, res) {
               task.preferred_model = ['claude', 'gemini'].includes(updates.preferred_model)
                 ? updates.preferred_model : 'claude'
             }
-            if (updates.auto !== undefined) {
-              task.auto = Boolean(updates.auto)
-            }
 
             // Track status changes
             if (oldStatus !== task.status) {
@@ -1730,11 +1796,6 @@ function handleRequest(req, res) {
                 const now = new Date().toISOString()
                 const noteEntry = `\n## ${now} | Alfred\n- Alan: task-started\n- Not: ${task.id} başlatıldı — ${task.title}\n`
                 try { fs.appendFileSync(sharedNotesPath, noteEntry) } catch (e) {}
-                
-                // Trigger task-runner.sh
-                const runner = spawn('bash', [path.join(os.homedir(), 'alfred-hub', 'scripts', 'task-runner.sh')], { detached: true, stdio: 'ignore' })
-                runner.unref()
-                logger.info('Task runner tetiklendi (PUT start)', { taskId: task.id })
                 
                 // Telegram bildirimi
                 sendTelegramAssignNotification(task.id, 'Alfred', task.title, now)
@@ -2055,11 +2116,12 @@ function handleRequest(req, res) {
 
   // API: git repos and recent commits
   if (url === '/api/git/repos' && req.method === 'GET') {
-    const repos = [
+    const repoCandidates = [
       { path: path.join(os.homedir(), 'master-memory'), name: 'master-memory' },
       { path: path.join(os.homedir(), 'alfred-hub'), name: 'alfred-hub' },
-      { path: path.join(os.homedir(), 'scrum'), name: 'scr um' },
+      { path: path.join(os.homedir(), 'scrum'), name: 'scrum' },
     ]
+    const repos = repoCandidates.filter(r => fs.existsSync(path.join(r.path, '.git')))
     const result = []
     for (const repo of repos) {
       try {
@@ -2142,8 +2204,8 @@ function handleRequest(req, res) {
         id: 'Gemini',
         name: 'Gemini',
         role: 'Araştırma & Geliştirme',
-        status: 'active',
-        uptime: '6sa 22dk',
+        status: 'idle',
+        uptime: '—',
         description: 'Bilgi tarama, çoklu modal analiz ve kompleks problem çözme.',
         tags: ['research', 'coding'],
       },
@@ -2158,11 +2220,11 @@ function handleRequest(req, res) {
       },
     ]
 
-    const MODEL_MAPPING = { 
-      'Alfred': 'claude-3-5-sonnet',
-      'Claude': 'claude-3-5-sonnet',
-      'Gemini': 'gemini-1.5-pro',
-      'Robin': 'gemini-1.5-flash'
+    const MODEL_MAPPING = {
+      'Alfred': 'minimax-m2.7 (OpenClaw)',
+      'Claude': 'claude-sonnet-4-6',
+      'Gemini': 'gemini-2.5-pro',
+      'Robin': 'gemini-2.5-pro'
     }
 
     const agents = WAYNE_AGI.map(a => {
@@ -2322,69 +2384,65 @@ function handleRequest(req, res) {
   // API: automation center (GET /api/automation)
   if (url === '/api/automation' && req.method === 'GET') {
     try {
-      // 1. Cron schedules from /etc/crontab
+      // 1. OpenClaw cron jobs from ~/.openclaw/cron/jobs.json
+      const openclawJobsPath = path.join(os.homedir(), '.openclaw', 'cron', 'jobs.json')
+      let openclawJobs = []
+      try {
+        const raw = fs.readFileSync(openclawJobsPath, 'utf8')
+        const parsed = JSON.parse(raw)
+        openclawJobs = (parsed.jobs || []).map(job => ({
+          id: job.id,
+          name: job.name,
+          description: job.description || '',
+          enabled: job.enabled,
+          schedule: job.schedule?.expr || '?',
+          tz: job.schedule?.tz || 'UTC',
+          agentId: job.agentId,
+          lastRunAtMs: job.state?.lastRunAtMs || null,
+          nextRunAtMs: job.state?.nextRunAtMs || null,
+          lastRunStatus: job.state?.lastRunStatus || null,
+          lastDurationMs: job.state?.lastDurationMs || null,
+          lastDelivered: job.state?.lastDelivered || false,
+          consecutiveErrors: job.state?.consecutiveErrors || 0,
+        }))
+      } catch {}
+
+      // 2. System cron jobs (alfred-hub related only) from user crontab
       const cronSchedules = []
       try {
-        const crontabContent = fs.readFileSync('/etc/crontab', 'utf8')
-        for (const line of crontabContent.split('\n')) {
+        const userCrontab = execSync('crontab -l 2>/dev/null', { timeout: 2000 }).toString()
+        for (const line of userCrontab.split('\n')) {
           const trimmed = line.trim()
           if (!trimmed || trimmed.startsWith('#')) continue
           const parts = trimmed.split(/\s+/)
-          if (parts.length < 7) continue
-          // crontab format: min hour dom month dow user command...
-          const [min, hour, dom, month, dow, user, ...cmdParts] = parts
-          // only show alfred-hub related crons
+          if (parts.length < 6) continue
+          const [min, hour, dom, month, dow, ...cmdParts] = parts
           const cmd = cmdParts.join(' ')
-          if (!cmd.includes('alfred') && !cmd.includes('task-runner') && !cmd.includes('backup')) continue
-          const schedule = `${min} ${hour} ${dom} ${month} ${dow}`
-          cronSchedules.push({ schedule, user, command: cmd, raw: trimmed })
+          if (!cmd.includes('alfred') && !cmd.includes('backup') && !cmd.includes('briefing') && !cmd.includes('report')) continue
+          cronSchedules.push({ schedule: `${min} ${hour} ${dom} ${month} ${dow}`, command: cmd })
         }
       } catch {}
 
-      // 2. Auto:true tasks from TASKS.json
-      const autoTasks = []
-      try {
-        const tasksRaw = fs.readFileSync(path.join(__dirname, '..', 'TASKS.json'), 'utf8')
-        const tasksData = JSON.parse(tasksRaw)
-        const tasks = Array.isArray(tasksData) ? tasksData : (tasksData.tasks || [])
-        for (const t of tasks) {
-          if (t.auto === true) {
-            autoTasks.push({
-              id: t.id,
-              title: t.title,
-              status: t.status,
-              assignee: t.assignee,
-              points: t.points,
-              priority: t.priority,
-              updated_at: t.updated_at,
-            })
-          }
-        }
-      } catch {}
 
-      // 3. Last 50 lines of task-runner.log
-      const taskRunnerLogPath = path.join(os.homedir(), 'alfred-hub', 'logs', 'task-runner.log')
+      // 4. Last 50 lines of alfred backup log
+      const backupLogPath = path.join(os.homedir(), 'alfred-hub', 'command-center', 'logs', 'alfred-backup.log')
       let logLines = []
       try {
-        const logContent = fs.readFileSync(taskRunnerLogPath, 'utf8')
+        const logContent = fs.readFileSync(backupLogPath, 'utf8')
         logLines = logContent.split('\n').filter(Boolean).slice(-50)
       } catch {}
 
-      // 4. Next run times: task-runner runs at 09:00 and 21:00 daily
-      const now = new Date()
-      const nextRuns = []
-      for (const hour of [9, 21]) {
-        const next = new Date(now)
-        next.setHours(hour, 0, 0, 0)
-        if (next <= now) next.setDate(next.getDate() + 1)
-        nextRuns.push({ label: `Task Runner ${hour === 9 ? '(sabah)' : '(gece'}`, time: next.toISOString(), hour })
-      }
-      nextRuns.sort((a, b) => new Date(a.time) - new Date(b.time))
+      // 5. Next run times derived from OpenClaw jobs state
+      const nextRuns = openclawJobs
+        .filter(j => j.enabled && j.nextRunAtMs)
+        .map(j => ({ label: j.name, jobId: j.id, time: new Date(j.nextRunAtMs).toISOString() }))
+        .sort((a, b) => new Date(a.time) - new Date(b.time))
 
       res.writeHead(200, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({
+        openclawJobs,
         cronSchedules,
-        autoTasks,
+
         logLines,
         nextRuns,
         generatedAt: new Date().toISOString(),

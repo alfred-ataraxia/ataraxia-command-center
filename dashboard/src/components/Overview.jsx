@@ -1,18 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Cpu, MemoryStick, Clock, Bot, GitBranch, RefreshCw, Server, CheckCircle2, XCircle, Zap, Activity } from 'lucide-react'
+import { Cpu, MemoryStick, Clock, GitBranch, RefreshCw, Server, CheckCircle2, XCircle, Zap } from 'lucide-react'
 import { getSystemStats } from '../services/haService'
 import apiFetch from '../services/apiFetch'
-
-function timeAgo(iso) {
-  if (!iso) return '—'
-  const diff = Date.now() - new Date(iso).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return 'şimdi'
-  if (m < 60) return `${m}dk`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}s`
-  return `${Math.floor(h / 24)}g`
-}
+import { timeAgo } from '../utils'
 
 function StatBar({ label, value, warnThreshold = 80, icon: Icon }) {
   const isWarn = value >= warnThreshold
@@ -39,20 +29,14 @@ function StatBar({ label, value, warnThreshold = 80, icon: Icon }) {
 
 export default function Overview() {
   const [stats, setStats] = useState(null)
-  const [activeAI, setActiveAI] = useState({ name: 'Alfred', model: 'MiniMax-M2.7', status: 'active' })
+  const [activeAI, setActiveAI] = useState({ name: 'Alfred', model: 'MiniMax-M2.7', status: 'active', openclawUp: null })
   const [events, setEvents] = useState([])
-  const [cronCount, setCronCount] = useState(0)
+  const [cronCount, setCronCount] = useState(null)
   const [now, setNow] = useState(new Date())
   const [gitRepos, setGitRepos] = useState([])
   const [services, setServices] = useState([])
   const [restarting, setRestarting] = useState(null)
   const [loading, setLoading] = useState(true)
-  
-  // Cron sayısını sistemden al (execSync kullanarak)
-  const getCronCount = async () => {
-    // Frontend'den sistem bilgisi alma - fallback
-    return 5 // varsayılan
-  }
 
   useEffect(() => {
     const tick = setInterval(() => setNow(new Date()), 30_000)
@@ -64,16 +48,27 @@ export default function Overview() {
       const s = await getSystemStats()
       setStats(s)
 
-      // Cron sayaci — sabit deger (5 aktif cron)
-      setCronCount(5)
       try {
         const resAI = await fetch('/api/ai-status')
         if (resAI.ok) {
           const d = await resAI.json()
-          // sadece "Gemini" değilse Alfred'tir (OpenClaw çalışıyor)
-          if (d.active && d.active !== 'Yok') {
-            setActiveAI({ name: d.active, model: 'MiniMax-M2.7', status: 'active' })
-          }
+          setActiveAI({
+            name: d.openclawStatus === 'up' ? 'Alfred (OpenClaw)' : (d.active !== 'Yok' ? d.active : 'Alfred'),
+            model: d.openclawStatus === 'up' ? 'MiniMax-M2.7' : '—',
+            status: d.openclawStatus === 'up' ? 'active' : 'idle',
+            openclawUp: d.openclawStatus === 'up',
+          })
+        }
+      } catch {}
+
+      // Cron sayacı — OpenClaw jobs.json'dan al
+      try {
+        const resAuto = await fetch('/api/automation')
+        if (resAuto.ok) {
+          const d = await resAuto.json()
+          const ocJobs = (d.openclawJobs || []).filter(j => j.enabled).length
+          const sysCrons = (d.cronSchedules || []).length
+          setCronCount(ocJobs + sysCrons)
         }
       } catch {}
 
@@ -190,9 +185,17 @@ export default function Overview() {
             <span className="text-[11px] text-ax-dim">Uptime: {uptime}</span>
           </div>
           <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-ax-accent/10">
-            <span className="text-[10px] font-mono text-ax-accent">5</span>
+            <span className="text-[10px] font-mono text-ax-accent">{cronCount ?? '…'}</span>
             <span className="text-[10px] text-ax-dim">aktif cron</span>
           </div>
+          {activeAI.openclawUp !== null && (
+            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg ${activeAI.openclawUp ? 'bg-ax-green/10' : 'bg-ax-red/10'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${activeAI.openclawUp ? 'bg-ax-green animate-pulse' : 'bg-ax-red'}`} />
+              <span className={`text-[10px] ${activeAI.openclawUp ? 'text-ax-green' : 'text-ax-red'}`}>
+                OpenClaw {activeAI.openclawUp ? 'up' : 'down'}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

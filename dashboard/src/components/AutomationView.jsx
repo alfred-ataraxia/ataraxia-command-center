@@ -1,15 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { Timer, ListChecks, ScrollText, Zap, RefreshCw, Clock, CheckCircle2, Circle, AlertCircle, ChevronRight } from 'lucide-react'
+import { Timer, ScrollText, RefreshCw, Clock, CheckCircle2, Circle, AlertCircle, ChevronRight, Bot, WifiOff, Zap } from 'lucide-react'
 import apiFetch from '../services/apiFetch'
-
-function classifyLine(line) {
-  const l = line.toLowerCase()
-  if (l.includes('error') || l.includes('hata') || l.includes('fail') || l.includes('killed')) return 'text-ax-red'
-  if (l.includes('warn') || l.includes('skip') || l.includes('uyarı')) return 'text-ax-amber'
-  if (l.includes('done') || l.includes('tamamlandı') || l.includes('success')) return 'text-ax-green'
-  if (l.includes('başladı') || l.includes('başlatılıyor') || l.includes('alındı')) return 'text-ax-cyan'
-  return 'text-ax-dim'
-}
+import { classifyLine } from '../utils'
 
 function statusIcon(status) {
   if (status === 'done') return <CheckCircle2 size={13} className="text-ax-green shrink-0" />
@@ -102,6 +94,66 @@ export default function AutomationView() {
         </div>
       )}
 
+      {/* OpenClaw jobs panel */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <Bot size={14} className="text-ax-cyan" />
+          <h2 className="text-sm font-semibold text-ax-heading">OpenClaw Cron Jobs</h2>
+          <span className="text-[10px] text-ax-subtle px-1.5 py-0.5 rounded bg-ax-muted border border-ax-border">
+            {data?.openclawJobs?.length ?? '—'} iş
+          </span>
+        </div>
+        <div className="space-y-2">
+          {loading && !data && <div className="h-20 rounded-xl bg-ax-panel border border-ax-border animate-pulse" />}
+          {(data?.openclawJobs ?? []).length === 0 && !loading && (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-ax-panel border border-ax-border text-ax-subtle text-xs">
+              <WifiOff size={12} /> OpenClaw jobs.json okunamadı
+            </div>
+          )}
+          {(data?.openclawJobs ?? []).map(job => (
+            <div key={job.id} className="px-4 py-3 rounded-xl bg-ax-panel border border-ax-border">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${job.enabled ? 'bg-ax-green animate-pulse' : 'bg-ax-dim'}`} />
+                  <span className="text-xs font-semibold text-ax-heading truncate">{job.name}</span>
+                </div>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded border shrink-0 ${
+                  job.lastRunStatus === 'ok' ? 'bg-ax-green/10 border-ax-green/30 text-ax-green'
+                  : job.lastRunStatus ? 'bg-ax-red/10 border-ax-red/30 text-ax-red'
+                  : 'bg-ax-panel border-ax-border text-ax-subtle'
+                }`}>
+                  {job.lastRunStatus || 'beklemede'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+                <div>
+                  <p className="text-ax-subtle">Zamanlama</p>
+                  <p className="font-mono text-ax-accent/80">{job.schedule}</p>
+                </div>
+                <div>
+                  <p className="text-ax-subtle">Ajan</p>
+                  <p className="text-ax-dim">{job.agentId}</p>
+                </div>
+                <div>
+                  <p className="text-ax-subtle">Son çalışma</p>
+                  <p className="text-ax-dim">
+                    {job.lastRunAtMs ? new Date(job.lastRunAtMs).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
+                    {job.lastDurationMs ? ` (${Math.round(job.lastDurationMs / 1000)}s)` : ''}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-ax-subtle">Sonraki çalışma</p>
+                  {job.nextRunAtMs ? <Countdown targetTime={new Date(job.nextRunAtMs).toISOString()} /> : <span className="text-ax-dim">—</span>}
+                </div>
+              </div>
+              {job.description && (
+                <p className="mt-2 text-[10px] text-ax-subtle truncate">{job.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Next run countdown */}
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {(data?.nextRuns ?? []).map((run, i) => (
@@ -110,7 +162,7 @@ export default function AutomationView() {
               <Clock size={16} className="text-ax-accent" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-ax-dim mb-0.5">{run.label})</p>
+              <p className="text-xs text-ax-dim mb-0.5">{run.label}</p>
               <p className="text-[11px] text-ax-subtle truncate">
                 {new Date(run.time).toLocaleString('tr-TR', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
               </p>
@@ -126,11 +178,11 @@ export default function AutomationView() {
         )}
       </section>
 
-      {/* Cron schedules table */}
+      {/* System cron schedules table */}
       <section>
         <div className="flex items-center gap-2 mb-3">
           <ChevronRight size={14} className="text-ax-accent" />
-          <h2 className="text-sm font-semibold text-ax-heading">Cron Zamanlamaları</h2>
+          <h2 className="text-sm font-semibold text-ax-heading">Sistem Cron</h2>
           <span className="text-[10px] text-ax-subtle px-1.5 py-0.5 rounded bg-ax-muted border border-ax-border">
             {data?.cronSchedules?.length ?? '—'}
           </span>
@@ -148,7 +200,7 @@ export default function AutomationView() {
               {(data?.cronSchedules ?? []).length === 0 && (
                 <tr>
                   <td colSpan={3} className="px-3 py-4 text-ax-subtle text-center">
-                    {loading ? 'Yükleniyor...' : 'Cron kaydı yok'}
+                    {loading ? 'Yükleniyor...' : 'Kullanıcı cron kaydı yok'}
                   </td>
                 </tr>
               )}
@@ -166,45 +218,12 @@ export default function AutomationView() {
         </div>
       </section>
 
-      {/* Auto tasks list */}
-      <section>
-        <div className="flex items-center gap-2 mb-3">
-          <ChevronRight size={14} className="text-ax-accent" />
-          <h2 className="text-sm font-semibold text-ax-heading">Otomatik Görevler</h2>
-          <span className="text-[10px] text-ax-subtle px-1.5 py-0.5 rounded bg-ax-muted border border-ax-border">
-            {data?.autoTasks?.length ?? '—'} auto:true
-          </span>
-        </div>
-        <div className="space-y-1.5">
-          {(data?.autoTasks ?? []).length === 0 && (
-            <p className="text-ax-subtle text-xs px-2">{loading ? 'Yükleniyor...' : 'Otomatik görev yok'}</p>
-          )}
-          {(data?.autoTasks ?? []).map(task => (
-            <div key={task.id} className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-ax-panel border border-ax-border hover:bg-ax-muted/40 transition-colors">
-              {statusIcon(task.status)}
-              <span className="text-[10px] font-mono text-ax-subtle shrink-0 w-14">{task.id}</span>
-              <span className="flex-1 text-xs text-ax-text truncate">{task.title}</span>
-              <span className="text-[10px] text-ax-subtle shrink-0">{task.assignee}</span>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded border shrink-0 ${
-                task.status === 'done'
-                  ? 'bg-ax-green/10 border-ax-green/30 text-ax-green'
-                  : task.status === 'in_progress'
-                  ? 'bg-ax-amber/10 border-ax-amber/30 text-ax-amber'
-                  : 'bg-ax-panel border-ax-border text-ax-subtle'
-              }`}>
-                {task.status}
-              </span>
-              <span className="text-[10px] text-ax-subtle shrink-0">{task.points}p</span>
-            </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Task-runner log */}
+      {/* Backup log */}
       <section>
         <div className="flex items-center gap-2 mb-3">
           <ChevronRight size={14} className="text-ax-accent" />
-          <h2 className="text-sm font-semibold text-ax-heading">Task Runner Log</h2>
+          <h2 className="text-sm font-semibold text-ax-heading">Yedekleme Log</h2>
           <span className="text-[10px] text-ax-subtle px-1.5 py-0.5 rounded bg-ax-muted border border-ax-border">
             son {data?.logLines?.length ?? 0} satır
           </span>
@@ -213,7 +232,7 @@ export default function AutomationView() {
           <div className="flex items-center justify-between px-3 py-1.5 border-b border-ax-border bg-ax-panel">
             <div className="flex items-center gap-1.5">
               <ScrollText size={11} className="text-ax-cyan" />
-              <span className="text-[10px] text-ax-subtle font-mono">~/alfred-hub/logs/task-runner.log</span>
+              <span className="text-[10px] text-ax-subtle font-mono">~/alfred-hub/command-center/logs/alfred-backup.log</span>
             </div>
             <span className="text-[10px] text-ax-subtle">{data?.generatedAt ? new Date(data.generatedAt).toLocaleString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : ''}</span>
           </div>

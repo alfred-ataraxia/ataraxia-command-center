@@ -4,14 +4,20 @@ import { ToastProvider } from './components/ToastContainer'
 import Sidebar from './components/Sidebar'
 import Overview from './components/Overview'
 import TaskQueue from './components/TaskQueue'
+import OrchestrationView from './components/OrchestrationView'
+import AutomationView from './components/AutomationView'
+import MemoryView from './components/MemoryView'
 import LogsView from './components/LogsView'
 import LoginModal from './components/LoginModal'
 import { getToken } from './services/apiFetch'
 
 const VIEWS = {
-  overview: Overview,
-  tasks: TaskQueue,
-  logs: LogsView,
+  overview:   Overview,
+  tasks:      TaskQueue,
+  agents:     OrchestrationView,
+  automation: AutomationView,
+  memory:     MemoryView,
+  logs:       LogsView,
 }
 
 export default function App() {

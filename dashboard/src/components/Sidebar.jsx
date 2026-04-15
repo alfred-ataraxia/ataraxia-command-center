@@ -1,19 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ThemeToggle from './ThemeToggle'
 import {
   LayoutDashboard,
   ListTodo,
-  Activity,
-  ChevronRight,
+  ScrollText,
+  Bot,
+  Timer,
+  BrainCircuit,
   Menu,
   X,
-  Settings,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'overview', label: 'Kokpit',    icon: LayoutDashboard },
-  { id: 'tasks',     label: 'Görevler',  icon: ListTodo },
-  { id: 'logs',      label: 'Logs',      icon: Activity },
+  { id: 'overview',   label: 'Kokpit',    icon: LayoutDashboard },
+  { id: 'tasks',      label: 'Görevler',  icon: ListTodo },
+  { id: 'agents',     label: 'Ajanlar',   icon: Bot },
+  { id: 'automation', label: 'Otomasyon', icon: Timer },
+  { id: 'memory',     label: 'Hafıza',    icon: BrainCircuit },
+  { id: 'logs',       label: 'Logs',      icon: ScrollText },
 ]
 
 function NavItem({ item, active, onClick }) {
@@ -39,6 +43,23 @@ function NavItem({ item, active, onClick }) {
 }
 
 function SidebarContent({ activeView, onNavigate, onClose }) {
+  const [openclawUp, setOpenclawUp] = useState(null)
+
+  useEffect(() => {
+    async function checkStatus() {
+      try {
+        const res = await fetch('/api/ai-status')
+        if (res.ok) {
+          const d = await res.json()
+          setOpenclawUp(d.openclawStatus === 'up')
+        }
+      } catch { setOpenclawUp(false) }
+    }
+    checkStatus()
+    const t = setInterval(checkStatus, 60_000)
+    return () => clearInterval(t)
+  }, [])
+
   function handleNav(id) {
     onNavigate(id)
     if (onClose) onClose()
@@ -68,12 +89,30 @@ function SidebarContent({ activeView, onNavigate, onClose }) {
 
       {/* System Health */}
       <div className="px-4 py-4">
-        <div className="p-4 rounded-2xl bg-ax-panel border border-ax-border space-y-2">
+        <div className={`p-4 rounded-2xl border space-y-2 transition-colors ${
+          openclawUp === null ? 'bg-ax-panel border-ax-border'
+          : openclawUp ? 'bg-ax-green/5 border-ax-green/20'
+          : 'bg-ax-red/5 border-ax-red/20'
+        }`}>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-ax-green animate-pulse" />
-            <span className="text-[10px] font-black uppercase text-ax-dim tracking-wider">Alfred Aktif</span>
+            <div className={`w-2 h-2 rounded-full ${
+              openclawUp === null ? 'bg-ax-subtle'
+              : openclawUp ? 'bg-ax-green animate-pulse'
+              : 'bg-ax-red'
+            }`} />
+            <span className={`text-[10px] font-black uppercase tracking-wider ${
+              openclawUp === null ? 'text-ax-dim'
+              : openclawUp ? 'text-ax-green'
+              : 'text-ax-red'
+            }`}>
+              {openclawUp === null ? 'Kontrol ediliyor...'
+               : openclawUp ? 'OpenClaw Aktif'
+               : 'OpenClaw Kapalı'}
+            </span>
           </div>
-          <p className="text-[10px] text-ax-subtle">Her 30dk'da görev alır</p>
+          <p className="text-[10px] text-ax-subtle">
+            {openclawUp ? 'Her 30dk\'da görev alır' : 'Gateway yanıt vermiyor'}
+          </p>
         </div>
       </div>
 

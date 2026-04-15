@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Bot, Cpu, Clock, MessageSquare, RefreshCw, ExternalLink, AlertCircle } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 // Default agents when data cannot be fetched
 const DEFAULT_AGENTS = [
@@ -7,7 +8,7 @@ const DEFAULT_AGENTS = [
     id: 1,
     name: 'Alfred',
     role: 'Orkestratör',
-    model: 'claude-sonnet-4-6',
+    model: 'minimax-m2.7 (OpenClaw)',
     status: 'idle',
     uptime: '—',
     tasksTotal: '—',
@@ -129,7 +130,7 @@ export default function AgentStatus() {
   async function fetchAgents() {
     setLoading(true)
     try {
-      const res = await fetch('/api/agents')
+      const res = await apiFetch('/api/agents')
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       if (data.agents && data.agents.length > 0) {

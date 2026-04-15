@@ -8,10 +8,8 @@ import {
   X,
   Search,
   RefreshCw,
-  Filter,
   ChevronDown,
   ChevronUp,
-  Zap,
 } from 'lucide-react'
 import { getTasks, addTask, updateTask } from '../services/haService'
 import { useToast } from './useToast'
@@ -45,7 +43,6 @@ function normalizeTask(t) {
     tags: t.tags || [],
     due: t.due || '',
     created_at: t.created_at || '',
-    auto: t.auto || false,
   }
 }
 
@@ -86,7 +83,8 @@ function TaskCard({ task, onToggle, onDelete }) {
     e.stopPropagation()
     setConfirmingDelete(false)
     // Parent's handleDelete shows toast + calls loadTasks
-    onDelete(task.id)
+    // skipConfirm=true → inline UI zaten onayladı, confirm() dialogunu atlama
+    onDelete(task.id, true)
   }
 
   function handleDeleteCancel(e) {
@@ -110,11 +108,7 @@ function TaskCard({ task, onToggle, onDelete }) {
             <span className={`px-1.5 py-0.5 rounded border text-[10px] font-medium ${priority.class}`}>
               {priority.label}
             </span>
-            {task.auto && (
-              <span title="Otomatik Görev" className="px-1.5 py-0.5 rounded bg-ax-amber/20 border border-ax-amber/40 text-ax-amber text-[10px] font-bold">
-                ⚡ Otomatik
-              </span>
-            )}
+
           </div>
           <p className={`text-sm font-medium mt-0.5 ${task.status === 'done' ? 'line-through text-ax-dim' : 'text-ax-heading'}`}>
             {task.title}
@@ -191,6 +185,8 @@ function AddTaskForm({ onAdded }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState('medium')
+  const [due, setDue] = useState('')
+  const [assignee, setAssignee] = useState('Alfred')
   const [saving, setSaving] = useState(false)
   const { addToast } = useToast()
 
@@ -203,14 +199,17 @@ function AddTaskForm({ onAdded }) {
         title: title.trim(),
         description: description.trim(),
         priority,
+        due,
         status: 'pending',
         tags: [],
-        assignee: 'Alfred',
+        assignee,
       })
       addToast(`'${title.trim()}' eklendi`, 'success')
       setTitle('')
       setDescription('')
       setPriority('medium')
+      setDue('')
+      setAssignee('Alfred')
       setOpen(false)
       onAdded()
     } catch (err) {
@@ -257,7 +256,7 @@ function AddTaskForm({ onAdded }) {
         className="w-full px-3 py-2.5 rounded-lg bg-ax-bg border border-ax-border text-ax-text text-sm placeholder:text-ax-subtle focus:outline-none focus:border-ax-accent/50 resize-none"
       />
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         <select
           value={priority}
           onChange={e => setPriority(e.target.value)}
@@ -267,7 +266,25 @@ function AddTaskForm({ onAdded }) {
           <option value="medium">🟡 Orta</option>
           <option value="low">⚪ Düşük</option>
         </select>
-        
+
+        <input
+          type="date"
+          value={due}
+          onChange={e => setDue(e.target.value)}
+          className="px-3 py-2 rounded-lg bg-ax-bg border border-ax-border text-ax-text text-sm focus:outline-none"
+        />
+
+        <select
+          value={assignee}
+          onChange={e => setAssignee(e.target.value)}
+          className="px-3 py-2 rounded-lg bg-ax-bg border border-ax-border text-ax-text text-sm focus:outline-none"
+        >
+          <option value="Alfred">🦊 Alfred</option>
+          <option value="Master Sefa">👤 Master Sefa</option>
+          <option value="Claude">🤖 Claude</option>
+          <option value="Gemini">✨ Gemini</option>
+        </select>
+
         <button
           type="submit"
           disabled={!title.trim() || saving}
@@ -322,7 +339,6 @@ export default function TaskQueue() {
   const [search, setSearch] = useState('')
   const [hideDone, setHideDone] = useState(true)
   const [priorityFilter, setPriorityFilter] = useState('')
-  const [autoFilter, setAutoFilter] = useState(false)
 
   const loadTasks = useCallback(async () => {
     try {
@@ -361,7 +377,6 @@ export default function TaskQueue() {
       if (!t.title.toLowerCase().includes(q) && !t.id.toLowerCase().includes(q)) return false
     }
     if (priorityFilter && t.priority !== priorityFilter) return false
-    if (autoFilter && !t.auto) return false
     return true
   })
 
@@ -428,16 +443,7 @@ export default function TaskQueue() {
           {hideDone ? '✓ Tamamlananlar gizli' : 'Tamamlananlar görünür'}
         </button>
 
-        <button
-          onClick={() => setAutoFilter(!autoFilter)}
-          className={`px-3 py-2 rounded-lg border text-xs font-medium transition-colors ${
-            autoFilter
-              ? 'bg-ax-amber/15 border-ax-amber/30 text-ax-amber'
-              : 'bg-ax-panel border-ax-border text-ax-dim'
-          }}`}
-        >
-          ⚡ Otomatik {autoFilter ? ' (filtreli)' : ''}
-        </button>
+
       </div>
 
       {/* Task Sections */}

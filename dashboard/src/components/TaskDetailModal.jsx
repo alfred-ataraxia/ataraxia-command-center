@@ -11,7 +11,6 @@ import {
   MessageSquare,
   Send,
   ArrowRight,
-  Zap,
   Cpu,
 } from 'lucide-react'
 import { addTaskNote, updateTask } from '../services/haService'
@@ -98,7 +97,6 @@ export default function TaskDetailModal({ task, onClose, onUpdated }) {
   // Local state for editable fields so UI doesn't snap back on save
   const [assignee, setAssignee] = useState(task.assignee || 'Alfred')
   const [preferredModel, setPreferredModel] = useState(task.preferred_model || 'claude')
-  const [autoRun, setAutoRun] = useState(!!task.auto)
 
   const priority = PRIORITY_CONFIG[task.priority] ?? PRIORITY_CONFIG.low
   const flow = STATUS_FLOW[task.status] ?? STATUS_FLOW.pending
@@ -224,25 +222,7 @@ export default function TaskDetailModal({ task, onClose, onUpdated }) {
               </select>
             </div>
 
-            {/* Auto toggle */}
-            <div className="flex items-center justify-between gap-3">
-              <label className="flex items-center gap-1.5 text-ax-dim text-xs">
-                <Zap size={12} /> Otomatik çalıştır
-              </label>
-              <button
-                disabled={fieldSaving === 'auto'}
-                onClick={() => handleFieldChange('auto', !autoRun, setAutoRun)}
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 transition-colors duration-200 focus:outline-none disabled:opacity-50 ${
-                  autoRun
-                    ? 'bg-ax-amber border-ax-amber/60'
-                    : 'bg-ax-muted border-ax-border'
-                }`}
-              >
-                <span className={`inline-block h-3.5 w-3.5 translate-y-[-1px] rounded-full bg-white shadow transition-transform duration-200 ${
-                  autoRun ? 'translate-x-4' : 'translate-x-0'
-                }`} />
-              </button>
-            </div>
+
           </div>
 
           {/* Tags */}

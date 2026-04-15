@@ -346,7 +346,7 @@
       "title": "Büyük dizin taraması — /home/sefa altında 100MB+ klasörler",
       "description": "Disk israfını tespit et. Adımlar: 1) du -sh /home/sefa/* ile birinci seviye dizinleri sırala, 2) En büyük 5 dizini belirle, 3) Bu 5 dizinin içinde de bir seviye daha in (du -sh /dizin/*), 4) ~/.npm, ~/.cache, ~/.local/share gibi cache dizinleri var mı? 5) /home/sefa/go/pkg/mod ve /home/sefa/go/bin boyutlarını özellikle belirt. Temizlenebilecek şeyleri öneri olarak listele ama silme.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "points": 1,
       "tags": [
@@ -355,15 +355,30 @@
         "maintenance"
       ],
       "created_at": "2026-04-14T22:00:00+03:00",
-      "notes": [],
-      "status_history": []
+      "notes": [
+        "Disk taraması tamamlandi. /home/sefa altında en büyük 5 dizin: go (924MB, 868MB pkg/mod + 56MB bin), alfred-hub (264MB, dashboard 259MB), openclaw-backups (27MB). Ev dizini cache'leri: ~/.npm 2.4GB, ~/.cache 2.1GB, pnpm store 5.7GB (toplam ~10GB cache). Temizlenebilir: pnpm store prune, npm cache clean --force, go clean -modcache (157MB cache alt dizini). Öneri: Dashboard klasörünü kontrol et (259MB), pnpm store en büyük israfçı."
+      ],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T01:02:56.907124+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T01:03:33.780772+03:00"
+        }
+      ],
+      "started_at": "2026-04-15T01:02:56.907124+03:00",
+      "completed_at": "2026-04-15T01:03:33.780772+03:00"
     },
     {
       "id": "T-037",
       "title": "Açık port ve dinleme servisler raporu",
       "description": "Sistemde hangi portlar dışarıya açık? Adımlar: 1) ss -tlnp ile tüm TCP listen portlarını listele, 2) Her port için hangi servise ait olduğunu belirt (port 53=pihole, 80/443=npm, 4173=dashboard, 51820=wireguard, vb.), 3) Beklenmedik veya tanımlanamayan port var mı? 4) docker ps --format ile container port mappinglerini de göster. Özet: beklenen/beklenmeyen port listesi.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "points": 1,
       "tags": [
@@ -371,7 +386,24 @@
         "network",
         "audit"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-14T23:28:04.484301+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-14T23:28:04.484301+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-14T23:29:22.816923+03:00"
+        }
+      ],
+      "completed_at": "2026-04-14T23:29:22.816923+03:00",
+      "notes": [
+        "18 TCP port dinleniyor. Beklenen servisler: SSH(22), DNS/Pihole(53), NginxProxyManager(80/443/81), Portainer(8000/9443), Homepage(3000), WireGuard(51820/UDP), OpenClaw Gateway(18789/18791/33631), ataraxia-dashboard(4173/4175). Bilinmeyen: HA'nin go2rtc WebRTC portlari(21064-21066) Home Assistant container'ina ait — güvenli; HA'nin host-portu 8123. localhost:18554/18555 go2rtc RTSP/WebRTC relay (HA icinden). localhost:5335 bilinmeyen servis. Disariya acik port yok — local agdisanal AgPort disinda."
+      ]
     },
     {
       "id": "T-038",
@@ -393,7 +425,7 @@
       "title": "Docker image yaş ve boyut raporu — temizlenebilecekler",
       "description": "Image şişkinliğini kontrol et. Adımlar: 1) docker images --format ile tüm imageleri listele (repo, tag, boyut, oluşturma tarihi), 2) 30 günden eski imageleri işaretle, 3) <none> tag'li (dangling) imagelar var mı? 4) docker system df ile toplam disk kullanımını göster (images + containers + volumes + build cache), 5) Temizlenebilecek imageler için 'docker rmi <id>' komutlarını öneri olarak yaz ama ÇALIŞTIRMA. Sefa onayı gerekecek.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "points": 2,
       "tags": [
@@ -401,14 +433,31 @@
         "maintenance",
         "disk"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-15T01:32:56.556230+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T01:32:56.556230+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T01:33:10.721799+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T01:33:10.721799+03:00",
+      "notes": [
+        "6 Docker image analiz edildi. Dangling (<none>) image yok. Tüm imageler aktif kullanımda. 30+ günlük imageler: homepage, wireguard, duckdns, portainer, nginx-proxy-manager. Toplam disk: 5.88GB (images) + 60MB (containers) + volumes + 0 (build cache). Temizlik için containerları durdurmak gerekiyor — Sefa onayı ile yapılabilir."
+      ]
     },
     {
       "id": "T-040",
       "title": "Pi-hole blocklist (gravity) güncelleme",
       "description": "Pi-hole blocklist veritabanını güncelle. Adımlar: 1) Pi-hole'un Docker container adını bul (docker ps), 2) docker exec <container> pihole -g komutuyla gravity update başlat, 3) Güncelleme çıktısını oku — kaç domain eklendi/çıkarıldı? 4) Güncelleme başarılı oldu mu kontrol et. 5) Yeni engelleme oranını raporla (öncesi/sonrası karşılaştır). NOT: Pi-hole container adı 'pihole' olabilir, önceki raporlarda bulunamadı — önce container'ı doğrula.",
       "assignee": "Alfred",
-      "status": "in_progress",
+      "status": "done",
       "priority": "medium",
       "points": 2,
       "tags": [
@@ -421,8 +470,18 @@
         {
           "from": "pending",
           "to": "in_progress",
-          "at": "2026-04-14T20:26:47.795Z"
+          "at": "2026-04-15T02:00:47.191645+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T02:06:57.162889+03:00"
         }
+      ],
+      "started_at": "2026-04-15T02:00:47.191645+03:00",
+      "completed_at": "2026-04-15T02:06:57.162889+03:00",
+      "notes": [
+        "Pi-hole gravity güncellemesi başarıyla tamamlandı. Yeni gravity veritabanına 2.088.047 domain (1.845.476 benzersiz) yüklendi. Pi-hole blocking etkin durumda. NOT: Önceki gravity veritabanı optimize edilmiş (gravity tablosu silinmiş) olduğu için karşılaştırmalı istatistik alınamadı — eski/yeni domain sayısı veya engelleme oranı karşılaştırması mümkün olmadı."
       ]
     },
     {
@@ -460,7 +519,7 @@
       "title": "task-runner.log son 200 satır hata analizi",
       "description": "OpenClaw otomasyonunda sessiz hatalar var mı? Adımlar: 1) ~/alfred-hub/logs/task-runner.log dosyasının son 200 satırını oku, 2) ERROR, WARN, failed, exception, timeout, undefined içeren satırları tespit et, 3) Aynı hata tekrar ediyor mu? Tekrar eden hataları gruplandır, 4) En son başarılı görev çalışmasının zamanını bul, 5) Pipeline sağlıklı görünüyor mu? Özet: hata sayısı, son başarı zamanı, kritik bir şey var mı?",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "points": 1,
       "tags": [
@@ -468,14 +527,31 @@
         "logs",
         "automation"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-14T23:33:40.881299+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-14T23:33:40.881299+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T00:34:29.028557+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T00:34:29.028557+03:00",
+      "notes": [
+        "task-runner.log analizi tamamlandı. Kritik bulgu: /home/sefa/alfred-hub/scripts/task-runner.sh dosyası eksik. 19 satırlık logun tamamı aynı hata: 'No such file or directory'. Bu script olmadan Alfred task runner pipeline'ı tamamen çökmüş durumda. Son başarılı görev zamanı bilinmiyor (log sadece bu tekrar eden hatayı içeriyor). task-runner.sh oluşturulması acil gereklilik."
+      ]
     },
     {
       "id": "T-044",
       "title": "Sprint-03 kapanış değerlendirmesi hazırlığı",
       "description": "Sprint-03 2026-04-17'de bitiyor. Önceden değerlendirme yap. Adımlar: 1) ~/scrum/sprints/sprint-03.md dosyasını oku, 2) TASKS.json'daki done görevlerden sprint-03 hedefleriyle örtüşen var mı? Karşılaştır, 3) S3-01..S3-07 görevlerinden kaçı tamamlandı, kaçı kaldı? 4) Tamamlanamayan görevler için backlog'a taşıma önerisi hazırla, 5) Sprint-03 review dosyası (~/ scrum/sprints/sprint-03-review.md) için taslak yaz ve kaydet. Özet: tamamlanma yüzdesi, öğrenilen dersler.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "points": 3,
       "tags": [
@@ -483,14 +559,31 @@
         "sprint",
         "planning"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-14T23:34:31.679667+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-14T23:34:31.679667+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-14T23:35:20.288354+03:00"
+        }
+      ],
+      "completed_at": "2026-04-14T23:35:20.288354+03:00",
+      "notes": [
+        "Sprint-03 ön değerlendirme tamamlandı. Sprint-03 review dosyası oluşturuldu: sprint-03-review.md. Sprint-03 tamamlanma oranı: %29 (2/7 görev). S3-02 (Telegram bildirim) ve S3-06 (Dashboard görev formu) tamamlandı. Kalan 5 görev (S3-01, S3-04, S3-05, S3-07) backlog'a taşınma önerisiyle listelendi. Sprint-04 için öneriler hazırlandı."
+      ]
     },
     {
       "id": "T-045",
       "title": "Go workspace temizlik ön keşfi (Backlog B-003)",
       "description": "B-003 görevinin başlangıcı: Go workspace'i temizlemeden önce durumu anla. Adımlar: 1) ~/go/ dizini var mı ve ne kadar yer kaplıyor? (du -sh ~/go/*), 2) go version çalıştır, 3) go env ile GOPATH, GOROOT, GOMODCACHE'i öğren, 4) ~/go/pkg/mod dizininde hangi modüller var? En büyük 10'unu listele, 5) ~/go/bin'de hangi araçlar kurulu? 6) Herhangi bir Go projesi aktif mi? (~/alfred-hub veya altında go.mod ara). Temizleme için 'go clean -modcache' önerisi güvenli mi değerlendir.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "points": 2,
       "tags": [
@@ -498,7 +591,24 @@
         "maintenance",
         "development"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-15T02:30:45.676362+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T02:30:45.676362+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T02:33:17.873765+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T02:33:17.873765+03:00",
+      "notes": [
+        "Go workspace ön keşfi tamamlandı. ~/go/ toplam ~924MB (bin: 56MB, pkg: 868MB). Aktif Go projesi yok (alfred-hub'da go.mod yok). ~/go/bin'de 4 pre-built binary var (blogwatcher, blu, eightctl, sonos). En büyük alan kaplayan: golang.org/toolchain cache (211MB), modernc.org/sqlite testdata (87MB), mod/download cache (157MB). go clean -modcache GÜVENLİ — binary'ler zaten derlenmiş, yeni go build yapılmıyor. B-003 için öneri: sadece cache/download klasörünü temizle (~157MB kurtarır), toolchain cache'i koru."
+      ]
     },
     {
       "id": "T-046",
@@ -520,7 +630,7 @@
       "title": "Haftalık sistem sağlık raporu — Telegram'a gönder",
       "description": "Bu haftanın sistem sağlık özetini hazırla ve Telegram'a gönder. İçerik: 1) Çalışma süresi (uptime), ortalama CPU load (cat /proc/loadavg), RAM kullanım ortalaması, 2) Disk doluluk trendi (şu anki vs. 7 gün önce — ~/alfred-hub/logs içinde eski rapor varsa karşılaştır), 3) Docker container sağlık durumu (kaç tane, hepsi Up mu?), 4) Bu hafta tamamlanan görev sayısı (TASKS.json'dan done olanları say), 5) Pi-hole engelleme oranı. Format: Telegram Markdown, başlık+bölümler, emoji ile okunaklı. ~/alfred-hub/.env'den BOT_TOKEN ve CHAT_ID'yi al.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "points": 3,
       "tags": [
@@ -528,7 +638,24 @@
         "telegram",
         "weekly"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-15T00:00:47.314564+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T00:00:47.314564+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T00:03:25.832436+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T00:03:25.832436+03:00",
+      "notes": [
+        "Haftalık sistem sağlık raporu hazırlanıp Telegram'a gönderildi. uptime ~2 saat, CPU load 0.57/0.65/0.78, RAM %51, disk %14. 6 Docker container (hepsi UP). 35 görevden 21 done, 10 bekliyor. Pi-hole aktif ancak DB erişim hatası."
+      ]
     },
     {
       "id": "T-048",
@@ -548,5 +675,5 @@
       ]
     }
   ],
-  "updated_at": "2026-04-14T20:26:47.795Z"
+  "updated_at": "2026-04-15T02:33:17.873765+03:00"
 }

@@ -1,28 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { ScrollText, RefreshCw, FileText, Clock, Radio, PauseCircle, PlayCircle, Trash2 } from 'lucide-react'
-import apiFetch from '../services/apiFetch'
-
-function formatSize(bytes) {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)}MB`
-}
-
-function formatTime(iso) {
-  try {
-    const d = new Date(iso)
-    return d.toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
-  } catch { return '' }
-}
-
-function classifyLine(line) {
-  const l = line.toLowerCase()
-  if (l.includes('error') || l.includes('hata') || l.includes('fail') || l.includes('killed')) return 'text-ax-red'
-  if (l.includes('warn') || l.includes('skip') || l.includes('uyarı')) return 'text-ax-amber'
-  if (l.includes('ok') || l.includes('done') || l.includes('success') || l.includes('tamamlandı')) return 'text-ax-green'
-  if (l.includes('[') && l.includes(']')) return 'text-ax-cyan'
-  return 'text-ax-dim'
-}
+import { ScrollText, RefreshCw, FileText, Radio, PauseCircle, PlayCircle, Trash2 } from 'lucide-react'
+import apiFetch, { getToken } from '../services/apiFetch'
+import { classifyLine, formatTime, formatSize } from '../utils'
 
 export default function LogsView() {
   const [files, setFiles]       = useState([])
@@ -34,7 +13,7 @@ export default function LogsView() {
   const esRef    = useRef(null)
   const bottomRef = useRef(null)
 
-  // Fetch file list
+  // Fetch file list — sadece mount'ta ve manuel refresh'te
   const fetchFiles = useCallback(async () => {
     setLoading(true)
     try {
@@ -43,14 +22,14 @@ export default function LogsView() {
         const data = await res.json()
         const list = data.logs || []
         setFiles(list)
-        if (list.length > 0 && !selected) setSelected(list[0].name)
+        setSelected(prev => prev ?? (list[0]?.name ?? null))
       }
     } catch {
       setFiles([])
     } finally {
       setLoading(false)
     }
-  }, [selected])
+  }, [])
 
   useEffect(() => {
     void fetchFiles()
@@ -65,7 +44,9 @@ export default function LogsView() {
     setLines([])
     setConnected(false)
 
-    const es = new EventSource(`/api/logs/stream?file=${encodeURIComponent(selected)}`)
+    const token = getToken()
+    const tokenParam = token ? `&token=${encodeURIComponent(token)}` : ''
+    const es = new EventSource(`/api/logs/stream?file=${encodeURIComponent(selected)}${tokenParam}`)
     esRef.current = es
 
     es.onopen = () => setConnected(true)
