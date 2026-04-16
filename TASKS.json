@@ -410,7 +410,7 @@
       "title": "WireGuard peer bağlantı kalitesi ve son handshake yaşı",
       "description": "VPN durumunu değerlendir. Adımlar: 1) sudo wg show ile tüm peer'ları listele, 2) Her peer için son handshake zamanını hesapla (kaç dakika/saat önce?), 3) Transfer istatistiklerini (rx/tx bytes) oku, 4) Bağlantısı 10 dakikadan uzun süredir görülmeyen peer'ları 'uyuyan' olarak işaretle, 5) Aktif peer'ın IP'si ve lokasyonunu belirt. Kısa rapor: aktif/uyuyan peer sayısı, VPN sağlıklı mı?",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "low",
       "points": 1,
       "tags": [
@@ -418,7 +418,24 @@
         "vpn",
         "monitoring"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-15T03:32:53.992575+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T03:32:53.992575+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T03:33:19.666832+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T03:33:19.666832+03:00",
+      "notes": [
+        "WireGuard ataraxia üzerinde kurulu değil. wg komutu mevcut değil, /etc/wireguard/ dizini yok, systemd servisi inactive/not-found. TOOLS.md'de aktif servis olarak listeleniyor ancak gerçekte yok. Kurulum gerekirse Sefa'dan onay alınmalı."
+      ]
     },
     {
       "id": "T-039",
@@ -489,7 +506,7 @@
       "title": "Home Assistant otomasyon raporu",
       "description": "HA API üzerinden otomasyon durumunu çek. Adımlar: 1) ~/alfred-hub/.env veya ~/homepage/config/services.yaml'dan HA_URL ve token'ı bul, 2) curl -H 'Authorization: Bearer <token>' <HA_URL>/api/states ile entity listesini al, 3) automation.* entity'lerini filtrele — kaç tane aktif ('on') var?, 4) Son 24 saatte state değiştiren automationları belirle (last_changed alanına bak), 5) En çok tetiklenen 3 otomasyonu öne çıkar. Özet: toplam/aktif otomasyon sayısı.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "low",
       "points": 2,
       "tags": [
@@ -497,14 +514,31 @@
         "automation",
         "monitoring"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-15T04:02:31.526519+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T04:02:31.526519+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T04:12:32.609112+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T04:12:32.609112+03:00",
+      "notes": [
+        "14 otomasyon YAML'da tanımlı, 10 tanesi HA API'de entity olarak görünüyor. Tüm otomasyonlar 'unavailable' durumunda — HA restart sonrası (2026-04-14 18:54) bir kez state değişikliği olmuş, sonrasında değişim yok. Son 24 saatte hiçbir otomasyon tetiklenmemiş. Otomasyonlar aktif değil veya bağlı entity'ler (ışık, vakum, hava temizleyici) erişilebilir değil durumda."
+      ]
     },
     {
       "id": "T-042",
       "title": "shared-notes.md watchdog heartbeat gürültüsünü temizle",
       "description": "~/.openclaw/workspace/memory/inbox/shared-notes.md dosyasındaki watchdog heartbeat satırları çok yer kaplıyor. Adımlar: 1) Dosyayı oku, 2) 'heartbeat-trigger' alan'lı ve 'Alfred'in X islemde gorevi var' içeren tüm bölümleri say, 3) Bu bölümleri sil — içerik değeri yok, gürültü. 4) Anlamlı notları (bootstrap, dashboard, task-started gibi) koru. 5) Dosyayı kaydet. Kaç satır kaldırıldığını raporla.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "low",
       "points": 1,
       "tags": [
@@ -512,7 +546,24 @@
         "maintenance",
         "cleanup"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-15T04:32:25.624799+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T04:32:25.624799+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T04:34:08.457742+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T04:34:08.457742+03:00",
+      "notes": [
+        "shared-notes.md dosyasından 14 heartbeat-trigger gürültüsü girişi silindi. 12 Watchdog ve 2 alfred (heartbeat) girişi — toplam ~56 satır kaldırıldı. Anlamlı notlar (bootstrap, dashboard, system, task-started, memory-snapshot) korundu. Dosya 6728 char'dan 4426 char'a düştü."
+      ]
     },
     {
       "id": "T-043",
@@ -615,7 +666,7 @@
       "title": "openclaw-gateway memory trend 6 saatlik takip",
       "description": "OpenClaw'un RAM kullanımı sabit mi yoksa yavaş büyüyor mu? Adımlar: 1) ps aux | grep openclaw-gateway ile PID ve anlık RSS (kB) değerini al, 2) /proc/<PID>/status dosyasından VmRSS, VmSize, VmData değerlerini oku, 3) Bu değerleri ~/.openclaw/workspace/memory/inbox/shared-notes.md içine zaman damgasıyla not düş (format: 'YYYY-MM-DDTHH:MM | memory-snapshot | VmRSS=X VmData=Y'), 4) Geçmiş snapshot'ları karşılaştır — artış var mı? 5) Node.js V8 heap için normal eşik 1.2-1.8GB; bunu aşıyorsa uyar.",
       "assignee": "Alfred",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "points": 1,
       "tags": [
@@ -623,7 +674,24 @@
         "openclaw",
         "memory"
       ],
-      "created_at": "2026-04-14T22:00:00+03:00"
+      "created_at": "2026-04-14T22:00:00+03:00",
+      "started_at": "2026-04-15T03:00:46.059285+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-15T03:00:46.059285+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-15T03:03:44.396575+03:00"
+        }
+      ],
+      "completed_at": "2026-04-15T03:03:44.396575+03:00",
+      "notes": [
+        "openclaw-gateway PID 1113 snapshot alındı: VmRSS=848MB (%21.8 RAM), VmData=989MB, VmPeak=12GB. İlk snapshot olduğundan trend belirlenemedi — önceki veri yok. Swap kullanımı 857MB/4GB (%20.9) dikkat çekici ama RAM henüz kritik değil (1762MB available). Node.js V8 heap 1.2-1.8GB eşiği aşılmadı. Sonraki snapshot ile karşılaştırmak için bu görev periyodik olarak çalıştırılmalı."
+      ]
     },
     {
       "id": "T-047",
@@ -675,5 +743,5 @@
       ]
     }
   ],
-  "updated_at": "2026-04-15T02:33:17.873765+03:00"
+  "updated_at": "2026-04-15T04:34:08.457742+03:00"
 }

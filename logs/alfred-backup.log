@@ -242,3 +242,73 @@ To https://github.com/alfred-ataraxia/ataraxia-command-center
 [2026-04-15 03:00:01]   system-status.md OK
 [2026-04-15 03:00:01] Git commit hazırlanıyor...
 [2026-04-15 03:00:01] Git commit hazırlanıyor...
+[master 0268814] chore: otomatik yedek — 2026-04-15 03:00
+ 56 files changed, 875 insertions(+), 4883 deletions(-)
+ delete mode 100644 AGENTS.md
+ delete mode 100644 HEARTBEAT.md
+ delete mode 100644 IDENTITY.md
+ delete mode 100644 MEMORY.md
+ delete mode 100644 SOUL.md
+ delete mode 100644 TOOLS.md
+ delete mode 100644 USER.md
+ delete mode 100644 alfred-memory/user_sefa.md
+ create mode 100644 alfred_report_T-024.md
+ create mode 100644 dashboard/src/utils.js
+ delete mode 100644 memory/2026-03-26-2121.md
+ delete mode 100644 memory/2026-03-26-identity-setup.md
+ delete mode 100644 memory/2026-03-27-0029.md
+ delete mode 100644 memory/2026-03-27-0035.md
+ delete mode 100644 memory/2026-03-27-0036.md
+ delete mode 100644 memory/2026-03-27-0704.md
+ delete mode 100644 memory/2026-03-27-0706.md
+ delete mode 100644 memory/2026-03-27-0809.md
+ delete mode 100644 memory/2026-03-27-0828.md
+ delete mode 100644 memory/2026-03-27-0835.md
+ delete mode 100644 memory/2026-03-29.md
+ delete mode 100644 memory/2026-03-30.md
+ delete mode 100644 memory/2026-04-02-2005.md
+ delete mode 100644 memory/2026-04-02-2033.md
+ delete mode 100644 memory/2026-04-03-free-ride-setup.md
+ delete mode 100644 memory/2026-04-03-openclaw-security-audit.md
+ delete mode 100644 memory/2026-04-03-security-analysis.md
+ delete mode 100644 memory/2026-04-03-session-startup.md
+ delete mode 100644 memory/2026-04-03-skill-list.md
+ delete mode 100644 memory/2026-04-03.md
+ delete mode 100644 memory/2026-04-04-wayne-network.md
+ delete mode 100644 memory/2026-04-05-1630.md
+ delete mode 100644 memory/2026-04-06-dashboard-update.md
+ delete mode 100644 memory/2026-04-06-gateway-fix.md
+ delete mode 100644 memory/heartbeat-state.json
+ delete mode 100644 memory/today.md
+ delete mode 100644 memory/weekly-patterns.md
+ create mode 100644 scrum/sprints/sprint-03-review.md
+[2026-04-15 03:00:01] Commit OK
+[2026-04-15 03:00:01] Commit OK
+To https://github.com/alfred-ataraxia/ataraxia-command-center
+   8b670d9..0268814  master -> master
+[2026-04-15 03:00:03] Push OK → GitHub
+[2026-04-15 03:00:03] Push OK → GitHub
+[2026-04-15 03:00:03] === Yedekleme tamamlandı ===
+[2026-04-15 03:00:03] === Yedekleme tamamlandı ===
+[2026-04-16 03:00:01] === Yedekleme başladı ===
+[2026-04-16 03:00:01] === Yedekleme başladı ===
+[2026-04-16 03:00:01] Scrum dosyaları kopyalanıyor...
+[2026-04-16 03:00:01] Scrum dosyaları kopyalanıyor...
+[2026-04-16 03:00:01]   scrum/ OK
+[2026-04-16 03:00:01]   scrum/ OK
+[2026-04-16 03:00:01] Alfred hafızası kopyalanıyor...
+[2026-04-16 03:00:01] Alfred hafızası kopyalanıyor...
+[2026-04-16 03:00:01]   memory/ OK
+[2026-04-16 03:00:01]   memory/ OK
+[2026-04-16 03:00:01] Claude skills ve scripts yedekleniyor...
+[2026-04-16 03:00:01] Claude skills ve scripts yedekleniyor...
+[2026-04-16 03:00:01]   skills/ OK
+[2026-04-16 03:00:01]   skills/ OK
+[2026-04-16 03:00:01]   scripts/ OK
+[2026-04-16 03:00:01]   scripts/ OK
+[2026-04-16 03:00:01] Sistem snapshot alınıyor...
+[2026-04-16 03:00:01] Sistem snapshot alınıyor...
+[2026-04-16 03:00:01]   system-status.md OK
+[2026-04-16 03:00:01]   system-status.md OK
+[2026-04-16 03:00:01] Git commit hazırlanıyor...
+[2026-04-16 03:00:01] Git commit hazırlanıyor...
