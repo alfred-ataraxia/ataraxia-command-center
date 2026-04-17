@@ -8,6 +8,7 @@ import OrchestrationView from './components/OrchestrationView'
 import AutomationView from './components/AutomationView'
 import MemoryView from './components/MemoryView'
 import LogsView from './components/LogsView'
+import DefiView from './components/DefiView'
 import LoginModal from './components/LoginModal'
 import { getToken } from './services/apiFetch'
 
@@ -18,6 +19,7 @@ const VIEWS = {
   automation: AutomationView,
   memory:     MemoryView,
   logs:       LogsView,
+  defi:       DefiView,
 }
 
 export default function App() {

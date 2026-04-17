@@ -837,7 +837,7 @@ function handleRequest(req, res) {
   
   // Paths that start with these prefixes are also allowed without auth
   const skipAuthPrefixes = [
-    '/api/tasks/', '/api/git/repos', '/api/ai-status',
+    '/api/tasks/', '/api/git/repos', '/api/ai-status', '/api/defi/',
   ]
   const isSkipAuth = skipAuthPaths.includes(url) || skipAuthPrefixes.some(p => url.startsWith(p))
   if (dashboardToken && isApiRoute && !isSkipAuth) {
@@ -2450,6 +2450,26 @@ function handleRequest(req, res) {
     } catch (err) {
       sendError(res, 500, 'Otomasyon verisi alınamadı', { details: err.message })
     }
+    return
+  }
+
+  // --- DeFi APM Proxy (/api/defi/*) ---
+  if (url.startsWith('/api/defi/')) {
+    const upstreamPath = url.replace('/api/defi/', '/api/')
+    const upstreamUrl = `http://127.0.0.1:4180${upstreamPath}${req.url.includes('?') ? '?' + req.url.split('?')[1] : ''}`
+    const upstreamReq = http.request(upstreamUrl, { method: req.method, headers: { 'Content-Type': 'application/json' } }, (upstreamRes) => {
+      let body = ''
+      upstreamRes.on('data', chunk => { body += chunk })
+      upstreamRes.on('end', () => {
+        res.writeHead(upstreamRes.statusCode, { 'Content-Type': 'application/json' })
+        res.end(body)
+      })
+    })
+    upstreamReq.on('error', () => {
+      res.writeHead(503, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: 'DeFi APM servisi erişilemiyor', port: 4180 }))
+    })
+    upstreamReq.end()
     return
   }
 

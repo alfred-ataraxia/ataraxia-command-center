@@ -7,6 +7,7 @@ import {
   Bot,
   Timer,
   BrainCircuit,
+  TrendingUp,
   Menu,
   X,
 } from 'lucide-react'
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { id: 'automation', label: 'Otomasyon', icon: Timer },
   { id: 'memory',     label: 'Hafıza',    icon: BrainCircuit },
   { id: 'logs',       label: 'Logs',      icon: ScrollText },
+  { id: 'defi',       label: 'DeFi APM',  icon: TrendingUp },
 ]
 
 function NavItem({ item, active, onClick }) {

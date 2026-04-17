@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Cpu, MemoryStick, Clock, GitBranch, RefreshCw, Server, CheckCircle2, XCircle, Zap } from 'lucide-react'
+import { Cpu, MemoryStick, Clock, GitBranch, RefreshCw, Server, CheckCircle2, XCircle, Zap, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react'
 import { getSystemStats } from '../services/haService'
 import apiFetch from '../services/apiFetch'
 import { timeAgo } from '../utils'
@@ -37,6 +37,7 @@ export default function Overview() {
   const [services, setServices] = useState([])
   const [restarting, setRestarting] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [defiSummary, setDefiSummary] = useState(null)
 
   useEffect(() => {
     const tick = setInterval(() => setNow(new Date()), 30_000)
@@ -96,6 +97,36 @@ export default function Overview() {
         if (resSvc.ok) {
           const d = await resSvc.json()
           setServices(d.services || [])
+        }
+      } catch {}
+
+      // DeFi APM özet
+      try {
+        const [resHealth, resAlerts, resPools, resPortfolio] = await Promise.all([
+          fetch('/api/defi/health'),
+          fetch('/api/defi/alerts?limit=10'),
+          fetch('/api/defi/pools/potential?limit=1'),
+          fetch('/api/defi/portfolio?usd=1'),
+        ])
+        const health = resHealth.ok ? await resHealth.json() : null
+        const alertsData = resAlerts.ok ? await resAlerts.json() : null
+        const poolsData = resPools.ok ? await resPools.json() : null
+        const portfolio = resPortfolio.ok ? await resPortfolio.json() : null
+        if (health) {
+          const alerts = alertsData?.alerts || []
+          const criticals = alerts.filter(a => a.level === 'CRITICAL').length
+          const warns = alerts.filter(a => a.level === 'WARN').length
+          const topPool = poolsData?.pools?.[0] || null
+          setDefiSummary({
+            up: health.status === 'ok',
+            lastScanMs: health.lastScanAt ? Date.now() - new Date(health.lastScanAt).getTime() : null,
+            poolCount: health.poolCount ?? null,
+            criticals,
+            warns,
+            topPool,
+            portfolioUsd: typeof portfolio?.totalBalanceUsd === 'number' ? portfolio.totalBalanceUsd : null,
+            portfolioCanRead: portfolio?.canRead === true,
+          })
         }
       } catch {}
 
@@ -293,6 +324,88 @@ export default function Overview() {
           )}
         </div>
       </div>
+
+      {/* 5. DeFi APM ÖZET */}
+      {defiSummary && (
+        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp size={16} className="text-ax-green" />
+            <h2 className="text-ax-heading text-sm font-bold">DeFi APM</h2>
+            <div className={`ml-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              defiSummary.up ? 'bg-ax-green/10 text-ax-green border border-ax-green/20' : 'bg-ax-red/10 text-ax-red border border-ax-red/20'
+            }`}>
+              <div className={`w-1.5 h-1.5 rounded-full ${defiSummary.up ? 'bg-ax-green animate-pulse' : 'bg-ax-red'}`} />
+              {defiSummary.up ? 'Aktif' : 'Down'}
+            </div>
+            {defiSummary.lastScanMs != null && (
+              <span className={`ml-auto text-[10px] font-mono ${
+                defiSummary.lastScanMs > 20 * 60 * 1000 ? 'text-ax-amber' : 'text-ax-dim'
+              }`}>
+                {defiSummary.lastScanMs < 60000
+                  ? `${Math.round(defiSummary.lastScanMs / 1000)}s önce`
+                  : `${Math.round(defiSummary.lastScanMs / 60000)}dk önce`}
+              </span>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+            <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-ax-surface border border-ax-border">
+              <span className="text-lg font-black text-ax-heading font-mono">{defiSummary.poolCount ?? '—'}</span>
+              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Havuz</span>
+            </div>
+            <div className={`flex flex-col items-center justify-center p-3 rounded-xl border ${
+              defiSummary.criticals > 0
+                ? 'bg-ax-red/10 border-ax-red/25'
+                : 'bg-ax-surface border-ax-border'
+            }`}>
+              <span className={`text-lg font-black font-mono ${defiSummary.criticals > 0 ? 'text-ax-red' : 'text-ax-heading'}`}>
+                {defiSummary.criticals}
+              </span>
+              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Kritik</span>
+            </div>
+            <div className={`flex flex-col items-center justify-center p-3 rounded-xl border ${
+              defiSummary.warns > 0
+                ? 'bg-ax-amber/10 border-ax-amber/25'
+                : 'bg-ax-surface border-ax-border'
+            }`}>
+              <span className={`text-lg font-black font-mono ${defiSummary.warns > 0 ? 'text-ax-amber' : 'text-ax-heading'}`}>
+                {defiSummary.warns}
+              </span>
+              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Uyarı</span>
+            </div>
+            <div className={`flex flex-col items-center justify-center p-3 rounded-xl border ${
+              defiSummary.portfolioCanRead ? 'bg-ax-green/5 border-ax-green/15' : 'bg-ax-surface border-ax-border'
+            }`}>
+              <span className={`text-lg font-black font-mono ${defiSummary.portfolioCanRead ? 'text-ax-green' : 'text-ax-dim'}`}>
+                {defiSummary.portfolioCanRead && typeof defiSummary.portfolioUsd === 'number'
+                  ? `$${Math.round(defiSummary.portfolioUsd).toLocaleString('en-US')}`
+                  : '—'}
+              </span>
+              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Portföy</span>
+            </div>
+          </div>
+
+          {defiSummary.topPool && (
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-ax-green/5 border border-ax-green/15">
+              <ShieldCheck size={13} className="text-ax-green shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-ax-heading truncate">
+                  {defiSummary.topPool.symbol}
+                </p>
+                <p className="text-[10px] text-ax-dim truncate">
+                  {defiSummary.topPool.project} · {defiSummary.topPool.chain}
+                </p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-sm font-black text-ax-green font-mono">
+                  %{defiSummary.topPool.apy?.toFixed(1) ?? '—'}
+                </p>
+                <p className="text-[9px] text-ax-dim">APY</p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* FOOTER */}
       <div className="flex justify-between items-center px-2 py-3 text-[10px] text-ax-subtle font-medium uppercase tracking-widest">

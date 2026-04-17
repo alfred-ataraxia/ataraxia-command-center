@@ -741,7 +741,96 @@
       "notes": [
         "Skiller araştırması tamamlandı — 40+ skill incelendi, öneriler listelendi"
       ]
+    },
+    {
+      "id": "DEFI-036",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/MAI/USDC.e (polygon) TVL ÇÖKÜŞÜ: -35.1% (1h) — $0.4M → $0.3M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T18:45:06.789Z"
+    },
+    {
+      "id": "DEFI-037",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/MAI/USDC.e (polygon) TVL ÇÖKÜŞÜ: -35.1% (1h) — $0.4M → $0.3M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T19:00:05.817Z"
+    },
+    {
+      "id": "DEFI-038",
+      "title": "DeFi Kritik Alert: 6 adet",
+      "description": "compound-v3/USDT (Arbitrum) APY anomali: 1.88% (7d ort: 1.88%, z=5.0)\naave-v3/CBETH (Base) APY anomali: 0.05% (7d ort: 0.05%, z=5.0)\naave-v3/USDC (Ethereum) APY anomali: 2.64% (7d ort: 2.86%, z=-5.0)\ncompound-v3/USDT (Optimism) APY anomali: 1.90% (7d ort: 1.89%, z=5.0)\naave-v3/DAI (Arbitrum) APY anomali: 1.81% (7d ort: 1.81%, z=5.0)\nbeefy/MAI/USDC.e (polygon) TVL ÇÖKÜŞÜ: -35.1% (1h) — $0.4M → $0.3M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T19:25:27.375Z"
+    },
+    {
+      "id": "DEFI-039",
+      "title": "DeFi Kritik Alert: 2 adet",
+      "description": "beefy/tBTC/WBTC (arbitrum) APY anomali: 0.10% (7d ort: 0.09%, z=5.0)\nbeefy/cbETH/ETH (base) APY anomali: 2.02% (7d ort: 1.46%, z=5.0)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T21:04:04.848Z"
+    },
+    {
+      "id": "DEFI-040",
+      "title": "DeFi Kritik Alert: 16 adet",
+      "description": "aave-v3/WETH (Ethereum) APY anomali: 1.72% (7d ort: 1.74%, z=-5.6)\naave-v3/RLUSD (Ethereum) APY anomali: 0.92% (7d ort: 0.92%, z=6.2)\ncurve-dex/CRVUSD-CBBTC (Ethereum) APY anomali: 0.00% (7d ort: 2.36%, z=-6.1)\naave-v3/LINK (Ethereum) APY anomali: 0.05% (7d ort: 0.04%, z=5.7)\ncurve-dex/CRVUSD-TBTC (Ethereum) APY anomali: 0.00% (7d ort: 2.32%, z=-6.2)\ncurve-dex/CRVUSD-WBTC (Ethereum) APY anomali: 0.00% (7d ort: 2.13%, z=-6.2)\naave-v3/EURC (Ethereum) APY anomali: 1.70% (7d ort: 1.69%, z=6.2)\ncurve-dex/WETH-CBETH (Base) APY anomali: 2.03% (7d ort: 1.40%, z=6.2)\ncurve-dex/IDAI-IUSDC-IUSDT (Ethereum) APY anomali: 0.00% (7d ort: 119.01%, z=-6.2)\naave-v3/DAI (Arbitrum) APY anomali: 1.81% (7d ort: 1.81%, z=5.2)\naave-v3/DAI (Polygon) APY anomali: 3.37% (7d ort: 3.37%, z=-5.7)\ncurve-dex/ETH+-ETH (Ethereum) APY anomali: 0.00% (7d ort: 0.61%, z=-6.2)\nbeefy/MAI/USDC.e (polygon) APY anomali: 19.85% (7d ort: 1.22%, z=5.2)\nbeefy/ETH+/WETH (ethereum) APY anomali: 4.93% (7d ort: 6.38%, z=-5.2)\nbeefy/RLUSD/USDC (ethereum) APY anomali: 5.40% (7d ort: 5.57%, z=-5.2)\nbeefy/USDT/WBTC/WETH (ethereum) APY anomali: 2.46% (7d ort: 2.20%, z=5.1)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T21:34:03.806Z"
+    },
+    {
+      "id": "DEFI-041",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/tBTC-WBTC (arbitrum) APY anomali: 0.29% (7d ort: 0.14%, z=5.3)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T21:49:04.750Z"
+    },
+    {
+      "id": "DEFI-042",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/scrvUSD/USDaf (ethereum) APY anomali: 0.95% (7d ort: 0.96%, z=-5.0)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T22:21:21.059Z"
+    },
+    {
+      "id": "DEFI-043",
+      "title": "DeFi Kritik Alert: 22 adet",
+      "description": "curve-dex/PYUSD-USDS (Ethereum) APY anomali: 0.06% (7d ort: 0.10%, z=-5.3)\ncurve-dex/ETH-STETH (Ethereum) APY anomali: 1.36% (7d ort: 1.31%, z=6.6)\ncurve-dex/SUSDS-USDT (Ethereum) APY anomali: 3.28% (7d ort: 3.29%, z=-6.6)\ncurve-dex/USDC-USDTB (Ethereum) APY anomali: 0.02% (7d ort: 0.30%, z=-6.5)\ncurve-dex/USDT-WBTC-WETH (Ethereum) APY anomali: 1.61% (7d ort: 1.53%, z=5.0)\ncurve-dex/USDC-WBTC-WETH (Ethereum) APY anomali: 2.49% (7d ort: 2.58%, z=-5.4)\ncurve-dex/WBTC-TBTC (Ethereum) APY anomali: 0.15% (7d ort: 0.13%, z=6.4)\naave-v3/WETH (Optimism) APY anomali: 0.83% (7d ort: 1.00%, z=-6.6)\naave-v3/USDG (Ethereum) APY anomali: 5.51% (7d ort: 5.59%, z=-5.8)\ncurve-dex/USDG-USDC (Ethereum) APY anomali: 0.93% (7d ort: 0.29%, z=6.5)\ncurve-dex/RUSDY-USDC (Ethereum) APY anomali: 2.99% (7d ort: 3.53%, z=-6.6)\ncurve-dex/BOLD-USDC (Ethereum) APY anomali: 0.45% (7d ort: 0.41%, z=6.2)\ncurve-dex/USDS-STUSDS (Ethereum) APY anomali: 4.70% (7d ort: 4.72%, z=-6.6)\ncurve-dex/TBTC-CBBTC (Ethereum) APY anomali: 0.14% (7d ort: 0.17%, z=-6.4)\ncurve-dex/USDC-EURS (Ethereum) APY anomali: 0.02% (7d ort: 0.03%, z=-6.6)\ncurve-dex/SUSD-SUSDE (Ethereum) APY anomali: 0.18% (7d ort: 0.17%, z=5.8)\naave-v3/UNI (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=6.6)\ncurve-dex/TMVUSDC-FRXUSD (Ethereum) APY anomali: 1.22% (7d ort: 1.24%, z=-6.2)\ncurve-dex/FIDD-USDT (Ethereum) APY anomali: 0.02% (7d ort: 0.03%, z=-6.6)\ncurve-dex/YNETHX-WETH (Ethereum) APY anomali: 6.52% (7d ort: 5.44%, z=6.5)\ncurve-dex/SRROYUSDC-FRXUSD (Ethereum) APY anomali: 0.93% (7d ort: 1.95%, z=-6.1)\ncurve-dex/PUMPBTC-WBTC (Ethereum) APY anomali: 0.00% (7d ort: 0.01%, z=-6.6)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T22:36:21.394Z"
+    },
+    {
+      "id": "DEFI-044",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/pmUSD/frxUSD (ethereum) TVL ÇÖKÜŞÜ: -33.8% (1h) — $1.9M → $1.2M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T22:53:29.129Z"
+    },
+    {
+      "id": "DEFI-045",
+      "title": "DeFi Kritik Alert: 5 adet",
+      "description": "curve-dex/CRVUSD-WETH (Ethereum) APY anomali: 0.93% (7d ort: 0.03%, z=7.1)\ncurve-dex/PMUSD-CRVUSD (Ethereum) APY anomali: 10.05% (7d ort: 9.05%, z=5.6)\ncurve-dex/PMUSD-FRXUSD (Ethereum) APY anomali: 9.57% (7d ort: 8.42%, z=6.3)\naave-v3/USDC (Ethereum) APY anomali: 2.04% (7d ort: 2.04%, z=-7.1)\naave-v3/LUSD (Ethereum) APY anomali: 0.37% (7d ort: 0.37%, z=7.1)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-16T23:30:15.388Z"
     }
-  ],
-  "updated_at": "2026-04-15T04:34:08.457742+03:00"
+  ]
 }
