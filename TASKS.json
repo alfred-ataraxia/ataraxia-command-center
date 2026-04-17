@@ -831,6 +831,329 @@
       "category": "DeFi Risk",
       "status": "pending",
       "created": "2026-04-16T23:30:15.388Z"
+    },
+    {
+      "id": "DEFI-046",
+      "title": "DeFi Kritik Alert: 2 adet",
+      "description": "beefy/reUSDe 25Jun26 (ethereum) APY anomali: 13.14% (7d ort: 14.43%, z=-6.3)\nbeefy/reUSD 25Jun26 (ethereum) APY anomali: 7.50% (7d ort: 8.22%, z=-6.0)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T00:00:15.306Z"
+    },
+    {
+      "id": "DEFI-047",
+      "title": "DeFi Kritik Alert: 19 adet",
+      "description": "aave-v3/CBBTC (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=-7.4)\naave-v3/USDC (Ethereum) APY anomali: 2.57% (7d ort: 2.43%, z=7.2)\nconvex-finance/CVXCRV (Ethereum) APY anomali: 15.92% (7d ort: 15.96%, z=-5.2)\nconvex-finance/USDC-RLUSD (Ethereum) APY anomali: 6.92% (7d ort: 8.26%, z=-7.3)\nconvex-finance/PYUSD-CRVUSD (Ethereum) APY anomali: 0.41% (7d ort: 0.26%, z=7.4)\nconvex-finance/SFRXUSD-FRXUSD (Ethereum) APY anomali: 2.31% (7d ort: 2.37%, z=-5.7)\nconvex-finance/PMUSD-CRVUSD (Ethereum) APY anomali: 18.63% (7d ort: 16.54%, z=6.5)\nconvex-finance/USDC-WBTC-WETH (Ethereum) APY anomali: 3.12% (7d ort: 3.21%, z=-7.4)\nconvex-finance/PMUSD-FRXUSD (Ethereum) APY anomali: 18.22% (7d ort: 15.80%, z=6.5)\nconvex-finance/USDT-WBTC-WETH (Ethereum) APY anomali: 1.61% (7d ort: 1.54%, z=5.4)\nconvex-finance/PYUSD-USDC (Ethereum) APY anomali: 0.18% (7d ort: 0.27%, z=-7.4)\nconvex-finance/SDOLA-ALUSD (Ethereum) APY anomali: 11.57% (7d ort: 11.69%, z=-5.6)\nconvex-finance/SUSD-SUSDE (Ethereum) APY anomali: 0.28% (7d ort: 0.26%, z=5.1)\nconvex-finance/TBTC-CBBTC (Ethereum) APY anomali: 0.25% (7d ort: 0.28%, z=-7.2)\naave-v3/DAI (Polygon) APY anomali: 3.36% (7d ort: 3.37%, z=-7.3)\nconvex-finance/BOLD-USDC (Ethereum) APY anomali: 0.74% (7d ort: 0.69%, z=5.5)\nconvex-finance/SRROYUSDC-FRXUSD (Ethereum) APY anomali: 3.36% (7d ort: 4.36%, z=-7.2)\nbeefy/WETH/rETH V3 (arbitrum) APY anomali: 1.96% (7d ort: 3.53%, z=-6.5)\nbeefy/PYUSD/USDC (ethereum) APY anomali: 5.09% (7d ort: 5.33%, z=-6.6)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T00:30:15.527Z"
+    },
+    {
+      "id": "DEFI-048",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/cbETH-WETH (base) APY anomali: 0.00% (7d ort: 0.00%, z=-6.6)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T00:45:44.764Z"
+    },
+    {
+      "id": "DEFI-049",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/PYUSD/crvUSD (ethereum) APY anomali: 10.51% (7d ort: 8.51%, z=6.3)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T01:00:44.460Z"
+    },
+    {
+      "id": "DEFI-050",
+      "title": "DeFi Kritik Alert: 3 adet",
+      "description": "aave-v3/PYUSD (Ethereum) APY anomali: 1.68% (7d ort: 1.68%, z=6.8)\ncurve-dex/PMUSD-CRVUSD (Ethereum) APY anomali: 12.10% (7d ort: 9.24%, z=5.3)\naave-v3/USDG (Ethereum) APY anomali: 4.94% (7d ort: 5.56%, z=-6.9)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T01:30:45.088Z"
+    },
+    {
+      "id": "DEFI-051",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/WETH (optimism) APY anomali: 1.51% (7d ort: 1.51%, z=7.0)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T01:45:14.893Z"
+    },
+    {
+      "id": "DEFI-052",
+      "title": "DeFi Kritik Alert: 9 adet",
+      "description": "curve-dex/SFRXUSD-FRXUSD (Ethereum) APY anomali: 1.55% (7d ort: 1.78%, z=-5.3)\naave-v3/EURC (Base) APY anomali: 1.13% (7d ort: 1.14%, z=-5.2)\ncurve-dex/WETH-WEETH (Ethereum) APY anomali: 3.24% (7d ort: 1.22%, z=6.3)\ncurve-dex/USD0-BUSD0 (Ethereum) APY anomali: 0.01% (7d ort: 0.12%, z=-7.9)\ncurve-dex/USDC-USDF (Ethereum) APY anomali: 3.74% (7d ort: 3.56%, z=5.1)\ncurve-dex/GHO-CBBTC-WETH (Ethereum) APY anomali: 3.08% (7d ort: 3.28%, z=-6.1)\ncurve-dex/CUSDO-USDC (Ethereum) APY anomali: 2.52% (7d ort: 2.50%, z=7.9)\ncompound-v3/WETH (Optimism) APY anomali: 1.51% (7d ort: 1.51%, z=7.9)\nbeefy/fxUSD/USDC (ethereum) APY anomali: 6.36% (7d ort: 5.93%, z=5.9)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T02:30:15.519Z"
+    },
+    {
+      "id": "DEFI-053",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/crvUSD/USDT (ethereum) APY anomali: 6.63% (7d ort: 5.67%, z=7.0)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T03:00:15.075Z"
+    },
+    {
+      "id": "DEFI-054",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/USDC/EURe V3 (arbitrum) APY anomali: 10.48% (7d ort: 7.28%, z=7.4)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T03:15:14.275Z"
+    },
+    {
+      "id": "DEFI-055",
+      "title": "DeFi Kritik Alert: 5 adet",
+      "description": "curve-dex/AM3CRV-AMWBTC-AMWETH (Polygon) APY anomali: 0.02% (7d ort: 0.00%, z=8.2)\naave-v3/LINK (Polygon) APY anomali: 0.02% (7d ort: 0.02%, z=8.2)\naave-v3/DAI (Arbitrum) APY anomali: 1.81% (7d ort: 1.81%, z=5.7)\ncurve-dex/WBTC-TBTC (Arbitrum) APY anomali: 0.03% (7d ort: 0.00%, z=8.2)\naave-v3/EURS (Polygon) TVL ÇÖKÜŞÜ: -33.5% (1h) — $1.6M → $1.1M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T03:30:15.619Z"
+    },
+    {
+      "id": "DEFI-056",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/rETH/WETH V3 (ethereum) APY anomali: 3.37% (7d ort: 3.50%, z=-5.2)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T04:00:14.653Z"
+    },
+    {
+      "id": "DEFI-057",
+      "title": "DeFi Kritik Alert: 4 adet",
+      "description": "convex-finance/CVXCRV (Ethereum) APY anomali: 15.76% (7d ort: 15.95%, z=-6.9)\nconvex-finance/SFRXUSD-FRXUSD (Ethereum) APY anomali: 2.11% (7d ort: 2.35%, z=-6.2)\nconvex-finance/WETH-WEETH (Ethereum) APY anomali: 3.46% (7d ort: 1.39%, z=6.8)\nbeefy/osETH/WETH V3 (ethereum) APY anomali: 1.68% (7d ort: 1.69%, z=-7.5)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T04:30:15.634Z"
+    },
+    {
+      "id": "DEFI-058",
+      "title": "DeFi Kritik Alert: 2 adet",
+      "description": "beefy/USDS/stUSDS (ethereum) APY anomali: 4.58% (7d ort: 4.59%, z=-7.4)\nbeefy/WETH (optimism) APY anomali: 1.52% (7d ort: 1.51%, z=7.8)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T04:45:14.544Z"
+    },
+    {
+      "id": "DEFI-059",
+      "title": "DeFi Kritik Alert: 3 adet",
+      "description": "convex-finance/USDC-RLUSD (Ethereum) APY anomali: 0.14% (7d ort: 7.81%, z=-7.2)\naave-v3/USDC (Polygon) APY anomali: 2.45% (7d ort: 2.56%, z=-5.7)\nbeefy/wstETH-WETH (arbitrum) APY anomali: 0.01% (7d ort: 0.02%, z=-5.9)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T05:30:45.078Z"
+    },
+    {
+      "id": "DEFI-060",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/EURC-USDC (base) APY anomali: 0.67% (7d ort: 1.18%, z=-7.2)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T06:00:15.490Z"
+    },
+    {
+      "id": "DEFI-061",
+      "title": "DeFi Kritik Alert: 7 adet",
+      "description": "aave-v3/WSTETH (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=-8.9)\ncurve-dex/REUSD-SCRVUSD (Ethereum) APY anomali: 3.77% (7d ort: 3.38%, z=7.4)\ncurve-dex/REUSD-SFRXUSD (Ethereum) APY anomali: 4.08% (7d ort: 3.77%, z=7.5)\ncurve-dex/TMVUSDC-FRXUSD (Ethereum) APY anomali: 1.12% (7d ort: 1.23%, z=-7.1)\ncurve-dex/UNIETH-FRXETH (Ethereum) APY anomali: 0.72% (7d ort: 15.94%, z=-8.9)\ncurve-dex/XAUT-PAXG (Ethereum) APY anomali: 0.62% (7d ort: 0.31%, z=5.1)\ncompound-v3/WETH (Optimism) APY anomali: 1.52% (7d ort: 1.51%, z=8.9)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T06:30:15.503Z"
+    },
+    {
+      "id": "DEFI-062",
+      "title": "DeFi Kritik Alert: 2 adet",
+      "description": "rocket-pool/RETH (Ethereum) APY anomali: 1.96% (7d ort: 1.96%, z=-9.2)\naave-v3/RLUSD (Ethereum) APY anomali: 0.92% (7d ort: 0.92%, z=-8.8)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T07:30:16.675Z"
+    },
+    {
+      "id": "DEFI-063",
+      "title": "DeFi Kritik Alert: 2 adet",
+      "description": "aave-v3/WBTC (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=-9.3)\naave-v3/WPOL (Polygon) APY anomali: 0.42% (7d ort: 0.42%, z=-5.3)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T08:30:16.737Z"
+    },
+    {
+      "id": "DEFI-064",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/tBTC/WBTC (arbitrum) APY anomali: 0.37% (7d ort: 0.10%, z=8.7)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T08:45:17.597Z"
+    },
+    {
+      "id": "DEFI-065",
+      "title": "DeFi Kritik Alert: 2 adet",
+      "description": "beefy/ynRWAx/ynUSDx (ethereum) APY anomali: 17.21% (7d ort: 18.52%, z=-7.5)\nbeefy/ynRWAx/OUSD (ethereum) APY anomali: 17.16% (7d ort: 19.07%, z=-8.2)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T09:15:15.564Z"
+    },
+    {
+      "id": "DEFI-066",
+      "title": "DeFi Kritik Alert: 3 adet",
+      "description": "aave-v3/SGHO (Ethereum) APY anomali: 4.80% (7d ort: 4.80%, z=-9.6)\naave-v3/SYRUPUSDT (Ethereum) TVL ÇÖKÜŞÜ: -50.5% (1h) — $165.5M → $81.9M\naave-v3/DAI (Polygon) APY anomali: 3.59% (7d ort: 3.37%, z=9.3)",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T09:30:17.382Z"
+    },
+    {
+      "id": "DEFI-067",
+      "title": "DeFi Kritik Alert: 120 adet",
+      "description": "aerodrome-v1/WETH-TRAC (Base) APY aşırı yüksek: 77119.4% — muhtemel scam/manipülasyon\nmorpho-v1/CSYUSDC (Ethereum) APY aşırı yüksek: 61886.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/RECALL-USDC (Base) APY aşırı yüksek: 37658.3% — muhtemel scam/manipülasyon\nuniswap-v4/PENDLE-USDC (Arbitrum) APY aşırı yüksek: 33109.7% — muhtemel scam/manipülasyon\nsupernova-cl/USDC-WETH (Ethereum) APY aşırı yüksek: 32016.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DOM (Base) APY aşırı yüksek: 22433.8% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-BNKR (Base) APY aşırı yüksek: 20119.2% — muhtemel scam/manipülasyon\naerodrome-v1/WETH-W (Base) APY aşırı yüksek: 19849.5% — muhtemel scam/manipülasyon\nsupernova-cl/WETH-USDT (Ethereum) APY aşırı yüksek: 17888.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VELVET (Base) APY aşırı yüksek: 17158.5% — muhtemel scam/manipülasyon\nuniswap-v4/POL-USDC (Polygon) APY aşırı yüksek: 15091.4% — muhtemel scam/manipülasyon\naerodrome-v1/USDC-NOCK (Base) APY aşırı yüksek: 14269.0% — muhtemel scam/manipülasyon\nuniswap-v4/ZORA-CRYPTICPOET (Base) APY aşırı yüksek: 13957.8% — muhtemel scam/manipülasyon\nuniswap-v4/LOL-WETH (Base) APY aşırı yüksek: 13062.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CA (Base) APY aşırı yüksek: 12631.6% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ENS (Ethereum) APY aşırı yüksek: 12594.1% — muhtemel scam/manipülasyon\nuniswap-v4/ASTEROID-WETH (Base) APY aşırı yüksek: 12175.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DELU (Base) APY aşırı yüksek: 11861.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 11399.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRANSMUTE (Base) APY aşırı yüksek: 10983.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DCLAW (Base) APY aşırı yüksek: 10943.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 10207.7% — muhtemel scam/manipülasyon\nuniswap-v4/QUDEAI-WETH (Base) APY aşırı yüksek: 9878.4% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-USDT (Ethereum) APY aşırı yüksek: 9742.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PXLSYNPS (Base) APY aşırı yüksek: 9690.3% — muhtemel scam/manipülasyon\nuniswap-v4/LENDR-WETH (Base) APY aşırı yüksek: 9606.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-USECASELAB (Base) APY aşırı yüksek: 9396.2% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-CBBTC (Base) APY aşırı yüksek: 9373.5% — muhtemel scam/manipülasyon\naerodrome-slipstream/WETH-USDC (Base) APY aşırı yüksek: 9361.1% — muhtemel scam/manipülasyon\nuniswap-v4/OREWARS-WETH (Base) APY aşırı yüksek: 9213.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 8848.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 8577.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8546.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8365.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GITLAWB (Base) APY aşırı yüksek: 8307.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MYTHOS (Base) APY aşırı yüksek: 8297.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOOK (Base) APY aşırı yüksek: 8066.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GURU (Base) APY aşırı yüksek: 7998.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AUBR (Base) APY aşırı yüksek: 7790.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NARC (Base) APY aşırı yüksek: 7525.5% — muhtemel scam/manipülasyon\nsupernova-cl/XAUT-USDT (Ethereum) APY aşırı yüksek: 7415.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VDRO (Base) APY aşırı yüksek: 7328.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-🪑 (Base) APY aşırı yüksek: 7321.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-WOON (Base) APY aşırı yüksek: 7243.0% — muhtemel scam/manipülasyon\nuniswap-v4/STUPI-WETH (Base) APY aşırı yüksek: 7164.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 6492.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 6358.6% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VFY (Base) APY aşırı yüksek: 6215.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SNAPNCLANK (Base) APY aşırı yüksek: 6154.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NEURAL (Base) APY aşırı yüksek: 6131.7% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-TITN (Base) APY aşırı yüksek: 6018.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ROAR (Base) APY aşırı yüksek: 5808.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VAR (Base) APY aşırı yüksek: 5686.2% — muhtemel scam/manipülasyon\nuniswap-v4/NORD-WETH (Base) APY aşırı yüksek: 5657.1% — muhtemel scam/manipülasyon\naerodrome-slipstream/WETH-CBBTC (Base) APY aşırı yüksek: 5605.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 5546.5% — muhtemel scam/manipülasyon\nuniswap-v4/VDOR-WETH (Base) APY aşırı yüksek: 5482.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ASTEROID (Base) APY aşırı yüksek: 5426.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MPFP (Base) APY aşırı yüksek: 5246.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIEMPOOL (Base) APY aşırı yüksek: 5240.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIALAGRAM (Base) APY aşırı yüksek: 5004.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 4980.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-FROSTY (Base) APY aşırı yüksek: 4950.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STATS (Base) APY aşırı yüksek: 4829.9% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 4804.8% — muhtemel scam/manipülasyon\nuniswap-v4/AC-WETH (Base) APY aşırı yüksek: 4740.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PIXEL (Base) APY aşırı yüksek: 4583.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STOA (Base) APY aşırı yüksek: 4458.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-COLONY (Base) APY aşırı yüksek: 4412.6% — muhtemel scam/manipülasyon\nuniswap-v4/AUSD-USDC (Ethereum) APY aşırı yüksek: 4357.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GLAD (Base) APY aşırı yüksek: 4314.5% — muhtemel scam/manipülasyon\nuniswap-v4/AUTONOMA-WETH (Base) APY aşırı yüksek: 4124.4% — muhtemel scam/manipülasyon\nuniswap-v4/TRAITORS-WETH (Base) APY aşırı yüksek: 4081.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BILLY (Base) APY aşırı yüksek: 4036.7% — muhtemel scam/manipülasyon\nuniswap-v4/OCTAV-WETH (Base) APY aşırı yüksek: 4035.8% — muhtemel scam/manipülasyon\nuniswap-v4/DRONE-WETH (Base) APY aşırı yüksek: 3974.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CLAWPASS (Base) APY aşırı yüksek: 3927.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DORITOS (Base) APY aşırı yüksek: 3852.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/AVNT-USDC (Base) APY aşırı yüksek: 3783.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AGENTCRAFT (Base) APY aşırı yüksek: 3739.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BSJ (Base) APY aşırı yüksek: 3727.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MEMBASE (Base) APY aşırı yüksek: 3717.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SURF (Base) APY aşırı yüksek: 3704.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HAZZA (Base) APY aşırı yüksek: 3603.2% — muhtemel scam/manipülasyon\nzeebu/ZBU (Base) APY aşırı yüksek: 3513.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRUE (Base) APY aşırı yüksek: 3420.8% — muhtemel scam/manipülasyon\naerodrome-v1/EBTC-CBBTC (Base) APY aşırı yüksek: 3388.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 3335.5% — muhtemel scam/manipülasyon\nuniswap-v4/ABT-USDT (Ethereum) APY aşırı yüksek: 3324.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-LIMINAL (Base) APY aşırı yüksek: 3265.3% — muhtemel scam/manipülasyon\nuniswap-v4/PXLSYNPS-WETH (Base) APY aşırı yüksek: 3237.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MVGA (Base) APY aşırı yüksek: 3231.2% — muhtemel scam/manipülasyon\nuniswap-v4/AGENT-S-WETH (Base) APY aşırı yüksek: 3153.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 3113.6% — muhtemel scam/manipülasyon\nsupernova-cl/USDT-SUPER (Ethereum) APY aşırı yüksek: 3069.0% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ASTEROID (Ethereum) APY aşırı yüksek: 3066.8% — muhtemel scam/manipülasyon\nuniswap-v4/安小将-WETH (Base) APY aşırı yüksek: 3053.3% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-WETH (Ethereum) APY aşırı yüksek: 2990.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERM (Base) APY aşırı yüksek: 2904.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MAN (Base) APY aşırı yüksek: 2809.0% — muhtemel scam/manipülasyon\naerodrome-slipstream/SOL-USDC (Base) APY aşırı yüksek: 2802.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TANA (Base) APY aşırı yüksek: 2749.8% — muhtemel scam/manipülasyon\nuniswap-v4/MAN-WETH (Base) APY aşırı yüksek: 2741.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CREDIFI (Base) APY aşırı yüksek: 2708.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PILLED (Base) APY aşırı yüksek: 2667.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OE (Base) APY aşırı yüksek: 2591.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OPENBET (Base) APY aşırı yüksek: 2517.5% — muhtemel scam/manipülasyon\nuniswap-v4/CLIPBRAIN-WETH (Base) APY aşırı yüksek: 2449.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOTUNC (Base) APY aşırı yüksek: 2417.1% — muhtemel scam/manipülasyon\nuniswap-v4/HUMWORK-WETH (Base) APY aşırı yüksek: 2416.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AC (Base) APY aşırı yüksek: 2395.4% — muhtemel scam/manipülasyon\nbalancer-v2/WMATIC-USDC-WETH-BAL (Polygon) APY aşırı yüksek: 2384.5% — muhtemel scam/manipülasyon\nuniswap-v4/MOONPAY-WETH (Base) APY aşırı yüksek: 2207.8% — muhtemel scam/manipülasyon\nbalancer-v2/APE-TEL (Polygon) APY aşırı yüksek: 2205.1% — muhtemel scam/manipülasyon\nuniswap-v4/MYBOT-WETH (Base) APY aşırı yüksek: 2161.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 2143.9% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-UPEG (Ethereum) APY aşırı yüksek: 2137.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NPC (Base) APY aşırı yüksek: 2134.0% — muhtemel scam/manipülasyon\nuniswap-v4/NEXUM-WETH (Base) APY aşırı yüksek: 2093.4% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 2025.9% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T09:49:31.537Z"
+    },
+    {
+      "id": "DEFI-068",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "uniswap-v4/WETH-AC (Base) TVL ÇÖKÜŞÜ: -30.0% (1h) — $0.1M → $0.1M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T11:34:25.936Z"
+    },
+    {
+      "id": "DEFI-069",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "uniswap-v4/ETH-NMR (Ethereum) APY aşırı yüksek: 25519.4% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T12:34:27.172Z"
+    },
+    {
+      "id": "DEFI-070",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "uniswap-v4/WETH-ACE (Base) APY aşırı yüksek: 2296.8% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T13:34:28.266Z"
+    },
+    {
+      "id": "DEFI-071",
+      "title": "DeFi Kritik Alert: 116 adet",
+      "description": "aerodrome-v1/WETH-TRAC (Base) APY aşırı yüksek: 78219.1% — muhtemel scam/manipülasyon\nmorpho-v1/CSYUSDC (Ethereum) APY aşırı yüksek: 71336.1% — muhtemel scam/manipülasyon\nuniswap-v4/PENDLE-USDC (Arbitrum) APY aşırı yüksek: 32535.8% — muhtemel scam/manipülasyon\nsupernova-cl/WETH-USDT (Ethereum) APY aşırı yüksek: 26568.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DOM (Base) APY aşırı yüksek: 22433.8% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-USDT (Ethereum) APY aşırı yüksek: 21697.1% — muhtemel scam/manipülasyon\nsupernova-cl/USDC-WETH (Ethereum) APY aşırı yüksek: 20881.4% — muhtemel scam/manipülasyon\naerodrome-v1/WETH-W (Base) APY aşırı yüksek: 20130.0% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-BNKR (Base) APY aşırı yüksek: 20119.2% — muhtemel scam/manipülasyon\nuniswap-v4/ASTEROID-WETH (Base) APY aşırı yüksek: 17008.0% — muhtemel scam/manipülasyon\naerodrome-slipstream/WETH-USDC (Base) APY aşırı yüksek: 16583.8% — muhtemel scam/manipülasyon\naerodrome-v1/USDC-NOCK (Base) APY aşırı yüksek: 15787.4% — muhtemel scam/manipülasyon\nuniswap-v4/POL-USDC (Polygon) APY aşırı yüksek: 15091.4% — muhtemel scam/manipülasyon\naerodrome-slipstream/RECALL-USDC (Base) APY aşırı yüksek: 14886.8% — muhtemel scam/manipülasyon\nuniswap-v4/ZORA-CRYPTICPOET (Base) APY aşırı yüksek: 13936.4% — muhtemel scam/manipülasyon\nuniswap-v4/LOL-WETH (Base) APY aşırı yüksek: 13062.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CA (Base) APY aşırı yüksek: 12631.6% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ENS (Ethereum) APY aşırı yüksek: 12565.2% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VFY (Base) APY aşırı yüksek: 12282.2% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VELVET (Base) APY aşırı yüksek: 11446.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 11399.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DCLAW (Base) APY aşırı yüksek: 10943.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRANSMUTE (Base) APY aşırı yüksek: 10722.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 10207.7% — muhtemel scam/manipülasyon\nuniswap-v4/QUDEAI-WETH (Base) APY aşırı yüksek: 9878.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PXLSYNPS (Base) APY aşırı yüksek: 9690.3% — muhtemel scam/manipülasyon\nuniswap-v4/LENDR-WETH (Base) APY aşırı yüksek: 9606.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-USECASELAB (Base) APY aşırı yüksek: 9396.2% — muhtemel scam/manipülasyon\nuniswap-v4/OREWARS-WETH (Base) APY aşırı yüksek: 9213.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 9001.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 8577.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8546.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8365.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GITLAWB (Base) APY aşırı yüksek: 8307.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MYTHOS (Base) APY aşırı yüksek: 8189.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-CBBTC (Base) APY aşırı yüksek: 8165.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOOK (Base) APY aşırı yüksek: 8066.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GURU (Base) APY aşırı yüksek: 7998.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NARC (Base) APY aşırı yüksek: 7525.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VDRO (Base) APY aşırı yüksek: 7328.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-🪑 (Base) APY aşırı yüksek: 7321.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ATEAM (Base) APY aşırı yüksek: 7321.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-WOON (Base) APY aşırı yüksek: 7243.0% — muhtemel scam/manipülasyon\nuniswap-v4/STUPI-WETH (Base) APY aşırı yüksek: 7164.5% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ASTEROID (Ethereum) APY aşırı yüksek: 6765.0% — muhtemel scam/manipülasyon\nuniswap-v4/MOONPAY-WETH (Base) APY aşırı yüksek: 6629.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 6492.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 6358.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SNAPNCLANK (Base) APY aşırı yüksek: 6154.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NEURAL (Base) APY aşırı yüksek: 6131.7% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-TITN (Base) APY aşırı yüksek: 6023.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ROAR (Base) APY aşırı yüksek: 5808.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VAR (Base) APY aşırı yüksek: 5686.2% — muhtemel scam/manipülasyon\nuniswap-v4/NORD-WETH (Base) APY aşırı yüksek: 5657.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 5546.5% — muhtemel scam/manipülasyon\nuniswap-v4/VDOR-WETH (Base) APY aşırı yüksek: 5482.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ASTEROID (Base) APY aşırı yüksek: 5426.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MPFP (Base) APY aşırı yüksek: 5246.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIEMPOOL (Base) APY aşırı yüksek: 5240.6% — muhtemel scam/manipülasyon\nsupernova-cl/XAUT-USDT (Ethereum) APY aşırı yüksek: 5039.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIALAGRAM (Base) APY aşırı yüksek: 5004.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 4980.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-FROSTY (Base) APY aşırı yüksek: 4950.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STATS (Base) APY aşırı yüksek: 4829.9% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 4804.8% — muhtemel scam/manipülasyon\nuniswap-v4/AC-WETH (Base) APY aşırı yüksek: 4740.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AC (Base) APY aşırı yüksek: 4696.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AUBR (Base) APY aşırı yüksek: 4689.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PIXEL (Base) APY aşırı yüksek: 4583.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STOA (Base) APY aşırı yüksek: 4458.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-COLONY (Base) APY aşırı yüksek: 4412.6% — muhtemel scam/manipülasyon\nuniswap-v4/AUSD-USDC (Ethereum) APY aşırı yüksek: 4357.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GLAD (Base) APY aşırı yüksek: 4314.5% — muhtemel scam/manipülasyon\nuniswap-v4/AUTONOMA-WETH (Base) APY aşırı yüksek: 4124.4% — muhtemel scam/manipülasyon\nuniswap-v4/TRAITORS-WETH (Base) APY aşırı yüksek: 4081.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BILLY (Base) APY aşırı yüksek: 4036.7% — muhtemel scam/manipülasyon\nuniswap-v4/OCTAV-WETH (Base) APY aşırı yüksek: 4035.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DELU (Base) APY aşırı yüksek: 3993.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CLAWPASS (Base) APY aşırı yüksek: 3927.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DORITOS (Base) APY aşırı yüksek: 3852.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BSJ (Base) APY aşırı yüksek: 3727.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MEMBASE (Base) APY aşırı yüksek: 3717.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SURF (Base) APY aşırı yüksek: 3704.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HAZZA (Base) APY aşırı yüksek: 3603.2% — muhtemel scam/manipülasyon\nzeebu/ZBU (Base) APY aşırı yüksek: 3455.3% — muhtemel scam/manipülasyon\naerodrome-v1/EBTC-CBBTC (Base) APY aşırı yüksek: 3440.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRUE (Base) APY aşırı yüksek: 3420.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 3335.5% — muhtemel scam/manipülasyon\nuniswap-v4/ABT-USDT (Ethereum) APY aşırı yüksek: 3324.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-LIMINAL (Base) APY aşırı yüksek: 3265.3% — muhtemel scam/manipülasyon\nuniswap-v4/PXLSYNPS-WETH (Base) APY aşırı yüksek: 3237.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MVGA (Base) APY aşırı yüksek: 3231.2% — muhtemel scam/manipülasyon\nuniswap-v4/AGENT-S-WETH (Base) APY aşırı yüksek: 3153.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 3113.6% — muhtemel scam/manipülasyon\nuniswap-v4/安小将-WETH (Base) APY aşırı yüksek: 3053.3% — muhtemel scam/manipülasyon\nsupernova-cl/USDT-SUPER (Ethereum) APY aşırı yüksek: 2966.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERM (Base) APY aşırı yüksek: 2904.6% — muhtemel scam/manipülasyon\naerodrome-slipstream/AVNT-USDC (Base) APY aşırı yüksek: 2846.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MAN (Base) APY aşırı yüksek: 2809.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TANA (Base) APY aşırı yüksek: 2749.8% — muhtemel scam/manipülasyon\nuniswap-v4/MAN-WETH (Base) APY aşırı yüksek: 2741.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CREDIFI (Base) APY aşırı yüksek: 2708.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PILLED (Base) APY aşırı yüksek: 2667.8% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-WETH (Ethereum) APY aşırı yüksek: 2593.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OE (Base) APY aşırı yüksek: 2591.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OPENBET (Base) APY aşırı yüksek: 2517.5% — muhtemel scam/manipülasyon\nuniswap-v4/CLIPBRAIN-WETH (Base) APY aşırı yüksek: 2449.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOTUNC (Base) APY aşırı yüksek: 2417.1% — muhtemel scam/manipülasyon\nuniswap-v4/HUMWORK-WETH (Base) APY aşırı yüksek: 2416.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-CHECK (Base) APY aşırı yüksek: 2257.3% — muhtemel scam/manipülasyon\nuniswap-v4/MYBOT-WETH (Base) APY aşırı yüksek: 2161.7% — muhtemel scam/manipülasyon\nmorpho-v1/CSYUSDC (Ethereum) APY aşırı yüksek: 2156.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 2143.9% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-UPEG (Ethereum) APY aşırı yüksek: 2098.6% — muhtemel scam/manipülasyon\nuniswap-v4/NEXUM-WETH (Base) APY aşırı yüksek: 2093.4% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 2025.9% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T14:04:55.815Z"
+    },
+    {
+      "id": "DEFI-072",
+      "title": "DeFi Kritik Alert: 2 adet",
+      "description": "supernova-cl/WBTC-CBBTC (Ethereum) APY aşırı yüksek: 2563.3% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-LMTS (Base) APY aşırı yüksek: 2399.0% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T14:34:25.457Z"
+    },
+    {
+      "id": "DEFI-073",
+      "title": "DeFi Kritik Alert: 3 adet",
+      "description": "uniswap-v4/WETH-MYTHOS (Base) TVL ÇÖKÜŞÜ: -38.5% (1h) — $0.1M → $0.1M\nuniswap-v4/WETH-STATE (Base) APY aşırı yüksek: 10431.5% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-CDX (Base) APY aşırı yüksek: 7468.9% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T15:34:25.599Z"
+    },
+    {
+      "id": "T-49",
+      "title": "DeFi Dashboard Widget — APY/TVL/Alert özeti",
+      "description": "Dashboard'a DeFi APM özet widget'ı ekle. API'den veri cekip goruntugetir.",
+      "status": "pending",
+      "assignee": "Alfred",
+      "priority": "medium",
+      "created_at": "2026-04-17T19:07:14.983008"
+    },
+    {
+      "id": "T-50",
+      "title": "DeFi Alert Log Sayfası — tarihsel gorunum",
+      "description": "Gecmis alertlerin tarihsel gorunumu. Filtreleme ile CRITICAL/WARN/INFO.",
+      "status": "pending",
+      "assignee": "Alfred",
+      "priority": "medium",
+      "created_at": "2026-04-17T19:07:14.983743"
+    },
+    {
+      "id": "T-51",
+      "title": "DeFi Top Pools Sayfası — en iyi havuzlar",
+      "description": "En iyi APY'li havuzlarin listesi. Chain filtreleme, siralama ozelligi.",
+      "status": "pending",
+      "assignee": "Alfred",
+      "priority": "low",
+      "created_at": "2026-04-17T19:07:14.983756"
+    },
+    {
+      "id": "T-52",
+      "title": "DeFi RPC Fallback — yedek endpoint mekanizması",
+      "description": "Public RPC fail olursa yedek endpoint'e gecil mekanizmasi.",
+      "status": "pending",
+      "assignee": "Alfred",
+      "priority": "medium",
+      "created_at": "2026-04-17T19:07:14.983765"
+    },
+    {
+      "id": "T-53",
+      "title": "DeFi Bildirim Test — yeni format test",
+      "description": "Alert bildirimlerini manuel tetikleyip yeni formatin test et.",
+      "status": "in_progress",
+      "assignee": "Alfred",
+      "priority": "low",
+      "created_at": "2026-04-17T19:07:14.983774",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-17T16:08:45.084Z"
+        }
+      ]
+    },
+    {
+      "id": "T-54",
+      "title": "DeFi APM Graceful Restart — systemd reload",
+      "description": "Systemd reload yerine graceful shutdown/restart yapildigini dogrula.",
+      "status": "pending",
+      "assignee": "Alfred",
+      "priority": "low",
+      "created_at": "2026-04-17T19:07:14.983782"
+    },
+    {
+      "id": "T-55",
+      "title": "DeFi Sprint Raporu — PROJECT.md guncelleme",
+      "description": "Gelis_turma raporunu PROJECT.md'ye isle.",
+      "status": "pending",
+      "assignee": "Alfred",
+      "priority": "medium",
+      "created_at": "2026-04-17T19:07:14.983790"
     }
-  ]
+  ],
+  "updated_at": "2026-04-17T16:08:45.084Z"
 }
