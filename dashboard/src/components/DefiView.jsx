@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { TrendingUp, AlertTriangle, RefreshCw, DollarSign, Activity, ShieldCheck, ShieldAlert } from 'lucide-react'
+import apiFetch from '../services/apiFetch'
 
 const DEFI_API = '/api/defi'
 const REFRESH_INTERVAL = 60_000
@@ -50,6 +51,11 @@ function StablecoinBadge({ symbol, price }) {
 function formatTime(value) {
   if (!value) return '—'
   return new Date(value).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+}
+
+function formatDateTime(value) {
+  if (!value) return '—'
+  return new Date(value).toLocaleString('tr-TR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
 }
 
 const CHAIN_BADGE = {
@@ -218,10 +224,195 @@ function PotentialPoolRow({ pool, rank }) {
   )
 }
 
+function alphaDecisionTone(decision) {
+  switch (String(decision || '').toUpperCase()) {
+    case 'LIVE_ENTER': return 'bg-ax-red/10 text-ax-red border-ax-red/25'
+    case 'PAPER_ENTER': return 'bg-ax-cyan/10 text-ax-cyan border-ax-cyan/25'
+    case 'WATCH': return 'bg-ax-amber/10 text-ax-amber border-ax-amber/25'
+    default: return 'bg-ax-surface text-ax-dim border-ax-border'
+  }
+}
+
+function AlphaCandidateRow({ candidate, rank }) {
+  const chainStyle = CHAIN_BADGE[candidate.chain] || 'bg-ax-muted text-ax-dim border-ax-border'
+  const confidence = typeof candidate.confidence === 'number' ? candidate.confidence : 0
+  const survivability = typeof candidate.survivabilityScore === 'number' ? candidate.survivabilityScore : 0
+  const exitability = typeof candidate.exitabilityScore === 'number' ? candidate.exitabilityScore : 0
+  const tvl = typeof candidate.tvlUsd === 'number' ? candidate.tvlUsd : 0
+  const honeypot = typeof candidate.honeypotProbability === 'number' ? candidate.honeypotProbability : 0
+  const eventBacked = candidate.eventBacked === true
+  const sourceTone = eventBacked
+    ? 'bg-ax-green/10 text-ax-green border-ax-green/25'
+    : 'bg-ax-amber/10 text-ax-amber border-ax-amber/25'
+
+  return (
+    <div className="flex items-center gap-3 py-3 border-b border-ax-border/30 last:border-0">
+      <span className="text-[10px] text-ax-subtle font-mono w-4 shrink-0 text-center">{rank}</span>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1 flex-wrap">
+          <span className="text-xs font-bold text-ax-heading">{candidate.symbol || '—'}</span>
+          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${chainStyle}`}>
+            {candidate.chain || '—'}
+          </span>
+          <span className="text-[10px] text-ax-dim uppercase tracking-tighter">{candidate.dex || '—'}</span>
+          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${sourceTone}`}>
+            {eventBacked ? 'EVENT' : (candidate.discoverySource || 'SCAN').toUpperCase()}
+          </span>
+          <span className={`px-1.5 py-0.5 rounded text-[9px] font-black border ${alphaDecisionTone(candidate.decision)}`}>
+            {candidate.decision || 'IGNORE'}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap text-[10px] text-ax-dim">
+          <span>TVL {formatUsdCompact(tvl)}</span>
+          <span>APY %{Number(candidate.apy || 0).toFixed(2)}</span>
+          <span>Survive {survivability}</span>
+          <span>Exit {exitability}</span>
+          <span>Confidence {confidence}</span>
+          <span>Honey {(honeypot * 100).toFixed(0)}%</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AlphaEventRow({ event, rank }) {
+  const chainStyle = CHAIN_BADGE[event.chain] || 'bg-ax-muted text-ax-dim border-ax-border'
+  const poolAddress = typeof event.poolAddress === 'string' ? event.poolAddress : ''
+  const txHash = typeof event.txHash === 'string' ? event.txHash : ''
+
+  return (
+    <div className="flex items-center gap-3 py-3 border-b border-ax-border/30 last:border-0">
+      <span className="text-[10px] text-ax-subtle font-mono w-4 shrink-0 text-center">{rank}</span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1 flex-wrap">
+          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${chainStyle}`}>
+            {event.chain || '—'}
+          </span>
+          <span className="text-xs font-bold text-ax-heading">{event.dex || '—'}</span>
+          <span className="text-[10px] text-ax-dim uppercase tracking-tighter">{event.eventType || 'POOL_CREATED'}</span>
+        </div>
+        <div className="text-[10px] text-ax-dim font-mono truncate">
+          pool {shortHash(poolAddress) || '—'} · tx {shortHash(txHash) || '—'} · {formatDateTime(event.detectedAt)}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function statusTone(status) {
+  const s = String(status || '').toUpperCase()
+  if (s === 'FAILED') return 'bg-ax-red/10 border-ax-red/25 text-ax-red'
+  if (s === 'EXECUTED') return 'bg-ax-green/10 border-ax-green/25 text-ax-green'
+  if (s === 'APPROVED') return 'bg-ax-cyan/10 border-ax-cyan/25 text-ax-cyan'
+  if (s === 'PROPOSED') return 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber'
+  return 'bg-ax-surface border-ax-border text-ax-dim'
+}
+
+function shortHash(value) {
+  if (!value || typeof value !== 'string') return null
+  if (!value.startsWith('0x') || value.length < 12) return value
+  return `${value.slice(0, 8)}…${value.slice(-4)}`
+}
+
+function formatUsdCompact(value) {
+  if (value == null || !Number.isFinite(value)) return 'â€”'
+  return new Intl.NumberFormat('tr-TR', {
+    style: 'currency',
+    currency: 'USD',
+    notation: value >= 1000 ? 'compact' : 'standard',
+    maximumFractionDigits: value >= 1000 ? 1 : 0,
+  }).format(value)
+}
+
+function summaryToneClass(tone) {
+  if (tone === 'danger') return 'bg-ax-red/10 border-ax-red/25 text-ax-red'
+  if (tone === 'warn') return 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber'
+  if (tone === 'ok') return 'bg-ax-green/10 border-ax-green/25 text-ax-green'
+  return 'bg-ax-cyan/10 border-ax-cyan/25 text-ax-cyan'
+}
+
+function buildSystemSummary({ error, isDataStale, criticalCount, warnCount, portfolioUsd, canReadPortfolio, currentVault, pendingApprovals, lastReason, potentialPoolsCount }) {
+  if (error) {
+    return {
+      tone: 'danger',
+      title: 'Servis veya veri akisinda sorun var',
+      body: 'API erisimi veya arka plan taramasi dogrulanamiyor. Once servis sagligini kontrol et.',
+    }
+  }
+
+  if (isDataStale) {
+    return {
+      tone: 'warn',
+      title: 'Veri gecikiyor',
+      body: 'Son tarama beklenenden eski. Tarama loopu veya servis yeniden kontrol edilmeli.',
+    }
+  }
+
+  if (criticalCount > 0) {
+    return {
+      tone: 'warn',
+      title: 'Sistem calisiyor ama risk baskisi var',
+      body: `${criticalCount} kritik ve ${warnCount} uyari var. Autopilot'tan once risk tarafina bakmak daha dogru olur.`,
+    }
+  }
+
+  if (!currentVault && canReadPortfolio && (portfolioUsd ?? 0) > 0 && pendingApprovals === 0 && lastReason === 'no_candidates') {
+    return {
+      tone: 'info',
+      title: 'Sistem izliyor ama uygun aday bulamiyor',
+      body: 'Portfoy okunuyor ancak Beefy scope icinde uygun aday cikmadi. Bu, zap destekli pariteler de dahil tum adaylarin guardrail veya skor tarafinda elendigi anlamina gelebilir.',
+    }
+  }
+
+  if (pendingApprovals > 0) {
+    return {
+      tone: 'info',
+      title: 'Sistem karar uretiyor, operator onayi bekliyor',
+      body: `${pendingApprovals} adet onay bekleyen aksiyon var. LIVE gecmeden once karar detaylarina bakmak gerekir.`,
+    }
+  }
+
+  if (potentialPoolsCount > 0) {
+    return {
+      tone: 'ok',
+      title: 'Sistem saglikli gorunuyor',
+      body: 'Tarama, API ve aday uretimi calisiyor. Siradaki bakilacak yer autopilot karar gecmisi.',
+    }
+  }
+
+  return {
+    tone: 'info',
+    title: 'Sistem acik ve veri topluyor',
+    body: 'Ana akis calisiyor. Ancak operator tarafinda yorumlanabilir bir aksiyon henuz olusmamis olabilir.',
+  }
+}
+
+function buildNextActions({ criticalCount, warnCount, lastReason, currentVault, potentialPoolsCount, canReadPortfolio }) {
+  const items = []
+
+  if (criticalCount > 0) items.push('Once Risk Alertleri bolumundeki kritik kayitlari incele.')
+  if (lastReason === 'no_candidates') items.push('Autopilot su an uygun aday bulamiyor; bu hata degil, guardrail, skor veya replay kosullarinin sonucu olabilir.')
+  if (!currentVault && canReadPortfolio) items.push('Portfoy bosta duruyor; Beefy Execution Universe bolumu yoruma en yakin alan.')
+  if (potentialPoolsCount === 0) items.push('Execution Universe de bossa Beefy scope veya guardrail tarafini kontrol etmek gerekir.')
+  if (warnCount > 0 && criticalCount === 0) items.push('Uyarilar var ama sistem bloklu degil; APY anomalilerini gozden gecirmek faydali olur.')
+  if (items.length === 0) items.push('Ana akis saglikli gorunuyor; sonraki kontrol noktasi Autopilot Aksiyonlari ve Portfoy olmali.')
+
+  return items.slice(0, 4)
+}
+
 export default function DefiView() {
   const [pools, setPools] = useState([])
   const [potentialPools, setPotentialPools] = useState([])
+  const [highApyPools, setHighApyPools] = useState([])
+  const [alphaCandidates, setAlphaCandidates] = useState([])
+  const [alphaEvents, setAlphaEvents] = useState([])
+  const [alphaMode, setAlphaMode] = useState('watch_only')
   const [autopilot, setAutopilot] = useState(null)
+  const [actions, setActions] = useState([])
+  const [expandedActionId, setExpandedActionId] = useState(null)
+  const [actionEvents, setActionEvents] = useState({})
+  const [approvingId, setApprovingId] = useState(null)
   const [portfolio, setPortfolio] = useState(null)
   const [alerts, setAlerts] = useState([])
   const [stablecoins, setStablecoins] = useState([])
@@ -234,14 +425,18 @@ export default function DefiView() {
 
   const fetchAll = useCallback(async () => {
     try {
-      const [healthRes, poolsRes, potentialRes, autopilotRes, portfolioRes, alertsRes, stablesRes] = await Promise.allSettled([
-        fetch(`${DEFI_API}/health`),
-        fetch(`${DEFI_API}/pools/top?limit=15`),
-        fetch(`${DEFI_API}/pools/potential?limit=8`),
-        fetch(`${DEFI_API}/autopilot/state`),
-        fetch(`${DEFI_API}/portfolio?usd=1`),
-        fetch(`${DEFI_API}/alerts?limit=20`),
-        fetch(`${DEFI_API}/stablecoins`),
+      const [healthRes, poolsRes, highApyRes, potentialRes, alphaCandidatesRes, alphaEventsRes, autopilotRes, actionsRes, portfolioRes, alertsRes, stablesRes] = await Promise.allSettled([
+        apiFetch(`${DEFI_API}/health`),
+        apiFetch(`${DEFI_API}/pools/top?limit=15`),
+        apiFetch(`${DEFI_API}/pools/high-apy?minApy=500&limit=15`),
+        apiFetch(`${DEFI_API}/pools/potential?limit=8`),
+        apiFetch(`${DEFI_API}/alpha/candidates?limit=10`),
+        apiFetch(`${DEFI_API}/alpha/events?limit=10`),
+        apiFetch(`${DEFI_API}/autopilot/state`),
+        apiFetch(`${DEFI_API}/autopilot/actions?limit=25`),
+        apiFetch(`${DEFI_API}/portfolio?usd=1`),
+        apiFetch(`${DEFI_API}/alerts?limit=20`),
+        apiFetch(`${DEFI_API}/stablecoins`),
       ])
 
       if (healthRes.status === 'fulfilled' && healthRes.value.ok) {
@@ -257,6 +452,14 @@ export default function DefiView() {
         setDataTimestamp(d.timestamp || null)
       }
 
+      if (highApyRes.status === 'fulfilled' && highApyRes.value.ok) {
+        const d = await highApyRes.value.json()
+        setHighApyPools(d.pools || [])
+        if (!dataTimestamp) {
+          setDataTimestamp(d.timestamp || null)
+        }
+      }
+
       if (potentialRes.status === 'fulfilled' && potentialRes.value.ok) {
         const d = await potentialRes.value.json()
         setPotentialPools(d.pools || [])
@@ -265,9 +468,25 @@ export default function DefiView() {
         }
       }
 
+      if (alphaCandidatesRes.status === 'fulfilled' && alphaCandidatesRes.value.ok) {
+        const d = await alphaCandidatesRes.value.json()
+        setAlphaCandidates(d.candidates || [])
+        setAlphaMode(d.mode || 'watch_only')
+      }
+
+      if (alphaEventsRes.status === 'fulfilled' && alphaEventsRes.value.ok) {
+        const d = await alphaEventsRes.value.json()
+        setAlphaEvents(d.events || [])
+      }
+
       if (autopilotRes.status === 'fulfilled' && autopilotRes.value.ok) {
         const d = await autopilotRes.value.json()
         setAutopilot(d)
+      }
+
+      if (actionsRes.status === 'fulfilled' && actionsRes.value.ok) {
+        const d = await actionsRes.value.json()
+        setActions(Array.isArray(d.actions) ? d.actions : [])
       }
 
       if (portfolioRes.status === 'fulfilled' && portfolioRes.value.ok) {
@@ -301,6 +520,62 @@ export default function DefiView() {
     }
   }, [])
 
+  const fetchActionEvents = useCallback(async (actionId) => {
+    const id = String(actionId || '').trim()
+    if (!id) return
+    if (actionEvents[id]) return
+    try {
+      const res = await apiFetch(`${DEFI_API}/autopilot/actions/${encodeURIComponent(id)}/events?limit=400`)
+      if (!res.ok) return
+      const d = await res.json()
+      setActionEvents(prev => ({ ...prev, [id]: Array.isArray(d.events) ? d.events : [] }))
+    } catch {}
+  }, [actionEvents])
+
+  const handleToggleEvents = async (actionId) => {
+    const id = String(actionId || '').trim()
+    if (!id) return
+    setExpandedActionId(prev => (prev === id ? null : id))
+    if (!actionEvents[id]) {
+      await fetchActionEvents(id)
+    }
+  }
+
+  const canApproveLive = Boolean(autopilot?.config?.execute && !autopilot?.config?.simulateOnly)
+  const handleApprove = async (action) => {
+    const id = String(action?.id || '').trim()
+    if (!id || approvingId) return
+
+    const fromV = action?.fromVaultId || '—'
+    const toV = action?.toVaultId || '—'
+    const ok = window.confirm(`Bu aksiyonu LIVE olarak çalıştırmak istiyor musun?\n\nAction: ${id}\nFrom: ${fromV}\nTo: ${toV}`)
+    if (!ok) return
+
+    try {
+      setApprovingId(id)
+      const res = await apiFetch(`${DEFI_API}/autopilot/approve/${encodeURIComponent(id)}`, { method: 'POST' })
+      const payload = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        const reason = payload?.reason || payload?.message || payload?.error || 'unknown'
+        setError(`Approve başarısız: ${reason}`)
+        return
+      }
+      setError(null)
+      await fetchAll()
+      setActionEvents(prev => {
+        const copy = { ...prev }
+        delete copy[id]
+        return copy
+      })
+      await fetchActionEvents(id)
+      setExpandedActionId(id)
+    } catch (err) {
+      setError(`Approve hata: ${err.message}`)
+    } finally {
+      setApprovingId(null)
+    }
+  }
+
   useEffect(() => {
     fetchAll()
     const t = setInterval(fetchAll, REFRESH_INTERVAL)
@@ -319,6 +594,27 @@ export default function DefiView() {
   const lastReason = lastAp?.details?.reason || lastAp?.details?.decision?.reason || null
   const portfolioUsd = typeof portfolio?.totalBalanceUsd === 'number' ? portfolio.totalBalanceUsd : null
   const ethUsd = typeof portfolio?.ethUsdPrice === 'number' ? portfolio.ethUsdPrice : null
+  const pendingApprovals = actions.filter(a => String(a.status || '').toUpperCase() === 'PROPOSED').length
+  const summary = buildSystemSummary({
+    error,
+    isDataStale,
+    criticalCount: criticalAlerts.length,
+    warnCount: warnAlerts.length,
+    portfolioUsd,
+    canReadPortfolio: Boolean(portfolio?.canRead),
+    currentVault,
+    pendingApprovals,
+    lastReason,
+    potentialPoolsCount: potentialPools.length,
+  })
+  const nextActions = buildNextActions({
+    criticalCount: criticalAlerts.length,
+    warnCount: warnAlerts.length,
+    lastReason,
+    currentVault,
+    potentialPoolsCount: potentialPools.length,
+    canReadPortfolio: Boolean(portfolio?.canRead),
+  })
 
   if (loading) {
     return (
@@ -342,31 +638,31 @@ export default function DefiView() {
               📈
             </div>
             <div>
-              <h2 className="text-xl font-black text-ax-heading italic">DeFi APM</h2>
-              <p className="text-xs text-ax-dim font-medium">Gözcü Modu — Faz 1</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {error ? (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-ax-red/10 border border-ax-red/25">
-                <div className="w-2 h-2 rounded-full bg-ax-red" />
-                <span className="text-ax-red text-xs font-bold">Kapalı</span>
-              </div>
-            ) : (
-              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${
-                isDataStale
-                  ? 'bg-ax-amber/10 border-ax-amber/25'
-                  : 'bg-ax-green/10 border-ax-green/25'
-              }`}>
-                <div className={`w-2 h-2 rounded-full ${isDataStale ? 'bg-ax-amber' : 'bg-ax-green animate-pulse'}`} />
-                <span className={`${isDataStale ? 'text-ax-amber' : 'text-ax-green'} text-xs font-bold`}>
-                  {isDataStale ? 'Veri Bayat' : 'Çevrimiçi'}
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-black text-ax-heading italic">DeFi APM</h2>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                  error ? 'bg-ax-red/10 text-ax-red border-ax-red/20' : 'bg-ax-green/10 text-ax-green border-ax-green/20'
+                }`}>
+                  {error ? 'DOWN' : 'ACTIVE'}
                 </span>
               </div>
-            )}
+              <p className="text-xs text-ax-dim font-medium">Otonom Portföy Yöneticisi — Faz 2</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <div className={`flex items-center justify-end gap-2 text-xs font-bold mb-0.5 ${isDataStale ? 'text-ax-amber' : 'text-ax-green'}`}>
+                <div className={`w-2 h-2 rounded-full ${isDataStale ? 'bg-ax-amber animate-pulse' : 'bg-ax-green'}`} />
+                {isDataStale ? 'Senkronizasyon Gecikti' : 'Senkronize'}
+              </div>
+              <p className="text-[10px] text-ax-dim font-mono">
+                {dataTimestamp ? `Son Tarama: ${new Date(dataTimestamp).toLocaleTimeString('tr-TR')}` : 'Tarama bilgisi yok'}
+              </p>
+            </div>
             <button
               onClick={fetchAll}
-              className="p-2 rounded-xl hover:bg-ax-muted transition-colors text-ax-dim"
+              className="p-2.5 rounded-xl bg-ax-muted/30 hover:bg-ax-muted transition-colors text-ax-dim border border-ax-border/50"
+              title="Yenile"
             >
               <RefreshCw size={15} />
             </button>
@@ -380,6 +676,57 @@ export default function DefiView() {
         )}
 
         {/* Özet İstatistikler */}
+        <div className="mt-4 grid grid-cols-1 lg:grid-cols-[1.3fr_.9fr] gap-3">
+          <div className="p-4 rounded-2xl bg-ax-surface border border-ax-border">
+            <div className="flex items-center gap-2 mb-2">
+              <ShieldCheck size={15} className="text-ax-cyan" />
+              <h3 className="text-sm font-bold text-ax-heading">Bu Ekran Ne Diyor?</h3>
+            </div>
+            <div className={`inline-flex px-2 py-1 rounded-full border text-[10px] font-bold mb-2 ${summaryToneClass(summary.tone)}`}>
+              {summary.title}
+            </div>
+            <p className="text-xs text-ax-dim leading-relaxed">
+              {summary.body}
+            </p>
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
+                <div className="text-[10px] text-ax-dim uppercase">Mod</div>
+                <div className="text-xs font-bold text-ax-heading">{apCfg?.execute && !apCfg?.simulateOnly ? 'LIVE' : 'SIMULASYON'}</div>
+              </div>
+              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
+                <div className="text-[10px] text-ax-dim uppercase">Durum</div>
+                <div className="text-xs font-bold text-ax-heading">{lastReason === 'no_candidates' ? 'Aday yok' : (lastReason || 'Normal')}</div>
+              </div>
+              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
+                <div className="text-[10px] text-ax-dim uppercase">Portfoy</div>
+                <div className="text-xs font-bold text-ax-heading">{formatUsdCompact(portfolioUsd)}</div>
+              </div>
+              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
+                <div className="text-[10px] text-ax-dim uppercase">Gercek aday</div>
+                <div className="text-xs font-bold text-ax-heading">{potentialPools.length}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-ax-surface border border-ax-border">
+            <div className="flex items-center gap-2 mb-2">
+              <AlertTriangle size={15} className="text-ax-amber" />
+              <h3 className="text-sm font-bold text-ax-heading">Ne Yapmali?</h3>
+            </div>
+            <div className="space-y-2">
+              {nextActions.map((item, idx) => (
+                <div key={idx} className="flex items-start gap-2 text-xs text-ax-dim">
+                  <span className="mt-1 w-1.5 h-1.5 rounded-full bg-ax-amber shrink-0" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 p-3 rounded-xl border border-ax-border bg-ax-panel text-[11px] text-ax-subtle leading-relaxed">
+              `Beefy Radar` sadece gozlem ekranidir. Buradaki havuzlar autopilot icin otomatik olarak uygun kabul edilmez.
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
           <div className="p-3 rounded-xl bg-ax-surface border border-ax-border text-center">
             <div className="text-lg font-black text-ax-cyan font-mono">{pools.length}</div>
@@ -424,23 +771,135 @@ export default function DefiView() {
             }`}>
               Execute: {apCfg?.execute && !apCfg?.simulateOnly ? 'LIVE' : 'SIM'}
             </span>
+            <span className={`px-2 py-1 rounded-full border font-mono ${
+              apCfg?.requireApproval
+                ? 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber'
+                : 'bg-ax-surface border-ax-border text-ax-dim'
+            }`}>
+              Approval: {apCfg?.requireApproval ? 'REQUIRED' : 'OFF'}
+            </span>
             <span className="px-2 py-1 rounded-full border bg-ax-surface border-ax-border text-ax-dim font-mono">
               Vault: {shownVault}
             </span>
             {lastAp && (
-              <span className={`px-2 py-1 rounded-full border font-mono ${
-                lastAp.status === 'FAILED'
-                  ? 'bg-ax-red/10 border-ax-red/25 text-ax-red'
-                  : lastAp.status === 'EXECUTED'
-                    ? 'bg-ax-green/10 border-ax-green/25 text-ax-green'
-                    : 'bg-ax-surface border-ax-border text-ax-dim'
-              }`}>
+              <span className={`px-2 py-1 rounded-full border font-mono ${statusTone(lastAp.status)}`}>
                 Last: {lastAp.status}/{lastAp.action}{lastReason ? ` (${lastReason})` : ''}
+              </span>
+            )}
+            {pendingApprovals > 0 && (
+              <span className="px-2 py-1 rounded-full border font-mono bg-ax-amber/10 border-ax-amber/25 text-ax-amber">
+                Pending: {pendingApprovals}
               </span>
             )}
           </div>
         )}
       </div>
+
+      {/* Autopilot Aksiyonları */}
+      {actions.length > 0 && (
+        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Activity size={16} className="text-ax-cyan" />
+            <h2 className="text-ax-heading text-sm font-bold">Autopilot Aksiyonları</h2>
+            <span className="ml-auto text-[10px] text-ax-dim">{actions.length} kayıt</span>
+          </div>
+
+          <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+            Bu liste sistemin ne denedigini gosterir. `SKIPPED / NONE / no_candidates` hata degil; kurallara uyan aday bulunamadigi anlamina gelir.
+          </div>
+
+          {!canApproveLive && (
+            <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+              LIVE approve için `execute=1` ve `simulateOnly=0` gerekli.
+            </div>
+          )}
+
+          <div className="space-y-2">
+            {actions.slice(0, 12).map((a) => {
+              const id = String(a.id || '')
+              const st = String(a.status || '').toUpperCase()
+              const isProposed = st === 'PROPOSED'
+              const isExpanded = expandedActionId === id
+              const reason = a?.details?.reason || a?.details?.decision?.reason || null
+              return (
+                <div key={id} className="rounded-xl bg-ax-surface border border-ax-border overflow-hidden">
+                  <div className="flex items-center gap-3 px-3 py-2.5">
+                    <button
+                      onClick={() => handleToggleEvents(id)}
+                      className="shrink-0 w-7 h-7 rounded-lg border border-ax-border bg-ax-panel hover:bg-ax-muted/60 transition-colors text-ax-dim text-xs font-mono"
+                      title="Events"
+                    >
+                      {isExpanded ? '−' : '+'}
+                    </button>
+                    <span className={`shrink-0 px-2 py-1 rounded-full border text-[10px] font-mono ${statusTone(st)}`}>
+                      {st || '—'}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-bold text-ax-heading font-mono">{id}</span>
+                        <span className="text-[10px] text-ax-dim font-mono">{formatDateTime(a.timestamp)}</span>
+                        {a.action && <span className="text-[10px] text-ax-dim uppercase tracking-wider">{a.action}</span>}
+                        {reason && (
+                          <span className="text-[10px] text-ax-subtle">
+                            {reason}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-0.5 text-[10px] text-ax-dim font-mono truncate">
+                        {a.fromVaultId ? `from ${a.fromVaultId}` : 'from —'} → {a.toVaultId ? `to ${a.toVaultId}` : 'to —'}
+                        {a.txHash ? ` · tx ${shortHash(a.txHash)}` : ''}
+                      </div>
+                    </div>
+                    {isProposed && (
+                      <button
+                        onClick={() => handleApprove(a)}
+                        disabled={!canApproveLive || approvingId === id}
+                        className={`shrink-0 px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-colors ${
+                          !canApproveLive
+                            ? 'bg-ax-muted border-ax-border text-ax-dim cursor-not-allowed'
+                            : 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber hover:bg-ax-amber/20'
+                        }`}
+                        title={!canApproveLive ? 'execute/simulateOnly ayarlarını kontrol et' : 'Manuel onay (LIVE)'}
+                      >
+                        {approvingId === id ? 'Onay…' : 'Approve'}
+                      </button>
+                    )}
+                  </div>
+                  {isExpanded && (
+                    <div className="border-t border-ax-border/60 bg-ax-panel px-3 py-2">
+                      {(actionEvents[id] || []).length === 0 ? (
+                        <div className="text-[11px] text-ax-dim">Event yok (veya yüklenemedi).</div>
+                      ) : (
+                        <div className="space-y-1">
+                          {(actionEvents[id] || []).slice(-30).map((ev) => (
+                            <div key={ev.id} className="flex items-start gap-2 text-[11px]">
+                              <span className={`mt-0.5 w-1.5 h-1.5 rounded-full shrink-0 ${levelDot(ev.status === 'FAILED' ? 'CRITICAL' : ev.status === 'PROPOSED' ? 'WARN' : 'INFO')}`} />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className={`px-2 py-0.5 rounded-full border text-[10px] font-mono ${statusTone(ev.status)}`}>
+                                    {String(ev.status || '').toUpperCase()}
+                                  </span>
+                                  <span className="text-[10px] text-ax-subtle font-mono">{formatDateTime(ev.timestamp)}</span>
+                                  {ev.details?.reason && <span className="text-[10px] text-ax-dim">{ev.details.reason}</span>}
+                                </div>
+                                {ev.details && typeof ev.details === 'object' && (ev.details.message || ev.details.error) && (
+                                  <div className="text-[10px] text-ax-dim font-mono truncate">
+                                    {ev.details.message || ev.details.error}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Portföy (USD valuation) */}
       {portfolio && (
@@ -529,13 +988,35 @@ export default function DefiView() {
         </div>
       )}
 
+      {/* Yüksek APY Radar */}
+      {highApyPools.length > 0 && (
+        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp size={16} className="text-ax-amber" />
+            <h2 className="text-ax-heading text-sm font-bold">Beefy Radar</h2>
+            <span className="ml-auto text-[10px] text-ax-dim">(scope: Beefy)</span>
+          </div>
+          <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+            Burasi gozlem ekranidir. Liste Beefy ile sinirli olsa da, execution karari icin guardrail ve autopilot kurallari ayrica gecer.
+          </div>
+          <div>
+            {highApyPools.slice(0, 10).map((pool, i) => (
+              <PoolRow key={`high-apy-${pool.poolId || pool.id || i}`} pool={pool} rank={i + 1} />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* En İyi Havuzlar */}
       {pools.length > 0 && (
         <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp size={16} className="text-ax-cyan" />
-            <h2 className="text-ax-heading text-sm font-bold">En İyi Havuzlar</h2>
-            <span className="ml-auto text-[10px] text-ax-dim">(APY sırası)</span>
+            <h2 className="text-ax-heading text-sm font-bold">Beefy Havuzlari</h2>
+            <span className="ml-auto text-[10px] text-ax-dim">(scope icinde APY sirasi)</span>
+          </div>
+          <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+            Bu liste artik genel piyasa degil, yalnizca Beefy evrenidir. Yine de "en iyi" ifadesi execution uygunlugu degil, ham APY sirasi anlamina gelir.
           </div>
           <div>
             {pools.slice(0, 10).map((pool, i) => (
@@ -550,8 +1031,11 @@ export default function DefiView() {
         <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp size={16} className="text-ax-green" />
-            <h2 className="text-ax-heading text-sm font-bold">Günlük Getiri Potansiyeli</h2>
+            <h2 className="text-ax-heading text-sm font-bold">Beefy Execution Universe</h2>
             <span className="ml-auto text-[10px] text-ax-dim">($1000 bazında günlük)</span>
+          </div>
+          <div className="mb-3 p-3 rounded-xl bg-ax-green/5 border border-ax-green/15 text-[11px] text-ax-dim">
+            Yoruma en yakin liste burasi. Su anki Base + Beefy zap-aday mantigina en yakin ekran bu bolumdur.
           </div>
           <div>
             {potentialPools.slice(0, 8).map((pool, i) => (
@@ -560,6 +1044,52 @@ export default function DefiView() {
           </div>
         </div>
       )}
+
+      {/* Alpha Sniper Board */}
+      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Activity size={16} className="text-ax-red" />
+          <h2 className="text-ax-heading text-sm font-bold">Alpha Sniper Board</h2>
+          <span className="ml-auto text-[10px] text-ax-dim">mode: {alphaMode}</span>
+        </div>
+        <div className="mb-3 p-3 rounded-xl bg-ax-red/5 border border-ax-red/15 text-[11px] text-ax-dim">
+          Bu board artik varsayilan olarak sadece on-chain event ile yakalanan adaylari gosterir. Scan kaynakli mevcut havuzlar burada yeni havuz gibi sunulmaz.
+        </div>
+        {alphaCandidates.length > 0 ? (
+          <div>
+            {alphaCandidates.slice(0, 10).map((candidate, i) => (
+              <AlphaCandidateRow key={candidate.candidateId || i} candidate={candidate} rank={i + 1} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-6 text-ax-dim text-xs">
+            Henuz event-backed yeni havuz adayi yok. Board bos olabilir; bu, scan verisinin gizlendigi ve sadece gercek on-chain kesiflerin beklendigi anlamina gelir.
+          </div>
+        )}
+      </div>
+
+      {/* On-Chain Discovery Events */}
+      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <RefreshCw size={16} className="text-ax-cyan" />
+          <h2 className="text-ax-heading text-sm font-bold">On-Chain Discovery Events</h2>
+          <span className="ml-auto text-[10px] text-ax-dim">{alphaEvents.length} event</span>
+        </div>
+        <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+          Bu akis factory seviyesinde yeni `PoolCreated` olaylarini gosterir. Liste bossa sistem bozuk degil; o pencerede yeni havuz olayi gelmemis olabilir.
+        </div>
+        {alphaEvents.length > 0 ? (
+          <div>
+            {alphaEvents.slice(0, 10).map((event, i) => (
+              <AlphaEventRow key={event.eventId || i} event={event} rank={i + 1} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-6 text-ax-dim text-xs">
+            Son polling penceresinde yeni pool creation olayi yakalanmadi.
+          </div>
+        )}
+      </div>
 
       {/* Risk Alertleri */}
       <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">

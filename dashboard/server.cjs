@@ -837,9 +837,10 @@ function handleRequest(req, res) {
   
   // Paths that start with these prefixes are also allowed without auth
   const skipAuthPrefixes = [
-    '/api/tasks/', '/api/git/repos', '/api/ai-status', '/api/defi/',
+    '/api/tasks/', '/api/git/repos', '/api/ai-status',
   ]
-  const isSkipAuth = skipAuthPaths.includes(url) || skipAuthPrefixes.some(p => url.startsWith(p))
+  const isDefiReadOnly = url.startsWith('/api/defi/') && (req.method === 'GET' || req.method === 'HEAD')
+  const isSkipAuth = skipAuthPaths.includes(url) || skipAuthPrefixes.some(p => url.startsWith(p)) || isDefiReadOnly
   if (dashboardToken && isApiRoute && !isSkipAuth) {
     // Bearer header veya ?token= query param
     const authHeader = req.headers.authorization || ''
@@ -2457,11 +2458,11 @@ function handleRequest(req, res) {
   if (url.startsWith('/api/defi/')) {
     const upstreamPath = url.replace('/api/defi/', '/api/')
     const upstreamUrl = `http://127.0.0.1:4180${upstreamPath}${req.url.includes('?') ? '?' + req.url.split('?')[1] : ''}`
-    const upstreamReq = http.request(upstreamUrl, { method: req.method, headers: { 'Content-Type': 'application/json' } }, (upstreamRes) => {
+    const upstreamReq = http.request(upstreamUrl, { method: req.method, headers: { ...req.headers, host: '127.0.0.1:4180' } }, (upstreamRes) => {
       let body = ''
       upstreamRes.on('data', chunk => { body += chunk })
       upstreamRes.on('end', () => {
-        res.writeHead(upstreamRes.statusCode, { 'Content-Type': 'application/json' })
+        res.writeHead(upstreamRes.statusCode || 502, { 'Content-Type': upstreamRes.headers['content-type'] || 'application/json' })
         res.end(body)
       })
     })
@@ -2469,7 +2470,7 @@ function handleRequest(req, res) {
       res.writeHead(503, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ error: 'DeFi APM servisi erişilemiyor', port: 4180 }))
     })
-    upstreamReq.end()
+    req.pipe(upstreamReq)
     return
   }
 

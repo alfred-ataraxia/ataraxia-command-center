@@ -22,3 +22,9 @@ originSessionId: ab75af13-8e20-4a7a-b1a4-0b6475c0c8e3
 
 `~/.claude/commands/dream.md` olarak eklendi. `/dream` ile hafıza konsolidasyonu tetiklenir.
 Kaynak: Piebald-AI/claude-code-system-prompts — agent-prompt-dream-memory-consolidation.md
+
+## ai-switch.sh silindi (2026-04-17)
+
+`/home/sefa/alfred-hub/scripts/ai-switch.sh` kalıcı olarak silindi.
+**Why:** Codex güncellemesini engelliyordu; hiçbir hook/cron referansı yoktu, kullanılmıyordu.
+**How to apply:** Bu dosyayı geri oluşturma veya arama — artık yok.

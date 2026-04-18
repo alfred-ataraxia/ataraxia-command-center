@@ -1088,43 +1088,111 @@
       "id": "T-49",
       "title": "DeFi Dashboard Widget — APY/TVL/Alert özeti",
       "description": "Dashboard'a DeFi APM özet widget'ı ekle. API'den veri cekip goruntugetir.",
-      "status": "pending",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "medium",
-      "created_at": "2026-04-17T19:07:14.983008"
+      "created_at": "2026-04-17T19:07:14.983008",
+      "started_at": "2026-04-17T19:33:41.683798+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-17T19:33:41.683798+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-17T19:36:09.731262+03:00"
+        }
+      ],
+      "completed_at": "2026-04-17T19:36:09.731262+03:00",
+      "notes": [
+        "Overview.jsx'de DeFi APM özet widget zaten mevcut. 5 bölümlü panel: pool sayısı, kritik/uyarı sayısı, portföy değeri, top havuz (potentialScore), hot havuz (APY>500). Tüm veriler /api/defi/health, /pools/potential, /pools/high-apy, /alerts, /portfolio üzerinden çekiliyor. DeFiView ayrıca tam sayfa olarak mevcut."
+      ]
     },
     {
       "id": "T-50",
       "title": "DeFi Alert Log Sayfası — tarihsel gorunum",
       "description": "Gecmis alertlerin tarihsel gorunumu. Filtreleme ile CRITICAL/WARN/INFO.",
-      "status": "pending",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "medium",
-      "created_at": "2026-04-17T19:07:14.983743"
+      "created_at": "2026-04-17T19:07:14.983743",
+      "started_at": "2026-04-17T20:03:17.701688+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-17T20:03:17.701688+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-17T21:37:55.850229+03:00"
+        }
+      ],
+      "completed_at": "2026-04-17T21:37:55.850229+03:00",
+      "notes": [
+        "GET /api/alerts tarihsel gorunum ile guncellendi. from/to (ISO veya epoch ms), level, type, poolId filtreleri eklendi. Ornegin: ?from=2026-04-10&to=2026-04-17&level=CRITICAL&limit=50. Donen yanitta meta objesi ile from/to/level/type bilgisi de donuyor. Pi 400 uzerinde test edildi."
+      ]
     },
     {
       "id": "T-51",
       "title": "DeFi Top Pools Sayfası — en iyi havuzlar",
       "description": "En iyi APY'li havuzlarin listesi. Chain filtreleme, siralama ozelligi.",
-      "status": "pending",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "low",
-      "created_at": "2026-04-17T19:07:14.983756"
+      "created_at": "2026-04-17T19:07:14.983756",
+      "started_at": "2026-04-17T22:03:47.496512+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-17T22:03:47.496512+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-17T22:08:19.873209+03:00"
+        }
+      ],
+      "completed_at": "2026-04-17T22:08:19.873209+03:00",
+      "notes": [
+        "TopPools sayfası oluşturuldu: Zincir filtresi (Tüm/Ethereum/Arbitrum/Optimism/Base/Polygon), APY/TVL/İsim sıralaması, 100 havuz limitli API çağrısı, mobil uyumlu responsive tasarım. Vite build + dashboard restart yapıldı. /api/defi/pools/top proxy çalışıyor."
+      ]
     },
     {
       "id": "T-52",
       "title": "DeFi RPC Fallback — yedek endpoint mekanizması",
       "description": "Public RPC fail olursa yedek endpoint'e gecil mekanizmasi.",
-      "status": "pending",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "medium",
-      "created_at": "2026-04-17T19:07:14.983765"
+      "created_at": "2026-04-17T19:07:14.983765",
+      "started_at": "2026-04-17T20:33:23.662907+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-17T20:33:23.662907+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-17T20:36:51.466273+03:00"
+        }
+      ],
+      "completed_at": "2026-04-17T20:36:51.466273+03:00",
+      "notes": [
+        "Tüm zincirler (Base, Arbitrum, Optimism, Polygon, Ethereum) için çoklu RPC fallback mekanizması eklendi. viem fallback transport + retryCount:2/retryDelay:500ms ile otomatik yedek geçiş aktif. executor.ts de bu mekanizmayı kullanacak şekilde güncellendi. Opsiyonel checkRpcHealth() fonksiyonu ile tüm endpoint'lerin sağlık durumu izlenebilir."
+      ]
     },
     {
       "id": "T-53",
       "title": "DeFi Bildirim Test — yeni format test",
       "description": "Alert bildirimlerini manuel tetikleyip yeni formatin test et.",
-      "status": "in_progress",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "low",
       "created_at": "2026-04-17T19:07:14.983774",
@@ -1133,27 +1201,97 @@
           "from": "pending",
           "to": "in_progress",
           "at": "2026-04-17T16:08:45.084Z"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-17T23:33:55.498963+03:00"
         }
+      ],
+      "completed_at": "2026-04-17T23:33:55.498963+03:00",
+      "notes": [
+        "DeFi bildirim sistemi test edildi. sendText, sendAlerts (mixed/critical/depeg), sendScanSummary tümü çalışıyor. Format: Türkçe alertler, HTML parse_mode, seviye bazlı gruplama (kritik/uyarı/bilgi). Mevcut token config'de yok ama kod log/send branch'ini doğru handle ediyor."
       ]
     },
     {
       "id": "T-54",
       "title": "DeFi APM Graceful Restart — systemd reload",
       "description": "Systemd reload yerine graceful shutdown/restart yapildigini dogrula.",
-      "status": "pending",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "low",
-      "created_at": "2026-04-17T19:07:14.983782"
+      "created_at": "2026-04-17T19:07:14.983782",
+      "started_at": "2026-04-18T00:03:38.782760+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-18T00:03:38.782760+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-18T00:34:26.638334+03:00"
+        }
+      ],
+      "completed_at": "2026-04-18T00:34:26.638334+03:00",
+      "notes": [
+        "Graceful shutdown/restart mekanizmasi dogru uygulanmis. src/index.ts:140-147 arasindaki shutdown() fonksiyonu SIGTERM/SIGINT yakalayarak tum interval'lari temizliyor, veritabani baglantisi kapatip temiz cikis yapiyor. TimeoutStopUSec=90s graceful kapanmaya yetiyor. Restart=on-failure + RestartSec=30s beklenmedik cikislarda temiz restart sagliyor. systemctl reload varsayilan SIGHUP gonderir ama uygulama bunu yok sayiyor — graceful restart zaten tek mekanizma olarak calisiyor."
+      ]
     },
     {
       "id": "T-55",
       "title": "DeFi Sprint Raporu — PROJECT.md guncelleme",
       "description": "Gelis_turma raporunu PROJECT.md'ye isle.",
-      "status": "pending",
+      "status": "done",
       "assignee": "Alfred",
       "priority": "medium",
-      "created_at": "2026-04-17T19:07:14.983790"
+      "created_at": "2026-04-17T19:07:14.983790",
+      "started_at": "2026-04-17T21:03:47.300335+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-17T21:03:47.300335+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-17T21:05:50.829181+03:00"
+        }
+      ],
+      "completed_at": "2026-04-17T21:05:50.829181+03:00",
+      "notes": [
+        "Guncelleme Logu'na PROJECT.md'nin sprint/is-takip yapısından faz-bazlı yapıya geçişi eklendi. Commit 507c45a'daki yapısal değişiklik zaten yansıtılmıştı — eksik olan tek şey günlük log girişiydi."
+      ]
+    },
+    {
+      "id": "DEFI-081",
+      "title": "DeFi Kritik Alert: 4 adet",
+      "description": "beefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -67.1% (1h) — $3.0M → $1.0M\nbeefy/msETH-WETH sLP (base) TVL ÇÖKÜŞÜ: -56.6% (1h) — $1.9M → $0.8M\nbeefy/tETH/wstETH V3 (ethereum) TVL ÇÖKÜŞÜ: -68.8% (1h) — $2.4M → $0.7M\nbeefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -67.1% (1h) — $1.5M → $0.5M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T18:08:54.263Z"
+    },
+    {
+      "id": "DEFI-082",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/USDC/EURe V3 (arbitrum) TVL ÇÖKÜŞÜ: -62.8% (1h) — $0.6M → $0.2M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T20:07:40.268Z"
+    },
+    {
+      "id": "DEFI-083",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/tETH/wstETH V3 (ethereum) TVL ÇÖKÜŞÜ: -68.2% (1h) — $2.4M → $0.8M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-17T21:22:40.752Z"
     }
   ],
-  "updated_at": "2026-04-17T16:08:45.084Z"
+  "updated_at": "2026-04-18T00:34:26.638334+03:00"
 }

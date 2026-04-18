@@ -78,7 +78,33 @@ export default function Overview() {
         const resAct = await fetch('/api/activity')
         if (resAct.ok) {
           const d = await resAct.json()
-          setEvents(d.activities?.slice(0, 6) || [])
+          const rawActivities = d.activities || []
+          
+          // DeFi alert'lerini aktivite akışına dahil et
+          try {
+            const resDefiAlerts = await fetch('/api/defi/alerts?limit=5&level=CRITICAL')
+            if (resDefiAlerts.ok) {
+              const defiAlerts = await resDefiAlerts.json()
+              const defiActivities = (defiAlerts.alerts || []).map(a => ({
+                type: 'error',
+                agent: 'DeFi APM',
+                action: a.message,
+                when: new Date(a.timestamp).toISOString(),
+                isDefi: true
+              }))
+              
+              // Birleştir ve zamana göre sırala
+              const combined = [...defiActivities, ...rawActivities]
+                .sort((a, b) => new Date(b.when) - new Date(a.when))
+                .slice(0, 6)
+              
+              setEvents(combined)
+            } else {
+              setEvents(rawActivities.slice(0, 6))
+            }
+          } catch {
+            setEvents(rawActivities.slice(0, 6))
+          }
         }
       } catch {}
 
@@ -102,21 +128,24 @@ export default function Overview() {
 
       // DeFi APM özet
       try {
-        const [resHealth, resAlerts, resPools, resPortfolio] = await Promise.all([
+        const [resHealth, resAlerts, resPools, resPortfolio, resHighApy] = await Promise.all([
           fetch('/api/defi/health'),
           fetch('/api/defi/alerts?limit=10'),
           fetch('/api/defi/pools/potential?limit=1'),
           fetch('/api/defi/portfolio?usd=1'),
+          fetch('/api/defi/pools/high-apy?minApy=500&limit=1'),
         ])
         const health = resHealth.ok ? await resHealth.json() : null
         const alertsData = resAlerts.ok ? await resAlerts.json() : null
         const poolsData = resPools.ok ? await resPools.json() : null
         const portfolio = resPortfolio.ok ? await resPortfolio.json() : null
+        const highApy = resHighApy.ok ? await resHighApy.json() : null
         if (health) {
           const alerts = alertsData?.alerts || []
           const criticals = alerts.filter(a => a.level === 'CRITICAL').length
           const warns = alerts.filter(a => a.level === 'WARN').length
           const topPool = poolsData?.pools?.[0] || null
+          const hotPool = highApy?.pools?.[0] || null
           setDefiSummary({
             up: health.status === 'ok',
             lastScanMs: health.lastScanAt ? Date.now() - new Date(health.lastScanAt).getTime() : null,
@@ -124,6 +153,7 @@ export default function Overview() {
             criticals,
             warns,
             topPool,
+            hotPool,
             portfolioUsd: typeof portfolio?.totalBalanceUsd === 'number' ? portfolio.totalBalanceUsd : null,
             portfolioCanRead: portfolio?.canRead === true,
           })
@@ -401,6 +431,26 @@ export default function Overview() {
                   %{defiSummary.topPool.apy?.toFixed(1) ?? '—'}
                 </p>
                 <p className="text-[9px] text-ax-dim">APY</p>
+              </div>
+            </div>
+          )}
+
+          {defiSummary.hotPool && (
+            <div className="mt-2 flex items-center gap-3 px-3 py-2.5 rounded-xl bg-ax-amber/5 border border-ax-amber/20">
+              <AlertTriangle size={13} className="text-ax-amber shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-ax-heading truncate">
+                  {defiSummary.hotPool.symbol}
+                </p>
+                <p className="text-[10px] text-ax-dim truncate">
+                  {defiSummary.hotPool.project} · {defiSummary.hotPool.chain}
+                </p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-sm font-black text-ax-amber font-mono">
+                  %{defiSummary.hotPool.apy?.toFixed(0) ?? '—'}
+                </p>
+                <p className="text-[9px] text-ax-dim">Hot APY</p>
               </div>
             </div>
           )}

@@ -9,6 +9,7 @@ import AutomationView from './components/AutomationView'
 import MemoryView from './components/MemoryView'
 import LogsView from './components/LogsView'
 import DefiView from './components/DefiView'
+import TopPools from './components/TopPools'
 import LoginModal from './components/LoginModal'
 import { getToken } from './services/apiFetch'
 
@@ -20,6 +21,7 @@ const VIEWS = {
   memory:     MemoryView,
   logs:       LogsView,
   defi:       DefiView,
+  toppools:   TopPools,
 }
 
 export default function App() {

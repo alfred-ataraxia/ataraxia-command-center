@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Menu,
   X,
+  Trophy,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { id: 'memory',     label: 'Hafıza',    icon: BrainCircuit },
   { id: 'logs',       label: 'Logs',      icon: ScrollText },
   { id: 'defi',       label: 'DeFi APM',  icon: TrendingUp },
+  { id: 'toppools',   label: 'Top Pools', icon: Trophy },
 ]
 
 function NavItem({ item, active, onClick }) {

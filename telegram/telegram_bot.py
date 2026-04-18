@@ -9,6 +9,7 @@ import subprocess
 import socket
 import json
 import asyncio
+import atexit
 from datetime import datetime
 import requests
 import time
@@ -16,6 +17,9 @@ import glob
 from aiohttp import web
 
 SOCKET_PATH = "/tmp/lattice.sock"
+PID_FILE = os.path.expanduser("~/openclaw/logs/telegram-bot.pid")
+CALLBACK_HOST = os.environ.get("OPENCLAW_TELEGRAM_CALLBACK_HOST", "127.0.0.1")
+CALLBACK_PORT = int(os.environ.get("OPENCLAW_TELEGRAM_CALLBACK_PORT", "8001"))
 
 def send_to_lattice(action, agent="claude", command="", chat_id=None):
     """Orchestrator'a görev gönderir (chat_id ile birlikte)"""
@@ -69,14 +73,42 @@ def log_msg(msg):
     except:
         pass
 
+def _write_pid_file():
+    try:
+        with open(PID_FILE, "w") as f:
+            f.write(str(os.getpid()))
+    except Exception as e:
+        log_msg(f"PID WRITE ERROR: {e}")
+
+def _cleanup_pid_file():
+    try:
+        if os.path.exists(PID_FILE):
+            with open(PID_FILE, "r") as f:
+                existing = (f.read() or "").strip()
+            if existing == str(os.getpid()):
+                os.remove(PID_FILE)
+    except Exception as e:
+        log_msg(f"PID CLEANUP ERROR: {e}")
+
 def send_message(chat_id, text, parse_mode="Markdown"):
     """Send message to Telegram"""
     try:
-        requests.post(f"{API_URL}/sendMessage", json={
+        resp = requests.post(f"{API_URL}/sendMessage", json={
             "chat_id": chat_id,
             "text": text,
             "parse_mode": parse_mode
         }, timeout=10)
+        if not resp.ok:
+            log_msg(f"SEND ERROR HTTP {resp.status_code}: {resp.text[:200]}")
+            # Fallback: Telegram can reject Markdown formatting; retry without parse_mode.
+            if parse_mode:
+                resp2 = requests.post(f"{API_URL}/sendMessage", json={
+                    "chat_id": chat_id,
+                    "text": text
+                }, timeout=10)
+                if not resp2.ok:
+                    log_msg(f"SEND ERROR (fallback) HTTP {resp2.status_code}: {resp2.text[:200]}")
+                    return False
         return True
     except Exception as e:
         log_msg(f"SEND ERROR: {e}")
@@ -286,18 +318,24 @@ async def handle_callback(request):
         return web.Response(text="Error", status=500)
 
 async def main_loop():
-    # Webhook sunucusunu başlat
-    app = web.Application()
-    app.router.add_post('/callback', handle_callback)
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, '127.0.0.1', 8001)
-    await site.start()
+    # Webhook sunucusunu baslat (opsiyonel). Port zaten doluysa bot yine de polling ile calissin.
+    try:
+        app = web.Application()
+        app.router.add_post('/callback', handle_callback)
+        runner = web.AppRunner(app)
+        await runner.setup()
+        site = web.TCPSite(runner, CALLBACK_HOST, CALLBACK_PORT)
+        await site.start()
+        log_msg(f"Callback server listening on {CALLBACK_HOST}:{CALLBACK_PORT}")
+    except OSError as e:
+        log_msg(f"Callback server disabled (bind failed): {e}")
     
     # Mevcut polling döngüsünü asenkron çalıştır
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, poll_updates)
 
 if __name__ == "__main__":
+    _write_pid_file()
+    atexit.register(_cleanup_pid_file)
     log_msg("=== Bot başlatıldı (Webhook Aktif) ===")
     asyncio.run(main_loop())
