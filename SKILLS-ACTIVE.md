@@ -1,68 +1,43 @@
-# SKILLS-ACTIVE.md - Installed & Ready
+# SKILLS-ACTIVE.md — Installed & Ready
 
-**Date:** 2026-03-26 23:17  
-**Status:** ✅ All active
-
----
-
-## Installed Skills (Top 3)
-
-### 1. Architecture-Designer
-**Purpose:** System architecture design, decision matrices, trade-off analysis  
-**Command:** `architecture-designer [problem description]`  
-**Best for:** Daily design sessions, blueprint generation, architecture reviews  
-**Example:** "Design a scalable AI inference layer for SoftTech"
-
-### 2. Decision-Frameworks
-**Purpose:** Multi-criteria decision making, scenario analysis, risk weighting  
-**Command:** `decision-frameworks [decision prompt]`  
-**Best for:** Model selection, vendor evaluation, go/no-go decisions  
-**Example:** "Compare Claude Opus vs Gemini for enterprise AI strategy"
-
-### 3. MBB-Strategist
-**Purpose:** McKinsey/Bain/BCG-style strategic analysis, market positioning  
-**Command:** `mbb-strategist [strategy question]`  
-**Best for:** Executive presentations, competitive positioning, narrative framing  
-**Example:** "How should İş Bankası position AI as competitive advantage?"
+**Son güncelleme:** 2026-04-19
+**Güncelleme:** Architecture-Designer ve MBB-Strategist silindi (2026-04-18 WP-3)
 
 ---
 
-## Next Steps
+## Aktif Skills
 
-**Phase 2 (Install when ready):**
-- Strategy-Advisor (broader strategic context)
-- CTO-Advisor (technical depth + vendor selection)
+### 1. free-ride
+**Amaç:** Serbest görev ve araştırma akışı
+**Dizin:** `skills/free-ride/`
 
-**Daily Workflow:**
-- **09:00:** Decision Frameworks (plan your day's decisions)
-- **10:00-12:00:** Architecture-Designer (design sessions)
-- **14:00:** MBB-Strategist (exec deck prep)
-- **16:00:** Architecture-Designer (review/refine)
+### 2. home-assistant
+**Amaç:** Home Assistant otomasyon ve kontrol entegrasyonu
+**Dizin:** `skills/home-assistant/`
 
----
+### 3. ontology
+**Amaç:** Kavram haritası, bilgi modelleme ve ontoloji üretimi
+**Dizin:** `skills/ontology/`
 
-## Command Reference
+### 4. openclaw-backup
+**Amaç:** OpenClaw runtime tam yedekleme
+**Dizin:** `skills/openclaw-backup/`
+**Kullanım:** WP-1 öncesi backup için çalıştırılır
 
-```bash
-# Quick access
-architecture-designer "Design SoftTech optimization strategy"
-decision-frameworks "Should we migrate to new model?"
-mbb-strategist "Positioning for executive leadership"
-
-# With context
-architecture-designer --context "Current: monolith, Target: microservices" "Design migration"
-mbb-strategist --audience "C-suite" "AI investment justification"
-```
+### 5. wayne-harness
+**Amaç:** Wayne ağı alt-ajan harness (Lucius, Netrunner, Robin)
+**Dizin:** `skills/wayne-harness/`
 
 ---
 
-## Integration with Your Setup
+## Kaldırılan Skills (2026-04-18)
 
-These skills work alongside:
-- **Model Routing:** Uses Sonnet by default (downgrades to Haiku for simple tasks)
-- **Cost Tracking:** Each skill execution logged to costs-[month].csv
-- **Memory:** Context pulled from MEMORY.md (tier system)
+| Skill | Sebep |
+|-------|-------|
+| Architecture-Designer | Kullanılmıyor, WP-3 kapsamında git rm ile silindi |
+| MBB-Strategist | Kullanılmıyor, WP-3 kapsamında git rm ile silindi |
+| Decision-Frameworks | Mevcut değildi, dokümanda halüsinasyondu |
 
 ---
 
-Master Sefa's arsenal is ready. 🦞
+*Yeni skill eklemek için: `skills/<name>/` dizini oluştur, bu dosyaya ekle.*

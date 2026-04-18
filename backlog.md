@@ -22,5 +22,13 @@
 | B-007 | Homepage dashboard ozellestirme | 1 | Bekliyor |
 | B-008 | Pi-hole blocklist guncelleme | 1 | Bekliyor |
 
+## Sprint 01 Carry-over (2026-04-06 → CLOSED)
+| # | Görev | Durum |
+|---|-------|-------|
+| S1-1 | Session Reset Automation | ⏳ Bekliyor |
+| S1-2 | Cron Job Aktivasyonu (Günlük Güvenlik, Tech Radar, Weekly Summary) | ⏳ Bekliyor |
+| S1-3 | HA Otomasyon KPI Takibi | ⏳ Bekliyor |
+
 ---
-*Yeni oge eklemek icin tabloya satir ekle, puanla, durumu "Bekliyor" yap.*
+*Yeni öge eklemek için tabloya satır ekle, puanla, durumu "Bekliyor" yap.*
+*BACKLOG.md (büyük harf) 2026-04-19 bu dosyayla birleştirildi, orijinal silindi.*

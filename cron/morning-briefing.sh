@@ -6,7 +6,9 @@
 WORKSPACE="/home/sefa/.openclaw/workspace"
 LOG="${WORKSPACE}/cron/morning-briefing.log"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-OPENCLAW=~/.npm-global/bin/openclaw
+
+BOT_TOKEN=$(grep '^OPENCLAW_TELEGRAM_BOT_TOKEN=' ~/.openclaw/.env | cut -d= -f2-)
+CHAT_ID=963702150
 
 echo "[${TIMESTAMP}] Starting morning briefing..." >> "$LOG"
 
@@ -35,9 +37,23 @@ BRIEFING=$(echo -e "$BRIEFING" | head -c 1200)
 
 if [ -n "$BRIEFING" ]; then
   HEADER="☀️ Morning Briefing — $(date '+%A, %d %B')\n\n"
-  MSG="${HEADER}${BRIEFING}"
-  $OPENCLAW agent --channel telegram --reply-to "telegram:963702150" --deliver --message "$(echo -e "$MSG")" >> "$LOG" 2>&1
-  echo "[${TIMESTAMP}] Briefing sent." >> "$LOG"
+  FINAL_MSG=$(echo -e "${HEADER}${BRIEFING}")
+
+  PAYLOAD=$(jq -n \
+    --arg chat_id "$CHAT_ID" \
+    --arg text "$FINAL_MSG" \
+    '{chat_id: ($chat_id | tonumber), text: $text}')
+
+  HTTP_STATUS=$(curl -s -o /tmp/mb-response.json -w "%{http_code}" \
+    -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+    -H "Content-Type: application/json" \
+    -d "$PAYLOAD")
+
+  if [ "$HTTP_STATUS" = "200" ]; then
+    echo "[${TIMESTAMP}] Briefing sent (HTTP $HTTP_STATUS)." >> "$LOG"
+  else
+    echo "[${TIMESTAMP}] Telegram error HTTP $HTTP_STATUS: $(cat /tmp/mb-response.json)" >> "$LOG"
+  fi
 else
-  echo "[${TIMESTAMP}] No briefing content." >> "$LOG"
+  echo "[${TIMESTAMP}] No briefing content, skipping." >> "$LOG"
 fi

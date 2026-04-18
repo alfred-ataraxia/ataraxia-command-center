@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'ataraxia-dashboard',
       script: './server.cjs',
-      cwd: '/home/sefa/.openclaw/workspace/dashboard',
+      cwd: '/home/sefa/alfred-hub/command-center/dashboard',
       interpreter: 'node',
       instances: 1,
       autorestart: true,
@@ -23,7 +23,7 @@ module.exports = {
     {
       name: 'ataraxia-stats',
       script: './stats-server.cjs',
-      cwd: '/home/sefa/.openclaw/workspace/dashboard',
+      cwd: '/home/sefa/alfred-hub/command-center/dashboard',
       interpreter: 'node',
       instances: 1,
       autorestart: true,

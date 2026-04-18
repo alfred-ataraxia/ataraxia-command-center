@@ -1,34 +1,56 @@
-# CRON.md - Scheduled Tasks
+# CRON.md — Scheduled Tasks
+
+**Son güncelleme:** 2026-04-19
+**Scheduler:** OpenClaw cron runner (`~/.openclaw/cron/jobs.json`)
+**Not:** `ataraxia-task-runner.timer` (systemd) 2026-04-19 disable edildi — OpenClaw tek scheduler.
+
+---
 
 ## Morning Briefing
-- **Time:** 07:00 Istanbul (GMT+3)
+- **Zaman:** 07:00 Istanbul (GMT+3)
 - **Script:** `cron/morning-briefing.sh`
-- **Delivery:** Telegram
-- **Content:**
-  1. Calendar events (today)
-  2. Urgent unread messages
-  3. Weather for Istanbul
-  4. Top 3 priorities (from yesterday's notes)
-- **Limit:** <200 words, skip empty sections
-- **Status:** ✅ Active
+- **Delivery:** Telegram — `curl` + `jq` ile direkt API (2026-04-19 güncellendi)
+- **İçerik:**
+  1. Takvim etkinlikleri (bugün)
+  2. Acil okunmamış mesajlar
+  3. İstanbul hava durumu
+  4. Dünkü notlardan top 3 öncelik
+- **Limit:** <1200 karakter, boş bölümler atlanır
+- **Durum:** ✅ Aktif
+
+## Hourly Report
+- **Zaman:** Her saat :17'de (17 * * * *)
+- **Script:** `cron/hourly-report.sh`
+- **Delivery:** Telegram — `python3 urllib` ile (2026-04-19 yeniden yazıldı)
+- **İçerik:**
+  - CPU / RAM / Disk
+  - Uptime
+  - Dashboard (4173) sağlık
+  - Gateway sağlık
+  - Son morning-briefing zamanı
+  - Cron empty-run oranı (son 1 saat)
+- **Durum:** ✅ Aktif
 
 ## Weekly Backup
-- **Time:** Sunday 02:00 Istanbul (GMT+3)
+- **Zaman:** Pazar 02:00 Istanbul (GMT+3)
 - **Script:** `cron/weekly-backup.sh`
-- **Output:** `/home/sefa/.openclaw/backups/`
-- **Retention:** Last 8 weeks
-- **Status:** ✅ Active
+- **Çıktı:** `/home/sefa/.openclaw/backups/`
+- **Saklama:** Son 8 hafta
+- **Durum:** ✅ Aktif
 
 ## Build Me Something Wonderful
-- **Time:** 23:00 Istanbul (GMT+3) — every night
+- **Zaman:** 23:00 Istanbul (GMT+3) — her gece
 - **Script:** `cron/wonderful.sh`
-- **Output:** `~/wonderful/[date]-[name]`
-- **Content:** Rotates through:
-  - Research summaries
-  - Automation scripts
-  - Strategic frameworks
-  - Curated resources
-  - Creative solutions
-- **Telegram Alert:** One-line teaser at 23:00+
-- **Quality Rule:** No repetition, one excellent thing > five mediocre
-- **Status:** ✅ Active
+- **Çıktı:** `~/wonderful/[date]-[name]`
+- **İçerik:** Araştırma özetleri, otomasyon scriptleri, stratejik çerçeveler, seçilmiş kaynaklar
+- **Telegram:** 23:00'da tek satır teaser
+- **Kural:** Tekrar yok, bir mükemmel şey > beş vasat şey
+- **Durum:** ✅ Aktif
+
+---
+
+## Devre Dışı Bırakılanlar
+
+| Script/Timer | Sebep | Tarih |
+|-------------|-------|-------|
+| `ataraxia-task-runner.timer` (systemd) | OpenClaw cron ile çakışıyordu, broken | 2026-04-19 |

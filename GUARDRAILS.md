@@ -1,6 +1,6 @@
 # GUARDRAILS.md - Budget & Rate Limit Policy
 
-**Status:** ACTIVE | **Updated:** 2026-03-26 23:29
+**Status:** ACTIVE | **Updated:** 2026-04-19 (Claude — budget policy kanonik kaynak olarak güncellendi, WP-3)
 
 ---
 
