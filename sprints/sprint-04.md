@@ -23,12 +23,12 @@
 | S4-02 | OpenClaw runtime token rotation (auth-profiles, models, exec-approvals, paired) | 3 | ⏳ Bekliyor | Koordineli | Secret Rotation Runbook'a bak |
 | S4-03 | `gateway.controlUi.allowInsecureAuth=true` policy kararı | 1 | ⏳ Bekliyor | Sefa | Güvenlik riski; LAN-only ise kabul edilebilir |
 | S4-04 | TASKS.json DeFi alarm analizi | 2 | ✅ Done | Claude | 45 DEFI-* → archived (2026-04-19); Alfred pending: 0 |
-| S4-05 | Memory doc overlap konsolidasyonu | 2 | ⏳ Bekliyor | Gemini | Tek kaynak için duplikasyon temizliği |
+| S4-05 | Memory doc overlap konsolidasyonu | 2 | ✅ Done | Claude | 10/20/31/40 memory güncellendi; stale paths, auth, model, cron düzeltildi |
 | S4-06 | Session retention cron aktifleştirme | 1 | ✅ Done | Claude | OpenClaw jobs.json'a eklendi (04:00 her gün) |
 | S4-07 | Empty-run sessiz çıkış + kök neden analizi | 3 | ✅ Done | Claude | NO_TASK → sessiz; kök neden: Alfred pending task yok (beklenen) |
 | S4-08 | GUARDRAILS $2 vs $5 budget çelişkisi çözümü | 1 | ⏳ Bekliyor | Sefa | Kanonik değer seçilip iki dosyada sync |
 | S4-09 | Backlog temizliği ve güncelleme | 2 | ✅ Done | Claude | B-001/002/006 arşivlendi, B-009..015 yeni madde eklendi |
-| S4-10 | WireGuard belge tutarlılığı | 1 | ⏳ Bekliyor | MiniMax | |
+| S4-10 | WireGuard belge tutarlılığı | 1 | ✅ Done | Claude | 20-system-landscape.md'e WireGuard (51820/udp, docker) eklendi |
 
 **Toplam:** 18 puan
 **Kapasite:** ~20 puan (5 gün × 4 puan/gün)
@@ -45,6 +45,8 @@
 | 2026-04-19 | backlog.md güncellendi (B-009..015 yeni maddeler) | Claude |
 | 2026-04-19 | session-retention cron OpenClaw'a eklendi (04:00) | Claude |
 | 2026-04-19 | 40-active-work.md senkronize edildi (gerçek sistem durumu) | Claude |
+| 2026-04-19 | Memory doc overlap: 10/20/31 güncellendi (stale paths, auth, model) | Claude |
+| 2026-04-19 | WireGuard: 20-system-landscape.md'e eklendi (docker, 51820/udp) | Claude |
 | 2026-04-19 | dashboard/.env git history temizliği (filter-repo) | Claude |
 | 2026-04-19 | HA_TOKEN + Dashboard token rotation | Claude |
 | 2026-04-19 | Dashboard auth: LAN-only, DASHBOARD_TOKEN kaldırıldı | Claude |
