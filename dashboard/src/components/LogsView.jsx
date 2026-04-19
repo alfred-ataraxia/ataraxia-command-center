@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { ScrollText, RefreshCw, FileText, Radio, PauseCircle, PlayCircle, Trash2 } from 'lucide-react'
-import apiFetch, { getToken } from '../services/apiFetch'
+import apiFetch from '../services/apiFetch'
 import { classifyLine, formatTime, formatSize } from '../utils'
 
 export default function LogsView() {
@@ -44,9 +44,7 @@ export default function LogsView() {
     setLines([])
     setConnected(false)
 
-    const token = getToken()
-    const tokenParam = token ? `&token=${encodeURIComponent(token)}` : ''
-    const es = new EventSource(`/api/logs/stream?file=${encodeURIComponent(selected)}${tokenParam}`)
+    const es = new EventSource(`/api/logs/stream?file=${encodeURIComponent(selected)}`)
     esRef.current = es
 
     es.onopen = () => setConnected(true)

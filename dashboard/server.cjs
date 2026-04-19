@@ -829,6 +829,7 @@ function handleRequest(req, res) {
     '/api/activity', '/api/tasks',
     '/api/tokens', '/api/memory',
     '/api/automation',
+    '/api/sprint',
     '/api/alerts', '/api/notifications',
     '/api/orchestration/cost', '/api/orchestration/activity', '/api/orchestration/distribute',
     '/api/git/repos', '/api/ai-status',
@@ -890,6 +891,97 @@ function handleRequest(req, res) {
     } catch (err) {
       res.writeHead(500, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ active: 'Bilinmiyor', error: err.message }))
+    }
+    return
+  }
+
+  // API: sprint status — `../sprints/sprint-XX.md` parse eder
+  if (url === '/api/sprint' && req.method === 'GET') {
+    try {
+      const sprintsDir = path.join(__dirname, '..', 'sprints')
+      const files = (fs.existsSync(sprintsDir) ? fs.readdirSync(sprintsDir) : [])
+        .filter(name => /^sprint-\d+\.md$/.test(name))
+      const pickLatest = () => {
+        let best = null
+        let bestNum = -1
+        for (const name of files) {
+          const m = name.match(/^sprint-(\d+)\.md$/)
+          if (!m) continue
+          const n = Number(m[1])
+          if (Number.isFinite(n) && n > bestNum) {
+            bestNum = n
+            best = name
+          }
+        }
+        return best
+      }
+
+      const sprintFile = pickLatest()
+      if (!sprintFile) {
+        res.writeHead(404, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: 'Sprint dosyası bulunamadı' }))
+        return
+      }
+
+      const content = fs.readFileSync(path.join(sprintsDir, sprintFile), 'utf8')
+      const lines = content.split('\n')
+
+      const titleLine = lines.find(l => l.startsWith('# ')) || ''
+      const sprintName = titleLine.replace(/^#\s+/, '').trim() || sprintFile.replace(/\.md$/, '')
+
+      let startDate = null
+      let endDate = null
+      const dateLine = lines.find(l => l.includes('**Tarih:**')) || ''
+      const dateMatch = dateLine.match(/\*\*Tarih:\*\*\s*(\d{4}-\d{2}-\d{2}).*?(?:→|->)\s*(\d{4}-\d{2}-\d{2})/)
+      if (dateMatch) {
+        startDate = dateMatch[1]
+        endDate = dateMatch[2]
+      }
+
+      const items = []
+      let inBacklog = false
+      for (const line of lines) {
+        if (line.startsWith('## Sprint Backlog')) { inBacklog = true; continue }
+        if (inBacklog && line.startsWith('## ')) break
+        if (!inBacklog) continue
+        if (!line.startsWith('|')) continue
+        if (line.includes('| # | Görev |')) continue
+        if (line.match(/^\|\s*-+\s*\|/)) continue
+
+        const cols = line.split('|').map(x => x.trim()).filter(Boolean)
+        if (cols.length < 4) continue
+        const [id, task, points, status] = cols
+        if (!/^S\d+-\d+/.test(id)) continue
+
+        let state = 'pending'
+        if (status.includes('✅') || /done/i.test(status)) state = 'done'
+        else if (status.includes('⏸') || /ertelendi/i.test(status)) state = 'deferred'
+        else if (status.includes('⏳') || /bekliyor/i.test(status)) state = 'pending'
+
+        items.push({ id, task, points, status, state })
+      }
+
+      const total = items.length
+      const done = items.filter(i => i.state === 'done').length
+      const deferred = items.filter(i => i.state === 'deferred').length
+      const pending = items.filter(i => i.state === 'pending').length
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({
+        sprintFile,
+        sprintName,
+        startDate,
+        endDate,
+        total,
+        done,
+        deferred,
+        pending,
+        items,
+        updatedAt: new Date().toISOString(),
+      }))
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: 'Sprint parse hatası', detail: err.message }))
     }
     return
   }

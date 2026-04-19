@@ -416,7 +416,6 @@ export default function DefiView() {
   const [portfolio, setPortfolio] = useState(null)
   const [alerts, setAlerts] = useState([])
   const [stablecoins, setStablecoins] = useState([])
-  const [health, setHealth] = useState(null)
   const [loading, setLoading] = useState(true)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [dataTimestamp, setDataTimestamp] = useState(null)
@@ -425,6 +424,7 @@ export default function DefiView() {
 
   const fetchAll = useCallback(async () => {
     try {
+      let nextDataTimestamp = null
       const [healthRes, poolsRes, highApyRes, potentialRes, alphaCandidatesRes, alphaEventsRes, autopilotRes, actionsRes, portfolioRes, alertsRes, stablesRes] = await Promise.allSettled([
         apiFetch(`${DEFI_API}/health`),
         apiFetch(`${DEFI_API}/pools/top?limit=15`),
@@ -440,7 +440,8 @@ export default function DefiView() {
       ])
 
       if (healthRes.status === 'fulfilled' && healthRes.value.ok) {
-        setHealth(await healthRes.value.json())
+        // health JSON'u şu an UI'da kullanılmıyor; erişimi doğrulamak yeterli
+        await healthRes.value.json().catch(() => null)
         setError(null)
       } else {
         setError('DeFi APM servisi erişilemiyor (port 4180)')
@@ -449,23 +450,19 @@ export default function DefiView() {
       if (poolsRes.status === 'fulfilled' && poolsRes.value.ok) {
         const d = await poolsRes.value.json()
         setPools(d.pools || [])
-        setDataTimestamp(d.timestamp || null)
+        nextDataTimestamp = d.timestamp || null
       }
 
       if (highApyRes.status === 'fulfilled' && highApyRes.value.ok) {
         const d = await highApyRes.value.json()
         setHighApyPools(d.pools || [])
-        if (!dataTimestamp) {
-          setDataTimestamp(d.timestamp || null)
-        }
+        if (!nextDataTimestamp) nextDataTimestamp = d.timestamp || null
       }
 
       if (potentialRes.status === 'fulfilled' && potentialRes.value.ok) {
         const d = await potentialRes.value.json()
         setPotentialPools(d.pools || [])
-        if (!dataTimestamp) {
-          setDataTimestamp(d.timestamp || null)
-        }
+        if (!nextDataTimestamp) nextDataTimestamp = d.timestamp || null
       }
 
       if (alphaCandidatesRes.status === 'fulfilled' && alphaCandidatesRes.value.ok) {
@@ -512,6 +509,7 @@ export default function DefiView() {
         setStableTimestamp(d.timestamp || null)
       }
 
+      setDataTimestamp(nextDataTimestamp)
       setLastUpdated(new Date())
     } catch (err) {
       setError('Veri alınamadı: ' + err.message)
@@ -529,7 +527,9 @@ export default function DefiView() {
       if (!res.ok) return
       const d = await res.json()
       setActionEvents(prev => ({ ...prev, [id]: Array.isArray(d.events) ? d.events : [] }))
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }, [actionEvents])
 
   const handleToggleEvents = async (actionId) => {

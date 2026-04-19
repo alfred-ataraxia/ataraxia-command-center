@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react'
 import { Sun, Moon } from 'lucide-react'
 
 export default function ThemeToggle() {
+  // Otomatik gece modu: 23:00 - 07:00 arası karanlık
+  const autoDarkMode = () => {
+    const hour = new Date().getHours()
+    return hour >= 23 || hour < 7
+  }
+
   // false = light (gündüz), true = dark (gece)
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('ax-theme')
@@ -9,12 +15,6 @@ export default function ThemeToggle() {
     // Varsayılan: sistem saati ile otomatik
     return autoDarkMode()
   })
-
-  // Otomatik gece modu: 23:00 - 07:00 arası karanlık
-  function autoDarkMode() {
-    const hour = new Date().getHours()
-    return hour >= 23 || hour < 7
-  }
 
   // Her dakika kontrol et
   useEffect(() => {
@@ -37,11 +37,9 @@ export default function ThemeToggle() {
     const saved = localStorage.getItem('ax-theme')
     // force-dark veya force-light manuel seçim
     if (saved === 'force-dark' || saved === 'force-light') {
-      setIsDark(saved === 'force-dark')
-      document.documentElement.setAttribute('data-theme', saved === 'force-dark' ? 'dark' : 'light')
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
     } else {
       // Otomatik mod
-      const shouldBeDark = autoDarkMode()
       document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
       localStorage.setItem('ax-theme', isDark ? 'dark' : 'light')
     }

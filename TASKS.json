@@ -1454,6 +1454,15 @@
       "category": "DeFi Risk",
       "status": "pending",
       "created": "2026-04-19T14:15:22.879Z"
+    },
+    {
+      "id": "DEFI-090",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/eUSD (Re7 Labs, eUSD) (base) TVL ÇÖKÜŞÜ: -30.7% (1h) — $0.2M → $0.1M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-19T17:45:22.137Z"
     }
   ]
 }

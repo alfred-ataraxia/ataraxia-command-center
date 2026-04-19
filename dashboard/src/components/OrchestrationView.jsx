@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import { Bot, ArrowRight, RefreshCw, CheckCircle2, Play, X } from 'lucide-react'
 import apiFetch from '../services/apiFetch'
 
-const AGENTS = [
-  { id: 'Alfred',      name: 'Alfred',      role: 'Orkestratör',       model: 'minimax-m2.7 (OpenClaw)', emoji: '🦊' },
-  { id: 'Claude',      name: 'Claude',      role: 'Kodlama & Analiz',  model: 'claude-sonnet-4-6',       emoji: '🤖' },
-  { id: 'Gemini',      name: 'Gemini',      role: 'Araştırma & Modal', model: 'gemini-2.5-pro',          emoji: '✨' },
-  { id: 'Master Sefa', name: 'Master Sefa', role: 'Patron',            model: '—',                       emoji: '👤' },
-]
+const AGENT_EMOJI = {
+  Alfred: '🦊',
+  Claude: '🤖',
+  Gemini: '✨',
+  Robin: '🕊️',
+  'Master Sefa': '👤',
+}
 
 const STATUS_STYLE = {
   active:  { bg: 'bg-green-500/10',  border: 'border-green-500/30',  text: 'text-green-400',  dot: 'bg-green-400',  label: 'Aktif'  },
@@ -15,8 +16,8 @@ const STATUS_STYLE = {
   offline: { bg: 'bg-red-500/10',    border: 'border-red-500/30',    text: 'text-red-400',    dot: 'bg-red-500',    label: 'Kapalı' },
 }
 
-function AgentCard({ agent, status, tasks, onAssign }) {
-  const s = STATUS_STYLE[status?.status || 'idle']
+function AgentCard({ agent, tasks, onAssign }) {
+  const s = STATUS_STYLE[agent.status || 'idle']
   const myTasks = tasks.filter(t => t.assignee === agent.id)
   const active  = myTasks.filter(t => t.status === 'in_progress')
   const pending = myTasks.filter(t => t.status === 'pending')
@@ -33,7 +34,7 @@ function AgentCard({ agent, status, tasks, onAssign }) {
           </div>
         </div>
         <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-xs font-medium ${s.text} ${s.bg} ${s.border}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${s.dot} ${status?.status === 'active' ? 'animate-pulse' : ''}`} />
+          <span className={`w-1.5 h-1.5 rounded-full ${s.dot} ${agent.status === 'active' ? 'animate-pulse' : ''}`} />
           {s.label}
         </span>
       </div>
@@ -126,7 +127,7 @@ function AssignModal({ tasks, agents, preselectedAgent, onClose, onAssign }) {
 
 export default function OrchestrationView() {
   const [tasks, setTasks]           = useState([])
-  const [agentStatuses, setStatuses] = useState({})
+  const [agents, setAgents]         = useState([])
   const [showModal, setShowModal]    = useState(false)
   const [preAgent, setPreAgent]      = useState(null)
   const [loading, setLoading]        = useState(true)
@@ -137,15 +138,24 @@ export default function OrchestrationView() {
       if (tRes.ok) { const d = await tRes.json(); setTasks(d.tasks || []) }
       if (aRes.ok) {
         const d = await aRes.json()
-        const map = {}
-        for (const a of d.agents || []) map[a.id] = { status: a.status, uptime: a.uptime }
-        setStatuses(map)
+        const baseAgents = (d.agents || []).map(a => ({
+          ...a,
+          emoji: AGENT_EMOJI[a.id] || '🤖',
+        }))
+        const hasMasterSefa = baseAgents.some(a => a.id === 'Master Sefa')
+        const finalAgents = hasMasterSefa
+          ? baseAgents
+          : [...baseAgents, { id: 'Master Sefa', name: 'Master Sefa', role: 'Patron', model: '—', status: 'idle', emoji: AGENT_EMOJI['Master Sefa'] }]
+        setAgents(finalAgents)
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
     setLoading(false)
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData()
     const t = setInterval(fetchData, 30_000)
     return () => clearInterval(t)
@@ -158,7 +168,9 @@ export default function OrchestrationView() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ assignee: agentId }),
       })
-    } catch {}
+    } catch {
+      /* ignore */
+    }
     setShowModal(false)
     fetchData()
   }
@@ -192,8 +204,8 @@ export default function OrchestrationView() {
 
       {/* Agent grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {AGENTS.map(a => (
-          <AgentCard key={a.id} agent={a} status={agentStatuses[a.id]}
+        {agents.map(a => (
+          <AgentCard key={a.id} agent={a}
             tasks={activeTasks}
             onAssign={id => { setPreAgent(id); setShowModal(true) }} />
         ))}
@@ -212,7 +224,7 @@ export default function OrchestrationView() {
       </div>
 
       {showModal && (
-        <AssignModal tasks={activeTasks} agents={AGENTS} preselectedAgent={preAgent}
+        <AssignModal tasks={activeTasks} agents={agents} preselectedAgent={preAgent}
           onClose={() => setShowModal(false)} onAssign={handleAssign} />
       )}
     </div>

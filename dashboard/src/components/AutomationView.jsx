@@ -1,14 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { Timer, ScrollText, RefreshCw, Clock, CheckCircle2, Circle, AlertCircle, ChevronRight, Bot, WifiOff, Zap } from 'lucide-react'
+import { Timer, ScrollText, RefreshCw, Clock, ChevronRight, Bot, WifiOff } from 'lucide-react'
 import apiFetch from '../services/apiFetch'
 import { classifyLine } from '../utils'
-
-function statusIcon(status) {
-  if (status === 'done') return <CheckCircle2 size={13} className="text-ax-green shrink-0" />
-  if (status === 'in_progress') return <Zap size={13} className="text-ax-amber shrink-0 animate-pulse" />
-  if (status === 'error') return <AlertCircle size={13} className="text-ax-red shrink-0" />
-  return <Circle size={13} className="text-ax-dim shrink-0" />
-}
 
 function Countdown({ targetTime }) {
   const [remaining, setRemaining] = useState('')

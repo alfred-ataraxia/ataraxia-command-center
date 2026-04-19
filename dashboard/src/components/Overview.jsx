@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react'
 import { Cpu, MemoryStick, Clock, GitBranch, RefreshCw, Server, CheckCircle2, XCircle, Zap, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react'
 import { getSystemStats } from '../services/haService'
 import apiFetch from '../services/apiFetch'
+import SprintStatus from './SprintStatus'
 import { timeAgo } from '../utils'
 
 function StatBar({ label, value, warnThreshold = 80, icon: Icon }) {
   const isWarn = value >= warnThreshold
+  const IconComponent = Icon
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-ax-surface border border-ax-border">
       <div className={`p-2 rounded-lg ${isWarn ? 'bg-ax-red/10 text-ax-red' : 'bg-ax-accent/10 text-ax-accent'}`}>
-        <Icon size={16} />
+        <IconComponent size={16} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-center mb-1">
@@ -29,7 +31,7 @@ function StatBar({ label, value, warnThreshold = 80, icon: Icon }) {
 
 export default function Overview() {
   const [stats, setStats] = useState(null)
-  const [activeAI, setActiveAI] = useState({ name: 'Alfred', model: 'MiniMax-M2.7', status: 'active', openclawUp: null })
+  const [activeAI, setActiveAI] = useState({ name: 'Alfred', model: '—', status: 'idle', openclawUp: null })
   const [events, setEvents] = useState([])
   const [cronCount, setCronCount] = useState(null)
   const [now, setNow] = useState(new Date())
@@ -38,6 +40,7 @@ export default function Overview() {
   const [restarting, setRestarting] = useState(null)
   const [loading, setLoading] = useState(true)
   const [defiSummary, setDefiSummary] = useState(null)
+  const [sprint, setSprint] = useState(null)
 
   useEffect(() => {
     const tick = setInterval(() => setNow(new Date()), 30_000)
@@ -49,18 +52,33 @@ export default function Overview() {
       const s = await getSystemStats()
       setStats(s)
 
+      // Alfred model (tek kaynak: /api/agents)
+      let alfredModel = '—'
+      try {
+        const resAgents = await fetch('/api/agents')
+        if (resAgents.ok) {
+          const d = await resAgents.json()
+          const a = (d.agents || []).find(x => x.id === 'Alfred')
+          if (a?.model) alfredModel = a.model
+        }
+      } catch {
+        /* ignore */
+      }
+
       try {
         const resAI = await fetch('/api/ai-status')
         if (resAI.ok) {
           const d = await resAI.json()
           setActiveAI({
             name: d.openclawStatus === 'up' ? 'Alfred (OpenClaw)' : (d.active !== 'Yok' ? d.active : 'Alfred'),
-            model: d.openclawStatus === 'up' ? 'MiniMax-M2.7' : '—',
+            model: d.openclawStatus === 'up' ? alfredModel : '—',
             status: d.openclawStatus === 'up' ? 'active' : 'idle',
             openclawUp: d.openclawStatus === 'up',
           })
         }
-      } catch {}
+      } catch {
+        /* ignore */
+      }
 
       // Cron sayacı — OpenClaw jobs.json'dan al
       try {
@@ -71,7 +89,9 @@ export default function Overview() {
           const sysCrons = (d.cronSchedules || []).length
           setCronCount(ocJobs + sysCrons)
         }
-      } catch {}
+      } catch {
+        /* ignore */
+      }
 
       // Son 5 aktivite
       try {
@@ -79,34 +99,11 @@ export default function Overview() {
         if (resAct.ok) {
           const d = await resAct.json()
           const rawActivities = d.activities || []
-          
-          // DeFi alert'lerini aktivite akışına dahil et
-          try {
-            const resDefiAlerts = await fetch('/api/defi/alerts?limit=5&level=CRITICAL')
-            if (resDefiAlerts.ok) {
-              const defiAlerts = await resDefiAlerts.json()
-              const defiActivities = (defiAlerts.alerts || []).map(a => ({
-                type: 'error',
-                agent: 'DeFi APM',
-                action: a.message,
-                when: new Date(a.timestamp).toISOString(),
-                isDefi: true
-              }))
-              
-              // Birleştir ve zamana göre sırala
-              const combined = [...defiActivities, ...rawActivities]
-                .sort((a, b) => new Date(b.when) - new Date(a.when))
-                .slice(0, 6)
-              
-              setEvents(combined)
-            } else {
-              setEvents(rawActivities.slice(0, 6))
-            }
-          } catch {
-            setEvents(rawActivities.slice(0, 6))
-          }
+          setEvents(rawActivities.slice(0, 6))
         }
-      } catch {}
+      } catch {
+        /* ignore */
+      }
 
       // Git repos
       try {
@@ -115,7 +112,20 @@ export default function Overview() {
           const d = await resGit.json()
           setGitRepos(d.repos || [])
         }
-      } catch {}
+      } catch {
+        /* ignore */
+      }
+
+      // Sprint durumu
+      try {
+        const resSprint = await fetch('/api/sprint')
+        if (resSprint.ok) {
+          const d = await resSprint.json()
+          setSprint(d)
+        }
+      } catch {
+        /* ignore */
+      }
 
       // Servisler
       try {
@@ -124,7 +134,9 @@ export default function Overview() {
           const d = await resSvc.json()
           setServices(d.services || [])
         }
-      } catch {}
+      } catch {
+        /* ignore */
+      }
 
       // DeFi APM özet
       try {
@@ -144,6 +156,9 @@ export default function Overview() {
           const alerts = alertsData?.alerts || []
           const criticals = alerts.filter(a => a.level === 'CRITICAL').length
           const warns = alerts.filter(a => a.level === 'WARN').length
+          const criticalAlerts = alerts
+            .filter(a => a.level === 'CRITICAL')
+            .slice(0, 3)
           const topPool = poolsData?.pools?.[0] || null
           const hotPool = highApy?.pools?.[0] || null
           setDefiSummary({
@@ -152,13 +167,16 @@ export default function Overview() {
             poolCount: health.poolCount ?? null,
             criticals,
             warns,
+            criticalAlerts,
             topPool,
             hotPool,
             portfolioUsd: typeof portfolio?.totalBalanceUsd === 'number' ? portfolio.totalBalanceUsd : null,
             portfolioCanRead: portfolio?.canRead === true,
           })
         }
-      } catch {}
+      } catch {
+        /* ignore */
+      }
 
       setLoading(false)
     } catch (err) {
@@ -259,6 +277,9 @@ export default function Overview() {
           )}
         </div>
       </div>
+
+      {/* 1.5 SPRINT DURUMU */}
+      {sprint && <SprintStatus sprint={sprint} />}
 
       {/* 2. GÖREV AKTİVİTESİ */}
       <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
@@ -451,6 +472,20 @@ export default function Overview() {
                   %{defiSummary.hotPool.apy?.toFixed(0) ?? '—'}
                 </p>
                 <p className="text-[9px] text-ax-dim">Hot APY</p>
+              </div>
+            </div>
+          )}
+
+          {defiSummary.criticalAlerts?.length > 0 && (
+            <div className="mt-3 rounded-xl bg-ax-red/5 border border-ax-red/20 p-3">
+              <p className="text-[10px] text-ax-red font-bold tracking-wide mb-2">KRİTİK UYARILAR</p>
+              <div className="space-y-2">
+                {defiSummary.criticalAlerts.map((a, idx) => (
+                  <div key={idx} className="flex items-start justify-between gap-3">
+                    <p className="text-xs text-ax-text line-clamp-2">{a.message}</p>
+                    <span className="text-[10px] text-ax-dim whitespace-nowrap">{timeAgo(a.timestamp)}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
