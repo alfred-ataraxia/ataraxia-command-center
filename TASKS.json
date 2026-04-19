@@ -1452,6 +1452,9 @@
       "description": "beefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -71.3% (1h) — $2.8M → $0.8M\nbeefy/msETH-WETH sLP (base) TVL ÇÖKÜŞÜ: -56.4% (1h) — $1.8M → $0.8M\nbeefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -71.4% (1h) — $1.4M → $0.4M",
       "auto": false,
       "category": "DeFi Risk",
+      "priority": "high",
+      "assignee": "Master Sefa",
+      "tags": ["defi", "alert"],
       "status": "pending",
       "created": "2026-04-19T14:15:22.879Z"
     },
@@ -1461,6 +1464,9 @@
       "description": "beefy/eUSD (Re7 Labs, eUSD) (base) TVL ÇÖKÜŞÜ: -30.7% (1h) — $0.2M → $0.1M",
       "auto": false,
       "category": "DeFi Risk",
+      "priority": "high",
+      "assignee": "Master Sefa",
+      "tags": ["defi", "alert"],
       "status": "pending",
       "created": "2026-04-19T17:45:22.137Z"
     }
