@@ -1,34 +1,50 @@
 # Product Backlog — ataraxia
 
-**Son guncelleme:** 2026-04-09
-
-## Oncelik: Yuksek
-| # | Oge | Puan | Durum |
-|---|-----|------|-------|
-| B-001 | OpenClaw temiz kurulum (Docker, Telegram, gateway) | 5 | Sprint 1'de |
-| B-002 | Telegram bot entegrasyonu dogrulama | 3 | Sprint 1'de |
-
-## Oncelik: Orta
-| # | Oge | Puan | Durum |
-|---|-----|------|-------|
-| B-003 | Go workspace inceleme ve temizlik | 2 | Bekliyor |
-| B-004 | Home Assistant otomasyon review | 3 | Bekliyor |
-| B-005 | WireGuard yapilandirma optimizasyonu | 2 | Bekliyor |
-| B-006 | Sistem yedekleme otomasyonu (cron) | 3 | Bekliyor |
-
-## Oncelik: Dusuk
-| # | Oge | Puan | Durum |
-|---|-----|------|-------|
-| B-007 | Homepage dashboard ozellestirme | 1 | Bekliyor |
-| B-008 | Pi-hole blocklist guncelleme | 1 | Bekliyor |
-
-## Sprint 01 Carry-over (2026-04-06 → CLOSED)
-| # | Görev | Durum |
-|---|-------|-------|
-| S1-1 | Session Reset Automation | ⏳ Bekliyor |
-| S1-2 | Cron Job Aktivasyonu (Günlük Güvenlik, Tech Radar, Weekly Summary) | ⏳ Bekliyor |
-| S1-3 | HA Otomasyon KPI Takibi | ⏳ Bekliyor |
+**Son güncelleme:** 2026-04-19 · Claude Sonnet 4.6
 
 ---
-*Yeni öge eklemek için tabloya satır ekle, puanla, durumu "Bekliyor" yap.*
-*BACKLOG.md (büyük harf) 2026-04-19 bu dosyayla birleştirildi, orijinal silindi.*
+
+## Yüksek Öncelik
+
+| # | Öge | Puan | Durum |
+|---|-----|------|-------|
+| B-009 | Telegram bot token rotate (BotFather) | 2 | ⏳ Bekliyor — Sefa yapacak |
+| B-010 | OpenClaw runtime token rotation (OAuth, models, devices) | 3 | ⏳ Bekliyor — koordineli |
+| B-011 | `gateway.controlUi.allowInsecureAuth=true` policy kararı | 1 | ⏳ Bekliyor — Sefa kararı |
+| B-012 | Budget çelişkisi ($2/gün vs $5/gün) kanonik değer seçimi | 1 | ⏳ Bekliyor — Sefa kararı |
+
+## Orta Öncelik
+
+| # | Öge | Puan | Durum |
+|---|-----|------|-------|
+| B-003 | Go workspace inceleme ve temizlik | 2 | ⏳ Bekliyor |
+| B-004 | Home Assistant otomasyon review + KPI takibi | 3 | ⏳ Bekliyor |
+| B-005 | WireGuard belge tutarlılığı (kurulu ama dokümanda "yok") | 1 | ⏳ Bekliyor |
+| B-013 | Dashboard redesign (WP-5) | 5 | ⏸ Bekliyor — rapor bekleniyor |
+| B-014 | Memory doc overlap konsolidasyonu | 2 | ⏳ Bekliyor |
+
+## Düşük Öncelik
+
+| # | Öge | Puan | Durum |
+|---|-----|------|-------|
+| B-007 | Homepage dashboard özelleştirme | 1 | ⏳ Bekliyor |
+| B-008 | Pi-hole blocklist güncelleme | 1 | ⏳ Bekliyor |
+| B-015 | DeFi APM Faz 2 geliştirme | 5 | ⏸ Bekliyor — Faz 1 stable |
+
+---
+
+## Tamamlananlar (Arşiv)
+
+| # | Öge | Sprint | Tarih |
+|---|-----|--------|-------|
+| B-001 | OpenClaw temiz kurulum (Docker, Telegram, gateway) | S1 | 2026-04 |
+| B-002 | Telegram bot entegrasyonu doğrulama | S1 | 2026-04 |
+| B-006 | Sistem yedekleme otomasyonu (cron) | S1/S4 | 2026-04-19 (weekly-backup.sh aktif) |
+| S1-1 | Session Reset Automation | S1 (CLOSED) | — |
+| S1-2 | Cron Job Aktivasyonu | S1 (CLOSED) | — |
+| S1-3 | HA Otomasyon KPI Takibi | S1 (CLOSED) | — |
+
+---
+
+*Yeni öge: tabloya satır ekle, puan ver, durum "Bekliyor" yap.*
+*Sprint'e çekerken sprint-XX.md'de S4-NN olarak numarala.*
