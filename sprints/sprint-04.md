@@ -47,6 +47,7 @@
 | 2026-04-19 | 40-active-work.md senkronize edildi (gerçek sistem durumu) | Claude |
 | 2026-04-19 | Memory doc overlap: 10/20/31 güncellendi (stale paths, auth, model) | Claude |
 | 2026-04-19 | WireGuard: 20-system-landscape.md'e eklendi (docker, 51820/udp) | Claude |
+| 2026-04-19 | B-004 HA otomasyon fix: configuration.yaml'a `automation: !include` eklendi, 14/14 otomasyon aktif | Claude |
 | 2026-04-19 | dashboard/.env git history temizliği (filter-repo) | Claude |
 | 2026-04-19 | HA_TOKEN + Dashboard token rotation | Claude |
 | 2026-04-19 | Dashboard auth: LAN-only, DASHBOARD_TOKEN kaldırıldı | Claude |
