@@ -830,6 +830,7 @@ function handleRequest(req, res) {
     '/api/tokens', '/api/memory',
     '/api/automation',
     '/api/sprint',
+    '/api/daily-summary',
     '/api/alerts', '/api/notifications',
     '/api/orchestration/cost', '/api/orchestration/activity', '/api/orchestration/distribute',
     '/api/git/repos', '/api/ai-status',
@@ -891,6 +892,76 @@ function handleRequest(req, res) {
     } catch (err) {
       res.writeHead(500, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ active: 'Bilinmiyor', error: err.message }))
+    }
+    return
+  }
+
+  // API: daily summary — morning-briefing log + market + sistem özeti
+  if (url === '/api/daily-summary' && req.method === 'GET') {
+    try {
+      const logsDir = path.join(__dirname, '..', '..', 'logs')
+      const result = { date: new Date().toISOString().slice(0, 10), generatedAt: new Date().toISOString() }
+
+      // Market fiyatları
+      try {
+        const marketFile = path.join(logsDir, 'morning-briefing-market.json')
+        if (fs.existsSync(marketFile)) {
+          result.market = JSON.parse(fs.readFileSync(marketFile, 'utf8'))
+        }
+      } catch {}
+
+      // Morning briefing son çalışma zamanı
+      try {
+        const briefingLog = path.join(logsDir, 'morning-briefing.log')
+        if (fs.existsSync(briefingLog)) {
+          const lines = fs.readFileSync(briefingLog, 'utf8').trim().split('\n').filter(Boolean)
+          const last = lines[lines.length - 1] || ''
+          result.lastBriefing = last
+        }
+      } catch {}
+
+      // TASKS.json özeti
+      try {
+        const tasksFile = path.join(__dirname, '..', 'TASKS.json')
+        if (fs.existsSync(tasksFile)) {
+          const db = JSON.parse(fs.readFileSync(tasksFile, 'utf8'))
+          const tasks = db.tasks || []
+          result.tasks = {
+            total: tasks.length,
+            pending: tasks.filter(t => t.status === 'pending').length,
+            inProgress: tasks.filter(t => t.status === 'in_progress').length,
+            done: tasks.filter(t => t.status === 'done').length,
+          }
+        }
+      } catch {}
+
+      // DeFi APM özeti — async callback zinciri
+      const fetchDefi = (cb) => {
+        try {
+          const req2 = http.get('http://127.0.0.1:4180/api/health', { timeout: 2000 }, res2 => {
+            let body = ''
+            res2.on('data', c => body += c)
+            res2.on('end', () => {
+              try { cb(null, JSON.parse(body)) } catch { cb(new Error('parse')) }
+            })
+          })
+          req2.on('error', cb)
+          req2.on('timeout', () => { req2.destroy(); cb(new Error('timeout')) })
+        } catch (e) { cb(e) }
+      }
+      fetchDefi((err, defiHealth) => {
+        if (!err && defiHealth) {
+          result.defi = { status: defiHealth.status, poolCount: defiHealth.poolCount, collectionMode: defiHealth.collectionMode }
+        } else {
+          result.defi = { status: 'unknown' }
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(result))
+      })
+      return
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: 'Daily summary hatası', detail: err.message }))
     }
     return
   }

@@ -3,6 +3,7 @@ import { Cpu, MemoryStick, Clock, GitBranch, RefreshCw, Server, CheckCircle2, XC
 import { getSystemStats } from '../services/haService'
 import apiFetch from '../services/apiFetch'
 import SprintStatus from './SprintStatus'
+import DailySummary from './DailySummary'
 import { timeAgo } from '../utils'
 
 function StatBar({ label, value, warnThreshold = 80, icon: Icon }) {
@@ -323,7 +324,10 @@ export default function Overview() {
         {/* SAĞ KOLON: Son Görevler + Git + DeFi özet */}
         <div className="space-y-4">
 
-          {/* 4. GÖREV AKTİVİTESİ */}
+          {/* 4. GÜNLÜK ÖZET */}
+          <DailySummary />
+
+          {/* 5. GÖREV AKTİVİTESİ */}
           <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
             <div className="flex items-center gap-2 mb-4">
               <Zap size={16} className="text-ax-amber" />
