@@ -22,10 +22,10 @@
 | S4-01 | Telegram bot token rotate (BotFather) | 2 | ⏳ Bekliyor | Sefa | Dış erişim gerekli |
 | S4-02 | OpenClaw runtime token rotation (auth-profiles, models, exec-approvals, paired) | 3 | ⏳ Bekliyor | Koordineli | Secret Rotation Runbook'a bak |
 | S4-03 | `gateway.controlUi.allowInsecureAuth=true` policy kararı | 1 | ⏳ Bekliyor | Sefa | Güvenlik riski; LAN-only ise kabul edilebilir |
-| S4-04 | TASKS.json 84 birikmiş DeFi alarm analizi | 2 | ⏳ Bekliyor | Gemini | `archived` statüsüne çekilecek |
+| S4-04 | TASKS.json DeFi alarm analizi | 2 | ✅ Done | Claude | 45 DEFI-* → archived (2026-04-19); Alfred pending: 0 |
 | S4-05 | Memory doc overlap konsolidasyonu | 2 | ⏳ Bekliyor | Gemini | Tek kaynak için duplikasyon temizliği |
 | S4-06 | Session retention cron aktifleştirme | 1 | ⏳ Bekliyor | Claude/Codex | `session-retention.sh` OpenClaw job'a eklenecek |
-| S4-07 | Empty-run oranını izle ve iyileştir (180/230 → <50%) | 3 | ⏳ Bekliyor | Claude/Codex | `empty-run-precheck.sh` mevcut, tune gerekiyor |
+| S4-07 | Empty-run sessiz çıkış + kök neden analizi | 3 | ✅ Done | Claude | NO_TASK → sessiz; kök neden: Alfred pending task yok (beklenen) |
 | S4-08 | GUARDRAILS $2 vs $5 budget çelişkisi çözümü | 1 | ⏳ Bekliyor | Sefa | Kanonik değer seçilip iki dosyada sync |
 | S4-09 | Sprint-04 backlog temizliği (B-003..B-008) | 2 | ⏳ Bekliyor | Claude | Backlog.md'deki bekleyen item'lar sprint'e çekilecek mi? |
 | S4-10 | WireGuard belge tutarlılığı | 1 | ⏳ Bekliyor | MiniMax | |
