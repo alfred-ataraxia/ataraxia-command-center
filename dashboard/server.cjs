@@ -901,14 +901,37 @@ function handleRequest(req, res) {
     try {
       const logsDir = path.join(__dirname, '..', '..', 'logs')
       const result = { date: new Date().toISOString().slice(0, 10), generatedAt: new Date().toISOString() }
+      const marketLiveEnabled = process.env.MARKET_LIVE === '1'
 
-      // Market fiyatları
-      try {
-        const marketFile = path.join(logsDir, 'morning-briefing-market.json')
-        if (fs.existsSync(marketFile)) {
-          result.market = JSON.parse(fs.readFileSync(marketFile, 'utf8'))
-        }
-      } catch {}
+      // Market fiyatları — CoinGecko canlı, fallback: morning-briefing-market.json
+      const fetchMarket = (cb) => {
+        if (!marketLiveEnabled) return cb(new Error('disabled'))
+        try {
+          const https = require('https')
+          const opts = {
+            hostname: 'api.coingecko.com',
+            path: '/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd',
+            headers: { 'Accept': 'application/json', 'User-Agent': 'ataraxia-dashboard/1.0' },
+            timeout: 4000
+          }
+          const mreq = https.get(opts, mres => {
+            let body = ''
+            mres.on('data', c => body += c)
+            mres.on('end', () => {
+              try {
+                const d = JSON.parse(body)
+                cb(null, {
+                  BTC: String(d.bitcoin?.usd ?? ''),
+                  ETH: String(d.ethereum?.usd ?? ''),
+                  SOL: String(d.solana?.usd ?? ''),
+                })
+              } catch { cb(new Error('parse')) }
+            })
+          })
+          mreq.on('error', cb)
+          mreq.on('timeout', () => { mreq.destroy(); cb(new Error('timeout')) })
+        } catch (e) { cb(e) }
+      }
 
       // Morning briefing son çalışma zamanı
       try {
@@ -935,7 +958,7 @@ function handleRequest(req, res) {
         }
       } catch {}
 
-      // DeFi APM özeti — async callback zinciri
+      // Market + DeFi — callback zinciri (CJS: no top-level await)
       const fetchDefi = (cb) => {
         try {
           const req2 = http.get('http://127.0.0.1:4180/api/health', { timeout: 2000 }, res2 => {
@@ -949,14 +972,29 @@ function handleRequest(req, res) {
           req2.on('timeout', () => { req2.destroy(); cb(new Error('timeout')) })
         } catch (e) { cb(e) }
       }
-      fetchDefi((err, defiHealth) => {
-        if (!err && defiHealth) {
-          result.defi = { status: defiHealth.status, poolCount: defiHealth.poolCount, collectionMode: defiHealth.collectionMode }
+      fetchMarket((merr, prices) => {
+        if (!merr && prices && prices.BTC) {
+          result.market = prices
+          result.marketSource = 'live'
         } else {
-          result.defi = { status: 'unknown' }
+          try {
+            const marketFile = path.join(logsDir, 'morning-briefing-market.json')
+            if (fs.existsSync(marketFile)) {
+              result.market = JSON.parse(fs.readFileSync(marketFile, 'utf8'))
+              result.marketSource = 'cached'
+            }
+          } catch {}
+          if (!result.marketSource) result.marketSource = marketLiveEnabled ? 'error' : 'disabled'
         }
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify(result))
+        fetchDefi((err, defiHealth) => {
+          if (!err && defiHealth) {
+            result.defi = { status: defiHealth.status, poolCount: defiHealth.poolCount, collectionMode: defiHealth.collectionMode }
+          } else {
+            result.defi = { status: 'unknown' }
+          }
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify(result))
+        })
       })
       return
     } catch (err) {

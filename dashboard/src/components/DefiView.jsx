@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { TrendingUp, AlertTriangle, RefreshCw, DollarSign, Activity, ShieldCheck, ShieldAlert, Trophy } from 'lucide-react'
+import { TrendingUp, AlertTriangle, RefreshCw, DollarSign, Activity, ShieldCheck, ShieldAlert, Trophy, Bot } from 'lucide-react'
 import apiFetch from '../services/apiFetch'
 import TopPools from './TopPools'
 
@@ -402,6 +402,150 @@ function buildNextActions({ criticalCount, warnCount, lastReason, currentVault, 
   return items.slice(0, 4)
 }
 
+function AutopilotPanel({ config, state, actions, actionEvents, expandedActionId, approvingId, canApproveLive, onToggleEvents, onApprove, onToggleEnabled }) {
+  const currentVault = state?.current_vault_id || ''
+  const proposedVault = state?.proposed_vault_id || ''
+  const portfolioAddr = state?.portfolio_address || ''
+
+  return (
+    <div className="space-y-4">
+      {/* Config Kartı */}
+      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Bot size={16} className="text-ax-accent" />
+          <h2 className="text-ax-heading text-sm font-bold">Autopilot Konfigürasyonu</h2>
+          <button
+            onClick={onToggleEnabled}
+            className={`ml-auto px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-colors ${
+              config?.enabled
+                ? 'bg-ax-green/10 border-ax-green/25 text-ax-green hover:bg-ax-red/10 hover:border-ax-red/25 hover:text-ax-red'
+                : 'bg-ax-muted border-ax-border text-ax-dim hover:bg-ax-green/10 hover:border-ax-green/25 hover:text-ax-green'
+            }`}
+          >
+            {config?.enabled ? 'Aktif — Kapat' : 'Pasif — Aç'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+          {[
+            { label: 'Mod', value: config?.execute && !config?.simulateOnly ? '🔴 LIVE' : '🟢 SIM', highlight: config?.execute && !config?.simulateOnly },
+            { label: 'Onay', value: config?.requireApproval ? 'Gerekli' : 'Otomatik' },
+            { label: 'Max Trade', value: `${config?.maxTradeEth ?? '—'} ETH` },
+            { label: 'Cooldown', value: `${config?.cooldownMinutes ?? '—'}dk` },
+            { label: 'Min Hold', value: `${config?.minHoldMinutes ?? '—'}dk` },
+            { label: 'Min Skor Δ', value: config?.minScoreDelta ?? '—' },
+            { label: 'Zincir', value: config?.chain ?? '—' },
+            { label: 'Protokol', value: config?.protocol ?? '—' },
+          ].map(({ label, value, highlight }) => (
+            <div key={label} className="p-2.5 rounded-xl bg-ax-surface border border-ax-border">
+              <p className="text-[9px] text-ax-dim uppercase tracking-wider mb-1">{label}</p>
+              <p className={`text-xs font-mono font-bold ${highlight ? 'text-ax-red' : 'text-ax-text'}`}>{String(value)}</p>
+            </div>
+          ))}
+        </div>
+
+        {portfolioAddr && (
+          <div className="pt-3 border-t border-ax-border/50">
+            <p className="text-[10px] text-ax-dim mb-1">Portföy Adresi</p>
+            <p className="text-[11px] font-mono text-ax-subtle break-all">{portfolioAddr}</p>
+          </div>
+        )}
+
+        {(currentVault || proposedVault) && (
+          <div className="pt-3 border-t border-ax-border/50 grid grid-cols-2 gap-3 mt-3">
+            {currentVault && (
+              <div>
+                <p className="text-[9px] text-ax-dim uppercase tracking-wider mb-1">Mevcut Vault</p>
+                <p className="text-[11px] font-mono text-ax-green truncate">{currentVault}</p>
+              </div>
+            )}
+            {proposedVault && (
+              <div>
+                <p className="text-[9px] text-ax-dim uppercase tracking-wider mb-1">Önerilen Vault</p>
+                <p className="text-[11px] font-mono text-ax-amber truncate">{proposedVault}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Aksiyon Geçmişi */}
+      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <Activity size={16} className="text-ax-cyan" />
+          <h2 className="text-ax-heading text-sm font-bold">Aksiyon Geçmişi</h2>
+          <span className="ml-auto text-[10px] text-ax-dim">{actions.length} kayıt</span>
+        </div>
+
+        {!canApproveLive && (
+          <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+            LIVE onay için <span className="font-mono">execute=1</span> ve <span className="font-mono">simulateOnly=0</span> gerekli.
+          </div>
+        )}
+
+        <div className="space-y-2">
+          {actions.length === 0 ? (
+            <p className="text-[11px] text-ax-dim py-4 text-center">Henüz aksiyon kaydı yok</p>
+          ) : actions.slice(0, 15).map((a) => {
+            const id = String(a.id || '')
+            const st = String(a.status || '').toUpperCase()
+            const isProposed = st === 'PROPOSED'
+            const isExpanded = expandedActionId === id
+            const reason = a?.details?.reason || a?.details?.decision?.reason || null
+            const events = actionEvents[id] || []
+
+            return (
+              <div key={id} className="rounded-xl bg-ax-surface border border-ax-border overflow-hidden">
+                <div className="flex items-center gap-3 px-3 py-2.5">
+                  <button
+                    onClick={() => onToggleEvents(id)}
+                    className="shrink-0 w-7 h-7 rounded-lg border border-ax-border bg-ax-panel hover:bg-ax-muted/60 transition-colors text-ax-dim text-xs font-mono"
+                  >
+                    {isExpanded ? '−' : '+'}
+                  </button>
+                  <span className={`shrink-0 px-2 py-1 rounded-full border text-[10px] font-mono ${statusTone(st)}`}>
+                    {st || '—'}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] font-mono text-ax-dim">{formatDateTime(a.timestamp)}</span>
+                      {a.action && <span className="text-[10px] text-ax-dim uppercase tracking-wider">{a.action}</span>}
+                      {reason && <span className="text-[10px] text-ax-subtle">{reason}</span>}
+                    </div>
+                    <div className="mt-0.5 text-[10px] text-ax-dim font-mono truncate">
+                      {a.fromVaultId ? `from ${a.fromVaultId}` : 'from —'} → {a.toVaultId ? `to ${a.toVaultId}` : 'to —'}
+                    </div>
+                  </div>
+                  {isProposed && (
+                    <button
+                      onClick={() => onApprove(a)}
+                      disabled={!canApproveLive || approvingId === id}
+                      className="shrink-0 px-3 py-1.5 rounded-lg border text-[11px] font-bold bg-ax-amber/10 border-ax-amber/25 text-ax-amber hover:bg-ax-amber/20 disabled:opacity-40 transition-colors"
+                    >
+                      {approvingId === id ? '...' : 'Onayla'}
+                    </button>
+                  )}
+                </div>
+                {isExpanded && events.length > 0 && (
+                  <div className="border-t border-ax-border/50 px-3 py-2 space-y-1 max-h-48 overflow-y-auto">
+                    {events.map((ev, i) => (
+                      <div key={i} className="flex items-start gap-2 text-[10px] font-mono text-ax-dim">
+                        <span className="text-ax-subtle shrink-0">{formatDateTime(ev.timestamp)}</span>
+                        <span className="text-ax-dim">{ev.event}</span>
+                        {ev.details && <span className="text-ax-subtle truncate">{typeof ev.details === 'string' ? ev.details : JSON.stringify(ev.details).slice(0, 80)}</span>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function DefiView() {
   const [pools, setPools] = useState([])
   const [potentialPools, setPotentialPools] = useState([])
@@ -656,9 +800,47 @@ export default function DefiView() {
           <Trophy size={13} />
           Top Pools
         </button>
+        <button
+          onClick={() => setDefiTab('autopilot')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            defiTab === 'autopilot'
+              ? 'bg-ax-panel border border-ax-border text-ax-heading shadow-sm'
+              : 'text-ax-dim hover:text-ax-text'
+          }`}
+        >
+          <Bot size={13} />
+          Autopilot
+          {pendingApprovals > 0 && (
+            <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-ax-amber/20 text-ax-amber border border-ax-amber/30">
+              {pendingApprovals}
+            </span>
+          )}
+        </button>
       </div>
 
       {defiTab === 'toppools' && <TopPools />}
+
+      {defiTab === 'autopilot' && autopilot && (
+        <AutopilotPanel
+          config={apCfg}
+          state={autopilot?.state}
+          actions={actions}
+          actionEvents={actionEvents}
+          expandedActionId={expandedActionId}
+          approvingId={approvingId}
+          canApproveLive={canApproveLive}
+          onToggleEvents={handleToggleEvents}
+          onApprove={handleApprove}
+          onToggleEnabled={async () => {
+            try {
+              await apiFetch(`${DEFI_API}/autopilot/toggle`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ enabled: !apCfg?.enabled }) })
+              await fetchAll()
+            } catch {
+              /* ignore */
+            }
+          }}
+        />
+      )}
 
       {defiTab === 'overview' && <>
 

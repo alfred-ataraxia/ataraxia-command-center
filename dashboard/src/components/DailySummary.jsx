@@ -5,7 +5,7 @@ function Coin({ symbol, price }) {
   return (
     <div className="flex flex-col items-center px-3 py-2 rounded-xl bg-ax-surface border border-ax-border min-w-[64px]">
       <span className="text-[10px] text-ax-dim font-bold uppercase tracking-wider">{symbol}</span>
-      <span className="text-xs font-mono font-bold text-ax-heading mt-0.5">${Number(price).toLocaleString('en-US')}</span>
+      <span className="text-xs font-mono font-bold text-ax-heading mt-0.5">${Number(price).toLocaleString('en-US', {maximumFractionDigits: 2})}</span>
     </div>
   )
 }
