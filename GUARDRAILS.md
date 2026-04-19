@@ -2,7 +2,7 @@
 
 **Status:** ACTIVE | **Updated:** 2026-04-19 (Claude — budget policy kanonik kaynak olarak güncellendi, WP-3)
 **Scope:** Budget, rate limit, token kullanımı. Operasyonel güvenlik + RAM/disk koruması için `~/.openclaw/workspace/memory/GUARDRAILS.md`.
-**⚠ Açık Çelişki:** Daily budget bu dosyada $5, `memory/GUARDRAILS.md`'de $2. Sefa karar verecek; çözülene kadar muhafazakâr olan ($2) geçerli sayılır.
+**Budget scope:** Sistemde şu an ücretli Claude API yok. OpenRouter ücretsiz tier kullanılıyor (veya eklenecek). MiniMax/Codex/Gemini sabit abonelik. Ücretli API eklenirse bu dosya güncellenmeli.
 
 ---
 

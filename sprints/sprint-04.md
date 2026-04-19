@@ -19,14 +19,14 @@
 
 | # | Görev | Puan | Durum | Atanan | Notlar |
 |---|-------|------|-------|--------|--------|
-| S4-01 | Telegram bot token rotate (BotFather) | 2 | ⏳ Bekliyor | Sefa | Dış erişim gerekli |
-| S4-02 | OpenClaw runtime token rotation (auth-profiles, models, exec-approvals, paired) | 3 | ⏳ Bekliyor | Koordineli | Secret Rotation Runbook'a bak |
-| S4-03 | `gateway.controlUi.allowInsecureAuth=true` policy kararı | 1 | ⏳ Bekliyor | Sefa | Güvenlik riski; LAN-only ise kabul edilebilir |
+| S4-01 | Telegram bot token rotate (BotFather) | 2 | ⏸ Ertelendi | Sefa | Risk tolere edildi — LAN-only, bot public'e açık değil |
+| S4-02 | OpenClaw runtime token rotation | 3 | ⏸ Kısmi | Claude+Sefa | Analiz yapıldı: Gemini OAuth expired (`gemini auth login` gerekli, ertelendi); MiniMax/Google env-var (güvenli); Codex OAuth auto-refresh |
+| S4-03 | `gateway.controlUi.allowInsecureAuth=true` policy kararı | 1 | ✅ Done | Sefa | LAN-only — açık kalacak, kabul edildi |
 | S4-04 | TASKS.json DeFi alarm analizi | 2 | ✅ Done | Claude | 45 DEFI-* → archived (2026-04-19); Alfred pending: 0 |
 | S4-05 | Memory doc overlap konsolidasyonu | 2 | ✅ Done | Claude | 10/20/31/40 memory güncellendi; stale paths, auth, model, cron düzeltildi |
 | S4-06 | Session retention cron aktifleştirme | 1 | ✅ Done | Claude | OpenClaw jobs.json'a eklendi (04:00 her gün) |
 | S4-07 | Empty-run sessiz çıkış + kök neden analizi | 3 | ✅ Done | Claude | NO_TASK → sessiz; kök neden: Alfred pending task yok (beklenen) |
-| S4-08 | GUARDRAILS $2 vs $5 budget çelişkisi çözümü | 1 | ⏳ Bekliyor | Sefa | Kanonik değer seçilip iki dosyada sync |
+| S4-08 | GUARDRAILS budget çelişkisi çözümü | 1 | ✅ Done | Sefa | Sistem şu an ücretli API yok (OpenRouter ücretsiz); MiniMax/Codex/Gemini sabit abonelik |
 | S4-09 | Backlog temizliği ve güncelleme | 2 | ✅ Done | Claude | B-001/002/006 arşivlendi, B-009..015 yeni madde eklendi |
 | S4-10 | WireGuard belge tutarlılığı | 1 | ✅ Done | Claude | 20-system-landscape.md'e WireGuard (51820/udp, docker) eklendi |
 
