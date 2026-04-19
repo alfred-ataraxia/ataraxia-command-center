@@ -10,14 +10,12 @@
 |---|-----|------|-------|
 | B-009 | Telegram bot token rotate (BotFather) | 2 | ⏳ Bekliyor — Sefa yapacak |
 | B-010 | OpenClaw runtime token rotation (OAuth, models, devices) | 3 | ⏳ Bekliyor — koordineli |
-| B-011 | `gateway.controlUi.allowInsecureAuth=true` policy kararı | 1 | ⏳ Bekliyor — Sefa kararı |
-| B-012 | Budget çelişkisi ($2/gün vs $5/gün) kanonik değer seçimi | 1 | ⏳ Bekliyor — Sefa kararı |
 
 ## Orta Öncelik
 
 | # | Öge | Puan | Durum |
 |---|-----|------|-------|
-| B-013 | Dashboard redesign (WP-5) | 5 | ⏸ Bekliyor — rapor bekleniyor |
+| B-013 | Dashboard redesign (WP-5) | 5 | 📋 Rapor hazır — Sefa onayı bekleniyor (`docs/B013-dashboard-redesign-report.md`) |
 
 ## Düşük Öncelik
 
@@ -39,6 +37,8 @@
 | B-006 | Sistem yedekleme otomasyonu (cron) | S1/S4 | 2026-04-19 (weekly-backup.sh aktif) |
 | B-007 | Homepage dashboard: Alfred Dashboard + DeFi APM widget | S4 | 2026-04-19 |
 | B-008 | Pi-hole: v6.4.1 latest doğrulandı (blocklist: manuel sudo gerekli) | S4 | 2026-04-19 |
+| B-011 | gateway insecureAuth policy → LAN-only kabul edildi, açık kalacak | S4 | 2026-04-19 |
+| B-012 | Budget çelişkisi → çözüldü: OpenRouter free, abonelik sabit | S4 | 2026-04-19 |
 | B-014 | Memory doc overlap konsolidasyonu (10/20/31/40 güncellendi) | S4 | 2026-04-19 |
 | S1-1 | Session Reset Automation | S1 (CLOSED) | — |
 | S1-2 | Cron Job Aktivasyonu | S1 (CLOSED) | — |

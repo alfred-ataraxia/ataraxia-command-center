@@ -57,6 +57,7 @@
 | 2026-04-19 | Docs refresh — WP-6 commit `a25dadf` | Claude |
 | 2026-04-19 | B-007 Homepage: Alfred Dashboard + DeFi APM widget eklendi (services.yaml) | Claude |
 | 2026-04-19 | B-008 Pi-hole: v6.4.1 latest doğrulandı, blocklist sudo gerekiyor (manuel) | Claude |
+| 2026-04-19 | B-013 Dashboard redesign raporu hazırlandı (`docs/B013-dashboard-redesign-report.md`) | Claude |
 
 ---
 
