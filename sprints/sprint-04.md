@@ -30,8 +30,10 @@
 | S4-09 | Backlog temizliği ve güncelleme | 2 | ✅ Done | Claude | B-001/002/006 arşivlendi, B-009..015 yeni madde eklendi |
 | S4-10 | WireGuard belge tutarlılığı | 1 | ✅ Done | Claude | 20-system-landscape.md'e WireGuard (51820/udp, docker) eklendi |
 
-**Toplam:** 18 puan
-**Kapasite:** ~20 puan (5 gün × 4 puan/gün)
+| S4-11 | B-013 Dashboard Faz 1+2+3 (temizlik, sprint widget, grid, tab) | 5 | ✅ Done | Claude | LoginModal kaldırıldı, SprintStatus, 2-kolon grid, TopPools→DeFi tab, React #310 fix |
+
+**Toplam:** 23 puan  
+**Kapasite:** ~20 puan (aşıldı — iyi)
 
 ---
 
@@ -58,6 +60,10 @@
 | 2026-04-19 | B-007 Homepage: Alfred Dashboard + DeFi APM widget eklendi (services.yaml) | Claude |
 | 2026-04-19 | B-008 Pi-hole: v6.4.1 latest doğrulandı, blocklist sudo gerekiyor (manuel) | Claude |
 | 2026-04-19 | B-013 Dashboard redesign raporu hazırlandı (`docs/B013-dashboard-redesign-report.md`) | Claude |
+| 2026-04-19 | B-013 Faz 1: LoginModal kaldırıldı, model isimleri dinamik, DeFi alert ayrıldı | Claude |
+| 2026-04-19 | B-013 Faz 2: `/api/sprint` endpoint + SprintStatus widget Kokpit'e eklendi | Claude |
+| 2026-04-19 | B-013 Faz 3: 2-kolon grid, Top Pools → DeFi tab, sidebar 8→7 | Claude |
+| 2026-04-19 | fix: React #310 hook hatası düzeltildi (defiTab useState taşındı) | Claude |
 
 ---
 
