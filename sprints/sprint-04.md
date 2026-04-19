@@ -31,8 +31,10 @@
 | S4-10 | WireGuard belge tutarlılığı | 1 | ✅ Done | Claude | 20-system-landscape.md'e WireGuard (51820/udp, docker) eklendi |
 
 | S4-11 | B-013 Dashboard Faz 1+2+3 (temizlik, sprint widget, grid, tab) | 5 | ✅ Done | Claude | LoginModal kaldırıldı, SprintStatus, 2-kolon grid, TopPools→DeFi tab, React #310 fix |
+| S4-12 | B-017 NO_TASK Telegram fix — delivery.mode none + curl explicit | 1 | ✅ Done | Claude | jobs.json güncellendi; OpenClaw artık NO_TASK'ta Telegram'a mesaj göndermez |
+| S4-13 | B-018 DeFi TVL alarm eşiği — $500K min abs TVL | 1 | ✅ Done | Claude | config/default.ts + check.ts; mikro havuz ($0.1M) alarmı artık üretilmez |
 
-**Toplam:** 23 puan  
+**Toplam:** 25 puan  
 **Kapasite:** ~20 puan (aşıldı — iyi)
 
 ---

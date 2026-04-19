@@ -16,6 +16,8 @@
 | # | Öge | Puan | Durum |
 |---|-----|------|-------|
 | B-016 | Dashboard Faz 4 — Günlük özet kartı (DailySummary) | 2 | ⏳ Bekliyor |
+| B-017 | NO_TASK Telegram fix — delivery.mode none, curl explicit | 1 | ✅ Done 2026-04-19 |
+| B-018 | DeFi TVL drop min threshold ($500K) — mikro havuz gürültüsü | 1 | ✅ Done 2026-04-19 |
 
 ## Düşük Öncelik
 
