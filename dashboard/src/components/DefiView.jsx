@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { TrendingUp, AlertTriangle, RefreshCw, DollarSign, Activity, ShieldCheck, ShieldAlert } from 'lucide-react'
+import { TrendingUp, AlertTriangle, RefreshCw, DollarSign, Activity, ShieldCheck, ShieldAlert, Trophy } from 'lucide-react'
 import apiFetch from '../services/apiFetch'
+import TopPools from './TopPools'
 
 const DEFI_API = '/api/defi'
 const REFRESH_INTERVAL = 60_000
@@ -627,8 +628,40 @@ export default function DefiView() {
     )
   }
 
+  const [defiTab, setDefiTab] = useState('overview')
+
   return (
     <div className="p-4 space-y-4 max-w-4xl mx-auto">
+
+      {/* TAB BAR */}
+      <div className="flex gap-1 p-1 rounded-xl bg-ax-surface border border-ax-border w-fit">
+        <button
+          onClick={() => setDefiTab('overview')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            defiTab === 'overview'
+              ? 'bg-ax-panel border border-ax-border text-ax-heading shadow-sm'
+              : 'text-ax-dim hover:text-ax-text'
+          }`}
+        >
+          <TrendingUp size={13} />
+          DeFi APM
+        </button>
+        <button
+          onClick={() => setDefiTab('toppools')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            defiTab === 'toppools'
+              ? 'bg-ax-panel border border-ax-border text-ax-heading shadow-sm'
+              : 'text-ax-dim hover:text-ax-text'
+          }`}
+        >
+          <Trophy size={13} />
+          Top Pools
+        </button>
+      </div>
+
+      {defiTab === 'toppools' && <TopPools />}
+
+      {defiTab === 'overview' && <>
 
       {/* Başlık + Durum */}
       <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
@@ -1125,6 +1158,7 @@ export default function DefiView() {
         )}
       </div>
 
+      </>}{/* /defiTab overview */}
     </div>
   )
 }
