@@ -422,6 +422,7 @@ export default function DefiView() {
   const [dataTimestamp, setDataTimestamp] = useState(null)
   const [stableTimestamp, setStableTimestamp] = useState(null)
   const [error, setError] = useState(null)
+  const [defiTab, setDefiTab] = useState('overview')
 
   const fetchAll = useCallback(async () => {
     try {
@@ -627,8 +628,6 @@ export default function DefiView() {
       </div>
     )
   }
-
-  const [defiTab, setDefiTab] = useState('overview')
 
   return (
     <div className="p-4 space-y-4 max-w-4xl mx-auto">
