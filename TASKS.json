@@ -1454,7 +1454,10 @@
       "category": "DeFi Risk",
       "priority": "high",
       "assignee": "Master Sefa",
-      "tags": ["defi", "alert"],
+      "tags": [
+        "defi",
+        "alert"
+      ],
       "status": "pending",
       "created": "2026-04-19T14:15:22.879Z"
     },
@@ -1466,9 +1469,39 @@
       "category": "DeFi Risk",
       "priority": "high",
       "assignee": "Master Sefa",
-      "tags": ["defi", "alert"],
+      "tags": [
+        "defi",
+        "alert"
+      ],
       "status": "pending",
       "created": "2026-04-19T17:45:22.137Z"
+    },
+    {
+      "id": "DEFI-091",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/MIM-USDC (arbitrum) TVL ÇÖKÜŞÜ: -67.6% (1h) — $2.4M → $0.8M",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-21T03:32:04.922Z"
+    },
+    {
+      "id": "DEFI-092",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/WETH-USDC (base) APY aşırı yüksek: 152595665839793312.0% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-21T12:47:04.488Z"
+    },
+    {
+      "id": "DEFI-093",
+      "title": "DeFi Kritik Alert: 1 adet",
+      "description": "beefy/WETH-USDC (base) APY aşırı yüksek: 410802210552844480.0% — muhtemel scam/manipülasyon",
+      "auto": false,
+      "category": "DeFi Risk",
+      "status": "pending",
+      "created": "2026-04-21T16:47:11.071Z"
     }
   ]
 }
