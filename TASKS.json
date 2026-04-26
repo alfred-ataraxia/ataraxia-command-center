@@ -1445,63 +1445,6 @@
       "created": "2026-04-19T05:23:13.307Z",
       "archived_at": "2026-04-19",
       "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-089",
-      "title": "DeFi Kritik Alert: 3 adet",
-      "description": "beefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -71.3% (1h) — $2.8M → $0.8M\nbeefy/msETH-WETH sLP (base) TVL ÇÖKÜŞÜ: -56.4% (1h) — $1.8M → $0.8M\nbeefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -71.4% (1h) — $1.4M → $0.4M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "priority": "high",
-      "assignee": "Master Sefa",
-      "tags": [
-        "defi",
-        "alert"
-      ],
-      "status": "pending",
-      "created": "2026-04-19T14:15:22.879Z"
-    },
-    {
-      "id": "DEFI-090",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/eUSD (Re7 Labs, eUSD) (base) TVL ÇÖKÜŞÜ: -30.7% (1h) — $0.2M → $0.1M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "priority": "high",
-      "assignee": "Master Sefa",
-      "tags": [
-        "defi",
-        "alert"
-      ],
-      "status": "pending",
-      "created": "2026-04-19T17:45:22.137Z"
-    },
-    {
-      "id": "DEFI-091",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/MIM-USDC (arbitrum) TVL ÇÖKÜŞÜ: -67.6% (1h) — $2.4M → $0.8M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "pending",
-      "created": "2026-04-21T03:32:04.922Z"
-    },
-    {
-      "id": "DEFI-092",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/WETH-USDC (base) APY aşırı yüksek: 152595665839793312.0% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "pending",
-      "created": "2026-04-21T12:47:04.488Z"
-    },
-    {
-      "id": "DEFI-093",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/WETH-USDC (base) APY aşırı yüksek: 410802210552844480.0% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "pending",
-      "created": "2026-04-21T16:47:11.071Z"
     }
   ]
 }
