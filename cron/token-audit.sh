@@ -1,110 +1,83 @@
 #!/bin/bash
-# Haftalık token kullanım denetimi
-# Cron: 0 18 * * 0 (Pazar 18:00)
-# TOKEN_STRATEGY.md: Haftalık 35,000 token bütçe
+# Token Audit — SQLite task_runs → TOKEN_AUDIT.json (Dashboard /api/tokens için)
+# Cron: 0 */6 * * * (6 saatte bir güncelle)
+set -euo pipefail
 
-export PATH="/home/sefa/.npm-global/bin:/home/sefa/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
-export HOME="/home/sefa"
+OUTPUT="/home/sefa/alfred-hub/command-center/TOKEN_AUDIT.json"
+TOKENS_PER_SEC=80  # MiniMax M2.7 kaba tahmin (duration proxy)
+BUDGET_PER_WEEK=2000000  # MiniMax M2.7 — ~$0.60/hafta (35K Claude API bütçesi değil)
 
-WORKSPACE="/home/sefa/.openclaw/workspace"
-LOG_DIR="$HOME/openclaw/logs"
-mkdir -p "$LOG_DIR"
+python3 - "$OUTPUT" "$TOKENS_PER_SEC" "$BUDGET_PER_WEEK" <<'PY'
+import json, sqlite3, sys
+from datetime import datetime, timedelta, timezone
 
-LOG="$LOG_DIR/token-audit-$(date +%Y%m%d).log"
-AUDIT_FILE="$WORKSPACE/TOKEN_AUDIT.json"
+OUTPUT, TOKENS_PER_SEC, BUDGET_PER_WEEK = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+DB = "/home/sefa/.openclaw/tasks/runs.sqlite"
 
-echo "=== Token Audit $(date) ===" >> "$LOG"
+conn = sqlite3.connect(DB)
+conn.row_factory = sqlite3.Row
 
-# Estimate tokens from logs
-# Based on: avg 100 tokens/task for Haiku, 600 for Sonnet, 2500 for Opus
-python3 << 'PYTHON_EOF'
-import json
-import os
-from datetime import datetime, timedelta
+now = datetime.now(timezone.utc)
+week_start = now - timedelta(days=now.weekday())
+week_start = week_start.replace(hour=0, minute=0, second=0, microsecond=0)
 
-LOG_DIR = os.path.expanduser("~/openclaw/logs")
-WORKSPACE = "/home/sefa/.openclaw/workspace"
-AUDIT_FILE = os.path.join(WORKSPACE, "TOKEN_AUDIT.json")
+weeks = []
+for w in range(8):
+    ws = week_start - timedelta(weeks=w)
+    we = ws + timedelta(weeks=1)
 
-# Token averages (conservative estimates)
-TOKEN_ESTIMATES = {
-    'haiku': 100,
-    'sonnet': 600,
-    'opus': 2500
-}
+    cur = conn.execute("""
+        SELECT agent_id, label,
+               round((ended_at - started_at) / 1000.0, 1) as duration_s
+        FROM task_runs
+        WHERE runtime = 'cron'
+          AND started_at >= ? AND started_at < ?
+          AND ended_at IS NOT NULL
+          AND status = 'succeeded'
+    """, (int(ws.timestamp() * 1000), int(we.timestamp() * 1000)))
 
-# Load existing audit or create new
-if os.path.exists(AUDIT_FILE):
-    with open(AUDIT_FILE) as f:
-        audit = json.load(f)
-else:
-    audit = {
-        'weeks': [],
-        'current_week_start': None,
-        'budget_per_week': 35000,
-        'monthly_limit': 50000
+    total_tokens, by_agent, run_count = 0, {}, 0
+    # Sabit per-run tahmini (duration bağımsız — MiniMax için gerçekçi)
+    LABEL_TOKENS = {
+        'morning-briefing': 3000, 'morning-briefing-weekend': 3000,
+        'evening-report': 2000, 'alfred-task-runner': 1500,
+        'Alfred Task Runner': 1500, 'mercer-email-check': 1200,
+        'mait-daily-query': 1000, 'mait-weekly-query': 1500,
+        'mait-weekly-report': 2000, 'mait-weekly-review': 2000,
+        'radar-weekly': 2500,
     }
+    DEFAULT_TOKENS = 800
 
-# Get this week's task-worker logs (last 7 days)
-week_start = datetime.now() - timedelta(days=7)
-total_tokens = 0
-task_count_by_model = {'haiku': 0, 'sonnet': 0, 'opus': 0}
+    for r in cur.fetchall():
+        label = r['label'] or ''
+        est = LABEL_TOKENS.get(label, DEFAULT_TOKENS)
+        total_tokens += est
+        agent = r['agent_id'] or 'unknown'
+        by_agent[agent] = by_agent.get(agent, 0) + est
+        run_count += 1
 
-# Scan recent logs for model selection output
-if os.path.exists(LOG_DIR):
-    for log_file in os.listdir(LOG_DIR):
-        if 'task-worker' in log_file:
-            try:
-                with open(os.path.join(LOG_DIR, log_file)) as f:
-                    content = f.read()
-                    if 'OPUS' in content:
-                        task_count_by_model['opus'] += content.count('OPUS')
-                    if 'SONNET' in content:
-                        task_count_by_model['sonnet'] += content.count('SONNET')
-                    if 'HAIKU' in content:
-                        task_count_by_model['haiku'] += content.count('HAIKU')
-            except:
-                pass
+    weeks.append({
+        "week_of": ws.strftime("%Y-%m-%d"),
+        "estimated_tokens": total_tokens,
+        "tasks_by_model": {
+            "minimax": by_agent.get("alfred", 0) + by_agent.get("mait", 0) + by_agent.get("mercer", 0),
+            "sonnet": by_agent.get("claude", 0),
+            "other": sum(v for k,v in by_agent.items() if k not in ("alfred","mait","mercer","claude"))
+        },
+        "usage_percent": round(total_tokens / BUDGET_PER_WEEK * 100, 1),
+        "run_count": run_count
+    })
 
-# Calculate token usage
-estimated_tokens = (
-    task_count_by_model['haiku'] * TOKEN_ESTIMATES['haiku'] +
-    task_count_by_model['sonnet'] * TOKEN_ESTIMATES['sonnet'] +
-    task_count_by_model['opus'] * TOKEN_ESTIMATES['opus']
-)
+conn.close()
+weeks.reverse()
 
-# Create this week's report
-week_report = {
-    'week_of': datetime.now().strftime('%Y-%m-%d'),
-    'tasks_by_model': task_count_by_model,
-    'estimated_tokens': estimated_tokens,
-    'budget_remaining': 35000 - estimated_tokens,
-    'usage_percent': round((estimated_tokens / 35000) * 100, 1)
-}
+with open(OUTPUT, 'w') as f:
+    json.dump({
+        "budget_per_week": BUDGET_PER_WEEK,
+        "updated_at": now.isoformat(),
+        "weeks": weeks
+    }, f, indent=2, ensure_ascii=False)
 
-audit['weeks'].append(week_report)
-audit['current_week_start'] = datetime.now().strftime('%Y-%m-%d')
-
-# Keep only last 12 weeks
-audit['weeks'] = audit['weeks'][-12:]
-
-# Save audit
-with open(AUDIT_FILE, 'w') as f:
-    json.dump(audit, f, indent=2)
-
-# Print summary
-print(f"Token Audit Summary:")
-print(f"  Haiku tasks: {task_count_by_model['haiku']}")
-print(f"  Sonnet tasks: {task_count_by_model['sonnet']}")
-print(f"  Opus tasks: {task_count_by_model['opus']}")
-print(f"  Estimated tokens: {estimated_tokens}")
-print(f"  Budget remaining: {week_report['budget_remaining']}")
-print(f"  Usage: {week_report['usage_percent']}%")
-
-# Alert if approaching limit
-if estimated_tokens > 28000:  # 80% of budget
-    print(f"⚠️  WARNING: Token usage at {week_report['usage_percent']}% of weekly budget!")
-PYTHON_EOF
-
-echo "" >> "$LOG"
-echo "=== Audit Complete ===" >> "$LOG"
+w = weeks[-1]
+print(f"OK — bu hafta: {w['estimated_tokens']} token tahmini (%{w['usage_percent']}), {w['run_count']} run")
+PY

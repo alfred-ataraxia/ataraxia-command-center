@@ -9,6 +9,7 @@ import AutomationView from './components/AutomationView'
 import MemoryView from './components/MemoryView'
 import LogsView from './components/LogsView'
 import DefiView from './components/DefiView'
+import ApprovalsView from './components/ApprovalsView'
 
 const VIEWS = {
   overview:   Overview,
@@ -18,6 +19,7 @@ const VIEWS = {
   memory:     MemoryView,
   logs:       LogsView,
   defi:       DefiView,
+  approvals:  ApprovalsView,
 }
 
 export default function App() {

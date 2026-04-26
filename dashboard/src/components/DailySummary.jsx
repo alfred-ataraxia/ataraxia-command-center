@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Sun, TrendingUp, ListTodo, Activity } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Sun, TrendingUp, ListTodo, Activity, AlertCircle, RefreshCw } from 'lucide-react'
 
 function Coin({ symbol, price }) {
   return (
@@ -12,20 +12,35 @@ function Coin({ symbol, price }) {
 
 export default function DailySummary() {
   const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const fetchData = useCallback(() => {
+    setLoading(true)
+    fetch('/api/daily-summary')
+      .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+      .then(d => { setData(d); setError(null) })
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false))
+  }, [])
 
   useEffect(() => {
-    fetch('/api/daily-summary')
-      .then(r => r.ok ? r.json() : null)
-      .then(d => d && setData(d))
-      .catch(() => {})
-    const t = setInterval(() => {
-      fetch('/api/daily-summary')
-        .then(r => r.ok ? r.json() : null)
-        .then(d => d && setData(d))
-        .catch(() => {})
-    }, 5 * 60_000)
+    fetchData()
+    const t = setInterval(fetchData, 5 * 60_000)
     return () => clearInterval(t)
-  }, [])
+  }, [fetchData])
+
+  if (error) return (
+    <div className="rounded-2xl bg-ax-panel border border-ax-amber/30 p-5 flex items-center gap-3">
+      <AlertCircle size={16} className="text-ax-amber shrink-0" />
+      <p className="text-ax-dim text-xs flex-1">Günlük özet yüklenemedi: {error}</p>
+      <button onClick={fetchData} disabled={loading}
+        className="flex items-center gap-1.5 px-2 py-1 rounded-lg border border-ax-border text-xs text-ax-dim hover:text-ax-text hover:border-ax-muted transition-colors disabled:opacity-40">
+        <RefreshCw size={10} className={loading ? 'animate-spin' : ''} />
+        Tekrar Dene
+      </button>
+    </div>
+  )
 
   if (!data) return null
 

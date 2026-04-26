@@ -126,6 +126,7 @@ export default function AgentStatus() {
   const [agents, setAgents] = useState(DEFAULT_AGENTS)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [cached, setCached] = useState(false)
 
   async function fetchAgents() {
     setLoading(true)
@@ -136,9 +137,11 @@ export default function AgentStatus() {
       if (data.agents && data.agents.length > 0) {
         setAgents(data.agents)
         setError(null)
+        setCached(false)
       }
     } catch (err) {
       setError('Ajan verisi alınamadı: ' + err.message)
+      setCached(true)
     } finally {
       setLoading(false)
     }
@@ -156,20 +159,29 @@ export default function AgentStatus() {
     <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl">
       {/* Başlık */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
-        <div>
-          <h1 className="text-ax-heading text-xl sm:text-2xl font-bold tracking-tight">Ajan Durumları</h1>
-          <p className="text-ax-dim text-sm mt-0.5">
-            {agents.length} ajandan {activeCount} tanesi aktif
-          </p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-ax-heading text-xl sm:text-2xl font-bold tracking-tight">Ajan Durumları</h1>
+            <p className="text-ax-dim text-sm mt-0.5">
+              {agents.length} ajandan {activeCount} tanesi aktif
+            </p>
+          </div>
+          {cached && (
+            <span className="px-2 py-0.5 rounded border text-[10px] font-medium bg-ax-amber/10 border-ax-amber/30 text-ax-amber">
+              📦 Önbellek
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {loading ? (
             <RefreshCw size={13} className="text-ax-dim animate-spin" />
           ) : (
-            <Clock size={13} className="text-ax-dim" />
+            <button onClick={fetchAgents} className="p-1 rounded hover:bg-ax-muted transition-colors text-ax-subtle hover:text-ax-text">
+              <RefreshCw size={13} />
+            </button>
           )}
           <span className="text-ax-dim text-xs">
-            {loading ? 'Ajan verileri yenileniyor' : 'Her 30 saniyede otomatik yenilenir'}
+            {loading ? 'Yenileniyor' : cached ? 'Önbellekten gösteriliyor' : 'Her 30s yenilenir'}
           </span>
         </div>
       </div>

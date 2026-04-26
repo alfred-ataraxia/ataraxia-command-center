@@ -33,6 +33,16 @@ const STATUS_FLOW = {
   done:        { next: 'pending',     label: 'Geri',    btnClass: 'bg-ax-dim/15 border-ax-border text-ax-dim' },
 }
 
+function getDeadlineStatus(dueDate, status) {
+  if (!dueDate || dueDate === '—' || status === 'done') return null
+  const today = new Date(); today.setHours(0,0,0,0)
+  const due = new Date(dueDate); due.setHours(0,0,0,0)
+  const diffDays = Math.round((due - today) / 86400000)
+  if (diffDays < 0) return 'overdue'
+  if (diffDays === 0) return 'today'
+  return null
+}
+
 function normalizeTask(t) {
   return {
     id: t.id,
@@ -108,7 +118,16 @@ function TaskCard({ task, onToggle, onDelete }) {
             <span className={`px-1.5 py-0.5 rounded border text-[10px] font-medium ${priority.class}`}>
               {priority.label}
             </span>
-
+            {getDeadlineStatus(task.due, task.status) === 'overdue' && (
+              <span className="px-1.5 py-0.5 rounded border text-[10px] font-medium bg-ax-red/10 border-ax-red/30 text-ax-red">
+                ⚠️ Gecikti
+              </span>
+            )}
+            {getDeadlineStatus(task.due, task.status) === 'today' && (
+              <span className="px-1.5 py-0.5 rounded border text-[10px] font-medium bg-ax-amber/10 border-ax-amber/30 text-ax-amber">
+                🟡 Bugün
+              </span>
+            )}
           </div>
           <p className={`text-sm font-medium mt-0.5 ${task.status === 'done' ? 'line-through text-ax-dim' : 'text-ax-heading'}`}>
             {task.title}

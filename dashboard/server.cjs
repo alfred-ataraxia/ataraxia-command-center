@@ -835,11 +835,13 @@ function handleRequest(req, res) {
     '/api/orchestration/cost', '/api/orchestration/activity', '/api/orchestration/distribute',
     '/api/git/repos', '/api/ai-status',
     '/api/cron/count', '/api/system/crontab',
+    '/api/feedback',
+    '/api/approvals',
   ]
-  
+
   // Paths that start with these prefixes are also allowed without auth
   const skipAuthPrefixes = [
-    '/api/tasks/', '/api/git/repos', '/api/ai-status',
+    '/api/tasks/', '/api/git/repos', '/api/ai-status', '/api/approvals/',
   ]
   const isDefiReadOnly = url.startsWith('/api/defi/') && (req.method === 'GET' || req.method === 'HEAD')
   const isSkipAuth = skipAuthPaths.includes(url) || skipAuthPrefixes.some(p => url.startsWith(p)) || isDefiReadOnly
@@ -1633,6 +1635,116 @@ function handleRequest(req, res) {
     return
   }
 
+  // API: feedback — ajan çıktısı kalite puanı (👍/👎)
+  if (url === '/api/feedback') {
+    const feedbackFile = path.join(__dirname, '..', 'FEEDBACK.json')
+    if (req.method === 'GET') {
+      fs.readFile(feedbackFile, 'utf8', (err, data) => {
+        const fb = err ? { entries: [] } : (JSON.parse(data) || { entries: [] })
+        const week = new Date(); week.setDate(week.getDate() - 7)
+        const recent = (fb.entries || []).filter(e => new Date(e.at) >= week)
+        const pos = recent.filter(e => e.rating === 1).length
+        const neg = recent.filter(e => e.rating === -1).length
+        sendSuccess(res, { entries: (fb.entries || []).slice(-50), week: { pos, neg, total: recent.length } })
+      })
+      return
+    }
+    if (req.method === 'POST') {
+      let body = ''
+      req.on('data', c => { body += c })
+      req.on('end', () => {
+        try {
+          const { label, rating, note } = JSON.parse(body)
+          if (![1, -1].includes(rating)) return sendError(res, 400, 'rating must be 1 or -1')
+          fs.readFile(feedbackFile, 'utf8', (err, data) => {
+            const fb = err ? { entries: [] } : (JSON.parse(data) || { entries: [] })
+            fb.entries = fb.entries || []
+            fb.entries.push({ label: label || 'unknown', rating, note: (note || '').slice(0, 200), at: new Date().toISOString() })
+            fb.entries = fb.entries.slice(-500)
+            fs.writeFile(feedbackFile, JSON.stringify(fb, null, 2), () => sendSuccess(res, { ok: true }))
+          })
+        } catch { sendError(res, 400, 'Invalid JSON') }
+      })
+      return
+    }
+  }
+
+  // API: approval queue — ajan onay mekanizması
+  const approvalsFile = path.join(__dirname, '..', 'APPROVALS.json')
+  const loadApprovals = (cb) => fs.readFile(approvalsFile, 'utf8', (e, d) => cb(e ? { items: [] } : (JSON.parse(d) || { items: [] })))
+  const saveApprovals = (data, cb) => fs.writeFile(approvalsFile, JSON.stringify(data, null, 2), cb)
+
+  if (url === '/api/approvals' && req.method === 'GET') {
+    loadApprovals(data => {
+      const pending = data.items.filter(i => i.status === 'pending')
+      sendSuccess(res, { items: data.items.slice(-100), pending_count: pending.length })
+    })
+    return
+  }
+
+  if (url === '/api/approvals' && req.method === 'POST') {
+    let body = ''
+    req.on('data', c => { body += c })
+    req.on('end', () => {
+      try {
+        const { agent, action, details, risk } = JSON.parse(body)
+        if (!agent || !action) return sendError(res, 400, 'agent ve action zorunlu')
+        const item = {
+          id: `APR-${Date.now()}`,
+          agent: agent.slice(0, 50),
+          action: action.slice(0, 200),
+          details: (details || '').slice(0, 500),
+          risk: ['low', 'medium', 'high', 'critical'].includes(risk) ? risk : 'medium',
+          status: 'pending',
+          created_at: new Date().toISOString(),
+          resolved_at: null,
+          resolved_by: null,
+          note: null
+        }
+        loadApprovals(data => {
+          data.items.push(item)
+          data.items = data.items.slice(-200)
+          saveApprovals(data, () => {
+            sendSuccess(res, { id: item.id, status: 'pending' })
+            // Telegram bildirim
+            const riskEmoji = { low: '🟡', medium: '🟠', high: '🔴', critical: '🚨' }[item.risk] || '🟠'
+            const msg = `${riskEmoji} Onay Gerekli [${item.id}]\nAjan: ${item.agent}\nİşlem: ${item.action}${item.details ? `\nDetay: ${item.details}` : ''}\n\nDashboard → Onaylar sekmesi`
+            const tok = process.env.OPENCLAW_TELEGRAM_BOT_TOKEN || ''
+            if (tok) {
+              const https = require('https')
+              const params = new URLSearchParams({ chat_id: '963702150', text: msg })
+              https.request(`https://api.telegram.org/bot${tok}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }, () => {}).end(params.toString())
+            }
+          })
+        })
+      } catch { sendError(res, 400, 'Invalid JSON') }
+    })
+    return
+  }
+
+  const approvalItemMatch = url.match(/^\/api\/approvals\/(APR-\d+)$/)
+  if (approvalItemMatch && req.method === 'PATCH') {
+    let body = ''
+    req.on('data', c => { body += c })
+    req.on('end', () => {
+      try {
+        const { status, note } = JSON.parse(body)
+        if (!['approved', 'rejected'].includes(status)) return sendError(res, 400, 'status: approved veya rejected')
+        loadApprovals(data => {
+          const item = data.items.find(i => i.id === approvalItemMatch[1])
+          if (!item) return sendError(res, 404, 'Onay bulunamadı')
+          if (item.status !== 'pending') return sendError(res, 409, 'Zaten çözümlendi')
+          item.status = status
+          item.resolved_at = new Date().toISOString()
+          item.resolved_by = 'Sefa'
+          item.note = (note || '').slice(0, 200)
+          saveApprovals(data, () => sendSuccess(res, { id: item.id, status }))
+        })
+      } catch { sendError(res, 400, 'Invalid JSON') }
+    })
+    return
+  }
+
   // API: request logs
   if (url === '/api/request-logs') {
     const limit = parseInt(new URLSearchParams(req.url.split('?')[1] || '').get('limit') || '100', 10)
@@ -1967,6 +2079,15 @@ function handleRequest(req, res) {
             if (updates.preferred_model !== undefined) {
               task.preferred_model = ['claude', 'gemini'].includes(updates.preferred_model)
                 ? updates.preferred_model : 'claude'
+            }
+            if (updates.context !== undefined) {
+              task.context = (updates.context || '').toString().slice(0, 1000)
+            }
+            if (updates.retry_count !== undefined) {
+              task.retry_count = Math.max(0, parseInt(updates.retry_count) || 0)
+            }
+            if (updates.last_run_at !== undefined) {
+              task.last_run_at = updates.last_run_at || null
             }
 
             // Track status changes

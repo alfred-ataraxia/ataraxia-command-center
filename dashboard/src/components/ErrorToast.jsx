@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export default function ErrorToast({ message, type = 'error', onClose, duration = 5000 }) {
+export default function ErrorToast({ message, type = 'error', onClose, duration = 10000, onRetry = null }) {
   useEffect(() => {
     if (!duration) return
     const timer = setTimeout(onClose, duration)
@@ -24,6 +24,14 @@ export default function ErrorToast({ message, type = 'error', onClose, duration 
       </svg>
       <div className="flex-1">
         <p className="text-sm font-medium">{message}</p>
+        {onRetry && (
+          <button
+            onClick={() => { onRetry(); onClose() }}
+            className="mt-1.5 text-xs underline opacity-75 hover:opacity-100 transition"
+          >
+            Tekrar Dene
+          </button>
+        )}
       </div>
       <button
         onClick={onClose}

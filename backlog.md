@@ -14,63 +14,66 @@
 | B-027 | Session cleanup script broken — disk dolma riski | 2 | ✅ DONE 2026-04-25 | Robin analiz (session-retention-cleanup payload.kind mismatch) |
 | B-028 | Cron 3AM çakışması — alfred-backup + memory-dreaming aynı dakika | 1 | ✅ DONE 2026-04-25 | Robin analiz |
 | B-029 | video-frames SKILL.md Çince spam temizle + guide fix | 1 | ✅ DONE 2026-04-25 | Robin analiz (kırık skill) |
-| B-030 | Budget çelişkisi — 10-operating-rules $100 vs GUARDRAILS $50 kanonize et | 1 | ⏳ Bekliyor | Robin analiz |
-| B-031 | Morning briefing genişlet — uptime/container status/DeFi alert/pending task ekle | 2 | ⏳ Bekliyor | Robin analiz |
-| B-032 | Evening report hata bildirimi — sessiz başarısızlık yerine Telegram uyarısı | 1 | ⏳ Bekliyor | Robin analiz |
+| B-030 | Budget çelişkisi — 10-operating-rules $100 vs GUARDRAILS $50 kanonize et | 1 | ✅ DONE 2026-04-26 | memory/GUARDRAILS.md $50/$40 → $100 kanonik değere güncellendi |
+| B-031 | Morning briefing genişlet — uptime/container status/DeFi alert/pending task ekle | 2 | ✅ DONE 2026-04-26 | Yeni 4 alan eklendi: uptime, docker, defi-apm, pending tasks |
+| B-032 | Evening report hata bildirimi — sessiz başarısızlık yerine Telegram uyarısı | 1 | ✅ DONE 2026-04-26 | trap ERR + curl hata bildirimi eklendi |
 
 ### ⚙️ OpenClaw Görev & Otomasyon
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
-| B-022 | Cron lock / skip-if-running — görev çakışma önleme (flock) | 1 | ⏳ Bekliyor | Paperclip → atomic task checkout |
-| B-023 | Ajan audit log — çalışma geçmişi (kim/ne zaman/sonuç/süre) | 1 | ⏳ Bekliyor | Paperclip → audit trail |
-| B-024 | Token / maliyet tracker — ajan başına aylık sayaç + Dashboard widget | 2 | ⏳ Bekliyor | Paperclip → per-agent budget |
-| B-025 | Genel approval queue — Dashboard'a genel onay mekanizması | 3 | ⏳ Bekliyor | Paperclip → governance workflow |
-| B-033 | Task timeout tanımı + overdue badge Dashboard'da | 2 | ⏳ Bekliyor | Robin analiz |
+| B-022 | Cron lock / skip-if-running — görev çakışma önleme (flock) | 1 | ✅ DONE 2026-04-26 | mercer check_email + morning-briefing flock'a geçirildi; memory-architect 02:30'a kaydırıldı |
+| B-023 | Ajan audit log — çalışma geçmişi (kim/ne zaman/sonuç/süre) | 1 | ✅ DONE 2026-04-26 | audit-log.sh + evening report entegrasyonu (OpenClaw SQLite zaten vardı) |
+| B-024 | Token / maliyet tracker — ajan başına aylık sayaç + Dashboard widget | 2 | ✅ DONE 2026-04-27 | token-audit.sh (SQLite duration proxy, 2M/hafta budget), cron 6h, /api/tokens besleniyor |
+| B-025 | Genel approval queue — Dashboard'a genel onay mekanizması | 3 | ✅ DONE 2026-04-27 | /api/approvals + APPROVALS.json + ApprovalsView.jsx, Sidebar'da "Onaylar" sekmesi |
+| B-055 | Feedback loop — ajan çıktısına kalite puanı (👍/👎) + haftalık özet | 2 | ✅ DONE 2026-04-27 | /api/feedback endpoint + FEEDBACK.json, evening report haftalık özet |
+| B-056 | Agent runtime state machine — TASKS.json'a state/context carryover | 2 | ✅ DONE 2026-04-27 | server.cjs: context/retry_count/last_run_at alanları PATCH endpoint'e eklendi |
+| B-057 | Worktree task isolation — kritik görevler için ayrı Git branch | 2 | ✅ DONE 2026-04-27 | task-worktree.sh: create/merge/clean/list komutları, alfred-hub git repo |
+| B-033 | Task timeout tanımı + overdue badge Dashboard'da | 2 | ✅ DONE 2026-04-26 | TaskQueue.jsx — getDeadlineStatus + "Gecikti"/"Bugün" badge eklendi |
 | B-034 | Delivery mode cleanup — backup/archive/cleanup job'larını sessizleştir | 1 | ✅ DONE 2026-04-25 | Robin analiz (7 job mode:none yapılacak) |
 | B-035 | mercer-email-check sıklık azalt — */5 dk → */15 dk | 1 | ✅ DONE 2026-04-25 | Robin analiz (CPU tasarrufu) |
-| B-036 | Task Brain entegrasyonu — SQLite-backed unified task ledger | 3 | ⏳ Bekliyor | OpenClaw 2026.3.31 yeni özellik |
-| B-037 | Alfred task runner → gerçek ajan çağırma (simülasyon modundan çıkış) | 3 | ⏳ Bekliyor | Robin analiz (task-runner.sh TODO) |
+| B-036 | Task Brain entegrasyonu — SQLite-backed unified task ledger | 3 | ❌ GEÇERSİZ 2026-04-27 | task-brain komutu yok; runs.sqlite + openclaw tasks zaten tam çalışıyor |
+| B-037 | Alfred task runner → gerçek ajan çağırma (simülasyon modundan çıkış) | 3 | ✅ DONE 2026-04-27 | task-runner.sh → openclaw cron run alfred-task-runner (on-demand tetikleme) |
 | S6-02 | Sistem geneli backlog oturumu (Alfred/MAIT/HA/Homepage) | 3 | ⏳ Bekliyor — Sefa+Claude | — |
 
 ### 📊 Dashboard & Görünürlük
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
-| B-033 | DailySummary silent failure → error state + retry butonu | 2 | ⏳ Bekliyor | Robin analiz |
-| B-038 | AgentStatus fallback — "cache" badge + manual retry butonu | 1 | ⏳ Bekliyor | Robin analiz |
-| B-039 | Toast hata mesajları — 10s süre + "Tekrar Dene" butonu | 1 | ⏳ Bekliyor | Robin analiz |
+| B-033 | DailySummary silent failure → error state + retry butonu | 2 | ✅ DONE 2026-04-27 | error state + "Tekrar Dene" butonu, useCallback ile fetch yenileme |
+| B-038 | AgentStatus fallback — "cache" badge + manual retry butonu | 1 | ✅ DONE 2026-04-26 | cached state + "📦 Önbellek" badge + başlıkta manuel retry butonu |
+| B-039 | Toast hata mesajları — 10s süre + "Tekrar Dene" butonu | 1 | ✅ DONE 2026-04-26 | 5s→10s, onRetry callback + "Tekrar Dene" linki |
 | B-026 | Market verisi canlı kaynak iyileştirme — CoinGecko rate limit fallback | 1 | ✅ DONE 2026-04-25 | Dashboard health check |
 
 ### 🧠 Skill & Hafıza Yönetimi
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
-| B-040 | Skill registry INDEX.md oluştur — mevcut 14 skill dizini + bağımlılıklar | 2 | ⏳ Bekliyor | Robin analiz (skill discovery eksik) |
+| B-040 | Skill registry INDEX.md oluştur — mevcut 14 skill dizini + bağımlılıklar | 2 | ✅ DONE 2026-04-27 | ~/.openclaw/workspace/skills/INDEX.md — 13 skill, durum + bağımlılıklar |
 | B-041 | Alfred SOUL.md oluştur — kimlik, hafıza kuralları, rol tanımı | 1 | ✅ DONE 2026-04-25 | Robin analiz (SOUL.md eksik) |
-| B-042 | MAIT + Mercer SOUL.md oluştur | 1 | ⏳ Bekliyor | Robin analiz |
+| B-042 | MAIT + Mercer SOUL.md oluştur | 1 | ✅ DONE 2026-04-26 | Alfred referans yapısı ile genişletildi (6 bölüm) |
 | B-043 | shared-notes.md rotation script — 7 günden eski → archive/ (haftalık cron) | 2 | ✅ DONE 2026-04-25 | Robin analiz (216 satır → büyüyor) |
-| B-044 | Memory dosya çakışmaları birleştir — 31-dashboard vs 40-active, 20-landscape vs 32-tools | 2 | ⏳ Bekliyor | Robin analiz |
-| B-045 | CLAUDE.md / CODEX.md redundancy sil — AGENTS.md canonical kalacak | 1 | ⏳ Bekliyor | Robin analiz |
-| B-046 | healthcheck-ready stub sil veya implement et | 1 | ⏳ Bekliyor | Robin analiz (boş scaffold) |
+| B-044 | Memory dosya çakışmaları birleştir — 31-dashboard vs 40-active, 20-landscape vs 32-tools | 2 | ✅ DONE 2026-04-26 | Çakışma yok; README güncellendi + cross-ref eklendi |
+| B-045 | CLAUDE.md / CODEX.md redundancy sil — AGENTS.md canonical kalacak | 1 | ❌ GEÇERSİZ 2026-04-26 | CLAUDE.md Claude Code proje talimatı — silinmemeli |
+| B-046 | healthcheck-ready stub sil veya implement et | 1 | ✅ DONE 2026-04-26 | bc→awk fix, 468G hardcode kaldırıldı, memory fix |
 
 ### ⚡ RPi Performans Optimizasyonu
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
-| B-047 | memorySearch.local.contextSize: 4096 → 2048 — RAM tasarrufu | 1 | ⏳ Bekliyor | Robin best practice |
+| B-047 | memorySearch.local.contextSize: 4096 → 2048 — RAM tasarrufu | 1 | ❌ GEÇERSİZ 2026-04-26 | openclaw.json'da bu alan yok; heartbeat.lightContext:true zaten aktif |
 | B-048 | NODE_OPTIONS --max-old-space-size=512 — OOM kill önleme | 1 | ✅ DONE 2026-04-25 | Robin best practice |
-| B-049 | Model routing stratejisi — rutin job'lar haiku, karmaşık claude-sonnet | 2 | ⏳ Bekliyor | Robin best practice (token maliyet %60 düşer) |
-| B-050 | Session yönetimi — retention süresini kıs (14→7 gün), index ekle | 3 | ⏳ Bekliyor | Robin analiz (742MB session dosyaları) |
+| B-049 | Model routing stratejisi — rutin job'lar haiku, karmaşık claude-sonnet | 2 | ✅ DONE 2026-04-27 | 3 agentTurn→exec (backup+archive+session-retention), LLM sıfır |
+| B-050 | Session yönetimi — retention süresini kıs (14→7 gün), index ekle | 3 | ✅ DONE 2026-04-27 | session-retention.sh: +14→+7 (archive), +30→+14 (sil) |
 
 ### 🔌 Yeni Skill Entegrasyonları
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
-| B-051 | system-monitor skill — CPU/RAM/disk eşik aşılınca Telegram uyarısı | 1 | ⏳ Bekliyor | Robin best practice |
-| B-052 | calendar-sync skill — Google Calendar → morning briefing entegrasyonu | 1 | ⏳ Bekliyor | Robin best practice |
-| B-053 | home-assistant-control skill — MAIT için HA entity okuma/yazma | 2 | ⏳ Bekliyor | Robin best practice |
-| B-054 | agent-session-memory skill — session sıkıştırma + context kayıpsız devam | 2 | ⏳ Bekliyor | OpenClaw ecosystem |
+| B-051 | system-monitor skill — CPU/RAM/disk eşik aşılınca Telegram uyarısı | 1 | ✅ DONE 2026-04-27 | cron/system-monitor.sh + OpenClaw cron */15, cooldown 2h |
+| B-052 | calendar-sync skill — Google Calendar → morning briefing entegrasyonu | 1 | 🔒 BLOKE 2026-04-27 | gog CLI kurulu değil, OAuth gerekli — önce `gog` kurulumu yapılmalı |
+| B-053 | home-assistant-control skill — MAIT için HA entity okuma/yazma | 2 | ✅ DONE 2026-04-27 | ha-check.sh (person+battery), MAIT HEARTBEAT güncellendi |
+| B-054 | agent-session-memory skill — session sıkıştırma + context kayıpsız devam | 2 | ❌ GEÇERSİZ 2026-04-27 | session-memory hook zaten aktif; alfred.sqlite 52MB, dreaming sistemi çalışıyor |
 
 ### 🏦 DeFi APM
 

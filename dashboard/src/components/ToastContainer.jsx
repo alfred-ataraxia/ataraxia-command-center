@@ -5,9 +5,9 @@ import { ToastContext } from './useToast'
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([])
 
-  const addToast = useCallback((message, type = 'error', duration = 5000) => {
+  const addToast = useCallback((message, type = 'error', duration = 10000, onRetry = null) => {
     const id = Date.now()
-    setToasts(prev => [...prev, { id, message, type, duration }])
+    setToasts(prev => [...prev, { id, message, type, duration, onRetry }])
     return id
   }, [])
 
@@ -25,6 +25,7 @@ export function ToastProvider({ children }) {
             message={toast.message}
             type={toast.type}
             duration={toast.duration}
+            onRetry={toast.onRetry}
             onClose={() => removeToast(toast.id)}
           />
         ))}

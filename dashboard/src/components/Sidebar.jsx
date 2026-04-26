@@ -8,6 +8,7 @@ import {
   Timer,
   BrainCircuit,
   TrendingUp,
+  ShieldCheck,
   Menu,
   X,
 } from 'lucide-react'
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { id: 'tasks',      label: 'Görevler',  icon: ListTodo },
   { id: 'agents',     label: 'Ajanlar',   icon: Bot },
   { id: 'automation', label: 'Otomasyon', icon: Timer },
+  { id: 'approvals',  label: 'Onaylar',   icon: ShieldCheck },
   { id: 'memory',     label: 'Hafıza',    icon: BrainCircuit },
   { id: 'logs',       label: 'Logs',      icon: ScrollText },
   { id: 'defi',       label: 'DeFi APM',  icon: TrendingUp },

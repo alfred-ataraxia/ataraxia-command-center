@@ -11,8 +11,8 @@ fi
 
 mkdir -p "$ARCHIVE_DIR"
 
-find "$SESSIONS_DIR" -maxdepth 1 -type f -mtime +14 -print0 | while IFS= read -r -d '' file; do
+find "$SESSIONS_DIR" -maxdepth 1 -type f -mtime +7 -print0 | while IFS= read -r -d '' file; do
   mv -f "$file" "$ARCHIVE_DIR/"
 done
 
-find "$ARCHIVE_DIR" -type f -mtime +30 -delete
+find "$ARCHIVE_DIR" -type f -mtime +14 -delete
