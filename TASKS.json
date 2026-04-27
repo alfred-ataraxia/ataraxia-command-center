@@ -1,9 +1,41 @@
 {
   "tasks": [
     {
+      "id": "T-060",
+      "tags": [
+        "cron",
+        "vault",
+        "maintenance"
+      ],
+      "assignee": "Alfred",
+      "description": "Pazar aksamlari (21:00) ~/alfred-hub/scripts/vault-sync.sh --weekly calisacak sekilde sistemi ayarla.",
+      "created_at": "2026-04-27T19:43:10+03:00",
+      "status": "done",
+      "title": "B-072: vault-sync.sh --weekly cron tanimilamasi",
+      "priority": "medium",
+      "notes": [
+        "Gemini tarafindan B-072 kapsaminda atanmistir.",
+        "vault-sync-weekly cron job eklendi. jobs.json'a Pazar 21:00 UTC+3 schedule tanimlandi. --weekly mode dagitildi (weekly review + vault health report). Ilk run: 2026-05-03 21:00."
+      ],
+      "started_at": "2026-04-27T20:04:51.284315+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-27T20:04:51.284315+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-27T20:05:41.542001+03:00"
+        }
+      ],
+      "completed_at": "2026-04-27T20:05:41.542001+03:00"
+    },
+    {
       "id": "T-057",
-      "title": "B-052: calendar-sync skill — Google Calendar → morning briefing entegrasyonu",
-      "description": "Prereq: gog CLI kurulumu + OAuth (Google Calendar). Network/OAuth adımlarında Master Sefa onayı gerekecek.",
+      "title": "B-052: calendar-sync skill â€” Google Calendar â†’ morning briefing entegrasyonu",
+      "description": "Prereq: gog CLI kurulumu + OAuth (Google Calendar). Network/OAuth adÄ±mlarÄ±nda Master Sefa onayÄ± gerekecek.",
       "status": "done",
       "priority": "medium",
       "assignee": "Codex",
@@ -17,7 +49,7 @@
       "notes": [
         "Kanonik backlog: ~/alfred-hub/command-center/backlog.md B-052",
         "Blokaj: gog yok + OAuth gerekiyor.",
-        "Morning briefing’e takvim bloğu eklendi; gog+OAuth kurulunca otomatik dolacak."
+        "Morning briefingâ€™e takvim bloÄŸu eklendi; gog+OAuth kurulunca otomatik dolacak."
       ],
       "started_at": "2026-04-27T11:14:03.647844+03:00",
       "status_history": [
@@ -36,8 +68,8 @@
     },
     {
       "id": "T-058",
-      "title": "B-020: DeFi APM Faz 3 — Autopilot on-chain execution hazırlığı",
-      "description": "Cüzdan + private key setup gerektiriyor (secrets). Codex yalnızca anahtar gerektirmeyen hazırlık işlerini yapabilir; key/seed operasyonu Master Sefa onayıyla ilerlemeli.",
+      "title": "B-020: DeFi APM Faz 3 â€” Autopilot on-chain execution hazÄ±rlÄ±ÄŸÄ±",
+      "description": "CÃ¼zdan + private key setup gerektiriyor (secrets). Codex yalnÄ±zca anahtar gerektirmeyen hazÄ±rlÄ±k iÅŸlerini yapabilir; key/seed operasyonu Master Sefa onayÄ±yla ilerlemeli.",
       "status": "done",
       "priority": "high",
       "assignee": "Codex",
@@ -50,8 +82,8 @@
       "created_at": "2026-04-27T10:58:09+03:00",
       "notes": [
         "Kanonik backlog: ~/alfred-hub/command-center/backlog.md B-020",
-        "Ön koşul: cüzdan/anahtar kurulumu (secret paylaşımı yok).",
-        "Tamamlandı"
+        "Ã–n koÅŸul: cÃ¼zdan/anahtar kurulumu (secret paylaÅŸÄ±mÄ± yok).",
+        "TamamlandÄ±"
       ],
       "started_at": "2026-04-27T11:07:33.796836+03:00",
       "status_history": [
@@ -82,7 +114,7 @@
     },
     {
       "id": "T-CRON-TEST",
-      "title": "Sistem durumu özetle",
+      "title": "Sistem durumu Ã¶zetle",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -93,12 +125,12 @@
       "created_at": "2026-04-14T01:35:26+03:00",
       "completed_at": "2026-04-14T01:36:00+03:00",
       "notes": [
-        "6 Docker container çalışıyor: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. RAM: 1.8/3.7Gi. Disk: 30G/231G, %14."
+        "6 Docker container Ã§alÄ±ÅŸÄ±yor: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. RAM: 1.8/3.7Gi. Disk: 30G/231G, %14."
       ]
     },
     {
       "id": "T-003",
-      "title": "Görev Silmek",
+      "title": "GÃ¶rev Silmek",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -119,7 +151,7 @@
       "created_at": "2026-04-13T23:26:49+03:00",
       "completed_at": "2026-04-13T23:30:00+03:00",
       "notes": [
-        "Test görevi tamamlandı."
+        "Test gÃ¶revi tamamlandÄ±."
       ]
     },
     {
@@ -132,13 +164,13 @@
       "created_at": "2026-04-13T23:27:32+03:00",
       "completed_at": "2026-04-14T00:00:00+03:00",
       "notes": [
-        "handleDeleteConfirm'de skipConfirm=true eklendi, çift dialog sorunu giderildi."
+        "handleDeleteConfirm'de skipConfirm=true eklendi, Ã§ift dialog sorunu giderildi."
       ]
     },
     {
       "id": "T-010",
-      "title": "~/alfred-hub/logs/ içindeki eski log dosyalarını temizle",
-      "description": "~/alfred-hub/logs/ dizinindeki log dosyalarını listele. 7 günden eski ve boyutu 1MB'ı geçen dosyaları truncate et (sil değil, sadece boşalt: > dosya.log). Hangi dosyalara ne yaptığını raporla.",
+      "title": "~/alfred-hub/logs/ iÃ§indeki eski log dosyalarÄ±nÄ± temizle",
+      "description": "~/alfred-hub/logs/ dizinindeki log dosyalarÄ±nÄ± listele. 7 gÃ¼nden eski ve boyutu 1MB'Ä± geÃ§en dosyalarÄ± truncate et (sil deÄŸil, sadece boÅŸalt: > dosya.log). Hangi dosyalara ne yaptÄ±ÄŸÄ±nÄ± raporla.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -151,18 +183,18 @@
       "completed_at": "2026-04-14T09:01:00Z",
       "points": 1,
       "notes": [
-        "9 log dosyası tarandı. 7 günden eski dosya yok (en eskisi Apr 12, ~2 günlük). 1MB'dan büyük dosya yok (en büyüğü task-runner.log: 262KB). Temizlik gerektiren dosya bulunamadı."
+        "9 log dosyasÄ± tarandÄ±. 7 gÃ¼nden eski dosya yok (en eskisi Apr 12, ~2 gÃ¼nlÃ¼k). 1MB'dan bÃ¼yÃ¼k dosya yok (en bÃ¼yÃ¼ÄŸÃ¼ task-runner.log: 262KB). Temizlik gerektiren dosya bulunamadÄ±."
       ]
     },
     {
       "id": "T-011",
-      "title": "Scrum backlog'unu analiz et ve önceliklendir",
-      "description": "~/scrum/backlog.md dosyasını oku. Mevcut görevleri değerlendir: hangisi en kritik, hangisi çakışıyor, hangi görev önce yapılmalı? Kısa bir önceliklendirme raporu yaz ve ~/scrum/backlog.md dosyasının sonuna 'Alfred Analizi — [tarih]' başlığıyla ekle.",
+      "title": "Scrum backlog'unu analiz et ve Ã¶nceliklendir",
+      "description": "~/scrum/backlog.md dosyasÄ±nÄ± oku. Mevcut gÃ¶revleri deÄŸerlendir: hangisi en kritik, hangisi Ã§akÄ±ÅŸÄ±yor, hangi gÃ¶rev Ã¶nce yapÄ±lmalÄ±? KÄ±sa bir Ã¶nceliklendirme raporu yaz ve ~/scrum/backlog.md dosyasÄ±nÄ±n sonuna 'Alfred Analizi â€” [tarih]' baÅŸlÄ±ÄŸÄ±yla ekle.",
       "status": "done",
       "started_at": "2026-04-14T09:30:00Z",
       "completed_at": "2026-04-14T09:31:00Z",
       "notes": [
-        "backlog.md analiz edildi. Sprint 1 işleri (B-001, B-002) durumu belirsiz — netleştirilmeli. Kritik öncelik: B-009 (.env) ve B-003 (Go workspace). Güvenlik: B-015 + B-016 birlikte yapılmalı. N-002 ve N-007 çakışıyor — biri seçilmeli. Sprint 2 önerisi: B-009, B-003, B-015+B-016, B-005+B-019 sırasıyla."
+        "backlog.md analiz edildi. Sprint 1 iÅŸleri (B-001, B-002) durumu belirsiz â€” netleÅŸtirilmeli. Kritik Ã¶ncelik: B-009 (.env) ve B-003 (Go workspace). GÃ¼venlik: B-015 + B-016 birlikte yapÄ±lmalÄ±. N-002 ve N-007 Ã§akÄ±ÅŸÄ±yor â€” biri seÃ§ilmeli. Sprint 2 Ã¶nerisi: B-009, B-003, B-015+B-016, B-005+B-019 sÄ±rasÄ±yla."
       ],
       "priority": "medium",
       "assignee": "Alfred",
@@ -175,13 +207,13 @@
     },
     {
       "id": "T-012",
-      "title": "Alfred hafıza dosyalarını gözden geçir ve eskimiş notları güncelle",
-      "description": "~/.claude/projects/-home-sefa/memory/ dizinindeki tüm .md dosyalarını oku. İçerik olarak güncelliğini yitirmiş, çelişkili veya hatalı bilgi içeren dosyaları tespit et. Her dosya için 'güncellenmeli / güncel / silinmeli' kararını ver ve kısa bir rapor çıkar. Değişiklik yapma, sadece analiz et ve raporla.",
+      "title": "Alfred hafÄ±za dosyalarÄ±nÄ± gÃ¶zden geÃ§ir ve eskimiÅŸ notlarÄ± gÃ¼ncelle",
+      "description": "~/.claude/projects/-home-sefa/memory/ dizinindeki tÃ¼m .md dosyalarÄ±nÄ± oku. Ä°Ã§erik olarak gÃ¼ncelliÄŸini yitirmiÅŸ, Ã§eliÅŸkili veya hatalÄ± bilgi iÃ§eren dosyalarÄ± tespit et. Her dosya iÃ§in 'gÃ¼ncellenmeli / gÃ¼ncel / silinmeli' kararÄ±nÄ± ver ve kÄ±sa bir rapor Ã§Ä±kar. DeÄŸiÅŸiklik yapma, sadece analiz et ve raporla.",
       "status": "done",
       "started_at": "2026-04-14T10:00:00Z",
       "completed_at": "2026-04-14T10:02:00Z",
       "notes": [
-        "8 dosya analiz edildi. GÜNCEL (5): MEMORY.md, project_workflow.md, feedback_alfred_identity.md, feedback_claude_code_ops.md, feedback_token_budget.md. GÜNCELLENMELİ (2): project_gemini_fallback.md (OpenClaw rafa kalktı yazıyor ama sistem aktif, ayrıca ai-switch.sh stub olabilir), project_dashboard.md (T-087/T-088 referansları eski, mevcut görevler T-016'ya kadar). SİLİNEBİLİR (1): user_sefa.md — MEMORY.md ve workspace/USER.md ile tamamen çakışıyor."
+        "8 dosya analiz edildi. GÃœNCEL (5): MEMORY.md, project_workflow.md, feedback_alfred_identity.md, feedback_claude_code_ops.md, feedback_token_budget.md. GÃœNCELLENMELÄ° (2): project_gemini_fallback.md (OpenClaw rafa kalktÄ± yazÄ±yor ama sistem aktif, ayrÄ±ca ai-switch.sh stub olabilir), project_dashboard.md (T-087/T-088 referanslarÄ± eski, mevcut gÃ¶revler T-016'ya kadar). SÄ°LÄ°NEBÄ°LÄ°R (1): user_sefa.md â€” MEMORY.md ve workspace/USER.md ile tamamen Ã§akÄ±ÅŸÄ±yor."
       ],
       "priority": "low",
       "assignee": "Alfred",
@@ -194,8 +226,8 @@
     },
     {
       "id": "T-013",
-      "title": "Docker servislerinin kaynak kullanımını raporla",
-      "description": "docker stats --no-stream komutuyla her container'ın anlık CPU ve RAM kullanımını al. En çok kaynak tüketen 3 container'ı belirle. Disk kullanımı için docker system df çalıştır. Sonuçları özetle.",
+      "title": "Docker servislerinin kaynak kullanÄ±mÄ±nÄ± raporla",
+      "description": "docker stats --no-stream komutuyla her container'Ä±n anlÄ±k CPU ve RAM kullanÄ±mÄ±nÄ± al. En Ã§ok kaynak tÃ¼keten 3 container'Ä± belirle. Disk kullanÄ±mÄ± iÃ§in docker system df Ã§alÄ±ÅŸtÄ±r. SonuÃ§larÄ± Ã¶zetle.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -208,13 +240,13 @@
       "completed_at": "2026-04-14T10:30:02+03:00",
       "points": 1,
       "notes": [
-        "6 container çalışıyor. CPU: homeassistant %1.61 (en yoğun), wireguard %0.16, nginx-proxy-manager %0.04. RAM (sistem geneli): 2.2Gi/3.7Gi used, 1.5Gi available. Docker disk: 5.88GB images, 60.36MB containers, 2 volumes. Tüm imageler %100 reclaimable."
+        "6 container Ã§alÄ±ÅŸÄ±yor. CPU: homeassistant %1.61 (en yoÄŸun), wireguard %0.16, nginx-proxy-manager %0.04. RAM (sistem geneli): 2.2Gi/3.7Gi used, 1.5Gi available. Docker disk: 5.88GB images, 60.36MB containers, 2 volumes. TÃ¼m imageler %100 reclaimable."
       ]
     },
     {
       "id": "T-014",
-      "title": "Evening report script'ini test et ve çalıştır",
-      "description": "~/alfred-hub/scripts/evening-report.sh scriptini oku. Script'in beklediği .env dosyasının mevcut olduğunu doğrula. Sonra scripti çalıştır: bash ~/alfred-hub/scripts/evening-report.sh. Telegram'a rapor gönderildi mi kontrol et ve sonucu bildir.",
+      "title": "Evening report script'ini test et ve Ã§alÄ±ÅŸtÄ±r",
+      "description": "~/alfred-hub/scripts/evening-report.sh scriptini oku. Script'in beklediÄŸi .env dosyasÄ±nÄ±n mevcut olduÄŸunu doÄŸrula. Sonra scripti Ã§alÄ±ÅŸtÄ±r: bash ~/alfred-hub/scripts/evening-report.sh. Telegram'a rapor gÃ¶nderildi mi kontrol et ve sonucu bildir.",
       "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
@@ -227,13 +259,13 @@
       "started_at": "2026-04-14T11:08:38.982141Z",
       "completed_at": "2026-04-14T11:08:51.938544Z",
       "notes": [
-        "Script ve .env dosyası doğrulandı. Script çalıştırıldı ve Telegram'a akşam raporu gönderildi (14:08). JSON hatası yok."
+        "Script ve .env dosyasÄ± doÄŸrulandÄ±. Script Ã§alÄ±ÅŸtÄ±rÄ±ldÄ± ve Telegram'a akÅŸam raporu gÃ¶nderildi (14:08). JSON hatasÄ± yok."
       ]
     },
     {
       "id": "T-015",
       "title": "WireGuard VPN durumunu kontrol et",
-      "description": "sudo wg show komutuyla WireGuard arayüzünün aktif olup olmadığını kontrol et. Kaç peer bağlı, son el sıkışma ne zaman? Docker container'da mı yoksa systemd'de mi çalışıyor? Kısa rapor çıkar.",
+      "description": "sudo wg show komutuyla WireGuard arayÃ¼zÃ¼nÃ¼n aktif olup olmadÄ±ÄŸÄ±nÄ± kontrol et. KaÃ§ peer baÄŸlÄ±, son el sÄ±kÄ±ÅŸma ne zaman? Docker container'da mÄ± yoksa systemd'de mi Ã§alÄ±ÅŸÄ±yor? KÄ±sa rapor Ã§Ä±kar.",
       "status": "done",
       "priority": "low",
       "assignee": "Alfred",
@@ -245,23 +277,23 @@
       "points": 1,
       "completed_at": "2026-04-14T11:30:00+03:00",
       "notes": [
-        "Docker container (linuxserver/wireguard) olarak çalışıyor, 46 saattir up. wg0 arayüzü: port 51820. 3 peer var — sadece 1 tanesi aktif (endpoint: 46.104.31.200:25720, son handshake: ~3 dk önce, 2.07 GiB gönderilmiş, 68 MiB alınmış). Diğer 2 peer (10.13.13.3 ve 10.13.13.4) endpoint olmadan pasif konfigürasyon."
+        "Docker container (linuxserver/wireguard) olarak Ã§alÄ±ÅŸÄ±yor, 46 saattir up. wg0 arayÃ¼zÃ¼: port 51820. 3 peer var â€” sadece 1 tanesi aktif (endpoint: 46.104.31.200:25720, son handshake: ~3 dk Ã¶nce, 2.07 GiB gÃ¶nderilmiÅŸ, 68 MiB alÄ±nmÄ±ÅŸ). DiÄŸer 2 peer (10.13.13.3 ve 10.13.13.4) endpoint olmadan pasif konfigÃ¼rasyon."
       ]
     },
     {
       "id": "T-016",
       "title": "Pi-hole istatistiklerini raporla",
-      "description": "Pi-hole API'sini kullanarak bugünkü DNS istatistiklerini al: toplam sorgu sayısı, engellenen sorgu sayısı ve engelleme oranı. Pi-hole localhost:80 veya farklı bir portta çalışıyor olabilir, önce Docker ile kontrol et. Sonuçları özetle.",
+      "description": "Pi-hole API'sini kullanarak bugÃ¼nkÃ¼ DNS istatistiklerini al: toplam sorgu sayÄ±sÄ±, engellenen sorgu sayÄ±sÄ± ve engelleme oranÄ±. Pi-hole localhost:80 veya farklÄ± bir portta Ã§alÄ±ÅŸÄ±yor olabilir, Ã¶nce Docker ile kontrol et. SonuÃ§larÄ± Ã¶zetle.",
       "status": "done",
       "completed_at": "2026-04-14T12:00:00Z",
       "notes": [
-        "Bugun (2026-04-14): Toplam sorgu 23,093 — Engellenen 3,987 — Engelleme orani %17.3. Top 5 engellenen domain: dit.whatsapp.net (417), app-analytics-services.com (394), datadoghq.com (370), graph.facebook.com (320), xp.apple.com (316). Pi-hole DNS port 53'te calisiyor, telnet API localhost:5335'te."
+        "Bugun (2026-04-14): Toplam sorgu 23,093 â€” Engellenen 3,987 â€” Engelleme orani %17.3. Top 5 engellenen domain: dit.whatsapp.net (417), app-analytics-services.com (394), datadoghq.com (370), graph.facebook.com (320), xp.apple.com (316). Pi-hole DNS port 53'te calisiyor, telnet API localhost:5335'te."
       ]
     },
     {
       "id": "T-020",
-      "title": "OpenClaw RAM kullanımını analiz et",
-      "description": "openclaw-gateway prosesi %41 RAM (1.5GB+) kullanıyor. Şunu yap: 1) ps aux ile openclaw-gateway PID ve tam bellek kullanımını bul, 2) pmap veya /proc/PID/status ile bellek detayına bak, 3) Bu normal mi yoksa leak mi? Eğer uptime 2 günden fazlaysa ve RAM sürekli artıyorsa restart öner. Sonucu özetle: normal/anormal, aksiyon gerekiyor mu?",
+      "title": "OpenClaw RAM kullanÄ±mÄ±nÄ± analiz et",
+      "description": "openclaw-gateway prosesi %41 RAM (1.5GB+) kullanÄ±yor. Åunu yap: 1) ps aux ile openclaw-gateway PID ve tam bellek kullanÄ±mÄ±nÄ± bul, 2) pmap veya /proc/PID/status ile bellek detayÄ±na bak, 3) Bu normal mi yoksa leak mi? EÄŸer uptime 2 gÃ¼nden fazlaysa ve RAM sÃ¼rekli artÄ±yorsa restart Ã¶ner. Sonucu Ã¶zetle: normal/anormal, aksiyon gerekiyor mu?",
       "assignee": "Alfred",
       "status": "done",
       "priority": "high",
@@ -270,28 +302,28 @@
       "started_at": "2026-04-14T18:30:00+03:00",
       "completed_at": "2026-04-14T18:30:00+03:00",
       "notes": [
-        "VmRSS: 1.54GB, VmData: 1.69GB. Sistem uptime: 2 gün 1.5 saat. RAMused: 2586/3795MB, available: 1208MB. openclaw-gateway ~42% RAM tüketiyor. 2 günlük uptime boyunca bellek sabit — leak yok. Normal V8/Node.js heap davranışı. Aksiyon gerekmiyor."
+        "VmRSS: 1.54GB, VmData: 1.69GB. Sistem uptime: 2 gÃ¼n 1.5 saat. RAMused: 2586/3795MB, available: 1208MB. openclaw-gateway ~42% RAM tÃ¼ketiyor. 2 gÃ¼nlÃ¼k uptime boyunca bellek sabit â€” leak yok. Normal V8/Node.js heap davranÄ±ÅŸÄ±. Aksiyon gerekmiyor."
       ]
     },
     {
       "id": "T-021",
-      "title": "Sprint-03 durumunu gerçek verilerle güncelle",
-      "description": "Şu iki dosyayı oku: /home/sefa/scrum/sprints/sprint-03.md ve /home/sefa/alfred-hub/command-center/TASKS.json. TASKS.json'daki done görevleri sprint-03.md ile karşılaştır. Sprint-03 görevlerini (S3-01..S3-07) gerçek tamamlanma durumuna göre güncelle. Dosyayı kaydet. Hangi görevler tamamlandı, hangileri hâlâ açık — özet ver.",
+      "title": "Sprint-03 durumunu gerÃ§ek verilerle gÃ¼ncelle",
+      "description": "Åu iki dosyayÄ± oku: /home/sefa/scrum/sprints/sprint-03.md ve /home/sefa/alfred-hub/command-center/TASKS.json. TASKS.json'daki done gÃ¶revleri sprint-03.md ile karÅŸÄ±laÅŸtÄ±r. Sprint-03 gÃ¶revlerini (S3-01..S3-07) gerÃ§ek tamamlanma durumuna gÃ¶re gÃ¼ncelle. DosyayÄ± kaydet. Hangi gÃ¶revler tamamlandÄ±, hangileri hÃ¢lÃ¢ aÃ§Ä±k â€” Ã¶zet ver.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
       "points": 2,
       "created_at": "2026-04-14T15:10:00+03:00",
       "notes": [
-        "Sprint-03 backlog analiz edildi: TASKS.json'daki hiçbir done görev (T-010..T-016, T-020) S3-01..S3-07 backlog kalemleriyle eslesmiyor. Sprint-03'taki 7 görevün tamamı hâlâ 'Bekliyor' durumunda. sprint-03.md dosyasında herhangi bir degisiklik gerektiren bir tutarsizlik yok — mevcut durum zaten dogru."
+        "Sprint-03 backlog analiz edildi: TASKS.json'daki hiÃ§bir done gÃ¶rev (T-010..T-016, T-020) S3-01..S3-07 backlog kalemleriyle eslesmiyor. Sprint-03'taki 7 gÃ¶revÃ¼n tamamÄ± hÃ¢lÃ¢ 'Bekliyor' durumunda. sprint-03.md dosyasÄ±nda herhangi bir degisiklik gerektiren bir tutarsizlik yok â€” mevcut durum zaten dogru."
       ],
       "started_at": "2026-04-14T19:03:42+03:00",
       "completed_at": "2026-04-14T19:03:42+03:00"
     },
     {
       "id": "T-022",
-      "title": "master-memory aktif çalışma bağlamını güncelle",
-      "description": "/home/sefa/master-memory/40-active-work.md dosyasını oku. Sprint-03 durumu, son tamamlanan görevler (T-010..T-016 done), OpenClaw pipeline çalışıyor — bu bilgileri yansıt. Tarihleri güncelle. Dosyayı kaydet. Değiştirdiğin satırları özetle.",
+      "title": "master-memory aktif Ã§alÄ±ÅŸma baÄŸlamÄ±nÄ± gÃ¼ncelle",
+      "description": "/home/sefa/master-memory/40-active-work.md dosyasÄ±nÄ± oku. Sprint-03 durumu, son tamamlanan gÃ¶revler (T-010..T-016 done), OpenClaw pipeline Ã§alÄ±ÅŸÄ±yor â€” bu bilgileri yansÄ±t. Tarihleri gÃ¼ncelle. DosyayÄ± kaydet. DeÄŸiÅŸtirdiÄŸin satÄ±rlarÄ± Ã¶zetle.",
       "assignee": "Alfred",
       "status": "done",
       "completed_at": "2026-04-14T16:31:00+03:00",
@@ -303,37 +335,37 @@
     {
       "id": "T-023",
       "title": "Morning briefing script'ini dry-run ile test et",
-      "description": "/home/sefa/alfred-hub/scripts/morning-briefing.sh dosyasını oku. Script'in ne yapması gerektiğini anla. Gerçekten çalıştırma — bunun yerine: sistem verilerini kendin topla (tarih, uptime, RAM, disk, docker servis sayısı, hava wttr.in/Istanbul?format=%c+%t). Sabah brifing mesajı olarak ne yazılacağını formatla ve raporla. Telegram'a gönderme.",
+      "description": "/home/sefa/alfred-hub/scripts/morning-briefing.sh dosyasÄ±nÄ± oku. Script'in ne yapmasÄ± gerektiÄŸini anla. GerÃ§ekten Ã§alÄ±ÅŸtÄ±rma â€” bunun yerine: sistem verilerini kendin topla (tarih, uptime, RAM, disk, docker servis sayÄ±sÄ±, hava wttr.in/Istanbul?format=%c+%t). Sabah brifing mesajÄ± olarak ne yazÄ±lacaÄŸÄ±nÄ± formatla ve raporla. Telegram'a gÃ¶nderme.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "low",
       "points": 1,
       "created_at": "2026-04-14T15:10:00+03:00",
       "notes": [
-        "Dry-run test: Script okundu. Sistem verileri toplandı (14 Nisan 2026 Salı, uptime 2gün 3saat, load 0.50, RAM %76, disk %14, 6 Docker container). Hava wttr.in hatası — alınamadı. Brifing metni hazırlandı, Telegram'a gönderilmedi. Alfred'in 2 bekleyen görevi var (T-023, T-024)."
+        "Dry-run test: Script okundu. Sistem verileri toplandÄ± (14 Nisan 2026 SalÄ±, uptime 2gÃ¼n 3saat, load 0.50, RAM %76, disk %14, 6 Docker container). Hava wttr.in hatasÄ± â€” alÄ±namadÄ±. Brifing metni hazÄ±rlandÄ±, Telegram'a gÃ¶nderilmedi. Alfred'in 2 bekleyen gÃ¶revi var (T-023, T-024)."
       ],
       "started_at": "2026-04-14T20:00:00+03:00",
       "completed_at": "2026-04-14T20:00:02+03:00"
     },
     {
       "id": "T-024",
-      "title": "Docker servis sağlık anomali raporu",
-      "description": "docker ps ile tüm container'ları listele. Şunları kontrol et: 1) Status \"Up\" olmayan var mı? 2) Restart count yüksek olan var mı (docker inspect ile)? 3) 2 günden fazla uptime var mı (bu oturum normal, daha uzunsa şüpheli)? homeassistant, pihole, wireguard, nginx-proxy-manager, portainer, homepage, duckdns — hepsini kontrol et. Anomali yoksa \"Tüm servisler normal\" yaz, varsa detay ver.",
+      "title": "Docker servis saÄŸlÄ±k anomali raporu",
+      "description": "docker ps ile tÃ¼m container'larÄ± listele. ÅunlarÄ± kontrol et: 1) Status \"Up\" olmayan var mÄ±? 2) Restart count yÃ¼ksek olan var mÄ± (docker inspect ile)? 3) 2 gÃ¼nden fazla uptime var mÄ± (bu oturum normal, daha uzunsa ÅŸÃ¼pheli)? homeassistant, pihole, wireguard, nginx-proxy-manager, portainer, homepage, duckdns â€” hepsini kontrol et. Anomali yoksa \"TÃ¼m servisler normal\" yaz, varsa detay ver.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
       "points": 1,
       "created_at": "2026-04-14T15:10:00+03:00",
       "notes": [
-        "6 container kontrol edildi: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. Tüm servisler Up durumunda. Restart count tüm container'larda 0. 2 gün uptime (Apr 12 13:59 UTC'den) — sistemle tutarlı, şüpheli değil. Pihole container'ı bulunamadı (mevcut değil). Tüm servisler normal."
+        "6 container kontrol edildi: homeassistant, homepage, duckdns, wireguard, nginx-proxy-manager-app-1, portainer. TÃ¼m servisler Up durumunda. Restart count tÃ¼m container'larda 0. 2 gÃ¼n uptime (Apr 12 13:59 UTC'den) â€” sistemle tutarlÄ±, ÅŸÃ¼pheli deÄŸil. Pihole container'Ä± bulunamadÄ± (mevcut deÄŸil). TÃ¼m servisler normal."
       ],
       "started_at": "2026-04-14T20:30:00+03:00",
       "completed_at": "2026-04-14T20:30:00+03:00"
     },
     {
       "id": "T-030",
-      "title": "Overview'a İstanbul hava durumu widget'ı ekle",
-      "description": "Dashboard Overview bileşenine hava durumu widget'ı ekle. Adımlar: 1) /home/sefa/alfred-hub/command-center/dashboard/src/components/Overview.jsx dosyasını oku, 2) server.cjs'e /api/weather endpoint'i ekle — wttr.in/Istanbul?format=j1 JSON API'sini kullan, sıcaklık + durum + ikon dönsün, 3) Overview'da sağ üste küçük bir kart ekle: ikon, °C, durum metni. 15 dakikada bir güncelle (server-side cache). Dosyaları kaydet.",
+      "title": "Overview'a Ä°stanbul hava durumu widget'Ä± ekle",
+      "description": "Dashboard Overview bileÅŸenine hava durumu widget'Ä± ekle. AdÄ±mlar: 1) /home/sefa/alfred-hub/command-center/dashboard/src/components/Overview.jsx dosyasÄ±nÄ± oku, 2) server.cjs'e /api/weather endpoint'i ekle â€” wttr.in/Istanbul?format=j1 JSON API'sini kullan, sÄ±caklÄ±k + durum + ikon dÃ¶nsÃ¼n, 3) Overview'da saÄŸ Ã¼ste kÃ¼Ã§Ã¼k bir kart ekle: ikon, Â°C, durum metni. 15 dakikada bir gÃ¼ncelle (server-side cache). DosyalarÄ± kaydet.",
       "assignee": "Alfred",
       "status": "deleted",
       "priority": "medium",
@@ -350,38 +382,38 @@
     },
     {
       "id": "T-031",
-      "title": "Telegram raporlarını Markdown'a geçir",
-      "description": "Alfred'in mevcut Telegram raporları düz metin. Telegram Bot API Markdown v2 destekliyor. Şunu yap: 1) Bir sonraki görevden itibaren raporlarda *bold*, , ve emoji kullan, 2) Rapor şablonunu güncelle: görev ID'si bold, komut çıktıları code block içinde, özet düz metin. 3) Test olarak bu görevi tamamlarken formatlanmış mesaj gönder. jobs.json'daki prompt'u güncelle — yeni format talimatını ekle.",
+      "title": "Telegram raporlarÄ±nÄ± Markdown'a geÃ§ir",
+      "description": "Alfred'in mevcut Telegram raporlarÄ± dÃ¼z metin. Telegram Bot API Markdown v2 destekliyor. Åunu yap: 1) Bir sonraki gÃ¶revden itibaren raporlarda *bold*, , ve emoji kullan, 2) Rapor ÅŸablonunu gÃ¼ncelle: gÃ¶rev ID'si bold, komut Ã§Ä±ktÄ±larÄ± code block iÃ§inde, Ã¶zet dÃ¼z metin. 3) Test olarak bu gÃ¶revi tamamlarken formatlanmÄ±ÅŸ mesaj gÃ¶nder. jobs.json'daki prompt'u gÃ¼ncelle â€” yeni format talimatÄ±nÄ± ekle.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
       "points": 1,
       "created_at": "2026-04-14T20:00:00+03:00",
       "notes": [
-        "jobs.json alfred-task-runner payloaduna Markdown format talimati eklendi: *bold*, code block, emoji, 2-3 cumle özet, süre bilgisi. Rapor sablonu guncellendi."
+        "jobs.json alfred-task-runner payloaduna Markdown format talimati eklendi: *bold*, code block, emoji, 2-3 cumle Ã¶zet, sÃ¼re bilgisi. Rapor sablonu guncellendi."
       ],
       "started_at": "2026-04-14T21:02:54+03:00",
       "completed_at": "2026-04-14T21:03:15+03:00"
     },
     {
       "id": "T-032",
-      "title": "Dashboard task formuna öncelik ve due date ekle",
-      "description": "TaskQueue bileşenindeki görev ekleme formunu geliştir. Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/components/TaskQueue.jsx. Ekle: 1) Priority seçici (high/medium/low — renkli badge'ler), 2) Due date input (date picker, opsiyonel). server.cjs'deki POST /api/tasks endpoint'inin bu alanları TASKS.json'a yazmasını sağla. Tasarım: mevcut Tailwind stiliyle uyumlu, sade.",
+      "title": "Dashboard task formuna Ã¶ncelik ve due date ekle",
+      "description": "TaskQueue bileÅŸenindeki gÃ¶rev ekleme formunu geliÅŸtir. Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/components/TaskQueue.jsx. Ekle: 1) Priority seÃ§ici (high/medium/low â€” renkli badge'ler), 2) Due date input (date picker, opsiyonel). server.cjs'deki POST /api/tasks endpoint'inin bu alanlarÄ± TASKS.json'a yazmasÄ±nÄ± saÄŸla. TasarÄ±m: mevcut Tailwind stiliyle uyumlu, sade.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
       "points": 2,
       "created_at": "2026-04-14T20:00:00+03:00",
       "notes": [
-        "Priority seçici zaten mevcuttu (high/medium/low + emoji). Eksik olan due date inputu eklendi: <input type=date> ile takvim seçici, form submitine due alanı dahil edildi. server.cjs zaten due alanını destekliyordu. Değişiklik: sadece TaskQueue.jsx AddTaskForm."
+        "Priority seÃ§ici zaten mevcuttu (high/medium/low + emoji). Eksik olan due date inputu eklendi: <input type=date> ile takvim seÃ§ici, form submitine due alanÄ± dahil edildi. server.cjs zaten due alanÄ±nÄ± destekliyordu. DeÄŸiÅŸiklik: sadece TaskQueue.jsx AddTaskForm."
       ],
       "started_at": "2026-04-14T21:30:00+03:00",
       "completed_at": "2026-04-14T21:30:30+03:00"
     },
     {
       "id": "T-033",
-      "title": "Sabah brifing cron'u kur — 09:00'da Telegram'a",
-      "description": "jobs.json'a yeni bir cron job ekle: her sabah 09:00'da (Istanbul) çalışır. İçerik: tarih, hava durumu (wttr.in), pending görev sayısı, sistem özeti (RAM/disk), günün motivasyon cümlesi (sabit listeden rastgele seç). Format: Telegram Markdown, güzel, okunabilir. jobs.json dosyasını düzenle — mevcut alfred-task-runner'ı bozmadan yeni job ekle. Job ID: \"morning-briefing\".",
+      "title": "Sabah brifing cron'u kur â€” 09:00'da Telegram'a",
+      "description": "jobs.json'a yeni bir cron job ekle: her sabah 09:00'da (Istanbul) Ã§alÄ±ÅŸÄ±r. Ä°Ã§erik: tarih, hava durumu (wttr.in), pending gÃ¶rev sayÄ±sÄ±, sistem Ã¶zeti (RAM/disk), gÃ¼nÃ¼n motivasyon cÃ¼mlesi (sabit listeden rastgele seÃ§). Format: Telegram Markdown, gÃ¼zel, okunabilir. jobs.json dosyasÄ±nÄ± dÃ¼zenle â€” mevcut alfred-task-runner'Ä± bozmadan yeni job ekle. Job ID: \"morning-briefing\".",
       "assignee": "Alfred",
       "status": "deleted",
       "priority": "high",
@@ -398,21 +430,21 @@
     },
     {
       "id": "T-034",
-      "title": "Dashboard'a klavye kısayolları ekle",
-      "description": "App.jsx veya ayrı bir useKeyboard hook'u ile klavye navigasyonu ekle. Kısayollar: 1=Overview, 2=Tasks, 3=Agents, 4=Automation, 5=Memory, 6=Logs. Ayrıca ? tuşu küçük bir kısayol overlay'i açsın (modal). Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/App.jsx. Sade, input alanlarında devre dışı olsun (e.target.tagName check). Kısayol listesini komponentin altında yorum olarak bırak.",
+      "title": "Dashboard'a klavye kÄ±sayollarÄ± ekle",
+      "description": "App.jsx veya ayrÄ± bir useKeyboard hook'u ile klavye navigasyonu ekle. KÄ±sayollar: 1=Overview, 2=Tasks, 3=Agents, 4=Automation, 5=Memory, 6=Logs. AyrÄ±ca ? tuÅŸu kÃ¼Ã§Ã¼k bir kÄ±sayol overlay'i aÃ§sÄ±n (modal). Dosya: /home/sefa/alfred-hub/command-center/dashboard/src/App.jsx. Sade, input alanlarÄ±nda devre dÄ±ÅŸÄ± olsun (e.target.tagName check). KÄ±sayol listesini komponentin altÄ±nda yorum olarak bÄ±rak.",
       "assignee": "Alfred",
       "status": "deleted",
       "priority": "low",
       "points": 2,
       "created_at": "2026-04-14T20:00:00+03:00",
       "notes": [
-        "Klavye kısayolları React kodu gerektiriyor — Claude yapacak, Alfred değil."
+        "Klavye kÄ±sayollarÄ± React kodu gerektiriyor â€” Claude yapacak, Alfred deÄŸil."
       ]
     },
     {
       "id": "T-035",
-      "title": "Büyük dizin taraması — /home/sefa altında 100MB+ klasörler",
-      "description": "Disk israfını tespit et. Adımlar: 1) du -sh /home/sefa/* ile birinci seviye dizinleri sırala, 2) En büyük 5 dizini belirle, 3) Bu 5 dizinin içinde de bir seviye daha in (du -sh /dizin/*), 4) ~/.npm, ~/.cache, ~/.local/share gibi cache dizinleri var mı? 5) /home/sefa/go/pkg/mod ve /home/sefa/go/bin boyutlarını özellikle belirt. Temizlenebilecek şeyleri öneri olarak listele ama silme.",
+      "title": "BÃ¼yÃ¼k dizin taramasÄ± â€” /home/sefa altÄ±nda 100MB+ klasÃ¶rler",
+      "description": "Disk israfÄ±nÄ± tespit et. AdÄ±mlar: 1) du -sh /home/sefa/* ile birinci seviye dizinleri sÄ±rala, 2) En bÃ¼yÃ¼k 5 dizini belirle, 3) Bu 5 dizinin iÃ§inde de bir seviye daha in (du -sh /dizin/*), 4) ~/.npm, ~/.cache, ~/.local/share gibi cache dizinleri var mÄ±? 5) /home/sefa/go/pkg/mod ve /home/sefa/go/bin boyutlarÄ±nÄ± Ã¶zellikle belirt. Temizlenebilecek ÅŸeyleri Ã¶neri olarak listele ama silme.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
@@ -424,7 +456,7 @@
       ],
       "created_at": "2026-04-14T22:00:00+03:00",
       "notes": [
-        "Disk taraması tamamlandi. /home/sefa altında en büyük 5 dizin: go (924MB, 868MB pkg/mod + 56MB bin), alfred-hub (264MB, dashboard 259MB), openclaw-backups (27MB). Ev dizini cache'leri: ~/.npm 2.4GB, ~/.cache 2.1GB, pnpm store 5.7GB (toplam ~10GB cache). Temizlenebilir: pnpm store prune, npm cache clean --force, go clean -modcache (157MB cache alt dizini). Öneri: Dashboard klasörünü kontrol et (259MB), pnpm store en büyük israfçı."
+        "Disk taramasÄ± tamamlandi. /home/sefa altÄ±nda en bÃ¼yÃ¼k 5 dizin: go (924MB, 868MB pkg/mod + 56MB bin), alfred-hub (264MB, dashboard 259MB), openclaw-backups (27MB). Ev dizini cache'leri: ~/.npm 2.4GB, ~/.cache 2.1GB, pnpm store 5.7GB (toplam ~10GB cache). Temizlenebilir: pnpm store prune, npm cache clean --force, go clean -modcache (157MB cache alt dizini). Ã–neri: Dashboard klasÃ¶rÃ¼nÃ¼ kontrol et (259MB), pnpm store en bÃ¼yÃ¼k israfÃ§Ä±."
       ],
       "status_history": [
         {
@@ -443,8 +475,8 @@
     },
     {
       "id": "T-037",
-      "title": "Açık port ve dinleme servisler raporu",
-      "description": "Sistemde hangi portlar dışarıya açık? Adımlar: 1) ss -tlnp ile tüm TCP listen portlarını listele, 2) Her port için hangi servise ait olduğunu belirt (port 53=pihole, 80/443=npm, 4173=dashboard, 51820=wireguard, vb.), 3) Beklenmedik veya tanımlanamayan port var mı? 4) docker ps --format ile container port mappinglerini de göster. Özet: beklenen/beklenmeyen port listesi.",
+      "title": "AÃ§Ä±k port ve dinleme servisler raporu",
+      "description": "Sistemde hangi portlar dÄ±ÅŸarÄ±ya aÃ§Ä±k? AdÄ±mlar: 1) ss -tlnp ile tÃ¼m TCP listen portlarÄ±nÄ± listele, 2) Her port iÃ§in hangi servise ait olduÄŸunu belirt (port 53=pihole, 80/443=npm, 4173=dashboard, 51820=wireguard, vb.), 3) Beklenmedik veya tanÄ±mlanamayan port var mÄ±? 4) docker ps --format ile container port mappinglerini de gÃ¶ster. Ã–zet: beklenen/beklenmeyen port listesi.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "high",
@@ -470,13 +502,13 @@
       ],
       "completed_at": "2026-04-14T23:29:22.816923+03:00",
       "notes": [
-        "18 TCP port dinleniyor. Beklenen servisler: SSH(22), DNS/Pihole(53), NginxProxyManager(80/443/81), Portainer(8000/9443), Homepage(3000), WireGuard(51820/UDP), OpenClaw Gateway(18789/18791/33631), ataraxia-dashboard(4173/4175). Bilinmeyen: HA'nin go2rtc WebRTC portlari(21064-21066) Home Assistant container'ina ait — güvenli; HA'nin host-portu 8123. localhost:18554/18555 go2rtc RTSP/WebRTC relay (HA icinden). localhost:5335 bilinmeyen servis. Disariya acik port yok — local agdisanal AgPort disinda."
+        "18 TCP port dinleniyor. Beklenen servisler: SSH(22), DNS/Pihole(53), NginxProxyManager(80/443/81), Portainer(8000/9443), Homepage(3000), WireGuard(51820/UDP), OpenClaw Gateway(18789/18791/33631), ataraxia-dashboard(4173/4175). Bilinmeyen: HA'nin go2rtc WebRTC portlari(21064-21066) Home Assistant container'ina ait â€” gÃ¼venli; HA'nin host-portu 8123. localhost:18554/18555 go2rtc RTSP/WebRTC relay (HA icinden). localhost:5335 bilinmeyen servis. Disariya acik port yok â€” local agdisanal AgPort disinda."
       ]
     },
     {
       "id": "T-038",
-      "title": "WireGuard peer bağlantı kalitesi ve son handshake yaşı",
-      "description": "VPN durumunu değerlendir. Adımlar: 1) sudo wg show ile tüm peer'ları listele, 2) Her peer için son handshake zamanını hesapla (kaç dakika/saat önce?), 3) Transfer istatistiklerini (rx/tx bytes) oku, 4) Bağlantısı 10 dakikadan uzun süredir görülmeyen peer'ları 'uyuyan' olarak işaretle, 5) Aktif peer'ın IP'si ve lokasyonunu belirt. Kısa rapor: aktif/uyuyan peer sayısı, VPN sağlıklı mı?",
+      "title": "WireGuard peer baÄŸlantÄ± kalitesi ve son handshake yaÅŸÄ±",
+      "description": "VPN durumunu deÄŸerlendir. AdÄ±mlar: 1) sudo wg show ile tÃ¼m peer'larÄ± listele, 2) Her peer iÃ§in son handshake zamanÄ±nÄ± hesapla (kaÃ§ dakika/saat Ã¶nce?), 3) Transfer istatistiklerini (rx/tx bytes) oku, 4) BaÄŸlantÄ±sÄ± 10 dakikadan uzun sÃ¼redir gÃ¶rÃ¼lmeyen peer'larÄ± 'uyuyan' olarak iÅŸaretle, 5) Aktif peer'Ä±n IP'si ve lokasyonunu belirt. KÄ±sa rapor: aktif/uyuyan peer sayÄ±sÄ±, VPN saÄŸlÄ±klÄ± mÄ±?",
       "assignee": "Alfred",
       "status": "done",
       "priority": "low",
@@ -502,13 +534,13 @@
       ],
       "completed_at": "2026-04-15T03:33:19.666832+03:00",
       "notes": [
-        "WireGuard ataraxia üzerinde kurulu değil. wg komutu mevcut değil, /etc/wireguard/ dizini yok, systemd servisi inactive/not-found. TOOLS.md'de aktif servis olarak listeleniyor ancak gerçekte yok. Kurulum gerekirse Sefa'dan onay alınmalı."
+        "WireGuard ataraxia Ã¼zerinde kurulu deÄŸil. wg komutu mevcut deÄŸil, /etc/wireguard/ dizini yok, systemd servisi inactive/not-found. TOOLS.md'de aktif servis olarak listeleniyor ancak gerÃ§ekte yok. Kurulum gerekirse Sefa'dan onay alÄ±nmalÄ±."
       ]
     },
     {
       "id": "T-039",
-      "title": "Docker image yaş ve boyut raporu — temizlenebilecekler",
-      "description": "Image şişkinliğini kontrol et. Adımlar: 1) docker images --format ile tüm imageleri listele (repo, tag, boyut, oluşturma tarihi), 2) 30 günden eski imageleri işaretle, 3) <none> tag'li (dangling) imagelar var mı? 4) docker system df ile toplam disk kullanımını göster (images + containers + volumes + build cache), 5) Temizlenebilecek imageler için 'docker rmi <id>' komutlarını öneri olarak yaz ama ÇALIŞTIRMA. Sefa onayı gerekecek.",
+      "title": "Docker image yaÅŸ ve boyut raporu â€” temizlenebilecekler",
+      "description": "Image ÅŸiÅŸkinliÄŸini kontrol et. AdÄ±mlar: 1) docker images --format ile tÃ¼m imageleri listele (repo, tag, boyut, oluÅŸturma tarihi), 2) 30 gÃ¼nden eski imageleri iÅŸaretle, 3) <none> tag'li (dangling) imagelar var mÄ±? 4) docker system df ile toplam disk kullanÄ±mÄ±nÄ± gÃ¶ster (images + containers + volumes + build cache), 5) Temizlenebilecek imageler iÃ§in 'docker rmi <id>' komutlarÄ±nÄ± Ã¶neri olarak yaz ama Ã‡ALIÅTIRMA. Sefa onayÄ± gerekecek.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
@@ -534,13 +566,13 @@
       ],
       "completed_at": "2026-04-15T01:33:10.721799+03:00",
       "notes": [
-        "6 Docker image analiz edildi. Dangling (<none>) image yok. Tüm imageler aktif kullanımda. 30+ günlük imageler: homepage, wireguard, duckdns, portainer, nginx-proxy-manager. Toplam disk: 5.88GB (images) + 60MB (containers) + volumes + 0 (build cache). Temizlik için containerları durdurmak gerekiyor — Sefa onayı ile yapılabilir."
+        "6 Docker image analiz edildi. Dangling (<none>) image yok. TÃ¼m imageler aktif kullanÄ±mda. 30+ gÃ¼nlÃ¼k imageler: homepage, wireguard, duckdns, portainer, nginx-proxy-manager. Toplam disk: 5.88GB (images) + 60MB (containers) + volumes + 0 (build cache). Temizlik iÃ§in containerlarÄ± durdurmak gerekiyor â€” Sefa onayÄ± ile yapÄ±labilir."
       ]
     },
     {
       "id": "T-040",
-      "title": "Pi-hole blocklist (gravity) güncelleme",
-      "description": "Pi-hole blocklist veritabanını güncelle. Adımlar: 1) Pi-hole'un Docker container adını bul (docker ps), 2) docker exec <container> pihole -g komutuyla gravity update başlat, 3) Güncelleme çıktısını oku — kaç domain eklendi/çıkarıldı? 4) Güncelleme başarılı oldu mu kontrol et. 5) Yeni engelleme oranını raporla (öncesi/sonrası karşılaştır). NOT: Pi-hole container adı 'pihole' olabilir, önceki raporlarda bulunamadı — önce container'ı doğrula.",
+      "title": "Pi-hole blocklist (gravity) gÃ¼ncelleme",
+      "description": "Pi-hole blocklist veritabanÄ±nÄ± gÃ¼ncelle. AdÄ±mlar: 1) Pi-hole'un Docker container adÄ±nÄ± bul (docker ps), 2) docker exec <container> pihole -g komutuyla gravity update baÅŸlat, 3) GÃ¼ncelleme Ã§Ä±ktÄ±sÄ±nÄ± oku â€” kaÃ§ domain eklendi/Ã§Ä±karÄ±ldÄ±? 4) GÃ¼ncelleme baÅŸarÄ±lÄ± oldu mu kontrol et. 5) Yeni engelleme oranÄ±nÄ± raporla (Ã¶ncesi/sonrasÄ± karÅŸÄ±laÅŸtÄ±r). NOT: Pi-hole container adÄ± 'pihole' olabilir, Ã¶nceki raporlarda bulunamadÄ± â€” Ã¶nce container'Ä± doÄŸrula.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
@@ -566,13 +598,13 @@
       "started_at": "2026-04-15T02:00:47.191645+03:00",
       "completed_at": "2026-04-15T02:06:57.162889+03:00",
       "notes": [
-        "Pi-hole gravity güncellemesi başarıyla tamamlandı. Yeni gravity veritabanına 2.088.047 domain (1.845.476 benzersiz) yüklendi. Pi-hole blocking etkin durumda. NOT: Önceki gravity veritabanı optimize edilmiş (gravity tablosu silinmiş) olduğu için karşılaştırmalı istatistik alınamadı — eski/yeni domain sayısı veya engelleme oranı karşılaştırması mümkün olmadı."
+        "Pi-hole gravity gÃ¼ncellemesi baÅŸarÄ±yla tamamlandÄ±. Yeni gravity veritabanÄ±na 2.088.047 domain (1.845.476 benzersiz) yÃ¼klendi. Pi-hole blocking etkin durumda. NOT: Ã–nceki gravity veritabanÄ± optimize edilmiÅŸ (gravity tablosu silinmiÅŸ) olduÄŸu iÃ§in karÅŸÄ±laÅŸtÄ±rmalÄ± istatistik alÄ±namadÄ± â€” eski/yeni domain sayÄ±sÄ± veya engelleme oranÄ± karÅŸÄ±laÅŸtÄ±rmasÄ± mÃ¼mkÃ¼n olmadÄ±."
       ]
     },
     {
       "id": "T-041",
       "title": "Home Assistant otomasyon raporu",
-      "description": "HA API üzerinden otomasyon durumunu çek. Adımlar: 1) ~/alfred-hub/.env veya ~/homepage/config/services.yaml'dan HA_URL ve token'ı bul, 2) curl -H 'Authorization: Bearer <token>' <HA_URL>/api/states ile entity listesini al, 3) automation.* entity'lerini filtrele — kaç tane aktif ('on') var?, 4) Son 24 saatte state değiştiren automationları belirle (last_changed alanına bak), 5) En çok tetiklenen 3 otomasyonu öne çıkar. Özet: toplam/aktif otomasyon sayısı.",
+      "description": "HA API Ã¼zerinden otomasyon durumunu Ã§ek. AdÄ±mlar: 1) ~/alfred-hub/.env veya ~/homepage/config/services.yaml'dan HA_URL ve token'Ä± bul, 2) curl -H 'Authorization: Bearer <token>' <HA_URL>/api/states ile entity listesini al, 3) automation.* entity'lerini filtrele â€” kaÃ§ tane aktif ('on') var?, 4) Son 24 saatte state deÄŸiÅŸtiren automationlarÄ± belirle (last_changed alanÄ±na bak), 5) En Ã§ok tetiklenen 3 otomasyonu Ã¶ne Ã§Ä±kar. Ã–zet: toplam/aktif otomasyon sayÄ±sÄ±.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "low",
@@ -598,13 +630,13 @@
       ],
       "completed_at": "2026-04-15T04:12:32.609112+03:00",
       "notes": [
-        "14 otomasyon YAML'da tanımlı, 10 tanesi HA API'de entity olarak görünüyor. Tüm otomasyonlar 'unavailable' durumunda — HA restart sonrası (2026-04-14 18:54) bir kez state değişikliği olmuş, sonrasında değişim yok. Son 24 saatte hiçbir otomasyon tetiklenmemiş. Otomasyonlar aktif değil veya bağlı entity'ler (ışık, vakum, hava temizleyici) erişilebilir değil durumda."
+        "14 otomasyon YAML'da tanÄ±mlÄ±, 10 tanesi HA API'de entity olarak gÃ¶rÃ¼nÃ¼yor. TÃ¼m otomasyonlar 'unavailable' durumunda â€” HA restart sonrasÄ± (2026-04-14 18:54) bir kez state deÄŸiÅŸikliÄŸi olmuÅŸ, sonrasÄ±nda deÄŸiÅŸim yok. Son 24 saatte hiÃ§bir otomasyon tetiklenmemiÅŸ. Otomasyonlar aktif deÄŸil veya baÄŸlÄ± entity'ler (Ä±ÅŸÄ±k, vakum, hava temizleyici) eriÅŸilebilir deÄŸil durumda."
       ]
     },
     {
       "id": "T-042",
-      "title": "shared-notes.md watchdog heartbeat gürültüsünü temizle",
-      "description": "~/.openclaw/workspace/memory/inbox/shared-notes.md dosyasındaki watchdog heartbeat satırları çok yer kaplıyor. Adımlar: 1) Dosyayı oku, 2) 'heartbeat-trigger' alan'lı ve 'Alfred'in X islemde gorevi var' içeren tüm bölümleri say, 3) Bu bölümleri sil — içerik değeri yok, gürültü. 4) Anlamlı notları (bootstrap, dashboard, task-started gibi) koru. 5) Dosyayı kaydet. Kaç satır kaldırıldığını raporla.",
+      "title": "shared-notes.md watchdog heartbeat gÃ¼rÃ¼ltÃ¼sÃ¼nÃ¼ temizle",
+      "description": "~/.openclaw/workspace/memory/inbox/shared-notes.md dosyasÄ±ndaki watchdog heartbeat satÄ±rlarÄ± Ã§ok yer kaplÄ±yor. AdÄ±mlar: 1) DosyayÄ± oku, 2) 'heartbeat-trigger' alan'lÄ± ve 'Alfred'in X islemde gorevi var' iÃ§eren tÃ¼m bÃ¶lÃ¼mleri say, 3) Bu bÃ¶lÃ¼mleri sil â€” iÃ§erik deÄŸeri yok, gÃ¼rÃ¼ltÃ¼. 4) AnlamlÄ± notlarÄ± (bootstrap, dashboard, task-started gibi) koru. 5) DosyayÄ± kaydet. KaÃ§ satÄ±r kaldÄ±rÄ±ldÄ±ÄŸÄ±nÄ± raporla.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "low",
@@ -630,13 +662,13 @@
       ],
       "completed_at": "2026-04-15T04:34:08.457742+03:00",
       "notes": [
-        "shared-notes.md dosyasından 14 heartbeat-trigger gürültüsü girişi silindi. 12 Watchdog ve 2 alfred (heartbeat) girişi — toplam ~56 satır kaldırıldı. Anlamlı notlar (bootstrap, dashboard, system, task-started, memory-snapshot) korundu. Dosya 6728 char'dan 4426 char'a düştü."
+        "shared-notes.md dosyasÄ±ndan 14 heartbeat-trigger gÃ¼rÃ¼ltÃ¼sÃ¼ giriÅŸi silindi. 12 Watchdog ve 2 alfred (heartbeat) giriÅŸi â€” toplam ~56 satÄ±r kaldÄ±rÄ±ldÄ±. AnlamlÄ± notlar (bootstrap, dashboard, system, task-started, memory-snapshot) korundu. Dosya 6728 char'dan 4426 char'a dÃ¼ÅŸtÃ¼."
       ]
     },
     {
       "id": "T-043",
-      "title": "task-runner.log son 200 satır hata analizi",
-      "description": "OpenClaw otomasyonunda sessiz hatalar var mı? Adımlar: 1) ~/alfred-hub/logs/task-runner.log dosyasının son 200 satırını oku, 2) ERROR, WARN, failed, exception, timeout, undefined içeren satırları tespit et, 3) Aynı hata tekrar ediyor mu? Tekrar eden hataları gruplandır, 4) En son başarılı görev çalışmasının zamanını bul, 5) Pipeline sağlıklı görünüyor mu? Özet: hata sayısı, son başarı zamanı, kritik bir şey var mı?",
+      "title": "task-runner.log son 200 satÄ±r hata analizi",
+      "description": "OpenClaw otomasyonunda sessiz hatalar var mÄ±? AdÄ±mlar: 1) ~/alfred-hub/logs/task-runner.log dosyasÄ±nÄ±n son 200 satÄ±rÄ±nÄ± oku, 2) ERROR, WARN, failed, exception, timeout, undefined iÃ§eren satÄ±rlarÄ± tespit et, 3) AynÄ± hata tekrar ediyor mu? Tekrar eden hatalarÄ± gruplandÄ±r, 4) En son baÅŸarÄ±lÄ± gÃ¶rev Ã§alÄ±ÅŸmasÄ±nÄ±n zamanÄ±nÄ± bul, 5) Pipeline saÄŸlÄ±klÄ± gÃ¶rÃ¼nÃ¼yor mu? Ã–zet: hata sayÄ±sÄ±, son baÅŸarÄ± zamanÄ±, kritik bir ÅŸey var mÄ±?",
       "assignee": "Alfred",
       "status": "done",
       "priority": "high",
@@ -662,13 +694,13 @@
       ],
       "completed_at": "2026-04-15T00:34:29.028557+03:00",
       "notes": [
-        "task-runner.log analizi tamamlandı. Kritik bulgu: /home/sefa/alfred-hub/scripts/task-runner.sh dosyası eksik. 19 satırlık logun tamamı aynı hata: 'No such file or directory'. Bu script olmadan Alfred task runner pipeline'ı tamamen çökmüş durumda. Son başarılı görev zamanı bilinmiyor (log sadece bu tekrar eden hatayı içeriyor). task-runner.sh oluşturulması acil gereklilik."
+        "task-runner.log analizi tamamlandÄ±. Kritik bulgu: /home/sefa/alfred-hub/scripts/task-runner.sh dosyasÄ± eksik. 19 satÄ±rlÄ±k logun tamamÄ± aynÄ± hata: 'No such file or directory'. Bu script olmadan Alfred task runner pipeline'Ä± tamamen Ã§Ã¶kmÃ¼ÅŸ durumda. Son baÅŸarÄ±lÄ± gÃ¶rev zamanÄ± bilinmiyor (log sadece bu tekrar eden hatayÄ± iÃ§eriyor). task-runner.sh oluÅŸturulmasÄ± acil gereklilik."
       ]
     },
     {
       "id": "T-044",
-      "title": "Sprint-03 kapanış değerlendirmesi hazırlığı",
-      "description": "Sprint-03 2026-04-17'de bitiyor. Önceden değerlendirme yap. Adımlar: 1) ~/scrum/sprints/sprint-03.md dosyasını oku, 2) TASKS.json'daki done görevlerden sprint-03 hedefleriyle örtüşen var mı? Karşılaştır, 3) S3-01..S3-07 görevlerinden kaçı tamamlandı, kaçı kaldı? 4) Tamamlanamayan görevler için backlog'a taşıma önerisi hazırla, 5) Sprint-03 review dosyası (~/ scrum/sprints/sprint-03-review.md) için taslak yaz ve kaydet. Özet: tamamlanma yüzdesi, öğrenilen dersler.",
+      "title": "Sprint-03 kapanÄ±ÅŸ deÄŸerlendirmesi hazÄ±rlÄ±ÄŸÄ±",
+      "description": "Sprint-03 2026-04-17'de bitiyor. Ã–nceden deÄŸerlendirme yap. AdÄ±mlar: 1) ~/scrum/sprints/sprint-03.md dosyasÄ±nÄ± oku, 2) TASKS.json'daki done gÃ¶revlerden sprint-03 hedefleriyle Ã¶rtÃ¼ÅŸen var mÄ±? KarÅŸÄ±laÅŸtÄ±r, 3) S3-01..S3-07 gÃ¶revlerinden kaÃ§Ä± tamamlandÄ±, kaÃ§Ä± kaldÄ±? 4) Tamamlanamayan gÃ¶revler iÃ§in backlog'a taÅŸÄ±ma Ã¶nerisi hazÄ±rla, 5) Sprint-03 review dosyasÄ± (~/ scrum/sprints/sprint-03-review.md) iÃ§in taslak yaz ve kaydet. Ã–zet: tamamlanma yÃ¼zdesi, Ã¶ÄŸrenilen dersler.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "high",
@@ -694,13 +726,13 @@
       ],
       "completed_at": "2026-04-14T23:35:20.288354+03:00",
       "notes": [
-        "Sprint-03 ön değerlendirme tamamlandı. Sprint-03 review dosyası oluşturuldu: sprint-03-review.md. Sprint-03 tamamlanma oranı: %29 (2/7 görev). S3-02 (Telegram bildirim) ve S3-06 (Dashboard görev formu) tamamlandı. Kalan 5 görev (S3-01, S3-04, S3-05, S3-07) backlog'a taşınma önerisiyle listelendi. Sprint-04 için öneriler hazırlandı."
+        "Sprint-03 Ã¶n deÄŸerlendirme tamamlandÄ±. Sprint-03 review dosyasÄ± oluÅŸturuldu: sprint-03-review.md. Sprint-03 tamamlanma oranÄ±: %29 (2/7 gÃ¶rev). S3-02 (Telegram bildirim) ve S3-06 (Dashboard gÃ¶rev formu) tamamlandÄ±. Kalan 5 gÃ¶rev (S3-01, S3-04, S3-05, S3-07) backlog'a taÅŸÄ±nma Ã¶nerisiyle listelendi. Sprint-04 iÃ§in Ã¶neriler hazÄ±rlandÄ±."
       ]
     },
     {
       "id": "T-045",
-      "title": "Go workspace temizlik ön keşfi (Backlog B-003)",
-      "description": "B-003 görevinin başlangıcı: Go workspace'i temizlemeden önce durumu anla. Adımlar: 1) ~/go/ dizini var mı ve ne kadar yer kaplıyor? (du -sh ~/go/*), 2) go version çalıştır, 3) go env ile GOPATH, GOROOT, GOMODCACHE'i öğren, 4) ~/go/pkg/mod dizininde hangi modüller var? En büyük 10'unu listele, 5) ~/go/bin'de hangi araçlar kurulu? 6) Herhangi bir Go projesi aktif mi? (~/alfred-hub veya altında go.mod ara). Temizleme için 'go clean -modcache' önerisi güvenli mi değerlendir.",
+      "title": "Go workspace temizlik Ã¶n keÅŸfi (Backlog B-003)",
+      "description": "B-003 gÃ¶revinin baÅŸlangÄ±cÄ±: Go workspace'i temizlemeden Ã¶nce durumu anla. AdÄ±mlar: 1) ~/go/ dizini var mÄ± ve ne kadar yer kaplÄ±yor? (du -sh ~/go/*), 2) go version Ã§alÄ±ÅŸtÄ±r, 3) go env ile GOPATH, GOROOT, GOMODCACHE'i Ã¶ÄŸren, 4) ~/go/pkg/mod dizininde hangi modÃ¼ller var? En bÃ¼yÃ¼k 10'unu listele, 5) ~/go/bin'de hangi araÃ§lar kurulu? 6) Herhangi bir Go projesi aktif mi? (~/alfred-hub veya altÄ±nda go.mod ara). Temizleme iÃ§in 'go clean -modcache' Ã¶nerisi gÃ¼venli mi deÄŸerlendir.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
@@ -726,13 +758,13 @@
       ],
       "completed_at": "2026-04-15T02:33:17.873765+03:00",
       "notes": [
-        "Go workspace ön keşfi tamamlandı. ~/go/ toplam ~924MB (bin: 56MB, pkg: 868MB). Aktif Go projesi yok (alfred-hub'da go.mod yok). ~/go/bin'de 4 pre-built binary var (blogwatcher, blu, eightctl, sonos). En büyük alan kaplayan: golang.org/toolchain cache (211MB), modernc.org/sqlite testdata (87MB), mod/download cache (157MB). go clean -modcache GÜVENLİ — binary'ler zaten derlenmiş, yeni go build yapılmıyor. B-003 için öneri: sadece cache/download klasörünü temizle (~157MB kurtarır), toolchain cache'i koru."
+        "Go workspace Ã¶n keÅŸfi tamamlandÄ±. ~/go/ toplam ~924MB (bin: 56MB, pkg: 868MB). Aktif Go projesi yok (alfred-hub'da go.mod yok). ~/go/bin'de 4 pre-built binary var (blogwatcher, blu, eightctl, sonos). En bÃ¼yÃ¼k alan kaplayan: golang.org/toolchain cache (211MB), modernc.org/sqlite testdata (87MB), mod/download cache (157MB). go clean -modcache GÃœVENLÄ° â€” binary'ler zaten derlenmiÅŸ, yeni go build yapÄ±lmÄ±yor. B-003 iÃ§in Ã¶neri: sadece cache/download klasÃ¶rÃ¼nÃ¼ temizle (~157MB kurtarÄ±r), toolchain cache'i koru."
       ]
     },
     {
       "id": "T-046",
       "title": "openclaw-gateway memory trend 6 saatlik takip",
-      "description": "OpenClaw'un RAM kullanımı sabit mi yoksa yavaş büyüyor mu? Adımlar: 1) ps aux | grep openclaw-gateway ile PID ve anlık RSS (kB) değerini al, 2) /proc/<PID>/status dosyasından VmRSS, VmSize, VmData değerlerini oku, 3) Bu değerleri ~/.openclaw/workspace/memory/inbox/shared-notes.md içine zaman damgasıyla not düş (format: 'YYYY-MM-DDTHH:MM | memory-snapshot | VmRSS=X VmData=Y'), 4) Geçmiş snapshot'ları karşılaştır — artış var mı? 5) Node.js V8 heap için normal eşik 1.2-1.8GB; bunu aşıyorsa uyar.",
+      "description": "OpenClaw'un RAM kullanÄ±mÄ± sabit mi yoksa yavaÅŸ bÃ¼yÃ¼yor mu? AdÄ±mlar: 1) ps aux | grep openclaw-gateway ile PID ve anlÄ±k RSS (kB) deÄŸerini al, 2) /proc/<PID>/status dosyasÄ±ndan VmRSS, VmSize, VmData deÄŸerlerini oku, 3) Bu deÄŸerleri ~/.openclaw/workspace/memory/inbox/shared-notes.md iÃ§ine zaman damgasÄ±yla not dÃ¼ÅŸ (format: 'YYYY-MM-DDTHH:MM | memory-snapshot | VmRSS=X VmData=Y'), 4) GeÃ§miÅŸ snapshot'larÄ± karÅŸÄ±laÅŸtÄ±r â€” artÄ±ÅŸ var mÄ±? 5) Node.js V8 heap iÃ§in normal eÅŸik 1.2-1.8GB; bunu aÅŸÄ±yorsa uyar.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "medium",
@@ -758,13 +790,13 @@
       ],
       "completed_at": "2026-04-15T03:03:44.396575+03:00",
       "notes": [
-        "openclaw-gateway PID 1113 snapshot alındı: VmRSS=848MB (%21.8 RAM), VmData=989MB, VmPeak=12GB. İlk snapshot olduğundan trend belirlenemedi — önceki veri yok. Swap kullanımı 857MB/4GB (%20.9) dikkat çekici ama RAM henüz kritik değil (1762MB available). Node.js V8 heap 1.2-1.8GB eşiği aşılmadı. Sonraki snapshot ile karşılaştırmak için bu görev periyodik olarak çalıştırılmalı."
+        "openclaw-gateway PID 1113 snapshot alÄ±ndÄ±: VmRSS=848MB (%21.8 RAM), VmData=989MB, VmPeak=12GB. Ä°lk snapshot olduÄŸundan trend belirlenemedi â€” Ã¶nceki veri yok. Swap kullanÄ±mÄ± 857MB/4GB (%20.9) dikkat Ã§ekici ama RAM henÃ¼z kritik deÄŸil (1762MB available). Node.js V8 heap 1.2-1.8GB eÅŸiÄŸi aÅŸÄ±lmadÄ±. Sonraki snapshot ile karÅŸÄ±laÅŸtÄ±rmak iÃ§in bu gÃ¶rev periyodik olarak Ã§alÄ±ÅŸtÄ±rÄ±lmalÄ±."
       ]
     },
     {
       "id": "T-047",
-      "title": "Haftalık sistem sağlık raporu — Telegram'a gönder",
-      "description": "Bu haftanın sistem sağlık özetini hazırla ve Telegram'a gönder. İçerik: 1) Çalışma süresi (uptime), ortalama CPU load (cat /proc/loadavg), RAM kullanım ortalaması, 2) Disk doluluk trendi (şu anki vs. 7 gün önce — ~/alfred-hub/logs içinde eski rapor varsa karşılaştır), 3) Docker container sağlık durumu (kaç tane, hepsi Up mu?), 4) Bu hafta tamamlanan görev sayısı (TASKS.json'dan done olanları say), 5) Pi-hole engelleme oranı. Format: Telegram Markdown, başlık+bölümler, emoji ile okunaklı. ~/alfred-hub/.env'den BOT_TOKEN ve CHAT_ID'yi al.",
+      "title": "HaftalÄ±k sistem saÄŸlÄ±k raporu â€” Telegram'a gÃ¶nder",
+      "description": "Bu haftanÄ±n sistem saÄŸlÄ±k Ã¶zetini hazÄ±rla ve Telegram'a gÃ¶nder. Ä°Ã§erik: 1) Ã‡alÄ±ÅŸma sÃ¼resi (uptime), ortalama CPU load (cat /proc/loadavg), RAM kullanÄ±m ortalamasÄ±, 2) Disk doluluk trendi (ÅŸu anki vs. 7 gÃ¼n Ã¶nce â€” ~/alfred-hub/logs iÃ§inde eski rapor varsa karÅŸÄ±laÅŸtÄ±r), 3) Docker container saÄŸlÄ±k durumu (kaÃ§ tane, hepsi Up mu?), 4) Bu hafta tamamlanan gÃ¶rev sayÄ±sÄ± (TASKS.json'dan done olanlarÄ± say), 5) Pi-hole engelleme oranÄ±. Format: Telegram Markdown, baÅŸlÄ±k+bÃ¶lÃ¼mler, emoji ile okunaklÄ±. ~/alfred-hub/.env'den BOT_TOKEN ve CHAT_ID'yi al.",
       "assignee": "Alfred",
       "status": "done",
       "priority": "high",
@@ -790,13 +822,13 @@
       ],
       "completed_at": "2026-04-15T00:03:25.832436+03:00",
       "notes": [
-        "Haftalık sistem sağlık raporu hazırlanıp Telegram'a gönderildi. uptime ~2 saat, CPU load 0.57/0.65/0.78, RAM %51, disk %14. 6 Docker container (hepsi UP). 35 görevden 21 done, 10 bekliyor. Pi-hole aktif ancak DB erişim hatası."
+        "HaftalÄ±k sistem saÄŸlÄ±k raporu hazÄ±rlanÄ±p Telegram'a gÃ¶nderildi. uptime ~2 saat, CPU load 0.57/0.65/0.78, RAM %51, disk %14. 6 Docker container (hepsi UP). 35 gÃ¶revden 21 done, 10 bekliyor. Pi-hole aktif ancak DB eriÅŸim hatasÄ±."
       ]
     },
     {
       "id": "T-048",
       "title": "Skiller",
-      "description": "Sana hangi skilleri ekleyebiliriz seni en çok geliştirecek skiller nelerdir detaylı bir araştırma yap ve listele",
+      "description": "Sana hangi skilleri ekleyebiliriz seni en Ã§ok geliÅŸtirecek skiller nelerdir detaylÄ± bir araÅŸtÄ±rma yap ve listele",
       "status": "done",
       "priority": "high",
       "assignee": "Alfred",
@@ -807,431 +839,13 @@
       "started_at": "2026-04-14T23:04:12.116936+03:00",
       "completed_at": "2026-04-14T23:07:27.387079+03:00",
       "notes": [
-        "Skiller araştırması tamamlandı — 40+ skill incelendi, öneriler listelendi"
+        "Skiller araÅŸtÄ±rmasÄ± tamamlandÄ± â€” 40+ skill incelendi, Ã¶neriler listelendi"
       ]
     },
     {
-      "id": "DEFI-036",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/MAI/USDC.e (polygon) TVL ÇÖKÜŞÜ: -35.1% (1h) — $0.4M → $0.3M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T18:45:06.789Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-037",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/MAI/USDC.e (polygon) TVL ÇÖKÜŞÜ: -35.1% (1h) — $0.4M → $0.3M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T19:00:05.817Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-038",
-      "title": "DeFi Kritik Alert: 6 adet",
-      "description": "compound-v3/USDT (Arbitrum) APY anomali: 1.88% (7d ort: 1.88%, z=5.0)\naave-v3/CBETH (Base) APY anomali: 0.05% (7d ort: 0.05%, z=5.0)\naave-v3/USDC (Ethereum) APY anomali: 2.64% (7d ort: 2.86%, z=-5.0)\ncompound-v3/USDT (Optimism) APY anomali: 1.90% (7d ort: 1.89%, z=5.0)\naave-v3/DAI (Arbitrum) APY anomali: 1.81% (7d ort: 1.81%, z=5.0)\nbeefy/MAI/USDC.e (polygon) TVL ÇÖKÜŞÜ: -35.1% (1h) — $0.4M → $0.3M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T19:25:27.375Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-039",
-      "title": "DeFi Kritik Alert: 2 adet",
-      "description": "beefy/tBTC/WBTC (arbitrum) APY anomali: 0.10% (7d ort: 0.09%, z=5.0)\nbeefy/cbETH/ETH (base) APY anomali: 2.02% (7d ort: 1.46%, z=5.0)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T21:04:04.848Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-040",
-      "title": "DeFi Kritik Alert: 16 adet",
-      "description": "aave-v3/WETH (Ethereum) APY anomali: 1.72% (7d ort: 1.74%, z=-5.6)\naave-v3/RLUSD (Ethereum) APY anomali: 0.92% (7d ort: 0.92%, z=6.2)\ncurve-dex/CRVUSD-CBBTC (Ethereum) APY anomali: 0.00% (7d ort: 2.36%, z=-6.1)\naave-v3/LINK (Ethereum) APY anomali: 0.05% (7d ort: 0.04%, z=5.7)\ncurve-dex/CRVUSD-TBTC (Ethereum) APY anomali: 0.00% (7d ort: 2.32%, z=-6.2)\ncurve-dex/CRVUSD-WBTC (Ethereum) APY anomali: 0.00% (7d ort: 2.13%, z=-6.2)\naave-v3/EURC (Ethereum) APY anomali: 1.70% (7d ort: 1.69%, z=6.2)\ncurve-dex/WETH-CBETH (Base) APY anomali: 2.03% (7d ort: 1.40%, z=6.2)\ncurve-dex/IDAI-IUSDC-IUSDT (Ethereum) APY anomali: 0.00% (7d ort: 119.01%, z=-6.2)\naave-v3/DAI (Arbitrum) APY anomali: 1.81% (7d ort: 1.81%, z=5.2)\naave-v3/DAI (Polygon) APY anomali: 3.37% (7d ort: 3.37%, z=-5.7)\ncurve-dex/ETH+-ETH (Ethereum) APY anomali: 0.00% (7d ort: 0.61%, z=-6.2)\nbeefy/MAI/USDC.e (polygon) APY anomali: 19.85% (7d ort: 1.22%, z=5.2)\nbeefy/ETH+/WETH (ethereum) APY anomali: 4.93% (7d ort: 6.38%, z=-5.2)\nbeefy/RLUSD/USDC (ethereum) APY anomali: 5.40% (7d ort: 5.57%, z=-5.2)\nbeefy/USDT/WBTC/WETH (ethereum) APY anomali: 2.46% (7d ort: 2.20%, z=5.1)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T21:34:03.806Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-041",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/tBTC-WBTC (arbitrum) APY anomali: 0.29% (7d ort: 0.14%, z=5.3)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T21:49:04.750Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-042",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/scrvUSD/USDaf (ethereum) APY anomali: 0.95% (7d ort: 0.96%, z=-5.0)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T22:21:21.059Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-043",
-      "title": "DeFi Kritik Alert: 22 adet",
-      "description": "curve-dex/PYUSD-USDS (Ethereum) APY anomali: 0.06% (7d ort: 0.10%, z=-5.3)\ncurve-dex/ETH-STETH (Ethereum) APY anomali: 1.36% (7d ort: 1.31%, z=6.6)\ncurve-dex/SUSDS-USDT (Ethereum) APY anomali: 3.28% (7d ort: 3.29%, z=-6.6)\ncurve-dex/USDC-USDTB (Ethereum) APY anomali: 0.02% (7d ort: 0.30%, z=-6.5)\ncurve-dex/USDT-WBTC-WETH (Ethereum) APY anomali: 1.61% (7d ort: 1.53%, z=5.0)\ncurve-dex/USDC-WBTC-WETH (Ethereum) APY anomali: 2.49% (7d ort: 2.58%, z=-5.4)\ncurve-dex/WBTC-TBTC (Ethereum) APY anomali: 0.15% (7d ort: 0.13%, z=6.4)\naave-v3/WETH (Optimism) APY anomali: 0.83% (7d ort: 1.00%, z=-6.6)\naave-v3/USDG (Ethereum) APY anomali: 5.51% (7d ort: 5.59%, z=-5.8)\ncurve-dex/USDG-USDC (Ethereum) APY anomali: 0.93% (7d ort: 0.29%, z=6.5)\ncurve-dex/RUSDY-USDC (Ethereum) APY anomali: 2.99% (7d ort: 3.53%, z=-6.6)\ncurve-dex/BOLD-USDC (Ethereum) APY anomali: 0.45% (7d ort: 0.41%, z=6.2)\ncurve-dex/USDS-STUSDS (Ethereum) APY anomali: 4.70% (7d ort: 4.72%, z=-6.6)\ncurve-dex/TBTC-CBBTC (Ethereum) APY anomali: 0.14% (7d ort: 0.17%, z=-6.4)\ncurve-dex/USDC-EURS (Ethereum) APY anomali: 0.02% (7d ort: 0.03%, z=-6.6)\ncurve-dex/SUSD-SUSDE (Ethereum) APY anomali: 0.18% (7d ort: 0.17%, z=5.8)\naave-v3/UNI (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=6.6)\ncurve-dex/TMVUSDC-FRXUSD (Ethereum) APY anomali: 1.22% (7d ort: 1.24%, z=-6.2)\ncurve-dex/FIDD-USDT (Ethereum) APY anomali: 0.02% (7d ort: 0.03%, z=-6.6)\ncurve-dex/YNETHX-WETH (Ethereum) APY anomali: 6.52% (7d ort: 5.44%, z=6.5)\ncurve-dex/SRROYUSDC-FRXUSD (Ethereum) APY anomali: 0.93% (7d ort: 1.95%, z=-6.1)\ncurve-dex/PUMPBTC-WBTC (Ethereum) APY anomali: 0.00% (7d ort: 0.01%, z=-6.6)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T22:36:21.394Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-044",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/pmUSD/frxUSD (ethereum) TVL ÇÖKÜŞÜ: -33.8% (1h) — $1.9M → $1.2M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T22:53:29.129Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-045",
-      "title": "DeFi Kritik Alert: 5 adet",
-      "description": "curve-dex/CRVUSD-WETH (Ethereum) APY anomali: 0.93% (7d ort: 0.03%, z=7.1)\ncurve-dex/PMUSD-CRVUSD (Ethereum) APY anomali: 10.05% (7d ort: 9.05%, z=5.6)\ncurve-dex/PMUSD-FRXUSD (Ethereum) APY anomali: 9.57% (7d ort: 8.42%, z=6.3)\naave-v3/USDC (Ethereum) APY anomali: 2.04% (7d ort: 2.04%, z=-7.1)\naave-v3/LUSD (Ethereum) APY anomali: 0.37% (7d ort: 0.37%, z=7.1)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-16T23:30:15.388Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-046",
-      "title": "DeFi Kritik Alert: 2 adet",
-      "description": "beefy/reUSDe 25Jun26 (ethereum) APY anomali: 13.14% (7d ort: 14.43%, z=-6.3)\nbeefy/reUSD 25Jun26 (ethereum) APY anomali: 7.50% (7d ort: 8.22%, z=-6.0)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T00:00:15.306Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-047",
-      "title": "DeFi Kritik Alert: 19 adet",
-      "description": "aave-v3/CBBTC (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=-7.4)\naave-v3/USDC (Ethereum) APY anomali: 2.57% (7d ort: 2.43%, z=7.2)\nconvex-finance/CVXCRV (Ethereum) APY anomali: 15.92% (7d ort: 15.96%, z=-5.2)\nconvex-finance/USDC-RLUSD (Ethereum) APY anomali: 6.92% (7d ort: 8.26%, z=-7.3)\nconvex-finance/PYUSD-CRVUSD (Ethereum) APY anomali: 0.41% (7d ort: 0.26%, z=7.4)\nconvex-finance/SFRXUSD-FRXUSD (Ethereum) APY anomali: 2.31% (7d ort: 2.37%, z=-5.7)\nconvex-finance/PMUSD-CRVUSD (Ethereum) APY anomali: 18.63% (7d ort: 16.54%, z=6.5)\nconvex-finance/USDC-WBTC-WETH (Ethereum) APY anomali: 3.12% (7d ort: 3.21%, z=-7.4)\nconvex-finance/PMUSD-FRXUSD (Ethereum) APY anomali: 18.22% (7d ort: 15.80%, z=6.5)\nconvex-finance/USDT-WBTC-WETH (Ethereum) APY anomali: 1.61% (7d ort: 1.54%, z=5.4)\nconvex-finance/PYUSD-USDC (Ethereum) APY anomali: 0.18% (7d ort: 0.27%, z=-7.4)\nconvex-finance/SDOLA-ALUSD (Ethereum) APY anomali: 11.57% (7d ort: 11.69%, z=-5.6)\nconvex-finance/SUSD-SUSDE (Ethereum) APY anomali: 0.28% (7d ort: 0.26%, z=5.1)\nconvex-finance/TBTC-CBBTC (Ethereum) APY anomali: 0.25% (7d ort: 0.28%, z=-7.2)\naave-v3/DAI (Polygon) APY anomali: 3.36% (7d ort: 3.37%, z=-7.3)\nconvex-finance/BOLD-USDC (Ethereum) APY anomali: 0.74% (7d ort: 0.69%, z=5.5)\nconvex-finance/SRROYUSDC-FRXUSD (Ethereum) APY anomali: 3.36% (7d ort: 4.36%, z=-7.2)\nbeefy/WETH/rETH V3 (arbitrum) APY anomali: 1.96% (7d ort: 3.53%, z=-6.5)\nbeefy/PYUSD/USDC (ethereum) APY anomali: 5.09% (7d ort: 5.33%, z=-6.6)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T00:30:15.527Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-048",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/cbETH-WETH (base) APY anomali: 0.00% (7d ort: 0.00%, z=-6.6)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T00:45:44.764Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-049",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/PYUSD/crvUSD (ethereum) APY anomali: 10.51% (7d ort: 8.51%, z=6.3)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T01:00:44.460Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-050",
-      "title": "DeFi Kritik Alert: 3 adet",
-      "description": "aave-v3/PYUSD (Ethereum) APY anomali: 1.68% (7d ort: 1.68%, z=6.8)\ncurve-dex/PMUSD-CRVUSD (Ethereum) APY anomali: 12.10% (7d ort: 9.24%, z=5.3)\naave-v3/USDG (Ethereum) APY anomali: 4.94% (7d ort: 5.56%, z=-6.9)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T01:30:45.088Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-051",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/WETH (optimism) APY anomali: 1.51% (7d ort: 1.51%, z=7.0)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T01:45:14.893Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-052",
-      "title": "DeFi Kritik Alert: 9 adet",
-      "description": "curve-dex/SFRXUSD-FRXUSD (Ethereum) APY anomali: 1.55% (7d ort: 1.78%, z=-5.3)\naave-v3/EURC (Base) APY anomali: 1.13% (7d ort: 1.14%, z=-5.2)\ncurve-dex/WETH-WEETH (Ethereum) APY anomali: 3.24% (7d ort: 1.22%, z=6.3)\ncurve-dex/USD0-BUSD0 (Ethereum) APY anomali: 0.01% (7d ort: 0.12%, z=-7.9)\ncurve-dex/USDC-USDF (Ethereum) APY anomali: 3.74% (7d ort: 3.56%, z=5.1)\ncurve-dex/GHO-CBBTC-WETH (Ethereum) APY anomali: 3.08% (7d ort: 3.28%, z=-6.1)\ncurve-dex/CUSDO-USDC (Ethereum) APY anomali: 2.52% (7d ort: 2.50%, z=7.9)\ncompound-v3/WETH (Optimism) APY anomali: 1.51% (7d ort: 1.51%, z=7.9)\nbeefy/fxUSD/USDC (ethereum) APY anomali: 6.36% (7d ort: 5.93%, z=5.9)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T02:30:15.519Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-053",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/crvUSD/USDT (ethereum) APY anomali: 6.63% (7d ort: 5.67%, z=7.0)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T03:00:15.075Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-054",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/USDC/EURe V3 (arbitrum) APY anomali: 10.48% (7d ort: 7.28%, z=7.4)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T03:15:14.275Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-055",
-      "title": "DeFi Kritik Alert: 5 adet",
-      "description": "curve-dex/AM3CRV-AMWBTC-AMWETH (Polygon) APY anomali: 0.02% (7d ort: 0.00%, z=8.2)\naave-v3/LINK (Polygon) APY anomali: 0.02% (7d ort: 0.02%, z=8.2)\naave-v3/DAI (Arbitrum) APY anomali: 1.81% (7d ort: 1.81%, z=5.7)\ncurve-dex/WBTC-TBTC (Arbitrum) APY anomali: 0.03% (7d ort: 0.00%, z=8.2)\naave-v3/EURS (Polygon) TVL ÇÖKÜŞÜ: -33.5% (1h) — $1.6M → $1.1M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T03:30:15.619Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-056",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/rETH/WETH V3 (ethereum) APY anomali: 3.37% (7d ort: 3.50%, z=-5.2)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T04:00:14.653Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-057",
-      "title": "DeFi Kritik Alert: 4 adet",
-      "description": "convex-finance/CVXCRV (Ethereum) APY anomali: 15.76% (7d ort: 15.95%, z=-6.9)\nconvex-finance/SFRXUSD-FRXUSD (Ethereum) APY anomali: 2.11% (7d ort: 2.35%, z=-6.2)\nconvex-finance/WETH-WEETH (Ethereum) APY anomali: 3.46% (7d ort: 1.39%, z=6.8)\nbeefy/osETH/WETH V3 (ethereum) APY anomali: 1.68% (7d ort: 1.69%, z=-7.5)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T04:30:15.634Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-058",
-      "title": "DeFi Kritik Alert: 2 adet",
-      "description": "beefy/USDS/stUSDS (ethereum) APY anomali: 4.58% (7d ort: 4.59%, z=-7.4)\nbeefy/WETH (optimism) APY anomali: 1.52% (7d ort: 1.51%, z=7.8)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T04:45:14.544Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-059",
-      "title": "DeFi Kritik Alert: 3 adet",
-      "description": "convex-finance/USDC-RLUSD (Ethereum) APY anomali: 0.14% (7d ort: 7.81%, z=-7.2)\naave-v3/USDC (Polygon) APY anomali: 2.45% (7d ort: 2.56%, z=-5.7)\nbeefy/wstETH-WETH (arbitrum) APY anomali: 0.01% (7d ort: 0.02%, z=-5.9)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T05:30:45.078Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-060",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/EURC-USDC (base) APY anomali: 0.67% (7d ort: 1.18%, z=-7.2)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T06:00:15.490Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-061",
-      "title": "DeFi Kritik Alert: 7 adet",
-      "description": "aave-v3/WSTETH (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=-8.9)\ncurve-dex/REUSD-SCRVUSD (Ethereum) APY anomali: 3.77% (7d ort: 3.38%, z=7.4)\ncurve-dex/REUSD-SFRXUSD (Ethereum) APY anomali: 4.08% (7d ort: 3.77%, z=7.5)\ncurve-dex/TMVUSDC-FRXUSD (Ethereum) APY anomali: 1.12% (7d ort: 1.23%, z=-7.1)\ncurve-dex/UNIETH-FRXETH (Ethereum) APY anomali: 0.72% (7d ort: 15.94%, z=-8.9)\ncurve-dex/XAUT-PAXG (Ethereum) APY anomali: 0.62% (7d ort: 0.31%, z=5.1)\ncompound-v3/WETH (Optimism) APY anomali: 1.52% (7d ort: 1.51%, z=8.9)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T06:30:15.503Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-062",
-      "title": "DeFi Kritik Alert: 2 adet",
-      "description": "rocket-pool/RETH (Ethereum) APY anomali: 1.96% (7d ort: 1.96%, z=-9.2)\naave-v3/RLUSD (Ethereum) APY anomali: 0.92% (7d ort: 0.92%, z=-8.8)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T07:30:16.675Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-063",
-      "title": "DeFi Kritik Alert: 2 adet",
-      "description": "aave-v3/WBTC (Ethereum) APY anomali: 0.00% (7d ort: 0.00%, z=-9.3)\naave-v3/WPOL (Polygon) APY anomali: 0.42% (7d ort: 0.42%, z=-5.3)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T08:30:16.737Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-064",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/tBTC/WBTC (arbitrum) APY anomali: 0.37% (7d ort: 0.10%, z=8.7)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T08:45:17.597Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-065",
-      "title": "DeFi Kritik Alert: 2 adet",
-      "description": "beefy/ynRWAx/ynUSDx (ethereum) APY anomali: 17.21% (7d ort: 18.52%, z=-7.5)\nbeefy/ynRWAx/OUSD (ethereum) APY anomali: 17.16% (7d ort: 19.07%, z=-8.2)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T09:15:15.564Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-066",
-      "title": "DeFi Kritik Alert: 3 adet",
-      "description": "aave-v3/SGHO (Ethereum) APY anomali: 4.80% (7d ort: 4.80%, z=-9.6)\naave-v3/SYRUPUSDT (Ethereum) TVL ÇÖKÜŞÜ: -50.5% (1h) — $165.5M → $81.9M\naave-v3/DAI (Polygon) APY anomali: 3.59% (7d ort: 3.37%, z=9.3)",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T09:30:17.382Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-067",
-      "title": "DeFi Kritik Alert: 120 adet",
-      "description": "aerodrome-v1/WETH-TRAC (Base) APY aşırı yüksek: 77119.4% — muhtemel scam/manipülasyon\nmorpho-v1/CSYUSDC (Ethereum) APY aşırı yüksek: 61886.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/RECALL-USDC (Base) APY aşırı yüksek: 37658.3% — muhtemel scam/manipülasyon\nuniswap-v4/PENDLE-USDC (Arbitrum) APY aşırı yüksek: 33109.7% — muhtemel scam/manipülasyon\nsupernova-cl/USDC-WETH (Ethereum) APY aşırı yüksek: 32016.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DOM (Base) APY aşırı yüksek: 22433.8% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-BNKR (Base) APY aşırı yüksek: 20119.2% — muhtemel scam/manipülasyon\naerodrome-v1/WETH-W (Base) APY aşırı yüksek: 19849.5% — muhtemel scam/manipülasyon\nsupernova-cl/WETH-USDT (Ethereum) APY aşırı yüksek: 17888.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VELVET (Base) APY aşırı yüksek: 17158.5% — muhtemel scam/manipülasyon\nuniswap-v4/POL-USDC (Polygon) APY aşırı yüksek: 15091.4% — muhtemel scam/manipülasyon\naerodrome-v1/USDC-NOCK (Base) APY aşırı yüksek: 14269.0% — muhtemel scam/manipülasyon\nuniswap-v4/ZORA-CRYPTICPOET (Base) APY aşırı yüksek: 13957.8% — muhtemel scam/manipülasyon\nuniswap-v4/LOL-WETH (Base) APY aşırı yüksek: 13062.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CA (Base) APY aşırı yüksek: 12631.6% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ENS (Ethereum) APY aşırı yüksek: 12594.1% — muhtemel scam/manipülasyon\nuniswap-v4/ASTEROID-WETH (Base) APY aşırı yüksek: 12175.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DELU (Base) APY aşırı yüksek: 11861.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 11399.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRANSMUTE (Base) APY aşırı yüksek: 10983.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DCLAW (Base) APY aşırı yüksek: 10943.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 10207.7% — muhtemel scam/manipülasyon\nuniswap-v4/QUDEAI-WETH (Base) APY aşırı yüksek: 9878.4% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-USDT (Ethereum) APY aşırı yüksek: 9742.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PXLSYNPS (Base) APY aşırı yüksek: 9690.3% — muhtemel scam/manipülasyon\nuniswap-v4/LENDR-WETH (Base) APY aşırı yüksek: 9606.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-USECASELAB (Base) APY aşırı yüksek: 9396.2% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-CBBTC (Base) APY aşırı yüksek: 9373.5% — muhtemel scam/manipülasyon\naerodrome-slipstream/WETH-USDC (Base) APY aşırı yüksek: 9361.1% — muhtemel scam/manipülasyon\nuniswap-v4/OREWARS-WETH (Base) APY aşırı yüksek: 9213.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 8848.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 8577.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8546.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8365.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GITLAWB (Base) APY aşırı yüksek: 8307.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MYTHOS (Base) APY aşırı yüksek: 8297.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOOK (Base) APY aşırı yüksek: 8066.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GURU (Base) APY aşırı yüksek: 7998.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AUBR (Base) APY aşırı yüksek: 7790.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NARC (Base) APY aşırı yüksek: 7525.5% — muhtemel scam/manipülasyon\nsupernova-cl/XAUT-USDT (Ethereum) APY aşırı yüksek: 7415.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VDRO (Base) APY aşırı yüksek: 7328.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-🪑 (Base) APY aşırı yüksek: 7321.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-WOON (Base) APY aşırı yüksek: 7243.0% — muhtemel scam/manipülasyon\nuniswap-v4/STUPI-WETH (Base) APY aşırı yüksek: 7164.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 6492.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 6358.6% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VFY (Base) APY aşırı yüksek: 6215.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SNAPNCLANK (Base) APY aşırı yüksek: 6154.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NEURAL (Base) APY aşırı yüksek: 6131.7% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-TITN (Base) APY aşırı yüksek: 6018.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ROAR (Base) APY aşırı yüksek: 5808.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VAR (Base) APY aşırı yüksek: 5686.2% — muhtemel scam/manipülasyon\nuniswap-v4/NORD-WETH (Base) APY aşırı yüksek: 5657.1% — muhtemel scam/manipülasyon\naerodrome-slipstream/WETH-CBBTC (Base) APY aşırı yüksek: 5605.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 5546.5% — muhtemel scam/manipülasyon\nuniswap-v4/VDOR-WETH (Base) APY aşırı yüksek: 5482.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ASTEROID (Base) APY aşırı yüksek: 5426.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MPFP (Base) APY aşırı yüksek: 5246.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIEMPOOL (Base) APY aşırı yüksek: 5240.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIALAGRAM (Base) APY aşırı yüksek: 5004.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 4980.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-FROSTY (Base) APY aşırı yüksek: 4950.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STATS (Base) APY aşırı yüksek: 4829.9% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 4804.8% — muhtemel scam/manipülasyon\nuniswap-v4/AC-WETH (Base) APY aşırı yüksek: 4740.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PIXEL (Base) APY aşırı yüksek: 4583.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STOA (Base) APY aşırı yüksek: 4458.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-COLONY (Base) APY aşırı yüksek: 4412.6% — muhtemel scam/manipülasyon\nuniswap-v4/AUSD-USDC (Ethereum) APY aşırı yüksek: 4357.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GLAD (Base) APY aşırı yüksek: 4314.5% — muhtemel scam/manipülasyon\nuniswap-v4/AUTONOMA-WETH (Base) APY aşırı yüksek: 4124.4% — muhtemel scam/manipülasyon\nuniswap-v4/TRAITORS-WETH (Base) APY aşırı yüksek: 4081.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BILLY (Base) APY aşırı yüksek: 4036.7% — muhtemel scam/manipülasyon\nuniswap-v4/OCTAV-WETH (Base) APY aşırı yüksek: 4035.8% — muhtemel scam/manipülasyon\nuniswap-v4/DRONE-WETH (Base) APY aşırı yüksek: 3974.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CLAWPASS (Base) APY aşırı yüksek: 3927.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DORITOS (Base) APY aşırı yüksek: 3852.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/AVNT-USDC (Base) APY aşırı yüksek: 3783.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AGENTCRAFT (Base) APY aşırı yüksek: 3739.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BSJ (Base) APY aşırı yüksek: 3727.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MEMBASE (Base) APY aşırı yüksek: 3717.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SURF (Base) APY aşırı yüksek: 3704.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HAZZA (Base) APY aşırı yüksek: 3603.2% — muhtemel scam/manipülasyon\nzeebu/ZBU (Base) APY aşırı yüksek: 3513.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRUE (Base) APY aşırı yüksek: 3420.8% — muhtemel scam/manipülasyon\naerodrome-v1/EBTC-CBBTC (Base) APY aşırı yüksek: 3388.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 3335.5% — muhtemel scam/manipülasyon\nuniswap-v4/ABT-USDT (Ethereum) APY aşırı yüksek: 3324.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-LIMINAL (Base) APY aşırı yüksek: 3265.3% — muhtemel scam/manipülasyon\nuniswap-v4/PXLSYNPS-WETH (Base) APY aşırı yüksek: 3237.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MVGA (Base) APY aşırı yüksek: 3231.2% — muhtemel scam/manipülasyon\nuniswap-v4/AGENT-S-WETH (Base) APY aşırı yüksek: 3153.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 3113.6% — muhtemel scam/manipülasyon\nsupernova-cl/USDT-SUPER (Ethereum) APY aşırı yüksek: 3069.0% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ASTEROID (Ethereum) APY aşırı yüksek: 3066.8% — muhtemel scam/manipülasyon\nuniswap-v4/安小将-WETH (Base) APY aşırı yüksek: 3053.3% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-WETH (Ethereum) APY aşırı yüksek: 2990.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERM (Base) APY aşırı yüksek: 2904.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MAN (Base) APY aşırı yüksek: 2809.0% — muhtemel scam/manipülasyon\naerodrome-slipstream/SOL-USDC (Base) APY aşırı yüksek: 2802.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TANA (Base) APY aşırı yüksek: 2749.8% — muhtemel scam/manipülasyon\nuniswap-v4/MAN-WETH (Base) APY aşırı yüksek: 2741.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CREDIFI (Base) APY aşırı yüksek: 2708.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PILLED (Base) APY aşırı yüksek: 2667.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OE (Base) APY aşırı yüksek: 2591.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OPENBET (Base) APY aşırı yüksek: 2517.5% — muhtemel scam/manipülasyon\nuniswap-v4/CLIPBRAIN-WETH (Base) APY aşırı yüksek: 2449.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOTUNC (Base) APY aşırı yüksek: 2417.1% — muhtemel scam/manipülasyon\nuniswap-v4/HUMWORK-WETH (Base) APY aşırı yüksek: 2416.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AC (Base) APY aşırı yüksek: 2395.4% — muhtemel scam/manipülasyon\nbalancer-v2/WMATIC-USDC-WETH-BAL (Polygon) APY aşırı yüksek: 2384.5% — muhtemel scam/manipülasyon\nuniswap-v4/MOONPAY-WETH (Base) APY aşırı yüksek: 2207.8% — muhtemel scam/manipülasyon\nbalancer-v2/APE-TEL (Polygon) APY aşırı yüksek: 2205.1% — muhtemel scam/manipülasyon\nuniswap-v4/MYBOT-WETH (Base) APY aşırı yüksek: 2161.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 2143.9% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-UPEG (Ethereum) APY aşırı yüksek: 2137.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NPC (Base) APY aşırı yüksek: 2134.0% — muhtemel scam/manipülasyon\nuniswap-v4/NEXUM-WETH (Base) APY aşırı yüksek: 2093.4% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 2025.9% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T09:49:31.537Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-068",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "uniswap-v4/WETH-AC (Base) TVL ÇÖKÜŞÜ: -30.0% (1h) — $0.1M → $0.1M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T11:34:25.936Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-069",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "uniswap-v4/ETH-NMR (Ethereum) APY aşırı yüksek: 25519.4% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T12:34:27.172Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-070",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "uniswap-v4/WETH-ACE (Base) APY aşırı yüksek: 2296.8% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T13:34:28.266Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-071",
-      "title": "DeFi Kritik Alert: 116 adet",
-      "description": "aerodrome-v1/WETH-TRAC (Base) APY aşırı yüksek: 78219.1% — muhtemel scam/manipülasyon\nmorpho-v1/CSYUSDC (Ethereum) APY aşırı yüksek: 71336.1% — muhtemel scam/manipülasyon\nuniswap-v4/PENDLE-USDC (Arbitrum) APY aşırı yüksek: 32535.8% — muhtemel scam/manipülasyon\nsupernova-cl/WETH-USDT (Ethereum) APY aşırı yüksek: 26568.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DOM (Base) APY aşırı yüksek: 22433.8% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-USDT (Ethereum) APY aşırı yüksek: 21697.1% — muhtemel scam/manipülasyon\nsupernova-cl/USDC-WETH (Ethereum) APY aşırı yüksek: 20881.4% — muhtemel scam/manipülasyon\naerodrome-v1/WETH-W (Base) APY aşırı yüksek: 20130.0% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-BNKR (Base) APY aşırı yüksek: 20119.2% — muhtemel scam/manipülasyon\nuniswap-v4/ASTEROID-WETH (Base) APY aşırı yüksek: 17008.0% — muhtemel scam/manipülasyon\naerodrome-slipstream/WETH-USDC (Base) APY aşırı yüksek: 16583.8% — muhtemel scam/manipülasyon\naerodrome-v1/USDC-NOCK (Base) APY aşırı yüksek: 15787.4% — muhtemel scam/manipülasyon\nuniswap-v4/POL-USDC (Polygon) APY aşırı yüksek: 15091.4% — muhtemel scam/manipülasyon\naerodrome-slipstream/RECALL-USDC (Base) APY aşırı yüksek: 14886.8% — muhtemel scam/manipülasyon\nuniswap-v4/ZORA-CRYPTICPOET (Base) APY aşırı yüksek: 13936.4% — muhtemel scam/manipülasyon\nuniswap-v4/LOL-WETH (Base) APY aşırı yüksek: 13062.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CA (Base) APY aşırı yüksek: 12631.6% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ENS (Ethereum) APY aşırı yüksek: 12565.2% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VFY (Base) APY aşırı yüksek: 12282.2% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-VELVET (Base) APY aşırı yüksek: 11446.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 11399.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DCLAW (Base) APY aşırı yüksek: 10943.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRANSMUTE (Base) APY aşırı yüksek: 10722.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 10207.7% — muhtemel scam/manipülasyon\nuniswap-v4/QUDEAI-WETH (Base) APY aşırı yüksek: 9878.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PXLSYNPS (Base) APY aşırı yüksek: 9690.3% — muhtemel scam/manipülasyon\nuniswap-v4/LENDR-WETH (Base) APY aşırı yüksek: 9606.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-USECASELAB (Base) APY aşırı yüksek: 9396.2% — muhtemel scam/manipülasyon\nuniswap-v4/OREWARS-WETH (Base) APY aşırı yüksek: 9213.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 9001.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 8577.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8546.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SR (Base) APY aşırı yüksek: 8365.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GITLAWB (Base) APY aşırı yüksek: 8307.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MYTHOS (Base) APY aşırı yüksek: 8189.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-CBBTC (Base) APY aşırı yüksek: 8165.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOOK (Base) APY aşırı yüksek: 8066.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GURU (Base) APY aşırı yüksek: 7998.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NARC (Base) APY aşırı yüksek: 7525.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VDRO (Base) APY aşırı yüksek: 7328.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-🪑 (Base) APY aşırı yüksek: 7321.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ATEAM (Base) APY aşırı yüksek: 7321.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-WOON (Base) APY aşırı yüksek: 7243.0% — muhtemel scam/manipülasyon\nuniswap-v4/STUPI-WETH (Base) APY aşırı yüksek: 7164.5% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-ASTEROID (Ethereum) APY aşırı yüksek: 6765.0% — muhtemel scam/manipülasyon\nuniswap-v4/MOONPAY-WETH (Base) APY aşırı yüksek: 6629.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 6492.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 6358.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SNAPNCLANK (Base) APY aşırı yüksek: 6154.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NEURAL (Base) APY aşırı yüksek: 6131.7% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-TITN (Base) APY aşırı yüksek: 6023.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ROAR (Base) APY aşırı yüksek: 5808.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VAR (Base) APY aşırı yüksek: 5686.2% — muhtemel scam/manipülasyon\nuniswap-v4/NORD-WETH (Base) APY aşırı yüksek: 5657.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-VSPR (Base) APY aşırı yüksek: 5546.5% — muhtemel scam/manipülasyon\nuniswap-v4/VDOR-WETH (Base) APY aşırı yüksek: 5482.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-ASTEROID (Base) APY aşırı yüksek: 5426.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MPFP (Base) APY aşırı yüksek: 5246.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIEMPOOL (Base) APY aşırı yüksek: 5240.6% — muhtemel scam/manipülasyon\nsupernova-cl/XAUT-USDT (Ethereum) APY aşırı yüksek: 5039.3% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DIALAGRAM (Base) APY aşırı yüksek: 5004.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DECK (Base) APY aşırı yüksek: 4980.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-FROSTY (Base) APY aşırı yüksek: 4950.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STATS (Base) APY aşırı yüksek: 4829.9% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 4804.8% — muhtemel scam/manipülasyon\nuniswap-v4/AC-WETH (Base) APY aşırı yüksek: 4740.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AC (Base) APY aşırı yüksek: 4696.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-AUBR (Base) APY aşırı yüksek: 4689.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PIXEL (Base) APY aşırı yüksek: 4583.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-STOA (Base) APY aşırı yüksek: 4458.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-COLONY (Base) APY aşırı yüksek: 4412.6% — muhtemel scam/manipülasyon\nuniswap-v4/AUSD-USDC (Ethereum) APY aşırı yüksek: 4357.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-GLAD (Base) APY aşırı yüksek: 4314.5% — muhtemel scam/manipülasyon\nuniswap-v4/AUTONOMA-WETH (Base) APY aşırı yüksek: 4124.4% — muhtemel scam/manipülasyon\nuniswap-v4/TRAITORS-WETH (Base) APY aşırı yüksek: 4081.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BILLY (Base) APY aşırı yüksek: 4036.7% — muhtemel scam/manipülasyon\nuniswap-v4/OCTAV-WETH (Base) APY aşırı yüksek: 4035.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DELU (Base) APY aşırı yüksek: 3993.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CLAWPASS (Base) APY aşırı yüksek: 3927.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-DORITOS (Base) APY aşırı yüksek: 3852.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-BSJ (Base) APY aşırı yüksek: 3727.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MEMBASE (Base) APY aşırı yüksek: 3717.5% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SURF (Base) APY aşırı yüksek: 3704.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HAZZA (Base) APY aşırı yüksek: 3603.2% — muhtemel scam/manipülasyon\nzeebu/ZBU (Base) APY aşırı yüksek: 3455.3% — muhtemel scam/manipülasyon\naerodrome-v1/EBTC-CBBTC (Base) APY aşırı yüksek: 3440.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TRUE (Base) APY aşırı yüksek: 3420.8% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OMNIFS (Base) APY aşırı yüksek: 3335.5% — muhtemel scam/manipülasyon\nuniswap-v4/ABT-USDT (Ethereum) APY aşırı yüksek: 3324.4% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-LIMINAL (Base) APY aşırı yüksek: 3265.3% — muhtemel scam/manipülasyon\nuniswap-v4/PXLSYNPS-WETH (Base) APY aşırı yüksek: 3237.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MVGA (Base) APY aşırı yüksek: 3231.2% — muhtemel scam/manipülasyon\nuniswap-v4/AGENT-S-WETH (Base) APY aşırı yüksek: 3153.9% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-SUPERGEMMA (Base) APY aşırı yüksek: 3113.6% — muhtemel scam/manipülasyon\nuniswap-v4/安小将-WETH (Base) APY aşırı yüksek: 3053.3% — muhtemel scam/manipülasyon\nsupernova-cl/USDT-SUPER (Ethereum) APY aşırı yüksek: 2966.6% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERM (Base) APY aşırı yüksek: 2904.6% — muhtemel scam/manipülasyon\naerodrome-slipstream/AVNT-USDC (Base) APY aşırı yüksek: 2846.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-MAN (Base) APY aşırı yüksek: 2809.0% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-TANA (Base) APY aşırı yüksek: 2749.8% — muhtemel scam/manipülasyon\nuniswap-v4/MAN-WETH (Base) APY aşırı yüksek: 2741.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-CREDIFI (Base) APY aşırı yüksek: 2708.7% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-PILLED (Base) APY aşırı yüksek: 2667.8% — muhtemel scam/manipülasyon\nsupernova-cl/WBTC-WETH (Ethereum) APY aşırı yüksek: 2593.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OE (Base) APY aşırı yüksek: 2591.1% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-OPENBET (Base) APY aşırı yüksek: 2517.5% — muhtemel scam/manipülasyon\nuniswap-v4/CLIPBRAIN-WETH (Base) APY aşırı yüksek: 2449.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-NOTUNC (Base) APY aşırı yüksek: 2417.1% — muhtemel scam/manipülasyon\nuniswap-v4/HUMWORK-WETH (Base) APY aşırı yüksek: 2416.9% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-CHECK (Base) APY aşırı yüksek: 2257.3% — muhtemel scam/manipülasyon\nuniswap-v4/MYBOT-WETH (Base) APY aşırı yüksek: 2161.7% — muhtemel scam/manipülasyon\nmorpho-v1/CSYUSDC (Ethereum) APY aşırı yüksek: 2156.2% — muhtemel scam/manipülasyon\nuniswap-v4/WETH-HERMESOS (Base) APY aşırı yüksek: 2143.9% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-UPEG (Ethereum) APY aşırı yüksek: 2098.6% — muhtemel scam/manipülasyon\nuniswap-v4/NEXUM-WETH (Base) APY aşırı yüksek: 2093.4% — muhtemel scam/manipülasyon\nuniswap-v4/VOID-WETH (Base) APY aşırı yüksek: 2025.9% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T14:04:55.815Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-072",
-      "title": "DeFi Kritik Alert: 2 adet",
-      "description": "supernova-cl/WBTC-CBBTC (Ethereum) APY aşırı yüksek: 2563.3% — muhtemel scam/manipülasyon\naerodrome-slipstream/USDC-LMTS (Base) APY aşırı yüksek: 2399.0% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T14:34:25.457Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-073",
-      "title": "DeFi Kritik Alert: 3 adet",
-      "description": "uniswap-v4/WETH-MYTHOS (Base) TVL ÇÖKÜŞÜ: -38.5% (1h) — $0.1M → $0.1M\nuniswap-v4/WETH-STATE (Base) APY aşırı yüksek: 10431.5% — muhtemel scam/manipülasyon\nuniswap-v4/ETH-CDX (Base) APY aşırı yüksek: 7468.9% — muhtemel scam/manipülasyon",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T15:34:25.599Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
       "id": "T-49",
-      "title": "DeFi Dashboard Widget — APY/TVL/Alert özeti",
-      "description": "Dashboard'a DeFi APM özet widget'ı ekle. API'den veri cekip goruntugetir.",
+      "title": "DeFi Dashboard Widget â€” APY/TVL/Alert Ã¶zeti",
+      "description": "Dashboard'a DeFi APM Ã¶zet widget'Ä± ekle. API'den veri cekip goruntugetir.",
       "status": "done",
       "assignee": "Alfred",
       "priority": "medium",
@@ -1251,12 +865,12 @@
       ],
       "completed_at": "2026-04-17T19:36:09.731262+03:00",
       "notes": [
-        "Overview.jsx'de DeFi APM özet widget zaten mevcut. 5 bölümlü panel: pool sayısı, kritik/uyarı sayısı, portföy değeri, top havuz (potentialScore), hot havuz (APY>500). Tüm veriler /api/defi/health, /pools/potential, /pools/high-apy, /alerts, /portfolio üzerinden çekiliyor. DeFiView ayrıca tam sayfa olarak mevcut."
+        "Overview.jsx'de DeFi APM Ã¶zet widget zaten mevcut. 5 bÃ¶lÃ¼mlÃ¼ panel: pool sayÄ±sÄ±, kritik/uyarÄ± sayÄ±sÄ±, portfÃ¶y deÄŸeri, top havuz (potentialScore), hot havuz (APY>500). TÃ¼m veriler /api/defi/health, /pools/potential, /pools/high-apy, /alerts, /portfolio Ã¼zerinden Ã§ekiliyor. DeFiView ayrÄ±ca tam sayfa olarak mevcut."
       ]
     },
     {
       "id": "T-50",
-      "title": "DeFi Alert Log Sayfası — tarihsel gorunum",
+      "title": "DeFi Alert Log SayfasÄ± â€” tarihsel gorunum",
       "description": "Gecmis alertlerin tarihsel gorunumu. Filtreleme ile CRITICAL/WARN/INFO.",
       "status": "done",
       "assignee": "Alfred",
@@ -1282,7 +896,7 @@
     },
     {
       "id": "T-51",
-      "title": "DeFi Top Pools Sayfası — en iyi havuzlar",
+      "title": "DeFi Top Pools SayfasÄ± â€” en iyi havuzlar",
       "description": "En iyi APY'li havuzlarin listesi. Chain filtreleme, siralama ozelligi.",
       "status": "done",
       "assignee": "Alfred",
@@ -1303,12 +917,12 @@
       ],
       "completed_at": "2026-04-17T22:08:19.873209+03:00",
       "notes": [
-        "TopPools sayfası oluşturuldu: Zincir filtresi (Tüm/Ethereum/Arbitrum/Optimism/Base/Polygon), APY/TVL/İsim sıralaması, 100 havuz limitli API çağrısı, mobil uyumlu responsive tasarım. Vite build + dashboard restart yapıldı. /api/defi/pools/top proxy çalışıyor."
+        "TopPools sayfasÄ± oluÅŸturuldu: Zincir filtresi (TÃ¼m/Ethereum/Arbitrum/Optimism/Base/Polygon), APY/TVL/Ä°sim sÄ±ralamasÄ±, 100 havuz limitli API Ã§aÄŸrÄ±sÄ±, mobil uyumlu responsive tasarÄ±m. Vite build + dashboard restart yapÄ±ldÄ±. /api/defi/pools/top proxy Ã§alÄ±ÅŸÄ±yor."
       ]
     },
     {
       "id": "T-52",
-      "title": "DeFi RPC Fallback — yedek endpoint mekanizması",
+      "title": "DeFi RPC Fallback â€” yedek endpoint mekanizmasÄ±",
       "description": "Public RPC fail olursa yedek endpoint'e gecil mekanizmasi.",
       "status": "done",
       "assignee": "Alfred",
@@ -1329,12 +943,12 @@
       ],
       "completed_at": "2026-04-17T20:36:51.466273+03:00",
       "notes": [
-        "Tüm zincirler (Base, Arbitrum, Optimism, Polygon, Ethereum) için çoklu RPC fallback mekanizması eklendi. viem fallback transport + retryCount:2/retryDelay:500ms ile otomatik yedek geçiş aktif. executor.ts de bu mekanizmayı kullanacak şekilde güncellendi. Opsiyonel checkRpcHealth() fonksiyonu ile tüm endpoint'lerin sağlık durumu izlenebilir."
+        "TÃ¼m zincirler (Base, Arbitrum, Optimism, Polygon, Ethereum) iÃ§in Ã§oklu RPC fallback mekanizmasÄ± eklendi. viem fallback transport + retryCount:2/retryDelay:500ms ile otomatik yedek geÃ§iÅŸ aktif. executor.ts de bu mekanizmayÄ± kullanacak ÅŸekilde gÃ¼ncellendi. Opsiyonel checkRpcHealth() fonksiyonu ile tÃ¼m endpoint'lerin saÄŸlÄ±k durumu izlenebilir."
       ]
     },
     {
       "id": "T-53",
-      "title": "DeFi Bildirim Test — yeni format test",
+      "title": "DeFi Bildirim Test â€” yeni format test",
       "description": "Alert bildirimlerini manuel tetikleyip yeni formatin test et.",
       "status": "done",
       "assignee": "Alfred",
@@ -1354,12 +968,12 @@
       ],
       "completed_at": "2026-04-17T23:33:55.498963+03:00",
       "notes": [
-        "DeFi bildirim sistemi test edildi. sendText, sendAlerts (mixed/critical/depeg), sendScanSummary tümü çalışıyor. Format: Türkçe alertler, HTML parse_mode, seviye bazlı gruplama (kritik/uyarı/bilgi). Mevcut token config'de yok ama kod log/send branch'ini doğru handle ediyor."
+        "DeFi bildirim sistemi test edildi. sendText, sendAlerts (mixed/critical/depeg), sendScanSummary tÃ¼mÃ¼ Ã§alÄ±ÅŸÄ±yor. Format: TÃ¼rkÃ§e alertler, HTML parse_mode, seviye bazlÄ± gruplama (kritik/uyarÄ±/bilgi). Mevcut token config'de yok ama kod log/send branch'ini doÄŸru handle ediyor."
       ]
     },
     {
       "id": "T-54",
-      "title": "DeFi APM Graceful Restart — systemd reload",
+      "title": "DeFi APM Graceful Restart â€” systemd reload",
       "description": "Systemd reload yerine graceful shutdown/restart yapildigini dogrula.",
       "status": "done",
       "assignee": "Alfred",
@@ -1380,12 +994,12 @@
       ],
       "completed_at": "2026-04-18T00:34:26.638334+03:00",
       "notes": [
-        "Graceful shutdown/restart mekanizmasi dogru uygulanmis. src/index.ts:140-147 arasindaki shutdown() fonksiyonu SIGTERM/SIGINT yakalayarak tum interval'lari temizliyor, veritabani baglantisi kapatip temiz cikis yapiyor. TimeoutStopUSec=90s graceful kapanmaya yetiyor. Restart=on-failure + RestartSec=30s beklenmedik cikislarda temiz restart sagliyor. systemctl reload varsayilan SIGHUP gonderir ama uygulama bunu yok sayiyor — graceful restart zaten tek mekanizma olarak calisiyor."
+        "Graceful shutdown/restart mekanizmasi dogru uygulanmis. src/index.ts:140-147 arasindaki shutdown() fonksiyonu SIGTERM/SIGINT yakalayarak tum interval'lari temizliyor, veritabani baglantisi kapatip temiz cikis yapiyor. TimeoutStopUSec=90s graceful kapanmaya yetiyor. Restart=on-failure + RestartSec=30s beklenmedik cikislarda temiz restart sagliyor. systemctl reload varsayilan SIGHUP gonderir ama uygulama bunu yok sayiyor â€” graceful restart zaten tek mekanizma olarak calisiyor."
       ]
     },
     {
       "id": "T-55",
-      "title": "DeFi Sprint Raporu — PROJECT.md guncelleme",
+      "title": "DeFi Sprint Raporu â€” PROJECT.md guncelleme",
       "description": "Gelis_turma raporunu PROJECT.md'ye isle.",
       "status": "done",
       "assignee": "Alfred",
@@ -1406,52 +1020,8 @@
       ],
       "completed_at": "2026-04-17T21:05:50.829181+03:00",
       "notes": [
-        "Guncelleme Logu'na PROJECT.md'nin sprint/is-takip yapısından faz-bazlı yapıya geçişi eklendi. Commit 507c45a'daki yapısal değişiklik zaten yansıtılmıştı — eksik olan tek şey günlük log girişiydi."
+        "Guncelleme Logu'na PROJECT.md'nin sprint/is-takip yapÄ±sÄ±ndan faz-bazlÄ± yapÄ±ya geÃ§iÅŸi eklendi. Commit 507c45a'daki yapÄ±sal deÄŸiÅŸiklik zaten yansÄ±tÄ±lmÄ±ÅŸtÄ± â€” eksik olan tek ÅŸey gÃ¼nlÃ¼k log giriÅŸiydi."
       ]
-    },
-    {
-      "id": "DEFI-081",
-      "title": "DeFi Kritik Alert: 4 adet",
-      "description": "beefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -67.1% (1h) — $3.0M → $1.0M\nbeefy/msETH-WETH sLP (base) TVL ÇÖKÜŞÜ: -56.6% (1h) — $1.9M → $0.8M\nbeefy/tETH/wstETH V3 (ethereum) TVL ÇÖKÜŞÜ: -68.8% (1h) — $2.4M → $0.7M\nbeefy/msETH/WETH (ethereum) TVL ÇÖKÜŞÜ: -67.1% (1h) — $1.5M → $0.5M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T18:08:54.263Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-082",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/USDC/EURe V3 (arbitrum) TVL ÇÖKÜŞÜ: -62.8% (1h) — $0.6M → $0.2M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T20:07:40.268Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-083",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/tETH/wstETH V3 (ethereum) TVL ÇÖKÜŞÜ: -68.2% (1h) — $2.4M → $0.8M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-17T21:22:40.752Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-084",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/PYUSD/crvUSD (ethereum) TVL ÇÖKÜŞÜ: -32.7% (1h) — $1.5M → $1.0M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-18T11:08:11.615Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
     },
     {
       "id": "T-056",
@@ -1482,49 +1052,213 @@
       ]
     },
     {
-      "id": "DEFI-086",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/tETH/wstETH V3 (ethereum) TVL ÇÖKÜŞÜ: -39.1% (1h) — $2.3M → $1.4M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-19T04:22:43.502Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-087",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/alETH-WETH sLP V2 (optimism) TVL ÇÖKÜŞÜ: -31.8% (1h) — $0.2M → $0.1M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-19T04:37:57.702Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
-      "id": "DEFI-088",
-      "title": "DeFi Kritik Alert: 1 adet",
-      "description": "beefy/tETH/wstETH V3 (ethereum) TVL ÇÖKÜŞÜ: -71.7% (1h) — $1.4M → $0.4M",
-      "auto": false,
-      "category": "DeFi Risk",
-      "status": "archived",
-      "created": "2026-04-19T05:23:13.307Z",
-      "archived_at": "2026-04-19",
-      "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
-    },
-    {
       "id": "T-059",
       "title": "Rapor",
-      "description": "Bana hafıza sistemini çalışma sistemini analiz edip raporla. ve nasıl verimli hale getirebiliriz öneride bulun",
+      "description": "Bana hafÄ±za sistemini Ã§alÄ±ÅŸma sistemini analiz edip raporla. ve nasÄ±l verimli hale getirebiliriz Ã¶neride bulun",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-27T09:13:21.569Z",
+      "started_at": "2026-04-27T12:34:40.406138+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-27T12:34:40.406138+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-27T12:43:38.815354+03:00"
+        }
+      ],
+      "completed_at": "2026-04-27T12:43:38.815354+03:00",
+      "notes": [
+        "T-059 tamamlandi. Rapor: memory/reports/2026-04-27-memory-system-report.md. 5 kritik sorun + 7 aksiyonlu yol haritasi. En acil: compaction script yazilmasi ve inbox rotasyonu."
+      ]
+    },
+    {
+      "id": "T-060",
+      "title": "TASKS.json temizliÄŸi â€” DEFI-xxx alert kayÄ±tlarÄ±nÄ± ayrÄ± dosyaya taÅŸÄ±",
+      "description": "45 adet DEFI-xxx arÅŸiv kaydÄ± TASKS.json ÅŸiÅŸiriyor. GÃ¶rev deÄŸil olay logu; defi-alerts-archive.json gibi ayrÄ± bir dosyaya taÅŸÄ±.",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "maintenance",
+        "tasks",
+        "defi"
+      ],
+      "due": "",
+      "created_at": "2026-04-27T15:29:05.444414+03:00",
+      "notes": [
+        "Alfred analizi 2026-04-27: 45 DEFI-xxx archived task TASKS.json boyutunu ÅŸiÅŸiriyor"
+      ],
+      "completed_at": "2026-04-27T15:32:00.717821+03:00"
+    },
+    {
+      "id": "T-061",
+      "title": "Sprint-07 planlama â€” Sprint-06 kapanÄ±ÅŸ + yeni sprint hedefi belirle",
+      "description": "Sprint-06 tÃ¼m gÃ¶revleri done. sprint-06-review.md oluÅŸtur, Sprint-07 hedefini ve gÃ¶revlerini belirle.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "scrum",
+        "sprint",
+        "planning"
+      ],
+      "due": "",
+      "created_at": "2026-04-27T15:29:05.444414+03:00",
+      "notes": [
+        "Sprint-06: S6-01 + S6-02 done. Sprint-07 planlanmadÄ±."
+      ],
+      "completed_at": "2026-04-27T15:32:00.717821+03:00"
+    },
+    {
+      "id": "T-062",
+      "title": "ataraxia-dashboard.service dÃ¼zelt â€” RestartBurstLimit kaldÄ±r + enable et",
+      "description": "Servis disabled/dead durumunda. RestartBurstLimit Debian Trixie'de desteklenmiyor, satÄ±rÄ± kaldÄ±r ve systemctl enable --now ile aktif et.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "systemd",
+        "dashboard",
+        "infra"
+      ],
+      "due": "",
+      "created_at": "2026-04-27T15:29:05.444414+03:00",
+      "notes": [
+        "systemctl status: inactive (dead), disabled. RestartBurstLimit unknown key hatasÄ± var."
+      ],
+      "completed_at": "2026-04-27T15:32:00.717821+03:00"
+    },
+    {
+      "id": "T-063",
+      "title": "M-01: compaction.sh yaz â€” gÃ¼nlÃ¼k memory dosyalarÄ± Ã¶zet",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "maintenance"
+      ],
+      "created_at": "2026-04-27T15:39:33.105031+03:00",
+      "notes": [
+        "T-059 yol haritasÄ± M-01"
+      ],
+      "completed_at": "2026-04-27T15:43:39.102409+03:00"
+    },
+    {
+      "id": "T-064",
+      "title": "M-02: inbox-rotate.sh yaz â€” 7 gÃ¼nden eski â†’ archive",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "maintenance"
+      ],
+      "created_at": "2026-04-27T15:39:33.105031+03:00",
+      "notes": [
+        "T-059 yol haritasÄ± M-02"
+      ],
+      "completed_at": "2026-04-27T15:43:39.102409+03:00"
+    },
+    {
+      "id": "T-065",
+      "title": "M-03: HaftalÄ±k cron â€” compaction + rotasyon",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "cron"
+      ],
+      "created_at": "2026-04-27T15:39:33.105031+03:00",
+      "notes": [
+        "T-059 yol haritasÄ± M-03"
+      ],
+      "completed_at": "2026-04-27T15:43:39.102409+03:00"
+    },
+    {
+      "id": "T-066",
+      "title": "M-04: 40-active-work sprint tablosunu referansa Ã§evir",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "cleanup"
+      ],
+      "created_at": "2026-04-27T15:39:33.105031+03:00",
+      "notes": [
+        "T-059 yol haritasÄ± M-04"
+      ],
+      "completed_at": "2026-04-27T15:43:39.102409+03:00"
+    },
+    {
+      "id": "T-067",
+      "title": "M-05: 30-projects.md â†’ 40-active-work merge veya sil",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "cleanup"
+      ],
+      "created_at": "2026-04-27T15:39:33.105031+03:00",
+      "notes": [
+        "T-059 yol haritasÄ± M-05"
+      ],
+      "completed_at": "2026-04-27T15:43:39.102409+03:00"
+    },
+    {
+      "id": "T-068",
+      "title": "M-06: 50-decisions, 60-source-map, 80-automation temizle",
+      "status": "done",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "cleanup"
+      ],
+      "created_at": "2026-04-27T15:39:33.105031+03:00",
+      "notes": [
+        "T-059 yol haritasÄ± M-06"
+      ],
+      "completed_at": "2026-04-27T15:43:39.102409+03:00"
+    },
+    {
+      "id": "T-069",
+      "title": "M-07: MEMORY.md â†” SOUL.md okuma listesi senkronize et",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [
+        "memory",
+        "sync"
+      ],
+      "created_at": "2026-04-27T15:39:33.105031+03:00",
+      "notes": [
+        "T-059 yol haritasÄ± M-07"
+      ],
+      "completed_at": "2026-04-27T15:43:39.102409+03:00"
+    },
+    {
+      "id": "T-070",
+      "title": "test",
+      "description": "test",
       "status": "pending",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-27T09:13:21.569Z"
+      "created_at": "2026-04-27T17:52:08.279Z"
     }
   ],
-  "updated_at": "2026-04-27T09:13:21.569Z"
+  "updated_at": "2026-04-27T17:52:08.279Z"
 }
