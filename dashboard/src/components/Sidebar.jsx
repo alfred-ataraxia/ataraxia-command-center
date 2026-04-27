@@ -14,14 +14,14 @@ import {
 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'overview',   label: 'Kokpit',    icon: LayoutDashboard },
-  { id: 'tasks',      label: 'Görevler',  icon: ListTodo },
-  { id: 'agents',     label: 'Ajanlar',   icon: Bot },
-  { id: 'automation', label: 'Otomasyon', icon: Timer },
-  { id: 'approvals',  label: 'Onaylar',   icon: ShieldCheck },
-  { id: 'memory',     label: 'Hafıza',    icon: BrainCircuit },
-  { id: 'logs',       label: 'Logs',      icon: ScrollText },
-  { id: 'defi',       label: 'DeFi APM',  icon: TrendingUp },
+  { id: 'overview',   label: 'Kokpit',    icon: LayoutDashboard, num: '01' },
+  { id: 'tasks',      label: 'Görevler',  icon: ListTodo,        num: '02' },
+  { id: 'agents',     label: 'Ajanlar',   icon: Bot,             num: '03' },
+  { id: 'automation', label: 'Otomasyon', icon: Timer,           num: '04' },
+  { id: 'approvals',  label: 'Onaylar',   icon: ShieldCheck,     num: '05' },
+  { id: 'memory',     label: 'Hafıza',    icon: BrainCircuit,    num: '06' },
+  { id: 'logs',       label: 'Logs',      icon: ScrollText,      num: '07' },
+  { id: 'defi',       label: 'DeFi APM',  icon: TrendingUp,      num: '08' },
 ]
 
 function NavItem({ item, active, onClick }) {
@@ -30,18 +30,23 @@ function NavItem({ item, active, onClick }) {
     <button
       onClick={() => onClick(item.id)}
       className={[
-        'group flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm transition-all duration-200',
+        'group flex items-center gap-3 w-full pl-0 pr-4 py-2.5 text-sm transition-all duration-200 border-l-2',
         active
-          ? 'bg-ax-accent/10 text-ax-accent border border-ax-accent/20 shadow-sm'
-          : 'text-ax-dim hover:text-ax-text hover:bg-ax-muted/30',
+          ? 'border-ax-accent text-ax-heading bg-ax-accent/5'
+          : 'border-transparent text-ax-dim hover:text-ax-text hover:bg-ax-muted/20 hover:border-ax-subtle',
       ].join(' ')}
     >
+      <span className={`font-mono text-[10px] w-8 text-right pr-1 shrink-0 transition-colors ${active ? 'text-ax-accent' : 'text-ax-subtle group-hover:text-ax-dim'}`}>
+        {item.num}
+      </span>
       <Icon
-        size={18}
-        className={active ? 'text-ax-accent' : 'text-ax-subtle group-hover:text-ax-text transition-colors'}
+        size={15}
+        className={`shrink-0 transition-colors ${active ? 'text-ax-accent' : 'text-ax-subtle group-hover:text-ax-text'}`}
       />
-      <span className={`flex-1 text-left ${active ? 'font-bold' : 'font-medium'}`}>{item.label}</span>
-      {active && <div className="w-1.5 h-1.5 rounded-full bg-ax-accent" />}
+      <span className={`flex-1 text-left tracking-wide ${active ? 'font-semibold text-ax-heading' : 'font-medium'}`}>
+        {item.label}
+      </span>
+      {active && <div className="w-1 h-1 rounded-full bg-ax-accent shrink-0" />}
     </button>
   )
 }
@@ -70,41 +75,45 @@ function SidebarContent({ activeView, onNavigate, onClose }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-ax-surface">
+    <div className="flex flex-col h-full bg-ax-surface border-r border-ax-border">
       {/* Logo */}
-      <div className="px-6 py-8">
+      <div className="px-5 py-6 border-b border-ax-border/60">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-ax-accent/10 border border-ax-accent/20">
-            <span className="text-lg">🦊</span>
-          </div>
+          <img
+            src={openclawUp ? '/logo-mark-live.svg' : '/logo-mark.svg'}
+            width="36"
+            height="36"
+            alt="Ataraxia"
+            className="shrink-0"
+          />
           <div className="leading-tight">
-            <h1 className="text-ax-heading font-black text-lg tracking-tight italic">ATARAXIA</h1>
-            <p className="text-ax-dim text-[10px] uppercase font-bold tracking-[0.2em]">Alfred</p>
+            <h1 className="text-ax-heading font-black text-base tracking-tight italic">ATARAXIA</h1>
+            <p className="text-ax-dim text-[9px] uppercase font-bold tracking-[0.25em] mt-0.5">Command Center</p>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 py-3">
         {NAV_ITEMS.map(item => (
           <NavItem key={item.id} item={item} active={activeView === item.id} onClick={handleNav} />
         ))}
       </nav>
 
       {/* System Health */}
-      <div className="px-4 py-4">
-        <div className={`p-4 rounded-2xl border space-y-2 transition-colors ${
-          openclawUp === null ? 'bg-ax-panel border-ax-border'
+      <div className="px-4 py-4 border-t border-ax-border/60">
+        <div className={`px-3 py-3 rounded-xl border transition-colors ${
+          openclawUp === null ? 'bg-ax-panel/50 border-ax-border'
           : openclawUp ? 'bg-ax-green/5 border-ax-green/20'
           : 'bg-ax-red/5 border-ax-red/20'
         }`}>
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${
+            <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${
               openclawUp === null ? 'bg-ax-subtle'
               : openclawUp ? 'bg-ax-green animate-pulse'
               : 'bg-ax-red'
             }`} />
-            <span className={`text-[10px] font-black uppercase tracking-wider ${
+            <span className={`text-[10px] font-bold uppercase tracking-widest ${
               openclawUp === null ? 'text-ax-dim'
               : openclawUp ? 'text-ax-green'
               : 'text-ax-red'
@@ -114,7 +123,7 @@ function SidebarContent({ activeView, onNavigate, onClose }) {
                : 'OpenClaw Kapalı'}
             </span>
           </div>
-          <p className="text-[10px] text-ax-subtle">
+          <p className="text-[10px] text-ax-subtle mt-1">
             {openclawUp ? 'Her 30dk\'da görev alır' : 'Gateway yanıt vermiyor'}
           </p>
         </div>

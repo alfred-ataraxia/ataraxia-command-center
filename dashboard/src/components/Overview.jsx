@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Cpu, MemoryStick, Clock, GitBranch, RefreshCw, Server, CheckCircle2, XCircle, Zap, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react'
+import { Cpu, MemoryStick, Clock, GitBranch, RefreshCw, Server, CheckCircle2, XCircle, Zap, TrendingUp, AlertTriangle, ShieldCheck, Activity, ListChecks } from 'lucide-react'
 import { getSystemStats } from '../services/haService'
 import apiFetch from '../services/apiFetch'
 import SprintStatus from './SprintStatus'
@@ -231,6 +231,14 @@ export default function Overview() {
   return (
     <div className="p-4 max-w-6xl mx-auto">
 
+      {/* HERO HEADER */}
+      <div className="mb-5 pt-1">
+        <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-ax-dim mb-1">Kokpit · {now.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <h2 className="text-2xl font-black italic text-ax-heading tracking-tight leading-tight">
+          Her şey kontrol altında.
+        </h2>
+      </div>
+
       {/* 2-KOLON GRID — masaüstünde yan yana, mobilde alt alta */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
@@ -241,8 +249,8 @@ export default function Overview() {
           <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-ax-accent/10 border border-ax-accent/25 flex items-center justify-center text-3xl">
-                  🦊
+                <div className="w-14 h-14 rounded-2xl bg-ax-accent/10 border border-ax-accent/25 flex items-center justify-center">
+                  <img src="/logo-mark.svg" width="36" height="36" alt="Ataraxia" />
                 </div>
                 <div>
                   <h2 className="text-xl font-black text-ax-heading italic">ALFRED</h2>
@@ -289,9 +297,9 @@ export default function Overview() {
           {/* 3. DOCKER SERVİSLER */}
           <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Server size={16} className="text-ax-accent" />
-              <h2 className="text-ax-heading text-sm font-bold">Docker Servisler</h2>
-              <span className="ml-auto text-[10px] text-ax-green font-medium">{healthyServices.length} aktif</span>
+              <div className="p-1.5 rounded-lg bg-ax-accent/10"><Server size={13} className="text-ax-accent" /></div>
+              <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">Docker Servisler</h2>
+              <span className="ml-auto text-[10px] font-mono text-ax-green font-semibold">{healthyServices.length} aktif</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {dockerServices.map(svc => (
@@ -330,8 +338,8 @@ export default function Overview() {
           {/* 5. GÖREV AKTİVİTESİ */}
           <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Zap size={16} className="text-ax-amber" />
-              <h2 className="text-ax-heading text-sm font-bold">Son Görevler</h2>
+              <div className="p-1.5 rounded-lg bg-ax-amber/10"><Activity size={13} className="text-ax-amber" /></div>
+              <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">Son Görevler</h2>
             </div>
             <div className="space-y-2">
               {events.length > 0 ? events.slice(0, 5).map((ev, i) => (
@@ -357,8 +365,8 @@ export default function Overview() {
           {/* 5. GİT */}
           <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
             <div className="flex items-center gap-2 mb-4">
-              <GitBranch size={16} className="text-ax-accent" />
-              <h2 className="text-ax-heading text-sm font-bold">Git</h2>
+              <div className="p-1.5 rounded-lg bg-ax-accent/10"><GitBranch size={13} className="text-ax-accent" /></div>
+              <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">Git</h2>
               <button onClick={fetchData} className="ml-auto p-1.5 rounded-lg hover:bg-ax-muted transition-colors text-ax-dim">
                 <RefreshCw size={12} />
               </button>
@@ -384,8 +392,8 @@ export default function Overview() {
           {defiSummary && (
           <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={16} className="text-ax-green" />
-            <h2 className="text-ax-heading text-sm font-bold">DeFi APM</h2>
+            <div className="p-1.5 rounded-lg bg-ax-green/10"><TrendingUp size={13} className="text-ax-green" /></div>
+            <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">DeFi APM</h2>
             <div className={`ml-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${
               defiSummary.up ? 'bg-ax-green/10 text-ax-green border border-ax-green/20' : 'bg-ax-red/10 text-ax-red border border-ax-red/20'
             }`}>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none" role="img" aria-label="Ataraxia (live)">
+  <circle cx="24" cy="24" r="20" stroke="#6366f1" stroke-width="2" stroke-opacity="0.85"></circle>
+  <circle cx="24" cy="24" r="13" stroke="#6366f1" stroke-width="1" stroke-opacity="0.35"></circle>
+  <circle cx="24" cy="24" r="5" fill="#22d3ee"></circle>
+  <circle cx="24" cy="24" r="5" fill="url(#core)" fill-opacity="0.6"></circle>
+  
+  <g>
+    <circle cx="44" cy="24" r="1.6" fill="#22d3ee">
+      
+    </circle>
+  </g>
+  <defs>
+    <radialGradient id="core" cx="0.4" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#a5f3fc"></stop>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+</svg>
