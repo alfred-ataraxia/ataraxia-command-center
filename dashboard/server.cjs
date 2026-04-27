@@ -2370,11 +2370,7 @@ function handleRequest(req, res) {
             treq2.write(data2);
             treq2.end();
           });
-          // stdin'i hemen kapat — openclaw terminal girişi beklemesin
-          child.stdin.end();
-          console.error('[ALFRED-DEBUG] child.stdin.end() called');
         } catch (e) {
-          console.error('[ALFRED-DEBUG] CATCH ERROR:', e.message);
           logger.warn('OpenClaw execution setup error', { error: e.message });
         }
       } catch (jsonErr) {

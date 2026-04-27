@@ -1,14 +1,14 @@
-# Sistem Durumu — 2026-04-27 02:06
+# Sistem Durumu — 2026-04-28 02:05
 
 ## Donanım (ataraxia / RPi 400)
 ```
- 02:06:45 up  2:18,  4 users,  load average: 2.83, 2.46, 2.28
+ 02:05:11 up  1:43,  1 user,  load average: 1.95, 1.92, 1.83
                total        used        free      shared  buff/cache   available
-Mem:           3.7Gi       3.1Gi       235Mi        10Mi       570Mi       665Mi
-Swap:          4.0Gi       663Mi       3.4Gi
+Mem:           3.7Gi       2.6Gi       519Mi        11Mi       716Mi       1.1Gi
+Swap:          4.0Gi       996Mi       3.0Gi
 Filesystem      Size  Used Avail Use% Mounted on
-/dev/sda2       231G   40G  182G  18% /
-/dev/sda2       231G   40G  182G  18% /
+/dev/sda2       231G   40G  182G  19% /
+/dev/sda2       231G   40G  182G  19% /
 ```
 
 ## Docker Servisleri
@@ -24,5 +24,6 @@ portainer                   Up 2 hours             0.0.0.0:8000->8000/tcp, [::]:
 
 ## Aktif Systemd Servisleri
 ```
+  ataraxia-dashboard.service                                                    loaded active running Ataraxia Dashboard Server
   pihole-FTL.service                                                            loaded active running Pi-hole FTL
 ```

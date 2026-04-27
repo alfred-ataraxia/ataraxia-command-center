@@ -1,6 +1,12 @@
-# Product Backlog — ataraxia
+# Product Backlog — ataraxia (Legacy)
 
 **Son guncelleme:** 2026-04-09
+
+> Bu dosya artik kanonik backlog degildir. Guncel operasyon backlog'u:
+> `~/alfred-hub/command-center/backlog.md`
+>
+> Guncel anlik durum:
+> `~/.openclaw/workspace/memory/40-active-work.md`
 
 ## Oncelik: Yuksek
 | # | Oge | Puan | Durum |

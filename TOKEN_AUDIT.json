@@ -1,6 +1,6 @@
 {
   "budget_per_week": 2000000,
-  "updated_at": "2026-04-27T15:03:58.361208+00:00",
+  "updated_at": "2026-04-27T21:38:51.426886+00:00",
   "weeks": [
     {
       "week_of": "2026-03-09",
@@ -70,25 +70,25 @@
     },
     {
       "week_of": "2026-04-20",
-      "estimated_tokens": 1763900,
+      "estimated_tokens": 1651100,
       "tasks_by_model": {
-        "minimax": 1435800,
+        "minimax": 1344000,
         "sonnet": 0,
-        "other": 328100
+        "other": 307100
       },
-      "usage_percent": 88.2,
-      "run_count": 1411
+      "usage_percent": 82.6,
+      "run_count": 1321
     },
     {
       "week_of": "2026-04-27",
-      "estimated_tokens": 140700,
+      "estimated_tokens": 196600,
       "tasks_by_model": {
-        "minimax": 93400,
+        "minimax": 132800,
         "sonnet": 0,
-        "other": 47300
+        "other": 63800
       },
-      "usage_percent": 7.0,
-      "run_count": 115
+      "usage_percent": 9.8,
+      "run_count": 163
     }
   ]
 }
