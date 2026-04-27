@@ -114,37 +114,6 @@ def send_message(chat_id, text, parse_mode="Markdown"):
         log_msg(f"SEND ERROR: {e}")
         return False
 
-def call_claude(chat_id, prompt):
-    """OpenClaw (MiniMax) CLI komutunu doğrudan çalıştırır"""
-    if chat_id not in CONVERSATIONS:
-        CONVERSATIONS[chat_id] = []
-    CONVERSATIONS[chat_id].append({"role": "user", "content": prompt})
-
-    try:
-        # OpenClaw kullanımı (Tamamen etkileşimsiz mod)
-        # --accept-risk: Onay bekleyen aşamaları otomatik geçer
-        result = subprocess.run(
-            ["openclaw", "-p", prompt, "--non-interactive", "--accept-risk"],
-            capture_output=True, text=True, timeout=180
-        )
-        stdout = result.stdout or ""
-        stderr = result.stderr or ""
-        response = stdout + "\n" + stderr
-        
-        if not response.strip():
-            response = "⚠️ OpenClaw boş yanıt döndürdü. Yapılandırmayı kontrol edin."
-        
-        # ANSI temizliği
-        import re
-        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-        response = ansi_escape.sub('', response)
-        
-        return response[:4000]
-    except subprocess.TimeoutExpired:
-        return "⏱️ İşlem zaman aşımına uğradı (120 sn)."
-    except Exception as e:
-        log_msg(f"OPENCLAW ERROR: {e}")
-        return f"❌ OpenClaw hatası: {e}"
 
 def handle_message(chat_id, text):
     """Handle messages by writing to shared memory and replying OK"""
@@ -212,8 +181,7 @@ def handle_command(chat_id, text):
             send_message(chat_id, "❌ Durdurma komutu gönderilemedi.")
 
     elif cmd == "/status":
-        response = call_claude(chat_id, "Sistem durumu: RAM, disk, Docker container sayısı. Kısa, bullet format.")
-        send_message(chat_id, response)
+        send_message(chat_id, "Sistem durumu izleme komutu devredışı bırakıldı (Alfred cron loop'u üzerinden çalışıyor).")
 
     elif cmd == "/sprint":
         try:
