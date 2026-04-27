@@ -2334,7 +2334,7 @@ function handleRequest(req, res) {
 
           console.error('[ALFRED-DEBUG] Calling execFile /usr/bin/openclaw with args:', ocArgs.join(' ').slice(0, 100));
 
-          execFile('/usr/bin/openclaw', ocArgs, { timeout: 180000, env: { ...process.env, HOME: '/home/sefa' } }, (error, stdout, stderr) => {
+          const child = execFile('/usr/bin/openclaw', ocArgs, { timeout: 180000, env: { ...process.env, HOME: '/home/sefa' } }, (error, stdout, stderr) => {
             console.error('[ALFRED-DEBUG] execFile callback fired. error:', error ? error.message : 'none', 'stdout-len:', (stdout||'').length, 'stderr-len:', (stderr||'').length);
             try {
               fs.appendFileSync(debugLogPath, `\n--- ${new Date().toISOString()} ---\nERROR: ${error ? error.message : 'none'}\nEXIT: ${error ? error.code : 0}\nSTDOUT: ${(stdout || '').slice(0, 2000)}\nSTDERR: ${(stderr || '').slice(0, 1000)}\n---\n`);
@@ -2370,7 +2370,11 @@ function handleRequest(req, res) {
             treq2.write(data2);
             treq2.end();
           });
+          // stdin'i hemen kapat — openclaw terminal girişi beklemesin
+          child.stdin.end();
+          console.error('[ALFRED-DEBUG] child.stdin.end() called');
         } catch (e) {
+          console.error('[ALFRED-DEBUG] CATCH ERROR:', e.message);
           logger.warn('OpenClaw execution setup error', { error: e.message });
         }
       } catch (jsonErr) {
