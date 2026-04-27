@@ -42,7 +42,31 @@ function loadEnv() {
     console.warn('.env dosyası okunamadı:', err.message)
   }
 }
+
+// Load OpenClaw canonical env (best-effort, never override existing keys).
+// This lets the dashboard call the local OpenClaw gateway without duplicating secrets.
+function loadOpenclawEnv() {
+  try {
+    const openclawEnvFile = path.join(os.homedir(), '.openclaw', '.env')
+    const lines = fs.readFileSync(openclawEnvFile, 'utf8').split('\n')
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) continue
+      const eqIdx = trimmed.indexOf('=')
+      if (eqIdx === -1) continue
+      const key = trimmed.slice(0, eqIdx).trim()
+      const val = trimmed.slice(eqIdx + 1).trim()
+      if (key && !(key in process.env)) {
+        process.env[key] = val
+      }
+    }
+  } catch (err) {
+    // ignore
+  }
+}
+
 loadEnv()
+loadOpenclawEnv()
 
 // --- Load centralized configuration ---
 const config = require('./config.cjs')
@@ -837,6 +861,9 @@ function handleRequest(req, res) {
     '/api/cron/count', '/api/system/crontab',
     '/api/feedback',
     '/api/approvals',
+    '/api/capture',
+    '/api/alfred/message',
+    '/api/calendar',
   ]
 
   // Paths that start with these prefixes are also allowed without auth
@@ -1006,7 +1033,42 @@ function handleRequest(req, res) {
     return
   }
 
-  // API: sprint status — `../sprints/sprint-XX.md` parse eder
+  
+
+  // API: calendar (gcalcli)
+  // GET /api/calendar?days=2
+  if (url.startsWith('/api/calendar') && req.method === 'GET') {
+    try {
+      const qs = (req.url.split('?')[1] || '')
+      const params = new URLSearchParams(qs)
+      const days = Math.min(7, Math.max(1, parseInt(params.get('days') || '2', 10) || 2))
+
+      const cmd = `gcalcli agenda today +${days}d --nocolor --nodeclined --nostarted 2>/dev/null || true`
+      const out = execSync(cmd, { timeout: 8000 }).toString()
+      const rawLines = out.split('\n').map(l => l.replace(/\r$/, '')).filter(Boolean)
+
+      // Best-effort parse: split by 2+ spaces.
+      const items = []
+      for (const ln of rawLines) {
+        const clean = ln.trimEnd()
+        if (!clean) continue
+        if (/no events/i.test(clean)) continue
+        const parts = clean.split(/\s{2,}/).filter(Boolean)
+        if (parts.length < 2) continue
+        const when = parts[0].slice(0, 24).trim()
+        const title = parts[1].trim()
+        const where = parts[2] ? parts[2].trim() : ''
+        items.push({ when, title, where })
+      }
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ ok: true, items }))
+    } catch (err) {
+      sendError(res, 500, 'Takvim okunamad? (gcalcli)', { details: err.message })
+    }
+    return
+  }
+// API: sprint status — `../sprints/sprint-XX.md` parse eder
   if (url === '/api/sprint' && req.method === 'GET') {
     try {
       const sprintsDir = path.join(__dirname, '..', 'sprints')
@@ -1917,7 +1979,7 @@ function handleRequest(req, res) {
         db.updated_at = now
         
         // Write to shared-notes.md (Alfred'i haberdar et)
-        const sharedNotesPath = path.join(os.homedir(), 'master-memory', 'inbox', 'shared-notes.md')
+        const sharedNotesPath = path.join(os.homedir(), '.openclaw', 'workspace', 'memory', 'inbox', 'shared-notes.md')
         const noteEntry = `\n## ${now} | Alfred\n- Alan: task-started\n- Not: ${task.id} başlatıldı — ${task.title}\n`
         
         try {
@@ -1987,7 +2049,7 @@ function handleRequest(req, res) {
               description: (newTask.description || '').toString().slice(0, 500),
               status: ['pending', 'in_progress', 'done'].includes(newTask.status) ? newTask.status : 'pending',
               priority: ['low', 'medium', 'high'].includes(newTask.priority) ? newTask.priority : 'medium',
-              assignee: (newTask.assignee || 'Alfred').toString().slice(0, 50),
+              assignee: ['Alfred','Claude','Codex','Gemini','Master Sefa','MAIT','MERCER'].includes(newTask.assignee) ? newTask.assignee : 'Alfred',
               tags: Array.isArray(newTask.tags) ? newTask.tags.slice(0, 10) : [],
               due: (newTask.due || '').toString().slice(0, 20),
               created_at: new Date().toISOString(),
@@ -2017,6 +2079,319 @@ function handleRequest(req, res) {
         })
       } catch (jsonErr) {
         sendError(res, 400, 'Geçersiz JSON formatı', { details: jsonErr.message })
+      }
+    })
+    return
+  }
+
+  // API: quick capture (note or task)
+  // - POST /api/capture { text: "..." }
+  // - "#gorev <baslik>" or "#task <baslik>" => create TASKS.json item
+  // - otherwise => append to Obsidian quick notes + OpenClaw shared-notes
+  if (url === '/api/capture' && req.method === 'POST') {
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('error', () => sendError(res, 400, 'Request verileri alÄ±namadÄ±'))
+    req.on('end', () => {
+      try {
+        if (!body) return sendError(res, 400, 'Request body boÅŸ')
+        const payload = JSON.parse(body)
+        const rawText = (payload?.text ?? '').toString()
+        const text = rawText.trim()
+        if (!text) return sendError(res, 400, 'text zorunlu')
+        if (text.length > 5000) return sendError(res, 400, 'text cok uzun (max 5000)')
+
+        const now = new Date()
+        const nowIso = now.toISOString()
+        const today = nowIso.slice(0, 10)
+
+        const isTask = /^#(gorev|görev|task)\b/i.test(text)
+        const taskTitle = text.replace(/^#(gorev|görev|task)\s*/i, '').trim()
+
+        const inferArea = (t) => {
+          const s = (t || '').toLowerCase()
+          if (/(defi|btc|eth|borsa|yatirim|altin|dolar|faiz)/.test(s)) return 'finans-yatirim'
+          if (/(docker|linux|windows|git|ssh|openclaw|dashboard|server|vpn|rclone|raspberry|\bpi\b)/.test(s)) return 'ev-lab-teknoloji'
+          if (/(sprint|backlog|roadmap|plan|hedef|todo)/.test(s)) return 'hedefler-planlar'
+          if (/(kariyer|musteri|maas|mulakat|cv|kontrat)/.test(s)) return 'is-kariyer'
+          if (/(spor|kosu|fitness|gym|diyet|uyku|saglik|agri)/.test(s)) return 'saglik-spor'
+          if (/(ogren|kurs|kitap|tutorial|ders|ingilizce)/.test(s)) return 'ogrenme-gelisim'
+          return 'notlar'
+        }
+
+        const sharedNotesPath = path.join(os.homedir(), '.openclaw', 'workspace', 'memory', 'inbox', 'shared-notes.md')
+        const area = inferArea(text)
+
+        // Always append to shared-notes (canonical quicklog)
+        try {
+          const firstLine = text.split('\n')[0].slice(0, 300)
+          const rest = text.split('\n').slice(1).map(l => `- ${l}`.slice(0, 500)).join('\n')
+          const entry = `\n## ${nowIso} | Master Sefa\n- Alan: ${area}\n- Not: ${firstLine}\n${rest ? rest + '\n' : ''}`
+          fs.appendFileSync(sharedNotesPath, entry)
+        } catch (e) {
+          logger.warn('shared-notes yazÄ±lamadÄ±', { error: e.message })
+        }
+
+        // Also append to Obsidian quick notes for immediate visibility
+        try {
+          const vaultQuick = '/home/sefa/ikinci-beyin/notlar/hizli-notlar.md'
+          const vaultDir = path.dirname(vaultQuick)
+          if (!fs.existsSync(vaultDir)) fs.mkdirSync(vaultDir, { recursive: true })
+          if (!fs.existsSync(vaultQuick)) {
+            fs.writeFileSync(vaultQuick, [
+              '---',
+              'type: quicklog',
+              'tags: [hizli-not, yakalama]',
+              '---',
+              '',
+              '# Hizli Notlar (Master Sefa)',
+              '',
+              ''
+            ].join('\n'))
+          }
+          const time = nowIso.slice(11, 19)
+          const one = text.replace(/\r?\n/g, ' ').slice(0, 500)
+          fs.appendFileSync(vaultQuick, `\n## ${today}\n- ${time} | ${one}\n`)
+        } catch (e) {
+          logger.warn('vault quick-notes yazÄ±lamadÄ±', { error: e.message })
+        }
+
+        if (!isTask) {
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ ok: true, kind: 'note', area }))
+          return
+        }
+
+        if (!taskTitle) return sendError(res, 400, 'Gorev basligi bos olamaz (#gorev <baslik>)')
+
+        // Create task (same format as /api/tasks)
+        fs.readFile(tasksFile, 'utf8', (err, raw) => {
+          try {
+            let db
+            if (err && err.code === 'ENOENT') {
+              db = { project: 'Ataraxia Command Center', tasks: [] }
+            } else if (err) {
+              return sendError(res, 500, 'TASKS.json okunamadÄ±', { code: err.code })
+            } else {
+              db = JSON.parse(raw)
+            }
+            if (!Array.isArray(db.tasks)) return sendError(res, 500, 'GeÃ§ersiz TASKS.json formatÄ±')
+
+            const maxNum = db.tasks.reduce((max, t) => {
+              const m = t.id && t.id.match(/^T-(\d+)$/)
+              return m ? Math.max(max, parseInt(m[1], 10)) : max
+            }, 0)
+            const nextId = 'T-' + String(maxNum + 1).padStart(3, '0')
+            const task = {
+              id: nextId,
+              title: taskTitle.slice(0, 160),
+              description: '',
+              status: 'pending',
+              priority: 'medium',
+              assignee: 'Master Sefa',
+              tags: ['capture'],
+              created_at: nowIso,
+            }
+            db.tasks.push(task)
+            db.updated_at = nowIso
+
+            addNotification('task_created', `${task.id} OluÅŸturuldu`, task.title, task.id)
+
+            fs.writeFile(tasksFile, JSON.stringify(db, null, 2) + '\n', (err2) => {
+              if (err2) return sendError(res, 500, 'GÃ¶rev dosyasÄ±na yazÄ±lamadÄ±', { code: err2.code })
+              commitTasksFile(task.id, task.title, task.status)
+              res.writeHead(200, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify({ ok: true, kind: 'task', taskId: task.id, area }))
+            })
+          } catch (parseErr) {
+            sendError(res, 500, 'TASKS.json iÅŸleme hatasÄ±', { details: parseErr.message })
+          }
+        })
+      } catch (jsonErr) {
+        sendError(res, 400, 'GeÃ§ersiz JSON formatÄ±', { details: jsonErr.message })
+      }
+    })
+    return
+  }
+
+  // API: send a message to Alfred (Telegram DM to your own chat)
+  if (url === '/api/alfred/message' && req.method === 'POST') {
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('error', () => sendError(res, 400, 'Request verileri alÄ±namadÄ±'))
+    req.on('end', () => {
+      try {
+        if (!body) return sendError(res, 400, 'Request body boÅŸ')
+        const payload = JSON.parse(body)
+        const text = (payload?.text ?? '').toString().trim()
+        if (!text) return sendError(res, 400, 'text zorunlu')
+        if (text.length > 2000) return sendError(res, 400, 'text cok uzun (max 2000)')
+
+        const inferTopic = (t) => {
+          const s = (t || '').toLowerCase()
+          if (/(defi|btc|eth|borsa|yatirim|altin|dolar|faiz)/.test(s)) return 'finans-yatirim'
+          if (/(docker|linux|windows|git|ssh|openclaw|dashboard|server|vpn|rclone|raspberry|\\bpi\\b)/.test(s)) return 'ev-lab-teknoloji'
+          if (/(sprint|backlog|roadmap|plan|hedef|todo)/.test(s)) return 'hedefler-planlar'
+          if (/(kariyer|musteri|maas|mulakat|cv|kontrat)/.test(s)) return 'is-kariyer'
+          if (/(spor|kosu|fitness|gym|diyet|uyku|saglik|agri)/.test(s)) return 'saglik-spor'
+          if (/(ogren|kurs|kitap|tutorial|ders|ingilizce)/.test(s)) return 'ogrenme-gelisim'
+          return 'notlar'
+        }
+        const topic = inferTopic(text)
+
+        // Canonical log
+        try {
+          const sharedNotesPath = path.join(os.homedir(), '.openclaw', 'workspace', 'memory', 'inbox', 'shared-notes.md')
+          const nowIso = new Date().toISOString()
+          const firstLine = text.split('\n')[0].slice(0, 300)
+          const entry = `\n## ${nowIso} | Master Sefa\n- Alan: alfred-chat\n- Konu: ${topic}\n- Not: ${firstLine}\n`
+          fs.appendFileSync(sharedNotesPath, entry)
+        } catch (e) {
+          logger.warn('shared-notes yazÄ±lamadÄ± (alfred-chat)', { error: e.message })
+        }
+
+        // Also append to Obsidian quick notes for immediate visibility
+        try {
+          const nowIso = new Date().toISOString()
+          const today = nowIso.slice(0, 10)
+          const time = nowIso.slice(11, 19)
+          const vaultQuick = '/home/sefa/ikinci-beyin/notlar/hizli-notlar.md'
+          const vaultDir = path.dirname(vaultQuick)
+          if (!fs.existsSync(vaultDir)) fs.mkdirSync(vaultDir, { recursive: true })
+          if (!fs.existsSync(vaultQuick)) {
+            fs.writeFileSync(vaultQuick, [
+              '---',
+              'type: quicklog',
+              'tags: [hizli-not, yakalama]',
+              '---',
+              '',
+              '# Hizli Notlar (Master Sefa)',
+              '',
+              ''
+            ].join('\n'))
+          }
+          const one = text.replace(/\\r?\\n/g, ' ').slice(0, 500)
+          fs.appendFileSync(vaultQuick, `\n## ${today}\n- ${time} | [alfred] ${one}\n`)
+        } catch (e) {
+          logger.warn('vault quick-notes write failed (alfred-chat)', { error: e.message })
+        }
+
+        const botToken = process.env.TELEGRAM_BOT_TOKEN
+        const chatId = process.env.TELEGRAM_CHAT_ID
+        if (!botToken || !chatId) {
+          return sendError(res, 500, 'Telegram ayarlanmamÄ±ÅŸ (env eksik)')
+        }
+
+        // Respond immediately (UX). Telegram send is best-effort in background.
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ ok: true, queued: true }))
+
+        const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`
+        const msg = `Dashboard -> Alfred:\n\n${text}`
+        const data = JSON.stringify({ chat_id: chatId, text: msg, disable_web_page_preview: true })
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(data)
+          }
+        }
+
+        const treq = https.request(tgUrl, options, (tres) => {
+          // Consume response so socket can close cleanly.
+          tres.on('data', () => {})
+          tres.on('end', () => {
+            if (tres.statusCode !== 200) {
+              logger.warn('Telegram API hatasÄ±', { statusCode: tres.statusCode })
+            }
+          })
+        })
+        treq.setTimeout(2500, () => {
+          treq.destroy(new Error('telegram timeout'))
+        })
+        treq.on('error', (err) => {
+          logger.warn('Telegram gonderme hatasÄ±', { error: err.message })
+        })
+        treq.write(data)
+        treq.end()
+
+        // Best-effort: generate a short Alfred reply via local OpenClaw gateway and send to Telegram.
+        try {
+          const gatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN
+          if (gatewayToken) {
+            const ctx = (text.split('\n')[0] || '').replace(/\r?\n/g, ' ').slice(0, 140)
+            const sys = [
+              "Sen Alfred'sin. Kisa ve operasyonel yaz.",
+              "1) Mesaji anla/ack (1 cumle).",
+              "2) Gerekliyse 1 next-step oner.",
+              "3) Kayit alindigini soyle.",
+              "Cevap 6 satiri gecmesin."
+            ].join('\n')
+
+            const payload2 = JSON.stringify({
+              model: 'openai-codex/gpt-5.4-mini',
+              temperature: 0.2,
+              messages: [
+                { role: 'system', content: sys },
+                { role: 'user', content: text + `\n\n(Bu mesaj kaydedildi: shared-notes + Obsidian hizli-notlar. Konu: ${topic}.)` },
+              ],
+            })
+
+            const req2 = http.request({
+              hostname: '127.0.0.1',
+              port: 18789,
+              path: '/v1/chat/completions',
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${gatewayToken}`,
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(payload2),
+              },
+            }, (res2) => {
+              let raw = ''
+              res2.on('data', (c) => { raw += c })
+              res2.on('end', () => {
+                try {
+                  const j = JSON.parse(raw || '{}')
+                  const out = j?.choices?.[0]?.message?.content
+                  if (!out || typeof out !== 'string') return
+                  const reply = out.trim().slice(0, 3500)
+
+                  const msg2 = `Alfred (cevap) — \"${ctx}\"\n\n${reply}`
+                  const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
+                  const treq2 = https.request(tgUrl, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Content-Length': Buffer.byteLength(data2)
+                    }
+                  }, (tres2) => {
+                    tres2.on('data', () => {})
+                    tres2.on('end', () => {
+                      if (tres2.statusCode !== 200) {
+                        logger.warn('Telegram API error (reply)', { statusCode: tres2.statusCode })
+                      }
+                    })
+                  })
+                  treq2.setTimeout(2500, () => treq2.destroy(new Error('telegram timeout')))
+                  treq2.on('error', (err) => logger.warn('Telegram send error (reply)', { error: err.message }))
+                  treq2.write(data2)
+                  treq2.end()
+                } catch (e) {
+                  // ignore
+                }
+              })
+            })
+            req2.setTimeout(5500, () => req2.destroy(new Error('gateway timeout')))
+            req2.on('error', () => {})
+            req2.write(payload2)
+            req2.end()
+          }
+        } catch (e) {
+          // ignore
+        }
+      } catch (jsonErr) {
+        sendError(res, 400, 'GeÃ§ersiz JSON formatÄ±', { details: jsonErr.message })
       }
     })
     return
@@ -2068,7 +2443,9 @@ function handleRequest(req, res) {
               task.description = (updates.description || '').toString().slice(0, 500)
             }
             if (updates.assignee !== undefined) {
-              task.assignee = (updates.assignee || 'Alfred').toString().slice(0, 50)
+              const VALID_ASSIGNEES = ['Alfred', 'Claude', 'Codex', 'Gemini', 'Master Sefa', 'MAIT', 'MERCER']
+              const proposed = (updates.assignee || 'Alfred').toString().slice(0, 50)
+              task.assignee = VALID_ASSIGNEES.includes(proposed) ? proposed : 'Alfred'
             }
             if (updates.due !== undefined) {
               task.due = (updates.due || '').toString().slice(0, 20)
@@ -2115,7 +2492,7 @@ function handleRequest(req, res) {
               // Trigger Alfred when task starts (PUT triggers same as PATCH for in_progress)
               if (oldStatus !== 'in_progress' && task.status === 'in_progress') {
                 // Write to shared-notes.md (Alfred'i haberdar et)
-                const sharedNotesPath = path.join(os.homedir(), 'master-memory', 'inbox', 'shared-notes.md')
+                const sharedNotesPath = path.join(os.homedir(), '.openclaw', 'workspace', 'memory', 'inbox', 'shared-notes.md')
                 const now = new Date().toISOString()
                 const noteEntry = `\n## ${now} | Alfred\n- Alan: task-started\n- Not: ${task.id} başlatıldı — ${task.title}\n`
                 try { fs.appendFileSync(sharedNotesPath, noteEntry) } catch (e) {}
@@ -2379,7 +2756,7 @@ function handleRequest(req, res) {
 
   // API: orchestration — activity from shared-notes
   if (url === '/api/orchestration/activity' && req.method === 'GET') {
-    const sharedNotesPath = path.join(os.homedir(), 'master-memory', 'inbox', 'shared-notes.md')
+    const sharedNotesPath = path.join(os.homedir(), '.openclaw', 'workspace', 'memory', 'inbox', 'shared-notes.md')
     let activities = []
     
     try {
@@ -2440,7 +2817,7 @@ function handleRequest(req, res) {
   // API: git repos and recent commits
   if (url === '/api/git/repos' && req.method === 'GET') {
     const repoCandidates = [
-      { path: path.join(os.homedir(), 'master-memory'), name: 'master-memory' },
+      { path: path.join(os.homedir(), '.openclaw', 'workspace', 'memory'), name: 'openclaw-memory' },
       { path: path.join(os.homedir(), 'alfred-hub'), name: 'alfred-hub' },
       { path: path.join(os.homedir(), 'scrum'), name: 'scrum' },
     ]
@@ -2464,105 +2841,170 @@ function handleRequest(req, res) {
     return
   }
 
-  // API: agents — Wayne Ağı (Alfred, Lucius, Netrunner, Robin)
+  // API: agents — Wayne Ağı
   if (url === '/api/agents' && req.method === 'GET') {
-    // Görev istatistiklerini TASKS.json'dan hesapla
-    let tasksByAssignee = {}
-    let lastActionByAssignee = {}
-    let modelByAssignee = {}  // ajanın en son görevindeki preferred_model
+    const HOME = os.homedir()
+    const ACTIVE_MS = 30 * 60 * 1000 // 30 dakika
+
+    // --- Yardımcı: session dosyası mtime'dan aktiflik tespiti ---
+    // Dizin değil dosya mtime'ı kontrol et — dizin mtime güvenilmez
+    function newestSessionMtime(globCmd) {
+      try {
+        const out = execSync(globCmd, { encoding: 'utf8', timeout: 3000 }).trim()
+        if (!out) return 0
+        return Math.max(...out.split('\n').map(ts => parseInt(ts, 10) || 0))
+      } catch { return 0 }
+    }
+
+    // Her ajan için hangi dosyalar session'ı temsil ediyor
+    const SESSION_FIND = {
+      Claude: `find ${HOME}/.claude/projects/ -name "*.jsonl" -printf "%T@\\n" 2>/dev/null`,
+      Gemini: `stat -c "%Y" ${HOME}/.gemini/state.json ${HOME}/.gemini/projects.json 2>/dev/null`,
+      Codex:  `find ${HOME}/.codex/sessions/ -type f -printf "%T@\\n" 2>/dev/null`,
+    }
+
+    function detectStatus(agentId) {
+      if (agentId === 'Alfred') return 'active'
+      const cmd = SESSION_FIND[agentId]
+      if (!cmd) return 'idle'
+      const mtime = newestSessionMtime(cmd) * 1000
+      return (Date.now() - mtime) < ACTIVE_MS ? 'active' : 'idle'
+    }
+
+    function lastSeenAgo(agentId) {
+      if (agentId === 'Alfred') return null
+      const cmd = SESSION_FIND[agentId]
+      if (!cmd) return null
+      const mtime = newestSessionMtime(cmd) * 1000
+      if (!mtime) return null
+      const diff = Date.now() - mtime
+      const m = Math.floor(diff / 60000)
+      const h = Math.floor(diff / 3600000)
+      const d = Math.floor(diff / 86400000)
+      if (m < 1) return 'az önce'
+      if (m < 60) return `${m}dk önce`
+      if (h < 24) return `${h}sa önce`
+      return `${d}g önce`
+    }
+
+    // --- Yardımcı: shared-notes.md'den ajan başına son eylem ---
+    function parseSharedNotes(agentId) {
+      const ALIASES = {
+        Alfred: ['alfred', 'Alfred'],
+        Claude:  ['claude', 'Claude'],
+        Gemini:  ['gemini', 'Gemini'],
+        Codex:   ['codex',  'Codex'],
+      }
+      const notesPath = path.join(HOME, '.openclaw/workspace/memory/inbox/shared-notes.md')
+      try {
+        const lines = fs.readFileSync(notesPath, 'utf8').split('\n')
+        const aliases = ALIASES[agentId] || [agentId]
+        const sections = []
+        let cur = null
+
+        for (const raw of lines) {
+          const line = raw.replace(/\r/g, '').trim()
+          const m = line.match(/^## (.+?) \| (.+)$/)
+          if (m) {
+            if (cur) sections.push(cur)
+            cur = { ts: m[1].trim(), agent: m[2].trim(), notes: [] }
+          } else if (cur && line.startsWith('- Not:')) {
+            cur.notes.push(line.replace('- Not:', '').trim())
+          } else if (cur && line.startsWith('- Alan:')) {
+            cur.alan = line.replace('- Alan:', '').trim()
+          }
+        }
+        if (cur) sections.push(cur)
+
+        const mine = sections
+          .filter(s => aliases.includes(s.agent))
+          .sort((a, b) => new Date(b.ts) - new Date(a.ts))
+
+        if (!mine.length) return { lastAction: null, lastActionTime: null }
+
+        const latest = mine[0]
+        const action = latest.notes[0] || (latest.alan ? `Alan: ${latest.alan}` : null)
+        const diff = Date.now() - new Date(latest.ts).getTime()
+        const m2 = Math.floor(diff / 60000)
+        const h2 = Math.floor(diff / 3600000)
+        const d2 = Math.floor(diff / 86400000)
+        const relTime = m2 < 1 ? 'az önce' : m2 < 60 ? `${m2}dk önce` : h2 < 24 ? `${h2}sa önce` : `${d2}g önce`
+
+        return { lastAction: action, lastActionTime: relTime }
+      } catch {
+        return { lastAction: null, lastActionTime: null }
+      }
+    }
+
+    // --- Görev istatistikleri (TASKS.json) ---
+    const tasksByAssignee = {}
     const today = new Date().toISOString().slice(0, 10)
     try {
       const db = JSON.parse(fs.readFileSync(tasksFile, 'utf8'))
       for (const t of db.tasks || []) {
-        const assignee = t.assignee || 'Alfred'
-        if (!tasksByAssignee[assignee]) tasksByAssignee[assignee] = { total: 0, done: 0, today: 0 }
-        tasksByAssignee[assignee].total++
+        const a = t.assignee || 'Alfred'
+        if (!tasksByAssignee[a]) tasksByAssignee[a] = { total: 0, done: 0, today: 0 }
+        tasksByAssignee[a].total++
         if (t.status === 'done') {
-          tasksByAssignee[assignee].done++
-          if (t.completed_at && t.completed_at.startsWith(today)) tasksByAssignee[assignee].today++
+          tasksByAssignee[a].done++
+          if (t.completed_at?.startsWith(today)) tasksByAssignee[a].today++
         }
-        if (t.status === 'in_progress') lastActionByAssignee[assignee] = `${t.id} — ${t.title}`
-        // preferred_model: son güncellenen görevden al
-        if (t.preferred_model) modelByAssignee[assignee] = t.preferred_model
       }
     } catch {}
 
-    // Son git commit (Alfred'in son eylemi)
-    let lastGitAction = '—'
-    let lastGitTime = '—'
+    // --- Alfred: git log ---
+    let alfredGitAction = '—', alfredGitTime = '—'
     try {
-      const gitOut = execSync('git log --format="%s|%cr" -1', { encoding: 'utf8', cwd: path.join(__dirname, '..') }).trim()
-      const [msg, when] = gitOut.split('|')
-      lastGitAction = msg || '—'
-      lastGitTime = when || '—'
+      const out = execSync('git log --format="%s|%cr" -1', { encoding: 'utf8', cwd: path.join(__dirname, '..') }).trim()
+      const [msg, when] = out.split('|')
+      alfredGitAction = msg || '—'
+      alfredGitTime = when || '—'
     } catch {}
 
-    // Dashboard uptime (Alfred'in vekil çalışma süresi)
+    // --- Alfred uptime ---
     const uptimeSec = Math.floor((Date.now() - SERVER_START) / 1000)
     const uptimeH = Math.floor(uptimeSec / 3600)
     const uptimeM = Math.floor((uptimeSec % 3600) / 60)
     const alfredUptime = uptimeH > 0 ? `${uptimeH}sa ${uptimeM}dk` : `${uptimeM}dk`
 
-    // Wayne Ağı Ajanları - Gerçek assignee isimleri ve ID'leri ile uyumlu
+    // --- Ajan tanımları ---
     const WAYNE_AGI = [
-      {
-        id: 'Alfred',
-        name: 'Alfred',
-        role: 'Orkestratör & Koordinasyon',
-        status: 'active',
-        uptime: alfredUptime,
-        description: 'Sistem koordinatörü ve ana karar verici. Wayne Ağı operasyonlarını yönetir.',
-        tags: ['orchestrator', 'primary'],
-      },
-      {
-        id: 'Claude',
-        name: 'Claude',
-        role: 'Geliştirme & Analiz',
-        status: 'idle',
-        uptime: '—',
-        description: 'Kod yazımı, teknik analiz ve mimari tasarım uzmanı.',
-        tags: ['coding', 'analysis'],
-      },
-      {
-        id: 'Gemini',
-        name: 'Gemini',
-        role: 'Araştırma & Geliştirme',
-        status: 'idle',
-        uptime: '—',
-        description: 'Bilgi tarama, çoklu modal analiz ve kompleks problem çözme.',
-        tags: ['research', 'coding'],
-      },
-      {
-        id: 'Robin',
-        name: 'Robin',
-        role: 'Strateji & Raporlama',
-        status: 'idle',
-        uptime: '—',
-        description: 'Pazar araştırması, stratejik analiz ve detaylı raporlama.',
-        tags: ['strategy', 'report'],
-      },
+      { id: 'Alfred', name: 'Alfred', role: 'Orkestratör & Koordinasyon', tags: ['orchestrator', 'primary'] },
+      { id: 'Claude', name: 'Claude', role: 'Geliştirme & Analiz',        tags: ['coding', 'analysis']     },
+      { id: 'Gemini', name: 'Gemini', role: 'Araştırma & Geliştirme',     tags: ['research', 'coding']     },
+      { id: 'Codex',  name: 'Codex',  role: 'Kod Üretimi & Otomasyon',    tags: ['coding', 'automation']   },
     ]
 
-    const MODEL_MAPPING = {
-      'Alfred': 'minimax-m2.7 (OpenClaw)',
-      'Claude': 'claude-sonnet-4-6',
-      'Gemini': 'gemini-2.5-pro',
-      'Robin': 'gemini-2.5-pro'
+    const MODEL_MAP = {
+      Alfred: 'minimax-m2.7 (OpenClaw)',
+      Claude: 'claude-sonnet-4-6',
+      Gemini: 'gemini-2.5-pro',
+      Codex:  'openai/codex-cli',
     }
 
     const agents = WAYNE_AGI.map(a => {
-      const stats = tasksByAssignee[a.name] || { total: 0, done: 0, today: 0 }
-      const model = MODEL_MAPPING[a.name] || 'unknown'
-      const lastAction = a.id === 'Alfred'
-        ? (lastActionByAssignee['Alfred'] || lastGitAction)
-        : (lastActionByAssignee[a.name] || 'Beklemede')
-      const lastActionTime = a.id === 'Alfred' ? lastGitTime : '—'
+      const status   = detectStatus(a.id)
+      const lastSeen = lastSeenAgo(a.id)
+      const notes    = parseSharedNotes(a.id)
+      const stats    = tasksByAssignee[a.name] || { total: 0, done: 0, today: 0 }
+
+      let lastAction, lastActionTime
+      if (a.id === 'Alfred') {
+        lastAction     = alfredGitAction
+        lastActionTime = alfredGitTime
+      } else {
+        lastAction     = notes.lastAction     || 'Henüz kayıt yok'
+        lastActionTime = notes.lastActionTime || lastSeen || '—'
+      }
+
       return {
         ...a,
-        model,
-        tasksTotal: stats.total || 0,
-        tasksDone: stats.done || 0,
-        tasksToday: stats.today || 0,
+        status,
+        uptime: a.id === 'Alfred' ? alfredUptime : (lastSeen || notes.lastActionTime || '—'),
+        model:  MODEL_MAP[a.id] || '—',
+        tasksTotal:  stats.total,
+        tasksDone:   stats.done,
+        tasksToday:  stats.today,
         lastAction,
         lastActionTime,
       }

@@ -6,7 +6,7 @@ const RISK_STYLE = {
   low:      { badge: 'bg-ax-green/10 border-ax-green/30 text-ax-green',   label: 'Düşük' },
   medium:   { badge: 'bg-ax-amber/10 border-ax-amber/30 text-ax-amber',   label: 'Orta' },
   high:     { badge: 'bg-ax-red/10 border-ax-red/30 text-ax-red',         label: 'Yüksek' },
-  critical: { badge: 'bg-purple-900/20 border-purple-500/30 text-purple-400', label: 'Kritik' },
+  critical: { badge: 'bg-ax-purple/10 border-ax-purple/30 text-ax-purple', label: 'Kritik' },
 }
 const STATUS_STYLE = {
   pending:  { icon: Clock,        color: 'text-ax-amber', label: 'Bekliyor' },

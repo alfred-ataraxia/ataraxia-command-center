@@ -30,9 +30,9 @@ export default function App() {
   return (
     <ErrorBoundary>
       <ToastProvider>
-        <div className="flex h-screen bg-ax-bg overflow-hidden">
+        <div className="flex h-screen bg-ax-bg text-ax-text font-sans overflow-hidden">
           <Sidebar activeView={activeView} onNavigate={setActiveView} />
-          <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+          <main className="flex-1 overflow-y-auto relative z-10 pt-14 md:pt-0">
             <View />
           </main>
         </div>

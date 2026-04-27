@@ -5,7 +5,7 @@ import apiFetch from '../services/apiFetch'
 const TYPE_STYLE = {
   feedback:  { label: 'Feedback',  cls: 'text-ax-amber  bg-ax-amber/10  border-ax-amber/30'  },
   project:   { label: 'Proje',     cls: 'text-ax-cyan   bg-ax-cyan/10   border-ax-cyan/30'   },
-  user:      { label: 'Kullanıcı', cls: 'text-purple-400 bg-purple-400/10 border-purple-400/30' },
+  user:      { label: 'Kullanıcı', cls: 'text-ax-purple bg-ax-purple/10 border-ax-purple/30' },
   reference: { label: 'Referans',  cls: 'text-ax-green  bg-ax-green/10  border-ax-green/30'  },
 }
 
@@ -84,7 +84,7 @@ export default function MemoryView() {
     <div className="p-4 sm:p-6 space-y-4 max-w-3xl">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BrainCircuit size={18} className="text-purple-400" />
+          <BrainCircuit size={18} className="text-ax-accent" />
           <h1 className="text-ax-heading text-xl font-bold">Hafıza</h1>
           <span className="text-ax-dim text-sm">({memories.length} dosya)</span>
         </div>

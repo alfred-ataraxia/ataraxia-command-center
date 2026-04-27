@@ -219,3 +219,13 @@ To https://github.com/alfred-ataraxia/ataraxia-command-center.git
 [2026-04-27 02:06:45] Sistem snapshot alınıyor...
 [2026-04-27 02:06:46]   system-status.md OK
 [2026-04-27 02:06:46] Git commit hazırlanıyor...
+[master 41c0d1c] chore: otomatik yedek — 2026-04-27 02:06
+ 17 files changed, 641 insertions(+), 181 deletions(-)
+ create mode 100644 APPROVALS.json
+ create mode 100755 cron/system-monitor.sh
+ create mode 100644 dashboard/src/components/ApprovalsView.jsx
+[2026-04-27 02:06:46] Commit OK
+To https://github.com/alfred-ataraxia/ataraxia-command-center.git
+   4d0767d..41c0d1c  master -> master
+[2026-04-27 02:06:47] Push OK → GitHub
+[2026-04-27 02:06:47] === Yedekleme tamamlandı ===

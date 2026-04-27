@@ -1,18 +1,7 @@
 {
   "budget_per_week": 2000000,
-  "updated_at": "2026-04-26T21:11:26.139719+00:00",
+  "updated_at": "2026-04-27T15:03:58.361208+00:00",
   "weeks": [
-    {
-      "week_of": "2026-03-02",
-      "estimated_tokens": 0,
-      "tasks_by_model": {
-        "minimax": 0,
-        "sonnet": 0,
-        "other": 0
-      },
-      "usage_percent": 0.0,
-      "run_count": 0
-    },
     {
       "week_of": "2026-03-09",
       "estimated_tokens": 0,
@@ -70,25 +59,36 @@
     },
     {
       "week_of": "2026-04-13",
-      "estimated_tokens": 47100,
+      "estimated_tokens": 0,
       "tasks_by_model": {
-        "minimax": 39600,
+        "minimax": 0,
         "sonnet": 0,
-        "other": 7500
+        "other": 0
       },
-      "usage_percent": 2.4,
-      "run_count": 38
+      "usage_percent": 0.0,
+      "run_count": 0
     },
     {
       "week_of": "2026-04-20",
-      "estimated_tokens": 1933100,
+      "estimated_tokens": 1763900,
       "tasks_by_model": {
-        "minimax": 1577200,
+        "minimax": 1435800,
         "sonnet": 0,
-        "other": 355900
+        "other": 328100
       },
-      "usage_percent": 96.7,
-      "run_count": 1546
+      "usage_percent": 88.2,
+      "run_count": 1411
+    },
+    {
+      "week_of": "2026-04-27",
+      "estimated_tokens": 140700,
+      "tasks_by_model": {
+        "minimax": 93400,
+        "sonnet": 0,
+        "other": 47300
+      },
+      "usage_percent": 7.0,
+      "run_count": 115
     }
   ]
 }

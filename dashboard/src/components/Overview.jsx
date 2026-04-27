@@ -4,28 +4,24 @@ import { getSystemStats } from '../services/haService'
 import apiFetch from '../services/apiFetch'
 import SprintStatus from './SprintStatus'
 import DailySummary from './DailySummary'
+import QuickCapture from './QuickCapture'
+import AlfredChat from './AlfredChat'
+import CalendarPeek from './CalendarPeek'
 import { timeAgo } from '../utils'
 
 function StatBar({ label, value, warnThreshold = 80, icon: Icon }) {
   const isWarn = value >= warnThreshold
-  const IconComponent = Icon
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-ax-surface border border-ax-border">
-      <div className={`p-2 rounded-lg ${isWarn ? 'bg-ax-red/10 text-ax-red' : 'bg-ax-accent/10 text-ax-accent'}`}>
-        <IconComponent size={16} />
+    <div className="flex items-center gap-2.5 py-1">
+      <Icon size={12} className={`shrink-0 ${isWarn ? 'text-ax-red' : 'text-ax-subtle'}`} />
+      <span className="text-xs text-ax-dim w-8 shrink-0">{label}</span>
+      <div className="flex-1 h-1 rounded-full bg-ax-subtle/30 overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-700 ${isWarn ? 'bg-ax-red' : 'bg-ax-accent'}`}
+          style={{ width: `${Math.min(value, 100)}%` }}
+        />
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-[10px] font-bold text-ax-dim uppercase tracking-wider">{label}</span>
-          <span className={`text-xs font-mono ${isWarn ? 'text-ax-red' : 'text-ax-text'}`}>{value}%</span>
-        </div>
-        <div className="h-1.5 rounded-full bg-ax-muted overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-700 ${isWarn ? 'bg-ax-red' : 'bg-ax-cyan'}`}
-            style={{ width: `${Math.min(value, 100)}%` }}
-          />
-        </div>
-      </div>
+      <span className={`text-xs font-mono w-8 text-right shrink-0 ${isWarn ? 'text-ax-red' : 'text-ax-dim'}`}>{value}%</span>
     </div>
   )
 }
@@ -220,74 +216,69 @@ export default function Overview() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="flex items-center gap-3 text-ax-dim">
-          <div className="w-5 h-5 border-2 border-ax-accent border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm">Yükleniyor...</span>
+        <div className="flex flex-col items-center gap-4 text-ax-dim">
+          <div className="relative w-12 h-12">
+            <div className="absolute inset-0 border-2 border-ax-accent/20 rounded-full" />
+            <div className="absolute inset-0 border-2 border-ax-accent border-t-transparent rounded-full animate-spin" />
+          </div>
+          <span className="text-sm tracking-widest uppercase font-bold text-ax-accent">Sistem Başlatılıyor</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
 
       {/* HERO HEADER */}
-      <div className="mb-5 pt-1">
-        <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-ax-dim mb-1">Kokpit · {now.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-        <h2 className="text-2xl font-black italic text-ax-heading tracking-tight leading-tight">
+      <div className="mb-5 pt-1 relative z-10">
+        <p className="text-xs font-mono text-ax-dim mb-1">Kokpit · {now.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <h2 className="text-2xl font-bold text-ax-heading tracking-tight">
           Her şey kontrol altında.
         </h2>
       </div>
 
       {/* 2-KOLON GRID — masaüstünde yan yana, mobilde alt alta */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 relative z-10">
 
         {/* SOL KOLON: Alfred + Sprint */}
         <div className="space-y-4">
 
           {/* 1. ALFRED DURUMU */}
-          <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-ax-accent/10 border border-ax-accent/25 flex items-center justify-center">
-                  <img src="/logo-mark.svg" width="36" height="36" alt="Ataraxia" />
+          <div className="rounded-xl ax-glass p-4 relative overflow-hidden group">
+            
+            <div className="flex items-center justify-between relative z-10">
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 rounded-2xl bg-ax-accent/10 border border-ax-accent/30 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <img src="/logo-mark.svg" width="40" height="40" alt="Ataraxia" className="drop-shadow-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-ax-heading italic">ALFRED</h2>
-                  <p className="text-xs text-ax-dim font-medium">{activeAI.model}</p>
+                  <h2 className="text-2xl font-black text-ax-heading tracking-wide">ALFRED</h2>
+                  <p className="text-xs text-ax-accent font-semibold tracking-wider uppercase mt-1">{activeAI.model}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-ax-green/10 border border-ax-green/25">
-                <div className="w-2 h-2 rounded-full bg-ax-green animate-pulse" />
-                <span className="text-ax-green text-xs font-bold">Çevrimiçi</span>
+              <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-ax-green/10 border border-ax-green/30">
+                <div className="w-2.5 h-2.5 rounded-full bg-ax-green animate-pulse" />
+                <span className="text-ax-green text-[11px] font-black uppercase tracking-widest">Çevrimiçi</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mt-5">
-              <StatBar label="RAM" value={ramUsage} warnThreshold={80} icon={MemoryStick} />
-              <StatBar label="CPU" value={cpuUsage} warnThreshold={90} icon={Cpu} />
-            </div>
-            <div className="mt-3">
+            <div className="mt-4 space-y-1 relative z-10">
+              <StatBar label="RAM"  value={ramUsage}  warnThreshold={80} icon={MemoryStick} />
+              <StatBar label="CPU"  value={cpuUsage}  warnThreshold={90} icon={Cpu} />
               <StatBar label="Disk" value={diskUsage} warnThreshold={85} icon={Server} />
             </div>
 
-            <div className="flex items-center justify-between mt-4 pt-4 border-t border-ax-border/50">
-              <div className="flex items-center gap-2">
-                <Clock size={12} className="text-ax-subtle" />
-                <span className="text-[11px] text-ax-dim">Uptime: {uptime}</span>
+            <div className="flex items-center justify-between mt-5 pt-5 border-t border-ax-border relative z-10">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ax-surface">
+                <Clock size={13} className="text-ax-subtle" />
+                <span className="text-[11px] font-mono text-ax-dim">Uptime: {uptime}</span>
               </div>
-              <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-ax-accent/10">
-                <span className="text-[10px] font-mono text-ax-accent">{cronCount ?? '…'}</span>
-                <span className="text-[10px] text-ax-dim">aktif cron</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ax-accent/10 border border-ax-accent/20">
+                <Zap size={12} className="text-ax-accent" />
+                <span className="text-[11px] font-mono font-bold text-ax-accent">{cronCount ?? '…'}</span>
+                <span className="text-[10px] font-bold text-ax-accent/70">aktif cron</span>
               </div>
-              {activeAI.openclawUp !== null && (
-                <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg ${activeAI.openclawUp ? 'bg-ax-green/10' : 'bg-ax-red/10'}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${activeAI.openclawUp ? 'bg-ax-green animate-pulse' : 'bg-ax-red'}`} />
-                  <span className={`text-[10px] ${activeAI.openclawUp ? 'text-ax-green' : 'text-ax-red'}`}>
-                    OpenClaw {activeAI.openclawUp ? 'up' : 'down'}
-                  </span>
-                </div>
-              )}
             </div>
           </div>
 
@@ -295,34 +286,34 @@ export default function Overview() {
           {sprint && <SprintStatus sprint={sprint} />}
 
           {/* 3. DOCKER SERVİSLER */}
-          <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-1.5 rounded-lg bg-ax-accent/10"><Server size={13} className="text-ax-accent" /></div>
-              <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">Docker Servisler</h2>
-              <span className="ml-auto text-[10px] font-mono text-ax-green font-semibold">{healthyServices.length} aktif</span>
+          <div className="rounded-xl ax-glass p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1.5 rounded-md bg-ax-accent/10"><Server size={14} className="text-ax-accent" /></div>
+              <h2 className="text-xs font-bold uppercase text-ax-heading">Docker Servisleri</h2>
+              <span className="ml-auto text-[10px] font-mono text-ax-green font-bold px-2 py-1 bg-ax-green/10 rounded-lg border border-ax-green/20">{healthyServices.length} aktif</span>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {dockerServices.map(svc => (
-                <div key={svc.id} className={`flex items-center justify-between px-3 py-2.5 rounded-lg border ${
-                  svc.status === 'active' ? 'bg-ax-green/5 border-ax-green/20' : 'bg-ax-red/5 border-ax-red/20'
+                <div key={svc.id} className={`flex items-center justify-between px-3.5 py-3 rounded-xl border transition-all duration-300 hover:-translate-y-0.5 ${
+                  svc.status === 'active' ? 'bg-ax-green/5 border-ax-green/20 hover:border-ax-green/40 hover:shadow-[0_4px_15px_rgba(16,185,129,0.05)]' : 'bg-ax-red/5 border-ax-red/20'
                 }`}>
-                  <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     {svc.status === 'active'
-                      ? <CheckCircle2 size={12} className="text-ax-green shrink-0" />
-                      : <XCircle size={12} className="text-ax-red shrink-0" />}
-                    <span className="text-[11px] text-ax-dim truncate">{svc.name}</span>
+                      ? <CheckCircle2 size={13} className="text-ax-green shrink-0" />
+                      : <XCircle size={13} className="text-ax-red shrink-0" />}
+                    <span className="text-[11px] font-semibold text-ax-text truncate">{svc.name}</span>
                   </div>
                   <button
                     onClick={() => handleRestart(svc.id)}
                     disabled={restarting === svc.id}
-                    className="p-1 rounded hover:bg-ax-muted transition-colors text-ax-dim disabled:opacity-50"
+                    className="p-1.5 rounded-md hover:bg-ax-surface transition-colors text-ax-dim hover:text-ax-accent disabled:opacity-50"
                   >
-                    <RefreshCw size={10} className={restarting === svc.id ? 'animate-spin' : ''} />
+                    <RefreshCw size={11} className={restarting === svc.id ? 'animate-spin' : ''} />
                   </button>
                 </div>
               ))}
               {dockerServices.length === 0 && (
-                <div className="col-span-2 text-center py-4 text-ax-dim text-xs">Servis bulunamadı</div>
+                <div className="col-span-2 text-center py-6 text-ax-dim text-xs font-mono">Servis bulunamadı</div>
               )}
             </div>
           </div>
@@ -332,30 +323,39 @@ export default function Overview() {
         {/* SAĞ KOLON: Son Görevler + Git + DeFi özet */}
         <div className="space-y-4">
 
-          {/* 4. GÜNLÜK ÖZET */}
+          {/* 4. QUICK CAPTURE */}
+          <QuickCapture />
+
+          {/* 4b. ALFRED CHAT */}
+          <AlfredChat />
+
+          {/* 4. G?NL?K ?ZET */}
           <DailySummary />
 
+          {/* 4c. CALENDAR */}
+          <CalendarPeek />
+
           {/* 5. GÖREV AKTİVİTESİ */}
-          <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-1.5 rounded-lg bg-ax-amber/10"><Activity size={13} className="text-ax-amber" /></div>
-              <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">Son Görevler</h2>
+          <div className="rounded-xl ax-glass p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1.5 rounded-md bg-ax-amber/10"><Activity size={14} className="text-ax-amber" /></div>
+              <h2 className="text-xs font-bold uppercase text-ax-heading">Son Aktiviteler</h2>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {events.length > 0 ? events.slice(0, 5).map((ev, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 border-b border-ax-border/30 last:border-0">
-                  <div className={`w-2 h-2 rounded-full shrink-0 ${
+                <div key={i} className="group flex items-center gap-4 py-3 px-3 -mx-3 rounded-xl hover:bg-ax-muted transition-colors">
+                  <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                     ev.type === 'task_done' ? 'bg-ax-green' :
                     ev.type === 'task_start' ? 'bg-ax-amber animate-pulse' : 'bg-ax-cyan'
                   }`} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-ax-text truncate">{ev.action}</p>
-                    {ev.task_id && <span className="text-[10px] font-mono text-ax-subtle">{ev.task_id}</span>}
+                    <p className="text-sm font-medium text-ax-text truncate group-hover:text-ax-heading transition-colors">{ev.action}</p>
+                    {ev.task_id && <span className="text-[10px] font-mono text-ax-subtle tracking-wider uppercase mt-0.5 inline-block">{ev.task_id}</span>}
                   </div>
-                  <span className="text-[10px] text-ax-dim whitespace-nowrap">{timeAgo(ev.when)}</span>
+                  <span className="text-[10px] font-mono text-ax-dim whitespace-nowrap bg-ax-surface px-2 py-1 rounded-md">{timeAgo(ev.when)}</span>
                 </div>
               )) : (
-                <div className="text-center py-6 text-ax-dim text-xs">
+                <div className="text-center py-8 text-ax-dim text-xs font-mono">
                   Henüz aktivite yok — görev eklendiğinde burada görünecek
                 </div>
               )}
@@ -363,24 +363,24 @@ export default function Overview() {
           </div>
 
           {/* 5. GİT */}
-          <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-1.5 rounded-lg bg-ax-accent/10"><GitBranch size={13} className="text-ax-accent" /></div>
-              <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">Git</h2>
-              <button onClick={fetchData} className="ml-auto p-1.5 rounded-lg hover:bg-ax-muted transition-colors text-ax-dim">
-                <RefreshCw size={12} />
+          <div className="rounded-xl ax-glass p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1.5 rounded-md bg-ax-purple/10"><GitBranch size={14} className="text-ax-purple" /></div>
+              <h2 className="text-xs font-bold uppercase text-ax-heading">Git Repos</h2>
+              <button onClick={fetchData} className="ml-auto p-2 rounded-xl hover:bg-ax-muted transition-colors text-ax-dim hover:text-ax-accent">
+                <RefreshCw size={13} />
               </button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {gitRepos.map(repo => (
-                <div key={repo.name} className="flex items-center gap-3 py-2 border-b border-ax-border/30 last:border-0">
-                  <span className="text-sm font-semibold text-ax-heading">{repo.name}</span>
+                <div key={repo.name} className="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-xl hover:bg-ax-muted transition-colors group">
+                  <span className="text-sm font-semibold text-ax-heading group-hover:text-ax-accent2 transition-colors">{repo.name}</span>
                   {repo.error ? (
-                    <span className="px-2 py-0.5 rounded text-[10px] bg-ax-red/10 text-ax-red">Hata</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] bg-ax-red/10 border border-ax-red/20 text-ax-red">Hata</span>
                   ) : (
                     <>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-ax-accent/10 text-ax-accent font-mono">{repo.branch}</span>
-                      <span className="text-[10px] text-ax-dim ml-auto">{repo.commits?.[0]?.relative || '—'}</span>
+                      <span className="px-2 py-0.5 rounded-md text-[10px] bg-ax-purple/10 border border-ax-purple/20 text-ax-purple font-mono">{repo.branch}</span>
+                      <span className="text-[10px] font-mono text-ax-dim ml-auto">{repo.commits?.[0]?.relative || '—'}</span>
                     </>
                   )}
                 </div>
@@ -390,12 +390,13 @@ export default function Overview() {
 
           {/* 6. DeFi APM ÖZET */}
           {defiSummary && (
-          <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="p-1.5 rounded-lg bg-ax-green/10"><TrendingUp size={13} className="text-ax-green" /></div>
-            <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-ax-dim">DeFi APM</h2>
-            <div className={`ml-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-              defiSummary.up ? 'bg-ax-green/10 text-ax-green border border-ax-green/20' : 'bg-ax-red/10 text-ax-red border border-ax-red/20'
+          <div className="rounded-xl ax-glass p-4 relative overflow-hidden group">
+          
+          <div className="flex items-center gap-2 mb-3 relative z-10">
+            <div className="p-1.5 rounded-md bg-ax-green/10"><TrendingUp size={14} className="text-ax-green" /></div>
+            <h2 className="text-xs font-bold uppercase text-ax-heading">DeFi APM</h2>
+            <div className={`ml-3 flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase ${
+              defiSummary.up ? 'bg-ax-green/10 text-ax-green border border-ax-green/30' : 'bg-ax-red/10 text-ax-red border border-ax-red/30'
             }`}>
               <div className={`w-1.5 h-1.5 rounded-full ${defiSummary.up ? 'bg-ax-green animate-pulse' : 'bg-ax-red'}`} />
               {defiSummary.up ? 'Aktif' : 'Down'}
@@ -414,7 +415,7 @@ export default function Overview() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
             <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-ax-surface border border-ax-border">
               <span className="text-lg font-black text-ax-heading font-mono">{defiSummary.poolCount ?? '—'}</span>
-              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Havuz</span>
+              <span className="text-[11px] text-ax-dim mt-0.5">Havuz</span>
             </div>
             <div className={`flex flex-col items-center justify-center p-3 rounded-xl border ${
               defiSummary.criticals > 0
@@ -424,7 +425,7 @@ export default function Overview() {
               <span className={`text-lg font-black font-mono ${defiSummary.criticals > 0 ? 'text-ax-red' : 'text-ax-heading'}`}>
                 {defiSummary.criticals}
               </span>
-              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Kritik</span>
+              <span className="text-[11px] text-ax-dim mt-0.5">Kritik</span>
             </div>
             <div className={`flex flex-col items-center justify-center p-3 rounded-xl border ${
               defiSummary.warns > 0
@@ -434,7 +435,7 @@ export default function Overview() {
               <span className={`text-lg font-black font-mono ${defiSummary.warns > 0 ? 'text-ax-amber' : 'text-ax-heading'}`}>
                 {defiSummary.warns}
               </span>
-              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Uyarı</span>
+              <span className="text-[11px] text-ax-dim mt-0.5">Uyarı</span>
             </div>
             <div className={`flex flex-col items-center justify-center p-3 rounded-xl border ${
               defiSummary.portfolioCanRead ? 'bg-ax-green/5 border-ax-green/15' : 'bg-ax-surface border-ax-border'
@@ -444,7 +445,7 @@ export default function Overview() {
                   ? `$${Math.round(defiSummary.portfolioUsd).toLocaleString('en-US')}`
                   : '—'}
               </span>
-              <span className="text-[9px] text-ax-dim uppercase tracking-wider mt-0.5">Portföy</span>
+              <span className="text-[11px] text-ax-dim mt-0.5">Portföy</span>
             </div>
           </div>
 
@@ -463,7 +464,7 @@ export default function Overview() {
                 <p className="text-sm font-black text-ax-green font-mono">
                   %{defiSummary.topPool.apy?.toFixed(1) ?? '—'}
                 </p>
-                <p className="text-[9px] text-ax-dim">APY</p>
+                <p className="text-[11px] text-ax-dim">APY</p>
               </div>
             </div>
           )}
@@ -483,7 +484,7 @@ export default function Overview() {
                 <p className="text-sm font-black text-ax-amber font-mono">
                   %{defiSummary.hotPool.apy?.toFixed(0) ?? '—'}
                 </p>
-                <p className="text-[9px] text-ax-dim">Hot APY</p>
+                <p className="text-[11px] text-ax-dim">Hot APY</p>
               </div>
             </div>
           )}

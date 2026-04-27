@@ -7,9 +7,9 @@ export default function ErrorToast({ message, type = 'error', onClose, duration 
     return () => clearTimeout(timer)
   }, [duration, onClose])
 
-  const bgColor = type === 'error' ? 'bg-red-900' : type === 'warning' ? 'bg-yellow-900' : 'bg-green-900'
-  const borderColor = type === 'error' ? 'border-red-800' : type === 'warning' ? 'border-yellow-800' : 'border-green-800'
-  const textColor = type === 'error' ? 'text-red-200' : type === 'warning' ? 'text-yellow-200' : 'text-green-200'
+  const bgColor = type === 'error' ? 'bg-ax-red/10' : type === 'warning' ? 'bg-ax-amber/10' : 'bg-ax-green/10'
+  const borderColor = type === 'error' ? 'border-ax-red/30' : type === 'warning' ? 'border-ax-amber/30' : 'border-ax-green/30'
+  const textColor = type === 'error' ? 'text-ax-red' : type === 'warning' ? 'text-ax-amber' : 'text-ax-green'
 
   const iconPath = type === 'error'
     ? 'M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'

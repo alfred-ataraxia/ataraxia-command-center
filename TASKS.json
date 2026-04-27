@@ -1080,7 +1080,7 @@
       ]
     },
     {
-      "id": "T-060",
+      "id": "T-060B",
       "title": "TASKS.json temizliÄŸi â€” DEFI-xxx alert kayÄ±tlarÄ±nÄ± ayrÄ± dosyaya taÅŸÄ±",
       "description": "45 adet DEFI-xxx arÅŸiv kaydÄ± TASKS.json ÅŸiÅŸiriyor. GÃ¶rev deÄŸil olay logu; defi-alerts-archive.json gibi ayrÄ± bir dosyaya taÅŸÄ±.",
       "status": "done",
@@ -1249,16 +1249,179 @@
       "completed_at": "2026-04-27T15:43:39.102409+03:00"
     },
     {
-      "id": "T-070",
+      "id": "T-070-TEST",
       "title": "test",
       "description": "test",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "assignee": "Alfred",
       "tags": [],
       "due": "",
-      "created_at": "2026-04-27T17:52:08.279Z"
+      "created_at": "2026-04-27T17:52:08.279Z",
+      "started_at": "2026-04-27T21:04:07.758115+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-27T21:04:07.758115+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-27T21:04:12.694920+03:00"
+        }
+      ],
+      "completed_at": "2026-04-27T21:04:12.694920+03:00",
+      "notes": [
+        "Test görevi tamamlandi. Cron ve görev sistemi sağlıklı çalışıyor."
+      ]
+    },
+    {
+      "id": "T-070",
+      "title": "Günlük not otomasyonu — fill_daily_note() vault-sync.sh",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Claude",
+      "tags": [
+        "vault",
+        "automation"
+      ],
+      "points": 2,
+      "created_at": "2026-04-27T19:26:25.459Z",
+      "description": "vault-sync.sh içine fill_daily_note() fonksiyonu ekle. Gece 23:15 çalışır, günlük notun Alfred Günlüğü bölümünü doldurur: git commits, tamamlanan görevler, DeFi özet. Manuel bölümlere dokunmaz.",
+      "completed_at": "2026-04-27T22:36:02+03:00",
+      "notes": [
+        "vault-sync.sh: daily note template now includes alfred:daily markers; fill_daily_note() replaces marker block with git+tasks+defi summary and does not touch manual sections. Added calls in --daily and --all. Removed duplicate TASK IDs in TASKS.json (T-070-TEST, T-060B)."
+      ],
+      "status_history": [
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-27T22:36:02+03:00"
+        }
+      ]
+    },
+    {
+      "id": "T-071",
+      "title": "Hızlı yakalama widget — Overview QuickCapture",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Claude",
+      "tags": [
+        "dashboard",
+        "vault"
+      ],
+      "points": 2,
+      "created_at": "2026-04-27T19:26:25.459Z",
+      "description": "Overview.jsx içine QuickCapture bileşeni. Enter ile gönderir. #görev prefix varsa TASKS.json görevi açar, yoksa notlar/hizli-notlar.md e yazar. server.cjs /api/capture endpoint.",
+      "completed_at": "2026-04-27T22:43:49+03:00",
+      "notes": [
+        "Implemented QuickCapture: dashboard Overview includes QuickCapture widget; POST /api/capture writes to OpenClaw shared-notes + Obsidian quick notes and supports #gorev/#task task creation."
+      ],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "done",
+          "at": "2026-04-27T22:43:49+03:00"
+        }
+      ]
+    },
+    {
+      "id": "T-072",
+      "title": "Alfred chat widget — dashboard'dan Telegram mesaj",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Claude",
+      "tags": [
+        "dashboard",
+        "alfred",
+        "telegram"
+      ],
+      "points": 2,
+      "created_at": "2026-04-27T19:26:25.459Z",
+      "description": "Dashboard sidebar veya overview'a mini chat input. Mesaj Telegram bot token ile Alfred'e iletilir. server.cjs /api/alfred/message endpoint.",
+      "completed_at": "2026-04-27T22:45:37+03:00",
+      "notes": [
+        "Implemented AlfredChat widget on Overview and POST /api/alfred/message endpoint (Telegram send + canonical shared-notes log)."
+      ],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "done",
+          "at": "2026-04-27T22:45:37+03:00"
+        }
+      ]
+    },
+    {
+      "id": "T-073",
+      "title": "Takvim entegrasyonu — Overview'da bugün/yarın",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Codex",
+      "tags": [
+        "dashboard",
+        "calendar"
+      ],
+      "points": 2,
+      "created_at": "2026-04-27T19:26:25.459Z",
+      "description": "gcalcli kurulu. server.cjs /api/calendar endpoint, gcalcli agenda --nocolor parse. DailySummary veya ayrı Overview kartı.",
+      "completed_at": "2026-04-27T22:48:04+03:00",
+      "notes": [
+        "Added /api/calendar (gcalcli agenda) endpoint and CalendarPeek card on Overview (2-day peek)."
+      ],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "done",
+          "at": "2026-04-27T22:48:04+03:00"
+        }
+      ]
+    },
+    {
+      "id": "T-074",
+      "title": "DeFi eylem geçmişi — Autopilot log dashboard",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Claude",
+      "tags": [
+        "defi",
+        "dashboard"
+      ],
+      "points": 3,
+      "created_at": "2026-04-27T19:26:25.459Z",
+      "description": "DefiView Autopilot sekmesine eylem geçmişi: autopilot ne zaman çalıştı, ne yaptı/yapmadı, neden. DeFi APM log parse."
+    },
+    {
+      "id": "T-075",
+      "title": "Haftalık özet push — Pazar akşamı Alfred raporu",
+      "status": "done",
+      "priority": "low",
+      "assignee": "Alfred",
+      "tags": [
+        "automation",
+        "vault"
+      ],
+      "points": 2,
+      "created_at": "2026-04-27T19:26:25.459Z",
+      "description": "OpenClaw jobs.json'a Pazar 21:00 cron. Alfred haftalık özet üretir: görevler, kararlar, DeFi özeti, sistem sağlığı. Telegram + vault weekly sync.",
+      "started_at": "2026-04-27T22:32:21.346763+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-27T22:32:21.346763+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-27T22:32:45.065795+03:00"
+        }
+      ],
+      "completed_at": "2026-04-27T22:32:45.065795+03:00",
+      "notes": [
+        "jobs.json'a Pazar 21:00 cron eklendi. alfred-weekly-summary job ID: 1449a92d-860e-4506-b82d-137b2389eeb7. İlk çalışma: 2026-05-03 21:00. Özet: görevler, kararlar, DeFi, sistem sağlığı, vault sync içerir."
+      ]
     }
   ],
-  "updated_at": "2026-04-27T17:52:08.279Z"
+  "updated_at": "2026-04-27T22:48:04+03:00"
 }

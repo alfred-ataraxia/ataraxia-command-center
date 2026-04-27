@@ -2,33 +2,11 @@ import { useState, useEffect, useCallback } from 'react'
 import { TrendingUp, AlertTriangle, RefreshCw, DollarSign, Activity, ShieldCheck, ShieldAlert, Trophy, Bot } from 'lucide-react'
 import apiFetch from '../services/apiFetch'
 import TopPools from './TopPools'
-
-const DEFI_API = '/api/defi'
-const REFRESH_INTERVAL = 60_000
-const SCAN_STALE_MS = 20 * 60 * 1000
-
-function formatUsd(value) {
-  if (value == null || !Number.isFinite(value)) return '—'
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value)
-}
-
-function levelColor(level) {
-  switch (level) {
-    case 'CRITICAL': return 'text-ax-red bg-ax-red/10 border-ax-red/25'
-    case 'WARN':     return 'text-ax-amber bg-ax-amber/10 border-ax-amber/25'
-    case 'INFO':     return 'text-ax-cyan bg-ax-cyan/10 border-ax-cyan/25'
-    default:         return 'text-ax-dim bg-ax-muted border-ax-border'
-  }
-}
-
-function levelDot(level) {
-  switch (level) {
-    case 'CRITICAL': return 'bg-ax-red animate-pulse'
-    case 'WARN':     return 'bg-ax-amber'
-    case 'INFO':     return 'bg-ax-cyan'
-    default:         return 'bg-ax-subtle'
-  }
-}
+import {
+  DEFI_API, REFRESH_INTERVAL, SCAN_STALE_MS, CHAIN_BADGE,
+  formatUsd, formatUsdCompact, formatTime, formatDateTime,
+  levelColor, levelDot, statusTone, shortHash, alphaDecisionTone, summaryToneClass
+} from './defiUtils'
 
 function StablecoinBadge({ symbol, price }) {
   const deviation = Math.abs(price - 1.0)
@@ -49,28 +27,6 @@ function StablecoinBadge({ symbol, price }) {
   )
 }
 
-function formatTime(value) {
-  if (!value) return '—'
-  return new Date(value).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
-}
-
-function formatDateTime(value) {
-  if (!value) return '—'
-  return new Date(value).toLocaleString('tr-TR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
-}
-
-const CHAIN_BADGE = {
-  ethereum: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  arbitrum: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
-  optimism: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-  base:     'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-  polygon:  'bg-purple-500/10 text-purple-400 border-purple-500/20',
-  Ethereum: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  Arbitrum: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
-  Optimism: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-  Base:     'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-  Polygon:  'bg-purple-500/10 text-purple-400 border-purple-500/20',
-}
 
 function PoolRow({ pool, rank }) {
   const apy = typeof pool.apy === 'number' ? pool.apy : 0
@@ -97,17 +53,17 @@ function PoolRow({ pool, rank }) {
           <span className="text-xs font-bold text-ax-heading">{pool.symbol || '—'}</span>
           <span className="text-[10px] text-ax-dim uppercase tracking-tighter">{pool.project || '—'}</span>
           {safetyScore && (
-            <span className="text-[9px] px-1 bg-ax-green/10 text-ax-green rounded-sm border border-ax-green/20">
+            <span className="text-[11px] px-1 bg-ax-green/10 text-ax-green rounded-sm border border-ax-green/20">
               {safetyScore}
             </span>
           )}
           {apyTier === 'crit' && (
-            <span className="text-[9px] px-1 bg-ax-red/10 text-ax-red rounded-sm border border-ax-red/20">
+            <span className="text-[11px] px-1 bg-ax-red/10 text-ax-red rounded-sm border border-ax-red/20">
               Çok yüksek APY
             </span>
           )}
           {apyTier === 'warn' && (
-            <span className="text-[9px] px-1 bg-ax-amber/10 text-ax-amber rounded-sm border border-ax-amber/20">
+            <span className="text-[11px] px-1 bg-ax-amber/10 text-ax-amber rounded-sm border border-ax-amber/20">
               Yüksek APY
             </span>
           )}
@@ -115,13 +71,13 @@ function PoolRow({ pool, rank }) {
         {/* Chain + TVL + APY Detay */}
         <div className="flex items-center gap-2 flex-wrap">
           {pool.chain && (
-            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${chainStyle}`}>
+            <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold border ${chainStyle}`}>
               {pool.chain}
             </span>
           )}
           <span className="text-[10px] text-ax-dim">${(tvl / 1e6).toFixed(1)}M TVL</span>
           {hasReward && (
-            <span className="text-[9px] text-ax-amber">+{apyReward.toFixed(1)}% ödül</span>
+            <span className="text-[11px] text-ax-amber">+{apyReward.toFixed(1)}% ödül</span>
           )}
         </div>
       </div>
@@ -176,17 +132,17 @@ function PotentialPoolRow({ pool, rank }) {
           <span className="text-xs font-bold text-ax-heading">{pool.symbol || '—'}</span>
           <span className="text-[10px] text-ax-dim uppercase tracking-tighter">{pool.project || '—'}</span>
           {pool.chain && (
-            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${chainStyle}`}>
+            <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold border ${chainStyle}`}>
               {pool.chain}
             </span>
           )}
           {potentialScore !== null && (
-            <span className={`px-1.5 py-0.5 rounded text-[9px] font-black border ${scoreTone}`}>
+            <span className={`px-1.5 py-0.5 rounded text-[11px] font-black border ${scoreTone}`}>
               Skor {potentialScore.toFixed(1)}
             </span>
           )}
           {warnAlerts24h > 0 && (
-            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold border bg-ax-amber/10 text-ax-amber border-ax-amber/25">
+            <span className="px-1.5 py-0.5 rounded text-[11px] font-bold border bg-ax-amber/10 text-ax-amber border-ax-amber/25">
               {warnAlerts24h} WARN (24s)
             </span>
           )}
@@ -225,15 +181,6 @@ function PotentialPoolRow({ pool, rank }) {
   )
 }
 
-function alphaDecisionTone(decision) {
-  switch (String(decision || '').toUpperCase()) {
-    case 'LIVE_ENTER': return 'bg-ax-red/10 text-ax-red border-ax-red/25'
-    case 'PAPER_ENTER': return 'bg-ax-cyan/10 text-ax-cyan border-ax-cyan/25'
-    case 'WATCH': return 'bg-ax-amber/10 text-ax-amber border-ax-amber/25'
-    default: return 'bg-ax-surface text-ax-dim border-ax-border'
-  }
-}
-
 function AlphaCandidateRow({ candidate, rank }) {
   const chainStyle = CHAIN_BADGE[candidate.chain] || 'bg-ax-muted text-ax-dim border-ax-border'
   const confidence = typeof candidate.confidence === 'number' ? candidate.confidence : 0
@@ -253,14 +200,14 @@ function AlphaCandidateRow({ candidate, rank }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
           <span className="text-xs font-bold text-ax-heading">{candidate.symbol || '—'}</span>
-          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${chainStyle}`}>
+          <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold border ${chainStyle}`}>
             {candidate.chain || '—'}
           </span>
           <span className="text-[10px] text-ax-dim uppercase tracking-tighter">{candidate.dex || '—'}</span>
-          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${sourceTone}`}>
+          <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold border ${sourceTone}`}>
             {eventBacked ? 'EVENT' : (candidate.discoverySource || 'SCAN').toUpperCase()}
           </span>
-          <span className={`px-1.5 py-0.5 rounded text-[9px] font-black border ${alphaDecisionTone(candidate.decision)}`}>
+          <span className={`px-1.5 py-0.5 rounded text-[11px] font-black border ${alphaDecisionTone(candidate.decision)}`}>
             {candidate.decision || 'IGNORE'}
           </span>
         </div>
@@ -287,7 +234,7 @@ function AlphaEventRow({ event, rank }) {
       <span className="text-[10px] text-ax-subtle font-mono w-4 shrink-0 text-center">{rank}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
-          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${chainStyle}`}>
+          <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold border ${chainStyle}`}>
             {event.chain || '—'}
           </span>
           <span className="text-xs font-bold text-ax-heading">{event.dex || '—'}</span>
@@ -299,38 +246,6 @@ function AlphaEventRow({ event, rank }) {
       </div>
     </div>
   )
-}
-
-function statusTone(status) {
-  const s = String(status || '').toUpperCase()
-  if (s === 'FAILED') return 'bg-ax-red/10 border-ax-red/25 text-ax-red'
-  if (s === 'EXECUTED') return 'bg-ax-green/10 border-ax-green/25 text-ax-green'
-  if (s === 'APPROVED') return 'bg-ax-cyan/10 border-ax-cyan/25 text-ax-cyan'
-  if (s === 'PROPOSED') return 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber'
-  return 'bg-ax-surface border-ax-border text-ax-dim'
-}
-
-function shortHash(value) {
-  if (!value || typeof value !== 'string') return null
-  if (!value.startsWith('0x') || value.length < 12) return value
-  return `${value.slice(0, 8)}…${value.slice(-4)}`
-}
-
-function formatUsdCompact(value) {
-  if (value == null || !Number.isFinite(value)) return 'â€”'
-  return new Intl.NumberFormat('tr-TR', {
-    style: 'currency',
-    currency: 'USD',
-    notation: value >= 1000 ? 'compact' : 'standard',
-    maximumFractionDigits: value >= 1000 ? 1 : 0,
-  }).format(value)
-}
-
-function summaryToneClass(tone) {
-  if (tone === 'danger') return 'bg-ax-red/10 border-ax-red/25 text-ax-red'
-  if (tone === 'warn') return 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber'
-  if (tone === 'ok') return 'bg-ax-green/10 border-ax-green/25 text-ax-green'
-  return 'bg-ax-cyan/10 border-ax-cyan/25 text-ax-cyan'
 }
 
 function buildSystemSummary({ error, isDataStale, criticalCount, warnCount, portfolioUsd, canReadPortfolio, currentVault, pendingApprovals, lastReason, potentialPoolsCount }) {
@@ -438,7 +353,7 @@ function AutopilotPanel({ config, state, actions, actionEvents, expandedActionId
             { label: 'Protokol', value: config?.protocol ?? '—' },
           ].map(({ label, value, highlight }) => (
             <div key={label} className="p-2.5 rounded-xl bg-ax-surface border border-ax-border">
-              <p className="text-[9px] text-ax-dim uppercase tracking-wider mb-1">{label}</p>
+              <p className="text-[11px] text-ax-dim mb-1">{label}</p>
               <p className={`text-xs font-mono font-bold ${highlight ? 'text-ax-red' : 'text-ax-text'}`}>{String(value)}</p>
             </div>
           ))}
@@ -455,13 +370,13 @@ function AutopilotPanel({ config, state, actions, actionEvents, expandedActionId
           <div className="pt-3 border-t border-ax-border/50 grid grid-cols-2 gap-3 mt-3">
             {currentVault && (
               <div>
-                <p className="text-[9px] text-ax-dim uppercase tracking-wider mb-1">Mevcut Vault</p>
+                <p className="text-[11px] text-ax-dim mb-1">Mevcut Vault</p>
                 <p className="text-[11px] font-mono text-ax-green truncate">{currentVault}</p>
               </div>
             )}
             {proposedVault && (
               <div>
-                <p className="text-[9px] text-ax-dim uppercase tracking-wider mb-1">Önerilen Vault</p>
+                <p className="text-[11px] text-ax-dim mb-1">Önerilen Vault</p>
                 <p className="text-[11px] font-mono text-ax-amber truncate">{proposedVault}</p>
               </div>
             )}
@@ -509,7 +424,7 @@ function AutopilotPanel({ config, state, actions, actionEvents, expandedActionId
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[10px] font-mono text-ax-dim">{formatDateTime(a.timestamp)}</span>
-                      {a.action && <span className="text-[10px] text-ax-dim uppercase tracking-wider">{a.action}</span>}
+                      {a.action && <span className="text-[10px] text-ax-dim">{a.action}</span>}
                       {reason && <span className="text-[10px] text-ax-subtle">{reason}</span>}
                     </div>
                     <div className="mt-0.5 text-[10px] text-ax-dim font-mono truncate">
@@ -774,48 +689,57 @@ export default function DefiView() {
   }
 
   return (
-    <div className="p-4 space-y-4 max-w-4xl mx-auto">
+    <div className="p-6 space-y-6 max-w-5xl mx-auto relative">
+      {/* Background ambient glow */}
+      <div className="fixed top-20 left-1/2 -translate-x-1/2 w-3/4 h-96 bg-ax-cyan/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
-      {/* TAB BAR */}
-      <div className="flex gap-1 p-1 rounded-xl bg-ax-surface border border-ax-border w-fit">
-        <button
-          onClick={() => setDefiTab('overview')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-            defiTab === 'overview'
-              ? 'bg-ax-panel border border-ax-border text-ax-heading shadow-sm'
-              : 'text-ax-dim hover:text-ax-text'
-          }`}
-        >
-          <TrendingUp size={13} />
-          DeFi APM
-        </button>
-        <button
-          onClick={() => setDefiTab('toppools')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-            defiTab === 'toppools'
-              ? 'bg-ax-panel border border-ax-border text-ax-heading shadow-sm'
-              : 'text-ax-dim hover:text-ax-text'
-          }`}
-        >
-          <Trophy size={13} />
-          Top Pools
-        </button>
-        <button
-          onClick={() => setDefiTab('autopilot')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-            defiTab === 'autopilot'
-              ? 'bg-ax-panel border border-ax-border text-ax-heading shadow-sm'
-              : 'text-ax-dim hover:text-ax-text'
-          }`}
-        >
-          <Bot size={13} />
-          Autopilot
-          {pendingApprovals > 0 && (
-            <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-ax-amber/20 text-ax-amber border border-ax-amber/30">
-              {pendingApprovals}
-            </span>
-          )}
-        </button>
+      {/* Header & TAB BAR */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 relative z-10">
+        <div>
+          <p className="text-[10px] font-mono font-bold uppercase text-ax-cyan mb-2">DeFi APM</p>
+          <h1 className="text-2xl font-bold text-ax-heading tracking-tight">Otonom Portföy</h1>
+        </div>
+        
+        <div className="flex gap-1 p-1.5 rounded-2xl ax-glass border border-ax-border shadow-inner">
+          <button
+            onClick={() => setDefiTab('overview')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+              defiTab === 'overview'
+                ? 'bg-ax-cyan/15 border border-ax-cyan/30 text-ax-cyan'
+                : 'text-ax-dim hover:text-ax-text hover:bg-ax-muted border border-transparent'
+            }`}
+          >
+            <TrendingUp size={14} />
+            APM İzleme
+          </button>
+          <button
+            onClick={() => setDefiTab('toppools')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+              defiTab === 'toppools'
+                ? 'bg-ax-amber/15 border border-ax-amber/30 text-ax-amber'
+                : 'text-ax-dim hover:text-ax-text hover:bg-ax-muted border border-transparent'
+            }`}
+          >
+            <Trophy size={14} />
+            Lider Havuzlar
+          </button>
+          <button
+            onClick={() => setDefiTab('autopilot')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+              defiTab === 'autopilot'
+                ? 'bg-ax-accent/15 border border-ax-accent/30 text-ax-accent'
+                : 'text-ax-dim hover:text-ax-text hover:bg-ax-muted border border-transparent'
+            }`}
+          >
+            <Bot size={14} />
+            Otopilot
+            {pendingApprovals > 0 && (
+              <span className="px-2 py-0.5 rounded-lg text-[11px] font-black bg-ax-amber text-black animate-pulse">
+                {pendingApprovals}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
       {defiTab === 'toppools' && <TopPools />}
@@ -845,27 +769,27 @@ export default function DefiView() {
       {defiTab === 'overview' && <>
 
       {/* Başlık + Durum */}
-      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-ax-accent/10 border border-ax-accent/25 flex items-center justify-center text-3xl">
+      <div className="rounded-xl ax-glass p-4 relative overflow-hidden group">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 rounded-2xl bg-ax-cyan/10 border border-ax-cyan/25 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500">
               📈
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-black text-ax-heading italic">DeFi APM</h2>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                  error ? 'bg-ax-red/10 text-ax-red border-ax-red/20' : 'bg-ax-green/10 text-ax-green border-ax-green/20'
+              <div className="flex items-center gap-3 mb-1">
+                <h2 className="text-2xl font-black text-ax-heading uppercase tracking-widest">Sistem Durumu</h2>
+                <span className={`px-2.5 py-1 rounded-lg text-[11px] font-black border ${
+                  error ? 'bg-ax-red/10 text-ax-red border-ax-red/30' : 'bg-ax-green/10 text-ax-green border-ax-green/30'
                 }`}>
                   {error ? 'DOWN' : 'ACTIVE'}
                 </span>
               </div>
-              <p className="text-xs text-ax-dim font-medium">Otonom Portföy Yöneticisi — Faz 2</p>
+              <p className="text-xs text-ax-dim font-mono">Otonom Portföy Yöneticisi — Faz 2</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <div className={`flex items-center justify-end gap-2 text-xs font-bold mb-0.5 ${isDataStale ? 'text-ax-amber' : 'text-ax-green'}`}>
+              <div className={`flex items-center justify-end gap-2 text-[11px] uppercase tracking-widest font-bold mb-1 ${isDataStale ? 'text-ax-amber' : 'text-ax-green'}`}>
                 <div className={`w-2 h-2 rounded-full ${isDataStale ? 'bg-ax-amber animate-pulse' : 'bg-ax-green'}`} />
                 {isDataStale ? 'Senkronizasyon Gecikti' : 'Senkronize'}
               </div>
@@ -875,10 +799,10 @@ export default function DefiView() {
             </div>
             <button
               onClick={fetchAll}
-              className="p-2.5 rounded-xl bg-ax-muted/30 hover:bg-ax-muted transition-colors text-ax-dim border border-ax-border/50"
+              className="p-3 rounded-xl bg-ax-surface hover:bg-ax-muted/60 transition-colors text-ax-dim border border-ax-border hover:text-ax-heading"
               title="Yenile"
             >
-              <RefreshCw size={15} />
+              <RefreshCw size={16} />
             </button>
           </div>
         </div>
@@ -890,118 +814,122 @@ export default function DefiView() {
         )}
 
         {/* Özet İstatistikler */}
-        <div className="mt-4 grid grid-cols-1 lg:grid-cols-[1.3fr_.9fr] gap-3">
-          <div className="p-4 rounded-2xl bg-ax-surface border border-ax-border">
-            <div className="flex items-center gap-2 mb-2">
-              <ShieldCheck size={15} className="text-ax-cyan" />
-              <h3 className="text-sm font-bold text-ax-heading">Bu Ekran Ne Diyor?</h3>
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1.3fr_.9fr] gap-4 relative z-10">
+          <div className="p-4 rounded-xl ax-glass border border-ax-border relative overflow-hidden group">
+            <div className="flex items-center gap-3 mb-4 relative z-10">
+              <div className="p-2 rounded-xl bg-ax-cyan/10">
+                <ShieldCheck size={16} className="text-ax-cyan" />
+              </div>
+              <h3 className="text-sm font-black uppercase tracking-widest text-ax-heading">Bu Ekran Ne Diyor?</h3>
             </div>
-            <div className={`inline-flex px-2 py-1 rounded-full border text-[10px] font-bold mb-2 ${summaryToneClass(summary.tone)}`}>
+            <div className={`inline-flex px-3 py-1.5 rounded-lg border text-[10px] font-black mb-3 relative z-10 ${summaryToneClass(summary.tone)}`}>
               {summary.title}
             </div>
-            <p className="text-xs text-ax-dim leading-relaxed">
+            <p className="text-sm text-ax-dim leading-relaxed font-mono bg-ax-surface p-3 rounded-xl border border-ax-border relative z-10">
               {summary.body}
             </p>
-            <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
-                <div className="text-[10px] text-ax-dim uppercase">Mod</div>
-                <div className="text-xs font-bold text-ax-heading">{apCfg?.execute && !apCfg?.simulateOnly ? 'LIVE' : 'SIMULASYON'}</div>
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 relative z-10">
+              <div className="rounded-2xl border border-ax-border bg-ax-surface p-3 hover:bg-ax-muted transition-colors">
+                <div className="text-[11px] text-ax-dim uppercase tracking-widest font-bold mb-1">Mod</div>
+                <div className={`text-xs font-black font-mono ${apCfg?.execute && !apCfg?.simulateOnly ? 'text-ax-red' : 'text-ax-heading'}`}>{apCfg?.execute && !apCfg?.simulateOnly ? 'LIVE' : 'SIMULASYON'}</div>
               </div>
-              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
-                <div className="text-[10px] text-ax-dim uppercase">Durum</div>
-                <div className="text-xs font-bold text-ax-heading">{lastReason === 'no_candidates' ? 'Aday yok' : (lastReason || 'Normal')}</div>
+              <div className="rounded-2xl border border-ax-border bg-ax-surface p-3 hover:bg-ax-muted transition-colors">
+                <div className="text-[11px] text-ax-dim uppercase tracking-widest font-bold mb-1">Durum</div>
+                <div className="text-xs font-black font-mono text-ax-heading truncate" title={lastReason === 'no_candidates' ? 'Aday yok' : (lastReason || 'Normal')}>{lastReason === 'no_candidates' ? 'Aday yok' : (lastReason || 'Normal')}</div>
               </div>
-              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
-                <div className="text-[10px] text-ax-dim uppercase">Portfoy</div>
-                <div className="text-xs font-bold text-ax-heading">{formatUsdCompact(portfolioUsd)}</div>
+              <div className="rounded-2xl border border-ax-border bg-ax-surface p-3 hover:bg-ax-muted transition-colors">
+                <div className="text-[11px] text-ax-dim uppercase tracking-widest font-bold mb-1">Portföy</div>
+                <div className="text-xs font-black font-mono text-ax-heading">{formatUsdCompact(portfolioUsd)}</div>
               </div>
-              <div className="rounded-xl border border-ax-border bg-ax-panel p-2.5">
-                <div className="text-[10px] text-ax-dim uppercase">Gercek aday</div>
-                <div className="text-xs font-bold text-ax-heading">{potentialPools.length}</div>
+              <div className="rounded-2xl border border-ax-border bg-ax-surface p-3 hover:bg-ax-muted transition-colors">
+                <div className="text-[11px] text-ax-dim uppercase tracking-widest font-bold mb-1">Gerçek aday</div>
+                <div className="text-xs font-black font-mono text-ax-cyan">{potentialPools.length}</div>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-ax-surface border border-ax-border">
-            <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle size={15} className="text-ax-amber" />
-              <h3 className="text-sm font-bold text-ax-heading">Ne Yapmali?</h3>
+          <div className="p-4 rounded-xl ax-glass border border-ax-border relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-4 relative z-10">
+              <div className="p-2 rounded-xl bg-ax-amber/10">
+                <AlertTriangle size={16} className="text-ax-amber" />
+              </div>
+              <h3 className="text-sm font-black uppercase tracking-widest text-ax-heading">Ne Yapmalı?</h3>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3 relative z-10">
               {nextActions.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-2 text-xs text-ax-dim">
-                  <span className="mt-1 w-1.5 h-1.5 rounded-full bg-ax-amber shrink-0" />
-                  <span>{item}</span>
+                <div key={idx} className="flex items-start gap-3 text-xs text-ax-dim p-2.5 rounded-xl bg-ax-surface border border-ax-border">
+                  <span className="mt-1 w-2 h-2 rounded-full bg-ax-amber shrink-0" />
+                  <span className="font-mono">{item}</span>
                 </div>
               ))}
             </div>
-            <div className="mt-3 p-3 rounded-xl border border-ax-border bg-ax-panel text-[11px] text-ax-subtle leading-relaxed">
-              `Beefy Radar` sadece gozlem ekranidir. Buradaki havuzlar autopilot icin otomatik olarak uygun kabul edilmez.
+            <div className="mt-4 p-3 rounded-xl border border-ax-border bg-ax-cyan/5 text-[10px] text-ax-cyan font-mono uppercase tracking-widest leading-relaxed relative z-10 shadow-inner">
+              Beefy Radar sadece gözlem ekranıdır. Otomatik uygunluk garantilemez.
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
-          <div className="p-3 rounded-xl bg-ax-surface border border-ax-border text-center">
-            <div className="text-lg font-black text-ax-cyan font-mono">{pools.length}</div>
-            <div className="text-[10px] text-ax-dim uppercase tracking-wider mt-0.5">Havuz</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 relative z-10">
+          <div className="p-4 rounded-xl ax-glass border border-ax-border text-center group hover:bg-ax-muted transition-colors">
+            <div className="text-2xl font-black text-ax-cyan font-mono group-hover:scale-110 transition-transform">{pools.length}</div>
+            <div className="text-[10px] text-ax-dim uppercase tracking-widest mt-1 font-bold">Havuz</div>
           </div>
-          <div className={`p-3 rounded-xl border text-center ${criticalAlerts.length > 0 ? 'bg-ax-red/5 border-ax-red/20' : 'bg-ax-surface border-ax-border'}`}>
-            <div className={`text-lg font-black font-mono ${criticalAlerts.length > 0 ? 'text-ax-red' : 'text-ax-green'}`}>
+          <div className={`p-4 rounded-xl border text-center group transition-colors ${criticalAlerts.length > 0 ? 'bg-ax-red/5 border-ax-red/20' : 'ax-glass border-ax-border hover:bg-ax-muted'}`}>
+            <div className={`text-2xl font-black font-mono transition-transform group-hover:scale-110 ${criticalAlerts.length > 0 ? 'text-ax-red animate-pulse' : 'text-ax-green'}`}>
               {criticalAlerts.length}
             </div>
-            <div className="text-[10px] text-ax-dim uppercase tracking-wider mt-0.5">Kritik</div>
+            <div className="text-[10px] text-ax-dim uppercase tracking-widest mt-1 font-bold">Kritik</div>
           </div>
-          <div className={`p-3 rounded-xl border text-center ${warnAlerts.length > 0 ? 'bg-ax-amber/5 border-ax-amber/20' : 'bg-ax-surface border-ax-border'}`}>
-            <div className={`text-lg font-black font-mono ${warnAlerts.length > 0 ? 'text-ax-amber' : 'text-ax-text'}`}>
+          <div className={`p-4 rounded-xl border text-center group transition-colors ${warnAlerts.length > 0 ? 'bg-ax-amber/5 border-ax-amber/20' : 'ax-glass border-ax-border hover:bg-ax-muted'}`}>
+            <div className={`text-2xl font-black font-mono transition-transform group-hover:scale-110 ${warnAlerts.length > 0 ? 'text-ax-amber' : 'text-ax-heading'}`}>
               {warnAlerts.length}
             </div>
-            <div className="text-[10px] text-ax-dim uppercase tracking-wider mt-0.5">Uyarı</div>
+            <div className="text-[10px] text-ax-dim uppercase tracking-widest mt-1 font-bold">Uyarı</div>
           </div>
-          <div className={`p-3 rounded-xl border text-center ${
-            portfolio && portfolio.canRead ? 'bg-ax-green/5 border-ax-green/15' : 'bg-ax-surface border-ax-border'
+          <div className={`p-4 rounded-xl border text-center group transition-colors ${
+            portfolio && portfolio.canRead ? 'bg-ax-green/5 border-ax-green/15' : 'ax-glass border-ax-border hover:bg-ax-muted'
           }`}>
-            <div className={`text-lg font-black font-mono ${portfolio && portfolio.canRead ? 'text-ax-green' : 'text-ax-dim'}`}>
-              {portfolio && portfolio.canRead ? formatUsd(portfolioUsd) : '—'}
+            <div className={`text-2xl font-black font-mono transition-transform group-hover:scale-110 ${portfolio && portfolio.canRead ? 'text-ax-green' : 'text-ax-dim'}`}>
+              {portfolio && portfolio.canRead ? formatUsdCompact(portfolioUsd) : '—'}
             </div>
-            <div className="text-[10px] text-ax-dim uppercase tracking-wider mt-0.5">Portföy</div>
+            <div className="text-[10px] text-ax-dim uppercase tracking-widest mt-1 font-bold">Portföy</div>
           </div>
         </div>
 
-        <div className="mt-3 flex items-center justify-between gap-3 text-[10px] text-ax-subtle">
+        <div className="mt-4 flex items-center justify-between gap-3 text-[10px] text-ax-subtle font-mono relative z-10">
           <span>Veri zamanı: {formatTime(dataTimestamp)}</span>
           <span>İstek: {formatTime(lastUpdated)}</span>
         </div>
 
         {autopilot && (
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px]">
-            <span className="px-2 py-1 rounded-full border bg-ax-surface border-ax-border text-ax-dim font-mono">
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-[10px] relative z-10">
+            <span className="px-3 py-1.5 rounded-lg border bg-ax-surface border-ax-border text-ax-dim font-mono shadow-inner">
               Autopilot: {apCfg?.enabled ? 'ON' : 'OFF'}
             </span>
-            <span className={`px-2 py-1 rounded-full border font-mono ${
+            <span className={`px-3 py-1.5 rounded-lg border font-mono ${
               apCfg?.execute && !apCfg?.simulateOnly
                 ? 'bg-ax-red/10 border-ax-red/25 text-ax-red'
                 : 'bg-ax-green/10 border-ax-green/25 text-ax-green'
             }`}>
               Execute: {apCfg?.execute && !apCfg?.simulateOnly ? 'LIVE' : 'SIM'}
             </span>
-            <span className={`px-2 py-1 rounded-full border font-mono ${
+            <span className={`px-3 py-1.5 rounded-lg border font-mono shadow-inner ${
               apCfg?.requireApproval
                 ? 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber'
                 : 'bg-ax-surface border-ax-border text-ax-dim'
             }`}>
               Approval: {apCfg?.requireApproval ? 'REQUIRED' : 'OFF'}
             </span>
-            <span className="px-2 py-1 rounded-full border bg-ax-surface border-ax-border text-ax-dim font-mono">
+            <span className="px-3 py-1.5 rounded-lg border bg-ax-surface border-ax-border text-ax-dim font-mono shadow-inner truncate max-w-[200px]">
               Vault: {shownVault}
             </span>
             {lastAp && (
-              <span className={`px-2 py-1 rounded-full border font-mono ${statusTone(lastAp.status)}`}>
+              <span className={`px-3 py-1.5 rounded-lg border font-mono ${statusTone(lastAp.status)}`}>
                 Last: {lastAp.status}/{lastAp.action}{lastReason ? ` (${lastReason})` : ''}
               </span>
             )}
             {pendingApprovals > 0 && (
-              <span className="px-2 py-1 rounded-full border font-mono bg-ax-amber/10 border-ax-amber/25 text-ax-amber">
+              <span className="px-3 py-1.5 rounded-lg border font-mono bg-ax-amber/20 border-ax-amber/40 text-ax-amber font-black animate-pulse">
                 Pending: {pendingApprovals}
               </span>
             )}
@@ -1011,24 +939,26 @@ export default function DefiView() {
 
       {/* Autopilot Aksiyonları */}
       {actions.length > 0 && (
-        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Activity size={16} className="text-ax-cyan" />
-            <h2 className="text-ax-heading text-sm font-bold">Autopilot Aksiyonları</h2>
-            <span className="ml-auto text-[10px] text-ax-dim">{actions.length} kayıt</span>
+        <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="p-2 rounded-xl bg-ax-cyan/10">
+              <Activity size={16} className="text-ax-cyan" />
+            </div>
+            <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Autopilot Aksiyonları</h2>
+            <span className="ml-auto px-2 py-1 rounded-lg bg-ax-surface border border-ax-border text-[10px] text-ax-dim font-mono">{actions.length} kayıt</span>
           </div>
 
-          <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+          <div className="mb-4 p-3 rounded-xl border border-ax-border bg-ax-surface text-[11px] text-ax-dim font-mono relative z-10 shadow-inner">
             Bu liste sistemin ne denedigini gosterir. `SKIPPED / NONE / no_candidates` hata degil; kurallara uyan aday bulunamadigi anlamina gelir.
           </div>
 
           {!canApproveLive && (
-            <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+            <div className="mb-4 p-3 rounded-xl bg-ax-red/5 border border-ax-red/20 text-[11px] text-ax-red font-mono relative z-10">
               LIVE approve için `execute=1` ve `simulateOnly=0` gerekli.
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-3 relative z-10">
             {actions.slice(0, 12).map((a) => {
               const id = String(a.id || '')
               const st = String(a.status || '').toUpperCase()
@@ -1036,31 +966,31 @@ export default function DefiView() {
               const isExpanded = expandedActionId === id
               const reason = a?.details?.reason || a?.details?.decision?.reason || null
               return (
-                <div key={id} className="rounded-xl bg-ax-surface border border-ax-border overflow-hidden">
-                  <div className="flex items-center gap-3 px-3 py-2.5">
+                <div key={id} className="rounded-2xl bg-ax-surface border border-ax-border overflow-hidden hover:border-ax-border hover:bg-ax-muted transition-all duration-300">
+                  <div className="flex items-center gap-4 px-4 py-3">
                     <button
                       onClick={() => handleToggleEvents(id)}
-                      className="shrink-0 w-7 h-7 rounded-lg border border-ax-border bg-ax-panel hover:bg-ax-muted/60 transition-colors text-ax-dim text-xs font-mono"
+                      className="shrink-0 w-8 h-8 rounded-xl border border-ax-border bg-ax-surface hover:bg-ax-muted/60 transition-colors text-ax-dim text-lg font-mono flex items-center justify-center shadow-inner"
                       title="Events"
                     >
                       {isExpanded ? '−' : '+'}
                     </button>
-                    <span className={`shrink-0 px-2 py-1 rounded-full border text-[10px] font-mono ${statusTone(st)}`}>
+                    <span className={`shrink-0 px-2.5 py-1 rounded-lg border text-[10px] font-black ${statusTone(st)}`}>
                       {st || '—'}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-bold text-ax-heading font-mono">{id}</span>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-xs font-black text-ax-heading font-mono">{id}</span>
                         <span className="text-[10px] text-ax-dim font-mono">{formatDateTime(a.timestamp)}</span>
-                        {a.action && <span className="text-[10px] text-ax-dim uppercase tracking-wider">{a.action}</span>}
+                        {a.action && <span className="text-[10px] px-1.5 py-0.5 rounded border border-ax-border bg-ax-muted text-ax-dim font-bold">{a.action}</span>}
                         {reason && (
-                          <span className="text-[10px] text-ax-subtle">
+                          <span className="text-[10px] text-ax-amber bg-ax-amber/10 px-2 py-0.5 rounded border border-ax-amber/20">
                             {reason}
                           </span>
                         )}
                       </div>
-                      <div className="mt-0.5 text-[10px] text-ax-dim font-mono truncate">
-                        {a.fromVaultId ? `from ${a.fromVaultId}` : 'from —'} → {a.toVaultId ? `to ${a.toVaultId}` : 'to —'}
+                      <div className="mt-1.5 text-[11px] text-ax-subtle font-mono truncate">
+                        {a.fromVaultId ? <span className="text-ax-dim">from {a.fromVaultId}</span> : 'from —'} <span className="text-ax-cyan mx-1">→</span> {a.toVaultId ? <span className="text-ax-text">to {a.toVaultId}</span> : 'to —'}
                         {a.txHash ? ` · tx ${shortHash(a.txHash)}` : ''}
                       </div>
                     </div>
@@ -1068,36 +998,36 @@ export default function DefiView() {
                       <button
                         onClick={() => handleApprove(a)}
                         disabled={!canApproveLive || approvingId === id}
-                        className={`shrink-0 px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-colors ${
+                        className={`shrink-0 px-4 py-2 rounded-xl border text-[11px] font-black uppercase tracking-widest transition-all duration-300 ${
                           !canApproveLive
-                            ? 'bg-ax-muted border-ax-border text-ax-dim cursor-not-allowed'
-                            : 'bg-ax-amber/10 border-ax-amber/25 text-ax-amber hover:bg-ax-amber/20'
+                            ? 'bg-ax-surface border-ax-border text-ax-dim cursor-not-allowed'
+                            : 'bg-ax-amber/15 border-ax-amber/30 text-ax-amber hover:bg-ax-amber/80 hover:text-ax-bg'
                         }`}
                         title={!canApproveLive ? 'execute/simulateOnly ayarlarını kontrol et' : 'Manuel onay (LIVE)'}
                       >
-                        {approvingId === id ? 'Onay…' : 'Approve'}
+                        {approvingId === id ? 'ONAY...' : 'APPROVE'}
                       </button>
                     )}
                   </div>
                   {isExpanded && (
-                    <div className="border-t border-ax-border/60 bg-ax-panel px-3 py-2">
+                    <div className="border-t border-ax-border bg-ax-muted px-4 py-3 shadow-inner">
                       {(actionEvents[id] || []).length === 0 ? (
-                        <div className="text-[11px] text-ax-dim">Event yok (veya yüklenemedi).</div>
+                        <div className="text-[11px] text-ax-dim font-mono p-2">Event yok (veya yüklenemedi).</div>
                       ) : (
-                        <div className="space-y-1">
+                        <div className="space-y-2">
                           {(actionEvents[id] || []).slice(-30).map((ev) => (
-                            <div key={ev.id} className="flex items-start gap-2 text-[11px]">
-                              <span className={`mt-0.5 w-1.5 h-1.5 rounded-full shrink-0 ${levelDot(ev.status === 'FAILED' ? 'CRITICAL' : ev.status === 'PROPOSED' ? 'WARN' : 'INFO')}`} />
+                            <div key={ev.id} className="flex items-start gap-3 text-[11px] font-mono">
+                              <span className={`mt-1 w-2 h-2 rounded-full shrink-0 ${levelDot(ev.status === 'FAILED' ? 'CRITICAL' : ev.status === 'PROPOSED' ? 'WARN' : 'INFO')}`} />
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className={`px-2 py-0.5 rounded-full border text-[10px] font-mono ${statusTone(ev.status)}`}>
+                                <div className="flex items-center gap-2 flex-wrap mb-1">
+                                  <span className={`px-2 py-0.5 rounded-md border text-[11px] font-black ${statusTone(ev.status)}`}>
                                     {String(ev.status || '').toUpperCase()}
                                   </span>
-                                  <span className="text-[10px] text-ax-subtle font-mono">{formatDateTime(ev.timestamp)}</span>
-                                  {ev.details?.reason && <span className="text-[10px] text-ax-dim">{ev.details.reason}</span>}
+                                  <span className="text-[10px] text-ax-subtle">{formatDateTime(ev.timestamp)}</span>
+                                  {ev.details?.reason && <span className="text-[10px] text-ax-amber px-1 border border-ax-amber/20 bg-ax-amber/10 rounded">{ev.details.reason}</span>}
                                 </div>
                                 {ev.details && typeof ev.details === 'object' && (ev.details.message || ev.details.error) && (
-                                  <div className="text-[10px] text-ax-dim font-mono truncate">
+                                  <div className="text-[10px] text-ax-dim bg-ax-muted p-1.5 rounded border border-ax-border truncate">
                                     {ev.details.message || ev.details.error}
                                   </div>
                                 )}
@@ -1117,50 +1047,52 @@ export default function DefiView() {
 
       {/* Portföy (USD valuation) */}
       {portfolio && (
-        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <DollarSign size={16} className="text-ax-cyan" />
-            <h2 className="text-ax-heading text-sm font-bold">Portföy (Base)</h2>
-            <span className="ml-auto text-[10px] text-ax-dim font-mono">
+        <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="p-2 rounded-xl bg-ax-green/10">
+              <DollarSign size={16} className="text-ax-green" />
+            </div>
+            <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Portföy (Base)</h2>
+            <span className="ml-auto px-3 py-1.5 rounded-lg border border-ax-border bg-ax-surface text-[10px] text-ax-text font-mono shadow-inner">
               {ethUsd ? `ETH $${ethUsd.toFixed(0)}` : 'ETH $—'}
             </span>
           </div>
 
           {!portfolio.canRead ? (
-            <div className="p-3 rounded-xl bg-ax-surface border border-ax-border text-xs text-ax-dim">
+            <div className="p-4 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim uppercase tracking-widest font-bold shadow-inner relative z-10">
               Cüzdan okunamadı. Read-only için AUTOPILOT_ADDRESS tanımla.
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-ax-surface border border-ax-border">
-                  <div className="text-[10px] text-ax-dim uppercase tracking-wider">Toplam</div>
-                  <div className="text-lg font-black font-mono text-ax-heading">
+            <div className="space-y-4 relative z-10">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 rounded-2xl bg-ax-surface border border-ax-border shadow-inner hover:bg-ax-muted transition-colors">
+                  <div className="text-[10px] text-ax-dim uppercase tracking-widest font-bold mb-2">Toplam</div>
+                  <div className="text-2xl font-black font-mono text-ax-green">
                     {formatUsd(portfolioUsd)}
                   </div>
-                  <div className="text-[10px] text-ax-dim font-mono">
+                  <div className="text-[11px] text-ax-dim font-mono mt-1">
                     {portfolio.totalBalanceEth ?? '—'} ETH
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-ax-surface border border-ax-border">
-                  <div className="text-[10px] text-ax-dim uppercase tracking-wider">Cüzdan</div>
-                  <div className="text-[11px] text-ax-heading font-mono truncate">{portfolio.address}</div>
-                  <div className="text-[10px] text-ax-dim font-mono">
-                    ETH: {portfolio.ethBalance ?? '—'} · WETH: {portfolio.wethBalance ?? '—'}
+                <div className="p-4 rounded-2xl bg-ax-surface border border-ax-border shadow-inner hover:bg-ax-muted transition-colors">
+                  <div className="text-[10px] text-ax-dim uppercase tracking-widest font-bold mb-2">Cüzdan Adresi</div>
+                  <div className="text-[11px] text-ax-heading font-mono truncate bg-ax-surface px-2 py-1 rounded border border-ax-border">{portfolio.address}</div>
+                  <div className="text-[10px] text-ax-dim font-mono mt-2">
+                    ETH: {portfolio.ethBalance ?? '—'} <span className="mx-1 text-ax-subtle">·</span> WETH: {portfolio.wethBalance ?? '—'}
                   </div>
                 </div>
               </div>
 
               {Array.isArray(portfolio.vaultPositions) && portfolio.vaultPositions.length > 0 ? (
-                <div className="rounded-xl bg-ax-surface border border-ax-border overflow-hidden">
-                  <div className="px-3 py-2 border-b border-ax-border/50 text-[10px] text-ax-dim uppercase tracking-wider">
+                <div className="rounded-2xl bg-ax-surface border border-ax-border overflow-hidden shadow-inner">
+                  <div className="px-4 py-3 border-b border-ax-border text-[10px] text-ax-dim uppercase tracking-widest font-black bg-ax-muted">
                     Vault Pozisyonları
                   </div>
-                  <div className="divide-y divide-ax-border/30">
+                  <div className="divide-y divide-white/5">
                     {portfolio.vaultPositions.slice(0, 6).map((p, idx) => (
-                      <div key={p.vaultId || idx} className="flex items-center gap-3 px-3 py-2.5">
+                      <div key={p.vaultId || idx} className="flex items-center gap-4 px-4 py-3 hover:bg-ax-muted transition-colors">
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs font-bold text-ax-heading truncate">
+                          <div className="text-xs font-black text-ax-heading truncate mb-0.5">
                             {p.symbol || p.vaultId || 'Vault'}
                           </div>
                           <div className="text-[10px] text-ax-dim font-mono truncate">
@@ -1168,7 +1100,7 @@ export default function DefiView() {
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div className="text-xs font-black font-mono text-ax-cyan">
+                          <div className="text-sm font-black font-mono text-ax-cyan">
                             {typeof p.usdValue === 'number' ? formatUsd(p.usdValue) : '—'}
                           </div>
                         </div>
@@ -1177,7 +1109,7 @@ export default function DefiView() {
                   </div>
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-ax-surface border border-ax-border text-xs text-ax-dim">
+                <div className="p-4 rounded-2xl bg-ax-surface border border-ax-border border-dashed text-[11px] font-bold text-ax-dim uppercase tracking-widest text-center shadow-inner">
                   Aktif vault pozisyonu yok.
                 </div>
               )}
@@ -1188,13 +1120,15 @@ export default function DefiView() {
 
       {/* Stablecoin Peg Durumu */}
       {stablecoins.length > 0 && (
-        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <DollarSign size={16} className="text-ax-green" />
-            <h2 className="text-ax-heading text-sm font-bold">Stablecoin Peg</h2>
-            <span className="ml-auto text-[10px] text-ax-dim">Kaynak: {formatTime(stableTimestamp)}</span>
+        <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="p-2 rounded-xl bg-ax-green/10">
+              <DollarSign size={16} className="text-ax-green" />
+            </div>
+            <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Stablecoin Peg</h2>
+            <span className="ml-auto px-2 py-1 rounded-lg bg-ax-surface border border-ax-border text-[10px] text-ax-dim font-mono shadow-inner">Kaynak: {formatTime(stableTimestamp)}</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3 relative z-10">
             {stablecoins.map(sc => (
               <StablecoinBadge key={sc.symbol} symbol={sc.symbol} price={sc.price} />
             ))}
@@ -1204,16 +1138,18 @@ export default function DefiView() {
 
       {/* Yüksek APY Radar */}
       {highApyPools.length > 0 && (
-        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={16} className="text-ax-amber" />
-            <h2 className="text-ax-heading text-sm font-bold">Beefy Radar</h2>
-            <span className="ml-auto text-[10px] text-ax-dim">(scope: Beefy)</span>
+        <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="p-2 rounded-xl bg-ax-amber/10">
+              <TrendingUp size={16} className="text-ax-amber" />
+            </div>
+            <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Beefy Radar</h2>
+            <span className="ml-auto text-[10px] text-ax-dim font-mono bg-ax-surface px-2 py-1 rounded-lg border border-ax-border shadow-inner">(scope: Beefy)</span>
           </div>
-          <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+          <div className="mb-4 p-3 rounded-xl border border-ax-border bg-ax-surface text-[11px] text-ax-dim font-mono relative z-10 shadow-inner">
             Burasi gozlem ekranidir. Liste Beefy ile sinirli olsa da, execution karari icin guardrail ve autopilot kurallari ayrica gecer.
           </div>
-          <div>
+          <div className="relative z-10">
             {highApyPools.slice(0, 10).map((pool, i) => (
               <PoolRow key={`high-apy-${pool.poolId || pool.id || i}`} pool={pool} rank={i + 1} />
             ))}
@@ -1223,16 +1159,18 @@ export default function DefiView() {
 
       {/* En İyi Havuzlar */}
       {pools.length > 0 && (
-        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={16} className="text-ax-cyan" />
-            <h2 className="text-ax-heading text-sm font-bold">Beefy Havuzlari</h2>
-            <span className="ml-auto text-[10px] text-ax-dim">(scope icinde APY sirasi)</span>
+        <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="p-2 rounded-xl bg-ax-cyan/10">
+              <TrendingUp size={16} className="text-ax-cyan" />
+            </div>
+            <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Beefy Havuzları</h2>
+            <span className="ml-auto text-[10px] text-ax-dim font-mono bg-ax-surface px-2 py-1 rounded-lg border border-ax-border shadow-inner">(scope içinde APY sırası)</span>
           </div>
-          <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+          <div className="mb-4 p-3 rounded-xl border border-ax-border bg-ax-surface text-[11px] text-ax-dim font-mono relative z-10 shadow-inner">
             Bu liste artik genel piyasa degil, yalnizca Beefy evrenidir. Yine de "en iyi" ifadesi execution uygunlugu degil, ham APY sirasi anlamina gelir.
           </div>
-          <div>
+          <div className="relative z-10">
             {pools.slice(0, 10).map((pool, i) => (
               <PoolRow key={pool.poolId || pool.id || i} pool={pool} rank={i + 1} />
             ))}
@@ -1242,16 +1180,18 @@ export default function DefiView() {
 
       {/* Günlük Getiri Potansiyeli */}
       {potentialPools.length > 0 && (
-        <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={16} className="text-ax-green" />
-            <h2 className="text-ax-heading text-sm font-bold">Beefy Execution Universe</h2>
-            <span className="ml-auto text-[10px] text-ax-dim">($1000 bazında günlük)</span>
+        <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="p-2 rounded-xl bg-ax-green/10">
+              <TrendingUp size={16} className="text-ax-green" />
+            </div>
+            <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Beefy Execution Universe</h2>
+            <span className="ml-auto text-[10px] text-ax-green font-mono bg-ax-green/10 px-2 py-1 rounded-lg border border-ax-green/20 shadow-inner">($1000 bazında günlük)</span>
           </div>
-          <div className="mb-3 p-3 rounded-xl bg-ax-green/5 border border-ax-green/15 text-[11px] text-ax-dim">
+          <div className="mb-4 p-3 rounded-xl border border-ax-green/20 bg-ax-green/10 text-[11px] text-ax-green font-mono relative z-10 shadow-inner">
             Yoruma en yakin liste burasi. Su anki Base + Beefy zap-aday mantigina en yakin ekran bu bolumdur.
           </div>
-          <div>
+          <div className="relative z-10">
             {potentialPools.slice(0, 8).map((pool, i) => (
               <PotentialPoolRow key={`potential-${pool.poolId || pool.id || i}`} pool={pool} rank={i + 1} />
             ))}
@@ -1260,83 +1200,95 @@ export default function DefiView() {
       )}
 
       {/* Alpha Sniper Board */}
-      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <Activity size={16} className="text-ax-red" />
-          <h2 className="text-ax-heading text-sm font-bold">Alpha Sniper Board</h2>
-          <span className="ml-auto text-[10px] text-ax-dim">mode: {alphaMode}</span>
+      <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+        <div className="flex items-center gap-3 mb-5 relative z-10">
+          <div className="p-2 rounded-xl bg-ax-red/10">
+            <Activity size={16} className="text-ax-red" />
+          </div>
+          <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Alpha Sniper Board</h2>
+          <span className="ml-auto text-[10px] text-ax-red font-mono bg-ax-red/10 px-2 py-1 rounded-lg border border-ax-red/20 shadow-inner">mode: {alphaMode}</span>
         </div>
-        <div className="mb-3 p-3 rounded-xl bg-ax-red/5 border border-ax-red/15 text-[11px] text-ax-dim">
+        <div className="mb-4 p-3 rounded-xl border border-ax-red/20 bg-ax-red/5 text-[11px] text-ax-dim font-mono relative z-10 shadow-inner">
           Bu board artik varsayilan olarak sadece on-chain event ile yakalanan adaylari gosterir. Scan kaynakli mevcut havuzlar burada yeni havuz gibi sunulmaz.
         </div>
-        {alphaCandidates.length > 0 ? (
-          <div>
-            {alphaCandidates.slice(0, 10).map((candidate, i) => (
-              <AlphaCandidateRow key={candidate.candidateId || i} candidate={candidate} rank={i + 1} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-6 text-ax-dim text-xs">
-            Henuz event-backed yeni havuz adayi yok. Board bos olabilir; bu, scan verisinin gizlendigi ve sadece gercek on-chain kesiflerin beklendigi anlamina gelir.
-          </div>
-        )}
+        <div className="relative z-10">
+          {alphaCandidates.length > 0 ? (
+            <div>
+              {alphaCandidates.slice(0, 10).map((candidate, i) => (
+                <AlphaCandidateRow key={candidate.candidateId || i} candidate={candidate} rank={i + 1} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 rounded-2xl border border-ax-border bg-ax-surface border-dashed text-ax-dim text-[11px] font-mono uppercase tracking-widest">
+              Henuz event-backed yeni havuz adayi yok. Board bos olabilir; bu, scan verisinin gizlendigi ve sadece gercek on-chain kesiflerin beklendigi anlamina gelir.
+            </div>
+          )}
+        </div>
       </div>
 
       {/* On-Chain Discovery Events */}
-      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <RefreshCw size={16} className="text-ax-cyan" />
-          <h2 className="text-ax-heading text-sm font-bold">On-Chain Discovery Events</h2>
-          <span className="ml-auto text-[10px] text-ax-dim">{alphaEvents.length} event</span>
+      <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+        <div className="flex items-center gap-3 mb-5 relative z-10">
+          <div className="p-2 rounded-xl bg-ax-cyan/10">
+            <RefreshCw size={16} className="text-ax-cyan" />
+          </div>
+          <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">On-Chain Discovery Events</h2>
+          <span className="ml-auto text-[10px] text-ax-dim font-mono bg-ax-surface px-2 py-1 rounded-lg border border-ax-border shadow-inner">{alphaEvents.length} event</span>
         </div>
-        <div className="mb-3 p-3 rounded-xl bg-ax-surface border border-ax-border text-[11px] text-ax-dim">
+        <div className="mb-4 p-3 rounded-xl border border-ax-border bg-ax-surface text-[11px] text-ax-dim font-mono relative z-10 shadow-inner">
           Bu akis factory seviyesinde yeni `PoolCreated` olaylarini gosterir. Liste bossa sistem bozuk degil; o pencerede yeni havuz olayi gelmemis olabilir.
         </div>
-        {alphaEvents.length > 0 ? (
-          <div>
-            {alphaEvents.slice(0, 10).map((event, i) => (
-              <AlphaEventRow key={event.eventId || i} event={event} rank={i + 1} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-6 text-ax-dim text-xs">
-            Son polling penceresinde yeni pool creation olayi yakalanmadi.
-          </div>
-        )}
+        <div className="relative z-10">
+          {alphaEvents.length > 0 ? (
+            <div>
+              {alphaEvents.slice(0, 10).map((event, i) => (
+                <AlphaEventRow key={event.eventId || i} event={event} rank={i + 1} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 rounded-2xl border border-ax-border bg-ax-surface border-dashed text-ax-dim text-[11px] font-mono uppercase tracking-widest">
+              Son polling penceresinde yeni pool creation olayi yakalanmadi.
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Risk Alertleri */}
-      <div className="rounded-2xl bg-ax-panel border border-ax-border p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <Activity size={16} className="text-ax-amber" />
-          <h2 className="text-ax-heading text-sm font-bold">Risk Alertleri</h2>
-          <span className="ml-auto text-[10px] text-ax-dim">{alerts.length} toplam</span>
+      <div className="rounded-3xl ax-glass border border-ax-border p-6 relative overflow-hidden group">
+        <div className="flex items-center gap-3 mb-5 relative z-10">
+          <div className="p-2 rounded-xl bg-ax-amber/10">
+            <Activity size={16} className="text-ax-amber" />
+          </div>
+          <h2 className="text-ax-heading text-sm font-black uppercase tracking-widest">Risk Alertleri</h2>
+          <span className="ml-auto text-[10px] text-ax-dim font-mono bg-ax-surface px-2 py-1 rounded-lg border border-ax-border shadow-inner">{alerts.length} toplam</span>
         </div>
 
-        {recentAlerts.length > 0 ? (
-          <div className="space-y-2">
-            {recentAlerts.map((alert, i) => (
-              <div key={alert.id || i} className={`flex items-start gap-3 p-3 rounded-xl border ${levelColor(alert.level)}`}>
-                <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${levelDot(alert.level)}`} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">{alert.level}</span>
-                    <span className="text-[10px] opacity-50">{alert.type}</span>
+        <div className="relative z-10">
+          {recentAlerts.length > 0 ? (
+            <div className="space-y-3">
+              {recentAlerts.map((alert, i) => (
+                <div key={alert.id || i} className={`flex items-start gap-3 p-4 rounded-2xl border bg-ax-surface shadow-inner hover:bg-ax-muted transition-colors ${levelColor(alert.level)}`}>
+                  <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${levelDot(alert.level)}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-widest opacity-80">{alert.level}</span>
+                      <span className="text-[10px] font-mono opacity-50">{alert.type}</span>
+                    </div>
+                    <p className="text-xs leading-relaxed font-mono opacity-90">{alert.message}</p>
                   </div>
-                  <p className="text-xs leading-relaxed">{alert.message}</p>
+                  <span className="text-[10px] font-mono opacity-50 whitespace-nowrap shrink-0">
+                    {new Date(alert.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                 </div>
-                <span className="text-[9px] opacity-50 whitespace-nowrap shrink-0">
-                  {new Date(alert.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 text-ax-dim text-xs">
-            <ShieldCheck size={24} className="mx-auto mb-2 text-ax-green opacity-50" />
-            Aktif alert yok — sistem izleniyor
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 rounded-2xl border border-ax-border bg-ax-surface border-dashed text-ax-dim">
+              <ShieldCheck size={32} className="mb-3 text-ax-green" />
+              <div className="text-[11px] font-black uppercase tracking-widest font-mono">Aktif alert yok — sistem izleniyor</div>
+            </div>
+          )}
+        </div>
       </div>
 
       </>}{/* /defiTab overview */}

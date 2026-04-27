@@ -1,54 +1,61 @@
 @import "tailwindcss";
 
 @theme {
-  /* Sıcak kahverengi-siyah zeminler — Editorial Bone */
-  --color-ax-bg:       #0c0b09;
+  /* Warm Obsidian — sıcak kahverengi-siyah, toprak aksan */
+  --color-ax-bg:       #0e0d0b;
   --color-ax-surface:  #141210;
   --color-ax-panel:    #1a1714;
-  --color-ax-border:   #2a241e;
-  --color-ax-muted:    #211d18;
-  --color-ax-subtle:   #3a3228;
-  --color-ax-dim:      #8a7f70;
-  --color-ax-text:     #e8dfcf;
-  --color-ax-heading:  #f5efe4;
+  --color-ax-border:   #2c2720;
+  --color-ax-muted:    #201c17;
+  --color-ax-subtle:   #38322a;
+  --color-ax-dim:      #7a7060;
+  --color-ax-text:     #e2d8c8;
+  --color-ax-heading:  #f0e8d8;
 
-  /* İndigo accent — sıcak zeminde güçlü kontrast */
-  --color-ax-accent:   #6366f1;
-  --color-ax-accent2:  #818cf8;
+  /* Tek vurgu — muted indigo */
+  --color-ax-accent:   #6870d4;
+  --color-ax-accent2:  #9070c8;
 
-  /* Semantic — tüm hue'lar ısındırıldı */
-  --color-ax-cyan:     #5eb8c7;
-  --color-ax-green:    #a8c690;
-  --color-ax-amber:    #d4a574;
-  --color-ax-red:      #c97060;
-  --color-ax-purple:   #b48ac4;
+  /* Semantik — toprak tonları, neon yok */
+  --color-ax-cyan:     #4090a8;
+  --color-ax-green:    #5a9470;
+  --color-ax-amber:    #c09050;
+  --color-ax-red:      #b05858;
+  --color-ax-purple:   #9060b0;
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Outfit', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
-/* Light theme override — sıcak krem */
+/* Light theme — Parchment, sıcak krem */
 [data-theme="light"] {
-  --color-ax-bg:       #f5f0e8;
-  --color-ax-surface:  #ede7db;
-  --color-ax-panel:    #ffffff;
-  --color-ax-border:   #d4c9b8;
-  --color-ax-muted:    #e8e0d4;
-  --color-ax-subtle:   #b8a898;
-  --color-ax-dim:      #7a6e60;
+  --color-ax-bg:       #f7f4ef;
+  --color-ax-surface:  #f0ebe4;
+  --color-ax-panel:    #ede8e0;
+  --color-ax-border:   rgba(0, 0, 0, 0.09);
+  --color-ax-muted:    #e4ddd4;
+  --color-ax-subtle:   #c0b8ac;
+  --color-ax-dim:      #8a7e6a;
   --color-ax-text:     #2a2318;
-  --color-ax-heading:  #140f08;
-  --color-ax-accent:   #4f46e5;
-  --color-ax-accent2:  #6366f1;
-  --color-ax-cyan:     #2e7d8a;
-  --color-ax-green:    #5a7a44;
-  --color-ax-amber:    #a06830;
-  --color-ax-red:      #9c4030;
-  --color-ax-purple:   #7a4f90;
+  --color-ax-heading:  #160f08;
+  --color-ax-accent:   #4a52b0;
+  --color-ax-accent2:  #7050a8;
+  --color-ax-cyan:     #2878a0;
+  --color-ax-green:    #4a7a58;
+  --color-ax-amber:    #a07030;
+  --color-ax-red:      #903030;
+  --color-ax-purple:   #7040a0;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1;
 }
 
 html, body, #root {
@@ -56,13 +63,31 @@ html, body, #root {
   margin: 0;
   padding: 0;
   background: var(--color-ax-bg);
+  background-image:
+    radial-gradient(ellipse at 20% 60%, rgba(104, 112, 212, 0.04), transparent 45%),
+    radial-gradient(ellipse at 80% 10%, rgba(144, 112, 200, 0.03), transparent 45%);
   color: var(--color-ax-text);
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  transition: background 0.3s, color 0.3s;
+  font-family: var(--font-sans);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Solid panel — glassmorphism kaldırıldı */
+.ax-glass {
+  background: var(--color-ax-panel);
+  border: 1px solid var(--color-ax-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtle accent dot */
+.ax-glow {
+  box-shadow: 0 0 6px rgba(104, 112, 212, 0.25);
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--color-ax-surface); }
-::-webkit-scrollbar-thumb { background: var(--color-ax-muted); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-ax-subtle); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-ax-subtle);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-ax-dim); }

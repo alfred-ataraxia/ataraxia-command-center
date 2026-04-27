@@ -18,7 +18,7 @@
 | # | Görev | Puan | Durum | Atanan | Notlar |
 |---|-------|------|-------|--------|--------|
 | S6-01 | Autopilot dashboard paneli — durum, config, aksiyon geçmişi | 5 | ✅ Done | Claude | Ayrı sekme, config grid + toggle, vault durumu, aksiyon geçmişi, onay butonu |
-| S6-02 | Sistem geneli backlog oturumu — Alfred/MAIT/HA/Homepage | 3 | ⏳ Bekliyor | Sefa+Claude | Hafızaya kaydedildi; DeFi Faz 2 sonrası yapılacak |
+| S6-02 | Sistem geneli backlog oturumu — Alfred/MAIT/HA/Homepage | 3 | ✅ Done | Sefa+Claude | 2026-04-27 tamamlandı (B-058→B-067; 6 anlık düzeltme) |
 
 **Toplam:** 8p · **Kapasite:** ~20p
 

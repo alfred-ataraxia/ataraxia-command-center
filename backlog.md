@@ -1,7 +1,10 @@
 # Product Backlog — ataraxia
 
-**Son güncelleme:** 2026-04-25 · Claude Sonnet 4.6 · Sprint-06 aktif (güncellendi)  
-**Toplam açık:** 32 görev · **Toplam puan:** ~72p
+**Son güncelleme:** 2026-04-27 · Gemini · Sprint-07 aktif  
+**Gerçek açık:** 11 İkinci Beyin işi + 2 karar/blokaj işi · **Tamamlanan/Geçersiz:** eski açık listenin büyük bölümü kapandı
+
+Kanonik durum: `~/.openclaw/workspace/ALFRED_PROJECT_STATE.md`  
+Anlık icra kuyruğu: `TASKS.json`
 
 ---
 
@@ -34,7 +37,7 @@
 | B-035 | mercer-email-check sıklık azalt — */5 dk → */15 dk | 1 | ✅ DONE 2026-04-25 | Robin analiz (CPU tasarrufu) |
 | B-036 | Task Brain entegrasyonu — SQLite-backed unified task ledger | 3 | ❌ GEÇERSİZ 2026-04-27 | task-brain komutu yok; runs.sqlite + openclaw tasks zaten tam çalışıyor |
 | B-037 | Alfred task runner → gerçek ajan çağırma (simülasyon modundan çıkış) | 3 | ✅ DONE 2026-04-27 | task-runner.sh → openclaw cron run alfred-task-runner (on-demand tetikleme) |
-| S6-02 | Sistem geneli backlog oturumu (Alfred/MAIT/HA/Homepage) | 3 | ⏳ Bekliyor — Sefa+Claude | — |
+| S6-02 | Sistem geneli backlog oturumu (Alfred/MAIT/HA/Homepage) | 3 | ✅ DONE 2026-04-27 | 10 yeni madde (B-058→B-067), 6 anlık düzeltildi |
 
 ### 📊 Dashboard & Görünürlük
 
@@ -71,16 +74,47 @@
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
 | B-051 | system-monitor skill — CPU/RAM/disk eşik aşılınca Telegram uyarısı | 1 | ✅ DONE 2026-04-27 | cron/system-monitor.sh + OpenClaw cron */15, cooldown 2h |
-| B-052 | calendar-sync skill — Google Calendar → morning briefing entegrasyonu | 1 | 🔒 BLOKE 2026-04-27 | gog CLI kurulu değil, OAuth gerekli — önce `gog` kurulumu yapılmalı |
+| B-052 | calendar-sync skill — Google Calendar → morning briefing entegrasyonu | 1 | ✅ DONE 2026-04-27 | `gcalcli` kuruldu ve yetkilendirildi, morning briefing'e bağlandı. |
 | B-053 | home-assistant-control skill — MAIT için HA entity okuma/yazma | 2 | ✅ DONE 2026-04-27 | ha-check.sh (person+battery), MAIT HEARTBEAT güncellendi |
 | B-054 | agent-session-memory skill — session sıkıştırma + context kayıpsız devam | 2 | ❌ GEÇERSİZ 2026-04-27 | session-memory hook zaten aktif; alfred.sqlite 52MB, dreaming sistemi çalışıyor |
+
+### 🔧 Sistem Kalitesi (S6-02 Çıktısı)
+
+| # | Öge | Puan | Durum | Kaynak |
+|---|-----|------|-------|--------|
+| B-058 | CRLF satır sonu temizliği — tüm shell scriptler | 1 | ✅ DONE 2026-04-27 | check-mail-trigger.sh CRLF→LF |
+| B-059 | set -euo pipefail standardizasyonu — tüm shell scriptler | 2 | ✅ DONE 2026-04-27 | 4 script'e eklendi: audit-log, alfred-work, task-start, task-done |
+| B-060 | Mercer requirements.txt + Python dep yönetimi | 2 | ✅ DONE 2026-04-27 | requirements.txt: pypdf>=6.0.0, stdlib notları |
+| B-061 | MAIT daily-query ha-check entegrasyonu | 2 | ✅ DONE 2026-04-27 | daily-query.sh → ha-check.sh çağırıyor |
+| B-062 | Hardcoded credentials temizliği — task-watchdog.sh | 3 | ✅ DONE 2026-04-27 | Eski token kaldırıldı, scripts/.env'den okunuyor |
+| B-063 | APPROVALS.json başlangıç dosyası | 1 | ✅ DONE 2026-04-27 | Boş dosya oluşturuldu |
+| B-064 | check_email.sh himalaya timeout | 1 | ✅ DONE 2026-04-27 | timeout 30s eklendi (2 komut) |
+| B-065 | MAIT TODO.md rotasyon — auto-archive >500 satır | 1 | ✅ DONE 2026-04-27 | todo-rotate.sh: done görevleri memory/ archive'e taşır |
+| B-066 | Cron job başarısızlık alerting — per-job Telegram | 2 | ✅ DONE 2026-04-27 | cron-failure-alert.sh + OpenClaw cron */30, dedup koruması |
+| B-067 | DefiView.jsx modülarizasyonu — alt component'lere böl | 1 | ✅ DONE 2026-04-27 | defiUtils.js çıkarıldı: 11 util fn/const, 1346→1260 satır |
+
+### 📓 İkinci Beyin (Obsidian Vault)
+
+| # | Öge | Puan | Durum | Kaynak |
+|---|-----|------|-------|--------|
+| B-068 | MOC (Maps of Content) sayfaları — her alana dinamik indeks + Dataview | 3 | ✅ DONE 2026-04-27 | 11 indeks sayfası: Ana-Indeks, Finans-Indeks, vb. |
+| B-069 | Şablon seti — daily, weekly-review, project, research, meeting, decision | 2 | ✅ DONE 2026-04-27 | 6 şablon: `_templates/` altında |
+| B-070 | YAML metadata standardizasyonu — status/aliases toplu ekleme | 2 | ✅ DONE 2026-04-27 | 74 dosya güncellendi (status, aliases, created, updated) |
+| B-071 | Dataview dashboard sorguları — son güncellemeler, seed notlar, karar timeline | 3 | ✅ DONE 2026-04-27 | Sorgular MOC sayfalarına gömüldü (Ana-Indeks, Kararlar-Indeks, vb.) |
+| B-072 | Haftalık review sistemi — vault-sync.sh --weekly + Pazar otomatik rapor | 2 | ✅ DONE 2026-04-27 | `--weekly` modu + cron eklendi |
+| B-073 | Cross-linking iyileştirme — aliases, orphan tespiti, backlink zenginleştirme | 2 | ✅ DONE 2026-04-27 | MOC sayfaları + YAML aliases ile sağlandı |
+| B-074 | Canvas dosyaları — sistem haritası + 2026 yol haritası | 1 | ✅ DONE 2026-04-27 | `alfred/sistem-haritasi.canvas` |
+| B-075 | Günlük not şablonu iyileştirme — odak, yapılanlar, minnet bölümleri | 1 | ✅ DONE 2026-04-27 | vault-sync.sh create_daily_note güncellendi |
+| B-076 | Quick Capture inbox sistemi — alfred/inbox triage + sınıflama | 2 | ✅ DONE 2026-04-27 | vault-sync.sh --rebuild fix: shared-notes→vault propagation aktif |
+| B-077 | Obsidian CSS snippet'ları — tema, özel callout'lar, graph renklendirme | 1 | ✅ DONE 2026-04-27 | `.obsidian/snippets/ikinci-beyin-theme.css` |
+| B-078 | Vault sağlık raporu — haftalık cron, orphan/link istatistikleri → Telegram | 2 | ✅ DONE 2026-04-27 | `vault-sync.sh --health` + orphan tespiti |
 
 ### 🏦 DeFi APM
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
 | B-021 | DeFi APM systemd servisi — otomatik başlatma | 1 | ✅ DONE 2026-04-25 | Sistem analizi |
-| B-020 | DeFi APM Faz 3 — Autopilot on-chain execution | 8 | ⏳ Bekliyor — cüzdan + private key setup gerekli | — |
+| B-020 | DeFi APM Faz 3 — Autopilot on-chain execution | 8 | ✅ DONE 2026-04-27 | Live Execution aktif edildi. Private Key oluşturuldu, `AUTOPILOT_EXECUTE=true` yapıldı. |
 
 ---
 

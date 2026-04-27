@@ -272,7 +272,7 @@ export default function TaskDetailModal({ task, onClose, onUpdated }) {
               İlerleme Notları ({notes.length})
             </h3>
             {notes.length === 0 ? (
-              <p className="text-ax-subtle text-xs italic">Henüz not eklenmemiş.</p>
+              <p className="text-ax-subtle text-xs">Henüz not eklenmemiş.</p>
             ) : (
               <div className="space-y-2">
                 {notes.map(note => (
