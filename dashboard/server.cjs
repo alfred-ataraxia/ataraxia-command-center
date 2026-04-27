@@ -2325,15 +2325,17 @@ function handleRequest(req, res) {
           const reqAck = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(ackData) } }, (resAck) => { resAck.on('data', ()=>{}); });
           reqAck.on('error', () => {}); reqAck.write(ackData); reqAck.end();
 
+          console.error('[ALFRED-DEBUG] ACK sent, about to call execFile');
+
           const { execFile } = require('child_process');
           
-          // execFile: shell quoting sorunu yok, argümanlar doğrudan process'e geçiyor
           const ocArgs = ['-p', text, '--non-interactive', '--accept-risk'];
           const debugLogPath = path.join(__dirname, 'logs', 'openclaw-debug.log');
 
-          logger.info('OpenClaw execFile starting', { args: ocArgs.join(' ').slice(0, 200) });
+          console.error('[ALFRED-DEBUG] Calling execFile /usr/bin/openclaw with args:', ocArgs.join(' ').slice(0, 100));
 
           execFile('/usr/bin/openclaw', ocArgs, { timeout: 180000, env: { ...process.env, HOME: '/home/sefa' } }, (error, stdout, stderr) => {
+            console.error('[ALFRED-DEBUG] execFile callback fired. error:', error ? error.message : 'none', 'stdout-len:', (stdout||'').length, 'stderr-len:', (stderr||'').length);
             try {
               fs.appendFileSync(debugLogPath, `\n--- ${new Date().toISOString()} ---\nERROR: ${error ? error.message : 'none'}\nEXIT: ${error ? error.code : 0}\nSTDOUT: ${(stdout || '').slice(0, 2000)}\nSTDERR: ${(stderr || '').slice(0, 1000)}\n---\n`);
             } catch (_) {}
