@@ -2318,10 +2318,18 @@ function handleRequest(req, res) {
         // Dashboard'dan gelen mesajı asenkron olarak OpenClaw'a ilet ve cevabı Telegram'a gönder.
         try {
           const ctx = (text.split('\n')[0] || '').replace(/\r?\n/g, ' ').slice(0, 140)
+          
+          // Anında "İşleniyor" mesajı gönder
+          const ackMsg = `🤖 Alfred (sistem) — "${ctx}"\n\n⏳ Mesajın alındı, OpenClaw tarafından işleniyor...`;
+          const ackData = JSON.stringify({ chat_id: chatId, text: ackMsg, disable_web_page_preview: true });
+          const reqAck = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(ackData) } }, (resAck) => { resAck.on('data', ()=>{}); });
+          reqAck.on('error', () => {}); reqAck.write(ackData); reqAck.end();
+
           const { exec } = require('child_process');
           
-          // OpenClaw'ı asenkron olarak çalıştır (dashboard yanıtını bloklamamak için)
-          exec(`openclaw -p ${JSON.stringify(text)} --non-interactive --accept-risk`, { timeout: 180000 }, (error, stdout, stderr) => {
+          // OpenClaw'ı asenkron olarak çalıştır (profile load için bash -lc kullanıyoruz)
+          // Timeout 3 dakika.
+          exec(`/bin/bash -lc "openclaw -p ${JSON.stringify(text).replace(/\$/g, '\\$')} --non-interactive --accept-risk"`, { timeout: 180000 }, (error, stdout, stderr) => {
             let reply = (stdout || '') + '\n' + (stderr || '');
             if (!reply.trim()) {
               reply = error ? `❌ OpenClaw hatası: ${error.message}` : "⚠️ OpenClaw boş yanıt döndürdü.";
