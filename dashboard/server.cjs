@@ -2325,20 +2325,23 @@ function handleRequest(req, res) {
           const reqAck = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(ackData) } }, (resAck) => { resAck.on('data', ()=>{}); });
           reqAck.on('error', () => {}); reqAck.write(ackData); reqAck.end();
 
-          const { exec } = require('child_process');
+          const { execFile } = require('child_process');
           
-          // OpenClaw'ı asenkron olarak çalıştır (profile load için bash -ic kullanıyoruz)
-          // Timeout 3 dakika.
-          const cmdToRun = `/bin/bash -ic "openclaw -p ${JSON.stringify(text).replace(/\$/g, '\\$')} --non-interactive --accept-risk < /dev/null"`;
-          exec(cmdToRun, { timeout: 180000 }, (error, stdout, stderr) => {
-            const debugLogPath = path.join(__dirname, 'logs', 'openclaw-debug.log');
-            fs.appendFileSync(debugLogPath, `\n\n--- RUN AT ${new Date().toISOString()} ---\nCMD: ${cmdToRun}\nERROR: ${error ? error.message : 'none'}\nSTDOUT: ${stdout}\nSTDERR: ${stderr}\n----------------\n`);
-            
+          // execFile: shell quoting sorunu yok, argümanlar doğrudan process'e geçiyor
+          const ocArgs = ['-p', text, '--non-interactive', '--accept-risk'];
+          const debugLogPath = path.join(__dirname, 'logs', 'openclaw-debug.log');
+
+          logger.info('OpenClaw execFile starting', { args: ocArgs.join(' ').slice(0, 200) });
+
+          execFile('/usr/bin/openclaw', ocArgs, { timeout: 180000, env: { ...process.env, HOME: '/home/sefa' } }, (error, stdout, stderr) => {
+            try {
+              fs.appendFileSync(debugLogPath, `\n--- ${new Date().toISOString()} ---\nERROR: ${error ? error.message : 'none'}\nEXIT: ${error ? error.code : 0}\nSTDOUT: ${(stdout || '').slice(0, 2000)}\nSTDERR: ${(stderr || '').slice(0, 1000)}\n---\n`);
+            } catch (_) {}
+
             let reply = (stdout || '') + '\n' + (stderr || '');
             if (!reply.trim()) {
               reply = error ? `❌ OpenClaw hatası: ${error.message}` : "⚠️ OpenClaw boş yanıt döndürdü.";
             } else {
-              // ANSI escape kodlarını temizle
               reply = reply.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '');
             }
             reply = reply.trim().slice(0, 3500);
@@ -2360,7 +2363,7 @@ function handleRequest(req, res) {
                 }
               });
             });
-            treq2.setTimeout(2500, () => treq2.destroy(new Error('telegram timeout')));
+            treq2.setTimeout(5000, () => treq2.destroy(new Error('telegram timeout')));
             treq2.on('error', (err) => logger.warn('Telegram send error (OpenClaw reply)', { error: err.message }));
             treq2.write(data2);
             treq2.end();
