@@ -1,6 +1,74 @@
 {
   "tasks": [
     {
+      "id": "T-057",
+      "title": "B-052: calendar-sync skill — Google Calendar → morning briefing entegrasyonu",
+      "description": "Prereq: gog CLI kurulumu + OAuth (Google Calendar). Network/OAuth adımlarında Master Sefa onayı gerekecek.",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Codex",
+      "tags": [
+        "skill",
+        "calendar",
+        "blocked"
+      ],
+      "due": "",
+      "created_at": "2026-04-27T10:58:09+03:00",
+      "notes": [
+        "Kanonik backlog: ~/alfred-hub/command-center/backlog.md B-052",
+        "Blokaj: gog yok + OAuth gerekiyor.",
+        "Morning briefing’e takvim bloğu eklendi; gog+OAuth kurulunca otomatik dolacak."
+      ],
+      "started_at": "2026-04-27T11:14:03.647844+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-27T11:14:03.647844+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-27T11:15:59.605568+03:00"
+        }
+      ],
+      "completed_at": "2026-04-27T11:15:59.605568+03:00"
+    },
+    {
+      "id": "T-058",
+      "title": "B-020: DeFi APM Faz 3 — Autopilot on-chain execution hazırlığı",
+      "description": "Cüzdan + private key setup gerektiriyor (secrets). Codex yalnızca anahtar gerektirmeyen hazırlık işlerini yapabilir; key/seed operasyonu Master Sefa onayıyla ilerlemeli.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Codex",
+      "tags": [
+        "defi-apm",
+        "autopilot",
+        "requires_approval"
+      ],
+      "due": "",
+      "created_at": "2026-04-27T10:58:09+03:00",
+      "notes": [
+        "Kanonik backlog: ~/alfred-hub/command-center/backlog.md B-020",
+        "Ön koşul: cüzdan/anahtar kurulumu (secret paylaşımı yok).",
+        "Tamamlandı"
+      ],
+      "started_at": "2026-04-27T11:07:33.796836+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-27T11:07:33.796836+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-27T11:12:32.938843+03:00"
+        }
+      ],
+      "completed_at": "2026-04-27T11:12:32.938843+03:00"
+    },
+    {
       "id": "T-018",
       "title": "Google Cloud Free Tier kurulumu",
       "status": "deleted",
@@ -1445,6 +1513,18 @@
       "created": "2026-04-19T05:23:13.307Z",
       "archived_at": "2026-04-19",
       "archive_reason": "Alert backlog — 45 birikmiş kayıt, gözden geçirilmedi, DeFi APM aktif izliyor"
+    },
+    {
+      "id": "T-059",
+      "title": "Rapor",
+      "description": "Bana hafıza sistemini çalışma sistemini analiz edip raporla. ve nasıl verimli hale getirebiliriz öneride bulun",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Alfred",
+      "tags": [],
+      "due": "",
+      "created_at": "2026-04-27T09:13:21.569Z"
     }
-  ]
+  ],
+  "updated_at": "2026-04-27T09:13:21.569Z"
 }
