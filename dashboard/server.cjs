@@ -2327,9 +2327,13 @@ function handleRequest(req, res) {
 
           const { exec } = require('child_process');
           
-          // OpenClaw'ı asenkron olarak çalıştır (profile load için bash -lc kullanıyoruz)
+          // OpenClaw'ı asenkron olarak çalıştır (profile load için bash -ic kullanıyoruz)
           // Timeout 3 dakika.
-          exec(`/bin/bash -lc "openclaw -p ${JSON.stringify(text).replace(/\$/g, '\\$')} --non-interactive --accept-risk"`, { timeout: 180000 }, (error, stdout, stderr) => {
+          const cmdToRun = `/bin/bash -ic "openclaw -p ${JSON.stringify(text).replace(/\$/g, '\\$')} --non-interactive --accept-risk < /dev/null"`;
+          exec(cmdToRun, { timeout: 180000 }, (error, stdout, stderr) => {
+            const debugLogPath = path.join(__dirname, 'logs', 'openclaw-debug.log');
+            fs.appendFileSync(debugLogPath, `\n\n--- RUN AT ${new Date().toISOString()} ---\nCMD: ${cmdToRun}\nERROR: ${error ? error.message : 'none'}\nSTDOUT: ${stdout}\nSTDERR: ${stderr}\n----------------\n`);
+            
             let reply = (stdout || '') + '\n' + (stderr || '');
             if (!reply.trim()) {
               reply = error ? `❌ OpenClaw hatası: ${error.message}` : "⚠️ OpenClaw boş yanıt döndürdü.";
