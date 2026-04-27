@@ -2315,31 +2315,46 @@ function handleRequest(req, res) {
         treq.write(data)
         treq.end()
 
-        // Provide a simple static fallback response since the local gateway is not running.
+        // Dashboard'dan gelen mesajı asenkron olarak OpenClaw'a ilet ve cevabı Telegram'a gönder.
         try {
           const ctx = (text.split('\n')[0] || '').replace(/\r?\n/g, ' ').slice(0, 140)
-          const msg2 = `🤖 Alfred (sistem) — "${ctx}"\n\n✅ Notlar eklendi (Hızlı Notlar & Shared Notes). Görevler listesine eklendi veya hafızaya alındı.`
-          const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
-          const treq2 = https.request(tgUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(data2)
+          const { exec } = require('child_process');
+          
+          // OpenClaw'ı asenkron olarak çalıştır (dashboard yanıtını bloklamamak için)
+          exec(`openclaw -p ${JSON.stringify(text)} --non-interactive --accept-risk`, { timeout: 180000 }, (error, stdout, stderr) => {
+            let reply = (stdout || '') + '\n' + (stderr || '');
+            if (!reply.trim()) {
+              reply = error ? `❌ OpenClaw hatası: ${error.message}` : "⚠️ OpenClaw boş yanıt döndürdü.";
+            } else {
+              // ANSI escape kodlarını temizle
+              reply = reply.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '');
             }
-          }, (tres2) => {
-            tres2.on('data', () => {})
-            tres2.on('end', () => {
-              if (tres2.statusCode !== 200) {
-                logger.warn('Telegram API error (static reply)', { statusCode: tres2.statusCode })
+            reply = reply.trim().slice(0, 3500);
+
+            const msg2 = `🤖 Alfred (cevap) — "${ctx}"\n\n${reply}`;
+            const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true });
+            
+            const treq2 = https.request(tgUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(data2)
               }
-            })
-          })
-          treq2.setTimeout(2500, () => treq2.destroy(new Error('telegram timeout')))
-          treq2.on('error', (err) => logger.warn('Telegram send error (static reply)', { error: err.message }))
-          treq2.write(data2)
-          treq2.end()
+            }, (tres2) => {
+              tres2.on('data', () => {});
+              tres2.on('end', () => {
+                if (tres2.statusCode !== 200) {
+                  logger.warn('Telegram API error (OpenClaw reply)', { statusCode: tres2.statusCode });
+                }
+              });
+            });
+            treq2.setTimeout(2500, () => treq2.destroy(new Error('telegram timeout')));
+            treq2.on('error', (err) => logger.warn('Telegram send error (OpenClaw reply)', { error: err.message }));
+            treq2.write(data2);
+            treq2.end();
+          });
         } catch (e) {
-          logger.warn('Telegram static reply error', { error: e.message })
+          logger.warn('OpenClaw execution setup error', { error: e.message });
         }
       } catch (jsonErr) {
         sendError(res, 400, 'GeÃ§ersiz JSON formatÄ±', { details: jsonErr.message })

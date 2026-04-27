@@ -114,30 +114,50 @@ def send_message(chat_id, text, parse_mode="Markdown"):
         log_msg(f"SEND ERROR: {e}")
         return False
 
+def call_claude(chat_id, prompt):
+    """OpenClaw (MiniMax) CLI komutunu doğrudan çalıştırır"""
+    if chat_id not in CONVERSATIONS:
+        CONVERSATIONS[chat_id] = []
+    CONVERSATIONS[chat_id].append({"role": "user", "content": prompt})
+
+    try:
+        # OpenClaw kullanımı (Tamamen etkileşimsiz mod)
+        # --accept-risk: Onay bekleyen aşamaları otomatik geçer
+        result = subprocess.run(
+            ["openclaw", "-p", prompt, "--non-interactive", "--accept-risk"],
+            capture_output=True, text=True, timeout=180
+        )
+        stdout = result.stdout or ""
+        stderr = result.stderr or ""
+        response = stdout + "\n" + stderr
+        
+        if not response.strip():
+            response = "⚠️ OpenClaw boş yanıt döndürdü. Yapılandırmayı kontrol edin."
+        
+        # ANSI temizliği
+        import re
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        response = ansi_escape.sub('', response)
+        
+        return response[:4000]
+    except subprocess.TimeoutExpired:
+        return "⏱️ İşlem zaman aşımına uğradı (120 sn)."
+    except Exception as e:
+        log_msg(f"OPENCLAW ERROR: {e}")
+        return f"❌ OpenClaw hatası: {e}"
 
 def handle_message(chat_id, text):
-    """Handle messages by writing to shared memory and replying OK"""
+    """Handle messages"""
     text = text.strip()
     log_msg(f"MSG: {text[:100]}")
 
     if text.startswith("/"):
         handle_command(chat_id, text)
     else:
-        # Write to canonical memory
-        try:
-            shared_notes = os.path.expanduser("~/.openclaw/workspace/memory/inbox/shared-notes.md")
-            now_iso = datetime.now().isoformat()
-            first_line = text.split('\n')[0][:100]
-            entry = f"\n## {now_iso} | Master Sefa\n- Alan: tg-chat\n- Not: {text}\n"
-            with open(shared_notes, "a", encoding="utf-8") as f:
-                f.write(entry)
-            
-            # Send OK reply
-            summary = text[:30] + "..." if len(text) > 30 else text
-            send_message(chat_id, f"✅ **Not Kaydedildi:**\n_{summary}_", parse_mode="Markdown")
-        except Exception as e:
-            log_msg(f"WRITE ERROR: {e}")
-            send_message(chat_id, f"❌ Hata: Hafızaya yazılamadı ({e})")
+        send_message(chat_id, "⏳ İşleniyor...")
+        response = call_claude(chat_id, text)
+        send_message(chat_id, response, parse_mode="Markdown")
+        log_msg(f"CLAUDE RESPONSE: {response[:50]}...")
 
 def handle_command(chat_id, text):
     """Handle slash commands"""
@@ -181,7 +201,8 @@ def handle_command(chat_id, text):
             send_message(chat_id, "❌ Durdurma komutu gönderilemedi.")
 
     elif cmd == "/status":
-        send_message(chat_id, "Sistem durumu izleme komutu devredışı bırakıldı (Alfred cron loop'u üzerinden çalışıyor).")
+        response = call_claude(chat_id, "Sistem durumu: RAM, disk, Docker container sayısı. Kısa, bullet format.")
+        send_message(chat_id, response)
 
     elif cmd == "/sprint":
         try:
