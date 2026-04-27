@@ -2315,80 +2315,31 @@ function handleRequest(req, res) {
         treq.write(data)
         treq.end()
 
-        // Best-effort: generate a short Alfred reply via local OpenClaw gateway and send to Telegram.
+        // Provide a simple static fallback response since the local gateway is not running.
         try {
-          const gatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN
-          if (gatewayToken) {
-            const ctx = (text.split('\n')[0] || '').replace(/\r?\n/g, ' ').slice(0, 140)
-            const sys = [
-              "Sen Alfred'sin. Kisa ve operasyonel yaz.",
-              "1) Mesaji anla/ack (1 cumle).",
-              "2) Gerekliyse 1 next-step oner.",
-              "3) Kayit alindigini soyle.",
-              "Cevap 6 satiri gecmesin."
-            ].join('\n')
-
-            const payload2 = JSON.stringify({
-              model: 'openai-codex/gpt-5.4-mini',
-              temperature: 0.2,
-              messages: [
-                { role: 'system', content: sys },
-                { role: 'user', content: text + `\n\n(Bu mesaj kaydedildi: shared-notes + Obsidian hizli-notlar. Konu: ${topic}.)` },
-              ],
+          const ctx = (text.split('\n')[0] || '').replace(/\r?\n/g, ' ').slice(0, 140)
+          const msg2 = `🤖 Alfred (sistem) — "${ctx}"\n\n✅ Notlar eklendi (Hızlı Notlar & Shared Notes). Görevler listesine eklendi veya hafızaya alındı.`
+          const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
+          const treq2 = https.request(tgUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Content-Length': Buffer.byteLength(data2)
+            }
+          }, (tres2) => {
+            tres2.on('data', () => {})
+            tres2.on('end', () => {
+              if (tres2.statusCode !== 200) {
+                logger.warn('Telegram API error (static reply)', { statusCode: tres2.statusCode })
+              }
             })
-
-            const req2 = http.request({
-              hostname: '127.0.0.1',
-              port: 18789,
-              path: '/v1/chat/completions',
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${gatewayToken}`,
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(payload2),
-              },
-            }, (res2) => {
-              let raw = ''
-              res2.on('data', (c) => { raw += c })
-              res2.on('end', () => {
-                try {
-                  const j = JSON.parse(raw || '{}')
-                  const out = j?.choices?.[0]?.message?.content
-                  if (!out || typeof out !== 'string') return
-                  const reply = out.trim().slice(0, 3500)
-
-                  const msg2 = `Alfred (cevap) — \"${ctx}\"\n\n${reply}`
-                  const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
-                  const treq2 = https.request(tgUrl, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Content-Length': Buffer.byteLength(data2)
-                    }
-                  }, (tres2) => {
-                    tres2.on('data', () => {})
-                    tres2.on('end', () => {
-                      if (tres2.statusCode !== 200) {
-                        logger.warn('Telegram API error (reply)', { statusCode: tres2.statusCode })
-                      }
-                    })
-                  })
-                  treq2.setTimeout(2500, () => treq2.destroy(new Error('telegram timeout')))
-                  treq2.on('error', (err) => logger.warn('Telegram send error (reply)', { error: err.message }))
-                  treq2.write(data2)
-                  treq2.end()
-                } catch (e) {
-                  // ignore
-                }
-              })
-            })
-            req2.setTimeout(5500, () => req2.destroy(new Error('gateway timeout')))
-            req2.on('error', () => {})
-            req2.write(payload2)
-            req2.end()
-          }
+          })
+          treq2.setTimeout(2500, () => treq2.destroy(new Error('telegram timeout')))
+          treq2.on('error', (err) => logger.warn('Telegram send error (static reply)', { error: err.message }))
+          treq2.write(data2)
+          treq2.end()
         } catch (e) {
-          // ignore
+          logger.warn('Telegram static reply error', { error: e.message })
         }
       } catch (jsonErr) {
         sendError(res, 400, 'GeÃ§ersiz JSON formatÄ±', { details: jsonErr.message })

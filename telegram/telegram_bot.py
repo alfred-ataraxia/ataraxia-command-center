@@ -147,17 +147,28 @@ def call_claude(chat_id, prompt):
         return f"❌ OpenClaw hatası: {e}"
 
 def handle_message(chat_id, text):
-    """Handle messages"""
+    """Handle messages by writing to shared memory and replying OK"""
     text = text.strip()
     log_msg(f"MSG: {text[:100]}")
 
     if text.startswith("/"):
         handle_command(chat_id, text)
     else:
-        send_message(chat_id, "⏳ İşleniyor...")
-        response = call_claude(chat_id, text)
-        send_message(chat_id, response, parse_mode="Markdown")
-        log_msg(f"CLAUDE RESPONSE: {response[:50]}...")
+        # Write to canonical memory
+        try:
+            shared_notes = os.path.expanduser("~/.openclaw/workspace/memory/inbox/shared-notes.md")
+            now_iso = datetime.now().isoformat()
+            first_line = text.split('\n')[0][:100]
+            entry = f"\n## {now_iso} | Master Sefa\n- Alan: tg-chat\n- Not: {text}\n"
+            with open(shared_notes, "a", encoding="utf-8") as f:
+                f.write(entry)
+            
+            # Send OK reply
+            summary = text[:30] + "..." if len(text) > 30 else text
+            send_message(chat_id, f"✅ **Not Kaydedildi:**\n_{summary}_", parse_mode="Markdown")
+        except Exception as e:
+            log_msg(f"WRITE ERROR: {e}")
+            send_message(chat_id, f"❌ Hata: Hafızaya yazılamadı ({e})")
 
 def handle_command(chat_id, text):
     """Handle slash commands"""
