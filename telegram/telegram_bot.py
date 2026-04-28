@@ -114,37 +114,69 @@ def send_message(chat_id, text, parse_mode="Markdown"):
         log_msg(f"SEND ERROR: {e}")
         return False
 
+def load_minimax_config():
+    """MINIMAX_API_KEY env değişkenini ve sabit endpoint'i döndürür."""
+    api_key = os.environ.get('MINIMAX_API_KEY', '')
+    if not api_key:
+        # ~/.openclaw/.env'den oku (servis ortamında env yüklenmemiş olabilir)
+        try:
+            env_path = os.path.expanduser('~/.openclaw/.env')
+            with open(env_path) as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith('MINIMAX_API_KEY='):
+                        api_key = line.split('=', 1)[1]
+                        break
+        except Exception:
+            pass
+    return api_key, 'https://api.minimax.io/anthropic', 'MiniMax-M2.7'
+
 def call_claude(chat_id, prompt):
-    """OpenClaw (MiniMax) CLI komutunu doğrudan çalıştırır"""
+    """MiniMax API (Anthropic-compat) üzerinden Alfred'e sorar."""
     if chat_id not in CONVERSATIONS:
         CONVERSATIONS[chat_id] = []
     CONVERSATIONS[chat_id].append({"role": "user", "content": prompt})
 
+    api_key, base_url, model_id = load_minimax_config()
+    if not api_key:
+        return "❌ MiniMax API key bulunamadı. openclaw agents/alfred/agent/models.json kontrol edin."
+
+    system_prompt = "Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş."
+
+    # Son MAX_HISTORY kadar konuşmayı gönder
+    messages = CONVERSATIONS[chat_id][-(MAX_HISTORY * 2):]
+
     try:
-        # OpenClaw kullanımı (Tamamen etkileşimsiz mod)
-        # --accept-risk: Onay bekleyen aşamaları otomatik geçer
-        result = subprocess.run(
-            ["openclaw", "-p", prompt, "--non-interactive", "--accept-risk"],
-            capture_output=True, text=True, timeout=180
-        )
-        stdout = result.stdout or ""
-        stderr = result.stderr or ""
-        response = stdout + "\n" + stderr
-        
-        if not response.strip():
-            response = "⚠️ OpenClaw boş yanıt döndürdü. Yapılandırmayı kontrol edin."
-        
-        # ANSI temizliği
-        import re
-        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-        response = ansi_escape.sub('', response)
-        
-        return response[:4000]
-    except subprocess.TimeoutExpired:
-        return "⏱️ İşlem zaman aşımına uğradı (120 sn)."
+        url = base_url.rstrip('/') + '/v1/messages'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}',
+            'anthropic-version': '2023-06-01',
+        }
+        payload = {
+            'model': model_id,
+            'max_tokens': 1024,
+            'system': system_prompt,
+            'messages': messages,
+        }
+        resp = requests.post(url, headers=headers, json=payload, timeout=30)
+        if not resp.ok:
+            log_msg(f"MiniMax API hata {resp.status_code}: {resp.text[:200]}")
+            return f"❌ Alfred yanıt veremedi (HTTP {resp.status_code})."
+
+        data = resp.json()
+        text_block = next((b for b in data.get('content', []) if b.get('type') == 'text'), None)
+        reply = (text_block or {}).get('text', '') or data.get('error', {}).get('message', '')
+        if not reply.strip():
+            return "⚠️ Alfred boş yanıt döndürdü."
+
+        CONVERSATIONS[chat_id].append({"role": "assistant", "content": reply})
+        return reply.strip()[:4000]
+    except requests.Timeout:
+        return "⏱️ İstek zaman aşımına uğradı (30 sn)."
     except Exception as e:
-        log_msg(f"OPENCLAW ERROR: {e}")
-        return f"❌ OpenClaw hatası: {e}"
+        log_msg(f"MiniMax API ERROR: {e}")
+        return f"❌ Alfred hatası: {e}"
 
 def handle_message(chat_id, text):
     """Handle messages"""
