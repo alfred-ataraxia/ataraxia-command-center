@@ -153,9 +153,9 @@ def call_claude(chat_id, prompt):
     
     memory_context = ""
     try:
-        mem1 = subprocess.check_output(["bash", os.path.expanduser("~/.openclaw/workspace/memory/scripts/read-master-memory.sh"), "120"], text=True)
-        mem2 = subprocess.check_output(["bash", os.path.expanduser("~/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh"), "80"], text=True)
-        memory_context = f"\n\nKANONİK HAFIZA (Aktif Bağlam):\n{mem1}\n\nSON NOTLAR:\n{mem2}"
+        mem1 = subprocess.check_output(["bash", os.path.expanduser("~/.openclaw/workspace/memory/scripts/read-master-memory.sh"), "30"], text=True)
+        mem2 = subprocess.check_output(["bash", os.path.expanduser("~/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh"), "20"], text=True)
+        memory_context = f"\n\nKANONİK HAFIZA (Özet):\n{mem1}\n\nSON NOTLAR:\n{mem2}"
     except Exception as e:
         memory_context = f"\n\n(Hafıza okunamadı: {e})"
     
@@ -177,7 +177,7 @@ def call_claude(chat_id, prompt):
             'system': system_prompt,
             'messages': messages,
         }
-        resp = requests.post(url, headers=headers, json=payload, timeout=30)
+        resp = requests.post(url, headers=headers, json=payload, timeout=60)
         if not resp.ok:
             log_msg(f"MiniMax API hata {resp.status_code}: {resp.text[:200]}")
             return f"❌ Alfred yanıt veremedi (HTTP {resp.status_code})."
@@ -191,7 +191,7 @@ def call_claude(chat_id, prompt):
         CONVERSATIONS[chat_id].append({"role": "assistant", "content": reply})
         return reply.strip()[:4000]
     except requests.Timeout:
-        return "⏱️ İstek zaman aşımına uğradı (30 sn)."
+        return "⏱️ İstek zaman aşımına uğradı (60 sn)."
     except Exception as e:
         log_msg(f"MiniMax API ERROR: {e}")
         return f"❌ Alfred hatası: {e}"

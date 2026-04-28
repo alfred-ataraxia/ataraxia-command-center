@@ -2308,9 +2308,9 @@ function handleRequest(req, res) {
           const dateStr = new Date().toLocaleString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
           let memoryContext = ""
           try {
-            const mem1 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-master-memory.sh 120').toString()
-            const mem2 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh 80').toString()
-            memoryContext = `\n\nKANONİK HAFIZA (Aktif Bağlam):\n${mem1}\n\nSON NOTLAR:\n${mem2}`
+            const mem1 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-master-memory.sh 30').toString()
+            const mem2 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh 20').toString()
+            memoryContext = `\n\nKANONİK HAFIZA (Özet):\n${mem1}\n\nSON NOTLAR:\n${mem2}`
           } catch (e) {
             memoryContext = `\n\n(Hafıza okunamadı: ${e.message})`
           }
@@ -2369,7 +2369,7 @@ function handleRequest(req, res) {
               treq2.end()
             })
           })
-          apiReq.setTimeout(30000, () => apiReq.destroy(new Error('MiniMax API timeout')))
+          apiReq.setTimeout(60000, () => apiReq.destroy(new Error('MiniMax API timeout')))
           apiReq.on('error', (err) => {
             logger.warn('MiniMax API error', { error: err.message })
             // Timeout/hata durumunda bilgilendir
