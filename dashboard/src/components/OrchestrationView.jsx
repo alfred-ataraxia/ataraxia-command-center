@@ -148,6 +148,35 @@ function AssignModal({ tasks, agents, preselectedAgent, onClose, onAssign }) {
   )
 }
 
+const STATUS_META = {
+  pending: { label: 'Bekliyor', cls: 'text-ax-dim border-ax-border bg-ax-muted' },
+  in_progress: { label: 'Çalışıyor', cls: 'text-ax-amber border-ax-amber/30 bg-ax-amber/10' },
+  done: { label: 'Bitti', cls: 'text-ax-green border-ax-green/30 bg-ax-green/10' },
+}
+
+const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 }
+
+function matchesAssignee(taskAssignee, agent) {
+  const assignee = String(taskAssignee || 'Alfred').toLowerCase()
+  const aliases = {
+    Alfred: ['alfred', 'openclaw alfred', 'openclaw'],
+    Claude: ['claude', 'claude code'],
+    Gemini: ['gemini', 'gemini cli'],
+    Codex: ['codex', 'codex cli'],
+    'Master Sefa': ['master sefa', 'sefa'],
+  }
+  return (aliases[agent.id] || [agent.id, agent.name]).some(a => assignee === a.toLowerCase())
+}
+
+function TaskBadge({ status }) {
+  const meta = STATUS_META[status] || STATUS_META.pending
+  return (
+    <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${meta.cls}`}>
+      {meta.label}
+    </span>
+  )
+}
+
 export default function OrchestrationView() {
   const [tasks, setTasks]        = useState([])
   const [agents, setAgents]      = useState([])
@@ -196,6 +225,27 @@ export default function OrchestrationView() {
   const inProg  = activeTasks.filter(t => t.status === 'in_progress').length
   const done    = activeTasks.filter(t => t.status === 'done').length
   const activeAgents = agents.filter(a => a.status === 'active').length
+  const totalWork = pending + inProg + done
+  const donePct = totalWork > 0 ? Math.round((done / totalWork) * 100) : 0
+  const visibleQueue = [...activeTasks]
+    .filter(t => t.status === 'pending' || t.status === 'in_progress')
+    .sort((a, b) => {
+      const byStatus = (a.status === 'in_progress' ? 0 : 1) - (b.status === 'in_progress' ? 0 : 1)
+      if (byStatus) return byStatus
+      return (PRIORITY_ORDER[a.priority] ?? 1) - (PRIORITY_ORDER[b.priority] ?? 1)
+    })
+    .slice(0, 8)
+  const agentWork = agents.map(agent => {
+    const mine = activeTasks.filter(t => matchesAssignee(t.assignee, agent))
+    return {
+      agent,
+      pending: mine.filter(t => t.status === 'pending').length,
+      inProgress: mine.filter(t => t.status === 'in_progress').length,
+      done: mine.filter(t => t.status === 'done').length,
+      next: mine.find(t => t.status === 'in_progress') || mine.find(t => t.status === 'pending'),
+      total: mine.length,
+    }
+  })
 
   return (
     <div className="p-4 sm:p-6 space-y-5 max-w-5xl">
@@ -235,22 +285,86 @@ export default function OrchestrationView() {
 
       {/* Görev özeti */}
       <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
-        <p className="text-xs font-medium text-ax-dim mb-3">Görev Özeti</p>
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <p className="text-xs font-medium text-ax-dim">Görev Panosu</p>
+            <p className="text-[11px] text-ax-subtle mt-0.5">Claude Code · Codex · Gemini CLI · OpenClaw Alfred</p>
+          </div>
+          <span className="text-xs font-mono text-ax-heading">{donePct}% tamam</span>
+        </div>
+
+        <div className="h-2 rounded-full bg-ax-surface border border-ax-border overflow-hidden mb-4 flex">
+          <div className="bg-ax-green" style={{ width: `${totalWork ? (done / totalWork) * 100 : 0}%` }} />
+          <div className="bg-ax-amber" style={{ width: `${totalWork ? (inProg / totalWork) * 100 : 0}%` }} />
+          <div className="bg-ax-muted" style={{ width: `${totalWork ? (pending / totalWork) * 100 : 0}%` }} />
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-lg bg-ax-surface border border-ax-border p-3">
             <span className="text-xl font-bold text-ax-heading font-mono">{pending}</span>
-            <span className="text-xs text-ax-dim">bekliyor</span>
+            <p className="text-xs text-ax-dim mt-1">bekleyen</p>
           </div>
-          <div className="w-px h-6 bg-ax-border" />
-          <div className="flex items-center gap-2">
+          <div className="rounded-lg bg-ax-surface border border-ax-border p-3">
             <span className="text-xl font-bold text-ax-amber font-mono">{inProg}</span>
-            <span className="text-xs text-ax-dim">çalışıyor</span>
+            <p className="text-xs text-ax-dim mt-1">çalışan</p>
           </div>
-          <div className="w-px h-6 bg-ax-border" />
-          <div className="flex items-center gap-2">
+          <div className="rounded-lg bg-ax-surface border border-ax-border p-3">
             <span className="text-xl font-bold text-ax-green font-mono">{done}</span>
-            <span className="text-xs text-ax-dim">tamamlandı</span>
+            <p className="text-xs text-ax-dim mt-1">tamamlanan</p>
           </div>
+        </div>
+      </div>
+
+      {/* Ajan yükü */}
+      <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
+        <p className="text-xs font-medium text-ax-dim mb-3">Ajanlara Bölünmüş İşler</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {agentWork.map(({ agent, pending: p, inProgress, done: d, next, total }) => (
+            <div key={agent.id} className="rounded-lg bg-ax-surface border border-ax-border p-3">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-ax-heading truncate">{agent.name}</p>
+                  <p className="text-[10px] text-ax-subtle truncate">{agent.model}</p>
+                </div>
+                <span className="text-xs font-mono text-ax-dim">{total}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5 mb-2 text-[10px]">
+                <span className="rounded bg-ax-muted px-2 py-1 text-ax-dim">P {p}</span>
+                <span className="rounded bg-ax-amber/10 px-2 py-1 text-ax-amber">W {inProgress}</span>
+                <span className="rounded bg-ax-green/10 px-2 py-1 text-ax-green">D {d}</span>
+              </div>
+              <p className="text-xs text-ax-text line-clamp-1">
+                {next ? `${next.id} · ${next.title}` : 'Aktif bekleyen görev yok'}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Aktif kuyruk */}
+      <div className="rounded-xl bg-ax-panel border border-ax-border p-4">
+        <p className="text-xs font-medium text-ax-dim mb-3">Sıradaki İşler</p>
+        <div className="space-y-2">
+          {visibleQueue.length === 0 ? (
+            <p className="text-xs text-ax-dim">Bekleyen veya çalışan görev yok.</p>
+          ) : visibleQueue.map(t => (
+            <div key={t.id} className="flex items-center gap-3 rounded-lg bg-ax-surface border border-ax-border p-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-mono text-ax-subtle">{t.id}</span>
+                  <TaskBadge status={t.status} />
+                  <span className="text-[10px] text-ax-dim">{t.assignee || 'Alfred'}</span>
+                </div>
+                <p className="text-sm text-ax-heading truncate">{t.title}</p>
+              </div>
+              <button
+                onClick={() => { setPreAgent(t.assignee || null); setShowModal(true); }}
+                className="px-2.5 py-1.5 rounded-lg border border-ax-border text-[11px] text-ax-dim hover:text-ax-accent hover:border-ax-accent/40"
+              >
+                Bölüştür
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -1421,7 +1421,88 @@
       "notes": [
         "jobs.json'a Pazar 21:00 cron eklendi. alfred-weekly-summary job ID: 1449a92d-860e-4506-b82d-137b2389eeb7. İlk çalışma: 2026-05-03 21:00. Özet: görevler, kararlar, DeFi, sistem sağlığı, vault sync içerir."
       ]
+    },
+    {
+      "id": "T-076",
+      "title": "OpenViking pilot kaydı + workspace hazırlığı",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Codex",
+      "tags": [
+        "openviking",
+        "memory",
+        "openclaw",
+        "pilot"
+      ],
+      "points": 1,
+      "created_at": "2026-04-28T20:27:30.499302Z",
+      "description": "B-079 için plan/backlog/sprint/memory kayıtlarını ekle; /home/sefa/.openviking-alfred-pilot workspace oluştur; production context-engine değiştirme.",
+      "started_at": "2026-04-28T23:27:30.620609+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-28T23:27:30.620609+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-28T23:28:23.475022+03:00"
+        }
+      ],
+      "completed_at": "2026-04-28T23:28:23.475022+03:00",
+      "notes": [
+        "OpenViking pilotu B-079 olarak backlog/sprint/memory kayıtlarına eklendi. Pilot workspace /home/sefa/.openviking-alfred-pilot oluşturuldu; production OpenClaw context-engine değiştirilmedi. Devam görevleri T-077 preflight ve T-078 read-only import/test seti olarak kuyruğa eklendi."
+      ]
+    },
+    {
+      "id": "T-077",
+      "title": "OpenViking preflight + kurulum stratejisi",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Codex",
+      "tags": [
+        "openviking",
+        "preflight",
+        "rpi"
+      ],
+      "points": 2,
+      "created_at": "2026-04-28T20:27:30.499302Z",
+      "description": "Node/OpenClaw/Python/Rust/RAM/disk kontrolleri, OpenViking server/plugin version riski, port ve servis stratejisi. Kurulum yoksa bile rapor üret; gateway restart yapma.",
+      "started_at": "2026-04-28T23:29:11.482606+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-28T23:29:11.482606+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-28T23:31:33.078580+03:00"
+        }
+      ],
+      "completed_at": "2026-04-28T23:31:33.078580+03:00",
+      "notes": [
+        "OpenViking preflight tamamlandı. Makine Node/OpenClaw/Python gereksinimlerini karşılıyor; Rust/Cargo yok, 1933/8020 portları boş, OpenViking kurulu/aktif değil. Sonuç: pilot devam etmeli ama production context-engine değişikliği yapılmamalı; önce izole venv/local server ve read-only import testi önerildi."
+      ]
+    },
+    {
+      "id": "T-078",
+      "title": "OpenViking read-only import adayları + test soruları",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Gemini",
+      "tags": [
+        "openviking",
+        "obsidian",
+        "memory",
+        "research"
+      ],
+      "points": 2,
+      "created_at": "2026-04-28T20:27:30.499302Z",
+      "description": "Kanonik memory ve Obsidian vault içinden güvenli import adaylarını listele; secret hariç tutma kuralları ve Alfred retrieval test soru seti hazırla."
     }
   ],
-  "updated_at": "2026-04-27T22:48:04+03:00"
+  "updated_at": "2026-04-28T23:31:33.078580+03:00"
 }

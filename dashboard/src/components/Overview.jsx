@@ -24,7 +24,7 @@ function StatusStrip({ stats, activeAI, sprint, cronCount, now }) {
   )
 
   return (
-    <div className="sticky top-0 z-30 flex items-center gap-0 border-b border-ax-border bg-ax-surface/98" style={{ backdropFilter: 'blur(4px)' }}>
+    <div className="sticky top-0 z-30 flex items-center gap-0 border-b border-ax-border bg-ax-surface/86 shadow-[0_12px_36px_rgba(0,0,0,0.18)]" style={{ backdropFilter: 'blur(18px) saturate(1.15)' }}>
       {/* Alfred badge */}
       <div className="flex items-center gap-2 px-4 py-2 border-r border-ax-border shrink-0">
         <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${activeAI.openclawUp ? 'bg-ax-green' : 'bg-ax-dim'}`}
@@ -372,7 +372,16 @@ export default function Overview() {
       <StatusStrip stats={stats} activeAI={activeAI} sprint={sprint} cronCount={cronCount} now={now} />
 
       {/* ── Main Content ── */}
-      <div className="flex-1 p-4 md:p-5">
+      <div className="flex-1 p-4 md:p-6">
+        <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-ax-accent">Ataraxia Operations</p>
+            <h1 className="mt-2 text-2xl md:text-3xl font-black tracking-[-0.045em] text-ax-heading">Kokpit</h1>
+          </div>
+          <p className="max-w-xl text-sm leading-6 text-ax-dim">
+            Görevler, ajanlar, DeFi ve sistem sağlığı tek ekranda. Kritik aksiyonlar görünür, ikincil sinyaller sessiz kalır.
+          </p>
+        </div>
         {/* 3-column command grid */}
         <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-9 gap-4">
 

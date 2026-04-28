@@ -127,12 +127,12 @@ function TaskCard({ task, onToggle, onDelete }) {
             </span>
             {getDeadlineStatus(task.due, task.status) === 'overdue' && (
               <span className="px-2 py-0.5 rounded-md border text-[11px] font-black bg-ax-red/10 border-ax-red/30 text-ax-red">
-                ⚠️ Gecikti
+                Gecikti
               </span>
             )}
             {getDeadlineStatus(task.due, task.status) === 'today' && (
               <span className="px-2 py-0.5 rounded-md border text-[11px] font-black bg-ax-amber/10 border-ax-amber/30 text-ax-amber">
-                🟡 Bugün
+                Bugün
               </span>
             )}
           </div>
@@ -301,9 +301,9 @@ function AddTaskForm({ onAdded }) {
           onChange={e => setPriority(e.target.value)}
           className="px-4 py-2.5 rounded-xl bg-ax-muted border border-ax-border text-ax-text text-sm font-medium focus:outline-none focus:border-ax-accent/50 hover:bg-ax-muted transition-colors cursor-pointer"
         >
-          <option value="high">🔴 Yüksek</option>
-          <option value="medium">🟡 Orta</option>
-          <option value="low">⚪ Düşük</option>
+          <option value="high">Yüksek</option>
+          <option value="medium">Orta</option>
+          <option value="low">Düşük</option>
         </select>
 
         <input
@@ -318,13 +318,13 @@ function AddTaskForm({ onAdded }) {
           onChange={e => setAssignee(e.target.value)}
           className="px-4 py-2.5 rounded-xl bg-ax-muted border border-ax-border text-ax-text text-sm font-medium focus:outline-none focus:border-ax-accent/50 hover:bg-ax-muted transition-colors cursor-pointer"
         >
-          <option value="Alfred">🦊 Alfred</option>
-          <option value="Codex">⚡ Codex</option>
-          <option value="Claude">🤖 Claude</option>
-          <option value="Gemini">✨ Gemini</option>
-          <option value="MAIT">🏠 MAIT</option>
-          <option value="MERCER">💰 MERCER</option>
-          <option value="Master Sefa">👤 Master Sefa</option>
+          <option value="Alfred">Alfred</option>
+          <option value="Codex">Codex</option>
+          <option value="Claude">Claude</option>
+          <option value="Gemini">Gemini</option>
+          <option value="MAIT">MAIT</option>
+          <option value="MERCER">MERCER</option>
+          <option value="Master Sefa">Master Sefa</option>
         </select>
 
         <button
@@ -498,9 +498,9 @@ export default function TaskQueue() {
           className="px-4 py-3 rounded-xl ax-glass border border-ax-border text-ax-text text-sm font-medium focus:outline-none hover:bg-ax-muted transition-colors cursor-pointer"
         >
           <option value="">Tüm öncelik</option>
-          <option value="high">🔴 Yüksek</option>
-          <option value="medium">🟡 Orta</option>
-          <option value="low">⚪ Düşük</option>
+          <option value="high">Yüksek</option>
+          <option value="medium">Orta</option>
+          <option value="low">Düşük</option>
         </select>
 
         <select
@@ -509,13 +509,13 @@ export default function TaskQueue() {
           className="px-4 py-3 rounded-xl ax-glass border border-ax-border text-ax-text text-sm font-medium focus:outline-none hover:bg-ax-muted transition-colors cursor-pointer"
         >
           <option value="">Tüm ajan</option>
-          <option value="Alfred">🦊 Alfred</option>
-          <option value="Codex">⚡ Codex</option>
-          <option value="Claude">🤖 Claude</option>
-          <option value="Gemini">✨ Gemini</option>
-          <option value="MAIT">🏠 MAIT</option>
-          <option value="MERCER">💰 MERCER</option>
-          <option value="Master Sefa">👤 Master Sefa</option>
+          <option value="Alfred">Alfred</option>
+          <option value="Codex">Codex</option>
+          <option value="Claude">Claude</option>
+          <option value="Gemini">Gemini</option>
+          <option value="MAIT">MAIT</option>
+          <option value="MERCER">MERCER</option>
+          <option value="Master Sefa">Master Sefa</option>
         </select>
 
         <button
@@ -555,7 +555,7 @@ export default function TaskQueue() {
       {/* Bottom info */}
       <div className="text-center py-8 text-[10px] text-ax-dim uppercase tracking-widest font-bold relative z-10 flex items-center justify-center gap-2">
         <div className="w-1.5 h-1.5 rounded-full bg-ax-amber animate-pulse" />
-        Alfred her 30 dakikada bir pending görev alır 🦊
+        Alfred her 30 dakikada bir pending görev alır
       </div>
     </div>
   )

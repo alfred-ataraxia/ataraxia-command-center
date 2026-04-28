@@ -1,51 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Warm Obsidian · Darker, tighter for HUD aesthetic ── */
-  --color-ax-bg:       #0c0b09;
-  --color-ax-surface:  #111009;
-  --color-ax-panel:    #161410;
-  --color-ax-border:   #28231a;
-  --color-ax-muted:    #1c1914;
-  --color-ax-subtle:   #302a20;
-  --color-ax-dim:      #6a5f4e;
-  --color-ax-text:     #d8ceba;
-  --color-ax-heading:  #ece2d0;
+  /* ── Graphite Porcelain · calm operations palette ── */
+  --color-ax-bg:       #070a0f;
+  --color-ax-surface:  #0d121a;
+  --color-ax-panel:    #111824;
+  --color-ax-border:   #243043;
+  --color-ax-muted:    #172231;
+  --color-ax-subtle:   #475569;
+  --color-ax-dim:      #94a3b8;
+  --color-ax-text:     #d8e0ea;
+  --color-ax-heading:  #f8fafc;
 
-  /* ── Electric indigo accent ── */
-  --color-ax-accent:   #6870d4;
-  --color-ax-accent2:  #8862c0;
+  /* ── Primary accents: precise, not neon ── */
+  --color-ax-accent:   #7dd3fc;
+  --color-ax-accent2:  #a78bfa;
 
-  /* ── Semantic — muted, functional ── */
-  --color-ax-cyan:     #3a88a0;
-  --color-ax-green:    #4e8862;
-  --color-ax-amber:    #b07e38;
-  --color-ax-red:      #a04040;
-  --color-ax-purple:   #784898;
+  /* ── Semantic — high contrast and color-blind safer ── */
+  --color-ax-cyan:     #38bdf8;
+  --color-ax-green:    #34d399;
+  --color-ax-amber:    #fbbf24;
+  --color-ax-red:      #fb7185;
+  --color-ax-purple:   #c084fc;
 
   /* ── Typography ── */
-  --font-sans: 'Outfit', system-ui, sans-serif;
+  --font-sans: 'Inter', 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
-/* ── Light (Parchment) ── */
+/* ── Light: porcelain, not parchment ── */
 [data-theme="light"] {
-  --color-ax-bg:       #f5f2eb;
-  --color-ax-surface:  #eee9e0;
-  --color-ax-panel:    #e9e3d8;
-  --color-ax-border:   rgba(0,0,0,0.08);
-  --color-ax-muted:    #e0d9ce;
-  --color-ax-subtle:   #b5ada0;
-  --color-ax-dim:      #807060;
-  --color-ax-text:     #261e12;
-  --color-ax-heading:  #120a04;
-  --color-ax-accent:   #4850b0;
-  --color-ax-accent2:  #684898;
-  --color-ax-cyan:     #226080;
-  --color-ax-green:    #386850;
-  --color-ax-amber:    #905a18;
-  --color-ax-red:      #802020;
-  --color-ax-purple:   #582880;
+  --color-ax-bg:       #eef3f8;
+  --color-ax-surface:  #f8fafc;
+  --color-ax-panel:    #ffffff;
+  --color-ax-border:   #d8e1ec;
+  --color-ax-muted:    #eef4fb;
+  --color-ax-subtle:   #64748b;
+  --color-ax-dim:      #475569;
+  --color-ax-text:     #1e293b;
+  --color-ax-heading:  #07111f;
+  --color-ax-accent:   #0369a1;
+  --color-ax-accent2:  #6d28d9;
+  --color-ax-cyan:     #0284c7;
+  --color-ax-green:    #047857;
+  --color-ax-amber:    #b45309;
+  --color-ax-red:      #be123c;
+  --color-ax-purple:   #7e22ce;
 }
 
 * { box-sizing: border-box; }
@@ -58,49 +58,54 @@ html {
   font-feature-settings: 'kern' 1, 'liga' 1, 'tnum' 1;
 }
 
-/* ── Background: dot-grid + ambient glow (Territory Studio / HUD) ── */
+/* ── Background: executive command surface, no noisy HUD texture ── */
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
   background-color: var(--color-ax-bg);
   background-image:
-    radial-gradient(circle, rgba(104,112,212,0.022) 1px, transparent 1px),
-    radial-gradient(ellipse at 12% 65%, rgba(104,112,212,0.05), transparent 45%),
-    radial-gradient(ellipse at 88% 12%, rgba(136,98,192,0.035), transparent 40%);
-  background-size: 20px 20px, 100% 100%, 100% 100%;
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--color-ax-accent) 16%, transparent), transparent 28rem),
+    radial-gradient(circle at 82% 8%, color-mix(in srgb, var(--color-ax-accent2) 12%, transparent), transparent 24rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-ax-surface) 38%, transparent), transparent 34rem);
+  background-size: 100% 100%;
   color: var(--color-ax-text);
   font-family: var(--font-sans);
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* ── Panel — flat surface, hairline border ── */
+/* ── Panel — premium glass without low-contrast haze ── */
 .ax-glass {
-  background: var(--color-ax-panel);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-ax-panel) 96%, white 4%), var(--color-ax-panel));
   border: 1px solid var(--color-ax-border);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 0 0.5px rgba(255,255,255,0.018);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.24),
+    0 1px 0 rgba(255,255,255,0.04) inset;
 }
 
-/* ── HUD panel with corner accent (Territory Studio detail) ── */
+/* ── Structured panel with quiet corner detail ── */
 .ax-hud {
-  background: var(--color-ax-surface);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-ax-surface) 92%, white 8%), var(--color-ax-surface));
   border: 1px solid var(--color-ax-border);
   position: relative;
+  box-shadow: 0 16px 45px rgba(0,0,0,0.18);
 }
 .ax-hud::before {
   content: '';
   position: absolute;
   top: -1px; left: -1px;
-  width: 10px; height: 10px;
-  border-top: 1.5px solid var(--color-ax-accent);
-  border-left: 1.5px solid var(--color-ax-accent);
+  width: 14px; height: 14px;
+  border-top: 2px solid var(--color-ax-accent);
+  border-left: 2px solid var(--color-ax-accent);
   border-top-left-radius: inherit;
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 /* ── Accent glow ── */
-.ax-glow { box-shadow: 0 0 5px rgba(104,112,212,0.28); }
+.ax-glow { box-shadow: 0 0 18px color-mix(in srgb, var(--color-ax-accent) 42%, transparent); }
 
 /* ── Status dot ── */
 .ax-dot {
@@ -110,35 +115,48 @@ html, body, #root {
   background: var(--color-ax-green);
 }
 
+button, a, input, select, textarea {
+  outline-color: color-mix(in srgb, var(--color-ax-accent) 70%, white 30%);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-ax-accent) 78%, white 22%);
+  outline-offset: 3px;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-ax-accent) 38%, transparent);
+  color: var(--color-ax-heading);
+}
+
 /* ── View transitions ── */
 .view-enter {
-  animation: viewIn 160ms cubic-bezier(0.22,0.61,0.36,1) both;
+  animation: viewIn 220ms cubic-bezier(0.22,0.61,0.36,1) both;
 }
 @keyframes viewIn {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0);   }
 }
 
-/* ── Scan-line texture (desktop only, very subtle) ── */
-@media (min-width: 768px) {
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(0,0,0,0.028) 2px,
-      rgba(0,0,0,0.028) 3px
-    );
-    pointer-events: none;
-    z-index: 99999;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-ax-subtle); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-ax-dim); }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--color-ax-subtle) 70%, transparent); border-radius: 999px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ax-dim); background-clip: content-box; }

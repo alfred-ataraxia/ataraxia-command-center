@@ -2239,8 +2239,14 @@ function handleRequest(req, res) {
           memoryContext = `\n\nKANONİK HAFIZA:\n${mem1.slice(0, 1500)}`
         } catch (_) {}
 
-        const sysPrompt = `Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Kısa ve net yanıt ver. Türkçe konuş.\n\nZaman: ${dateStr}${memoryContext}`
+        const sysPrompt = `Sen Alfred'sin — Master Sefa'nın kişisel asistanı. Sade, kısa ve net Türkçe yanıt ver. ASLA XML, JSON, tool_call, invoke, Shell, Bash veya kod bloğu üretme. Sadece düz metin yaz.\n\nZaman: ${dateStr}${memoryContext}`
         const apiPayload = JSON.stringify({ model: 'MiniMax-M2.7', max_tokens: 1024, system: sysPrompt, messages })
+
+        const cleanReply = (raw) => raw
+          .replace(/<minimax:tool_call>[\s\S]*?<\/minimax:tool_call>/g, '')
+          .replace(/<invoke\b[^>]*>[\s\S]*?<\/invoke>/g, '')
+          .replace(/<[a-z_]+:[a-z_]+>[\s\S]*?<\/[a-z_]+:[a-z_]+>/g, '')
+          .trim() || '⚠️ Boş yanıt.'
 
         const reply = await new Promise((resolve, reject) => {
           const apiReq = https.request('https://api.minimax.io/anthropic/v1/messages', {
@@ -2258,7 +2264,7 @@ function handleRequest(req, res) {
               try {
                 const j = JSON.parse(raw || '{}')
                 const tb = (j.content || []).find(b => b.type === 'text')
-                resolve((tb?.text || j?.error?.message || '⚠️ Boş yanıt.').trim())
+                resolve(cleanReply(tb?.text || j?.error?.message || ''))
               } catch (e) { resolve(`❌ Parse hatası: ${e.message}`) }
             })
           })
@@ -2377,6 +2383,70 @@ function handleRequest(req, res) {
             const echoData = JSON.stringify({ chat_id: chatId, text: echoMsg, disable_web_page_preview: true })
             const treqEcho = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(echoData) } }, (r) => { r.on('data', () => {}); })
             treqEcho.on('error', () => {}); treqEcho.write(echoData); treqEcho.end()
+
+            // Fallback: OpenClaw Gateway ile cevap üret (best-effort).
+            const gatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN || ''
+            if (!gatewayToken) {
+              logger.warn('OPENCLAW_GATEWAY_TOKEN eksik, fallback cevap uretemez')
+              return
+            }
+
+            let memoryContext = ""
+            try {
+              const mem1 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-master-memory.sh 40').toString()
+              const mem2 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh 40').toString()
+              memoryContext = `\n\nKANONIK HAFIZA (Ozet):\n${mem1}\n\nSON NOTLAR:\n${mem2}`
+            } catch (e) {}
+
+            const gwPayload = JSON.stringify({
+              model: 'openclaw/alfred',
+              messages: [
+                { role: 'system', content: "Kisa ve operasyonel Turkce yanit ver. Cevap 6 satiri gecmesin." + memoryContext },
+                { role: 'user', content: text },
+              ],
+            })
+
+            const gwReq = http.request({
+              hostname: '127.0.0.1',
+              port: 18789,
+              path: '/v1/chat/completions',
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${gatewayToken}`,
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(gwPayload),
+              },
+            }, (gwRes) => {
+              let raw = ''
+              gwRes.on('data', (c) => { raw += c })
+              gwRes.on('end', () => {
+                let reply = ''
+                try {
+                  const j = JSON.parse(raw || '{}')
+                  reply = (((j.choices || [{}])[0]).message || {}).content || j?.error?.message || ''
+                } catch (e) {}
+                reply = (reply || '').toString().trim()
+                if (!reply) reply = gwRes.statusCode && gwRes.statusCode !== 200 ? `Alfred cevap uretemedi (HTTP ${gwRes.statusCode}).` : 'Alfred bos cevap dondu.'
+                reply = reply.slice(0, 3500)
+
+                const msg2 = `Alfred (cevap) — \"${ctx}\"\n\n${reply}`
+                const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
+                const treq2 = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data2) } }, (tres2) => {
+                  tres2.on('data', () => {})
+                  tres2.on('end', () => {
+                    if (tres2.statusCode !== 200) logger.warn('Telegram API error (Alfred reply)', { statusCode: tres2.statusCode })
+                  })
+                })
+                treq2.setTimeout(5000, () => treq2.destroy(new Error('telegram timeout')))
+                treq2.on('error', (err) => logger.warn('Telegram send error (Alfred reply)', { error: err.message }))
+                treq2.write(data2)
+                treq2.end()
+              })
+            })
+            gwReq.setTimeout(90000, () => gwReq.destroy(new Error('OpenClaw gateway timeout')))
+            gwReq.on('error', (err) => logger.warn('OpenClaw gateway error', { error: err.message }))
+            gwReq.write(gwPayload)
+            gwReq.end()
             return
           }
 
@@ -2391,7 +2461,7 @@ function handleRequest(req, res) {
             memoryContext = `\n\n(Hafıza okunamadı: ${e.message})`
           }
           
-          const sysPrompt = `Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: ${dateStr}${memoryContext}`
+          const sysPrompt = `Sen Alfred'sin — Master Sefa'nın kişisel asistanı. Sade, kısa ve net Türkçe yanıt ver. ASLA XML, JSON, tool_call, invoke, Shell, Bash veya kod bloğu üretme. Sadece düz metin yaz.\n\nZaman: ${dateStr}${memoryContext}`
           const apiPayload = JSON.stringify({
             model: 'MiniMax-M2.7',
             max_tokens: 1024,
@@ -2420,12 +2490,19 @@ function handleRequest(req, res) {
                 reply = `❌ API yanıt parse hatası: ${e.message}`
               }
 
-              if (!reply.trim()) {
+              // Tool-call XML artıkları temizle
+              reply = reply
+                .replace(/<minimax:tool_call>[\s\S]*?<\/minimax:tool_call>/g, '')
+                .replace(/<invoke\b[^>]*>[\s\S]*?<\/invoke>/g, '')
+                .replace(/<[a-z_]+:[a-z_]+>[\s\S]*?<\/[a-z_]+:[a-z_]+>/g, '')
+                .trim()
+
+              if (!reply) {
                 reply = apiRes.statusCode !== 200
                   ? `❌ Alfred yanıt veremedi (HTTP ${apiRes.statusCode}).`
                   : '⚠️ Alfred boş yanıt döndürdü.'
               }
-              reply = reply.trim().slice(0, 3500)
+              reply = reply.slice(0, 3500)
 
               // Cevabı Telegram'a gönder
               const msg2 = `🦇 ${reply}`

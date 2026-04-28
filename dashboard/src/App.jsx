@@ -36,7 +36,11 @@ export default function App() {
   return (
     <ErrorBoundary>
       <ToastProvider>
-        <div className="flex h-screen bg-ax-bg text-ax-text font-sans overflow-hidden">
+        <div className="flex h-screen bg-ax-bg text-ax-text font-sans overflow-hidden relative">
+          <div className="pointer-events-none fixed inset-0 z-0 opacity-80">
+            <div className="absolute left-[22rem] top-[-8rem] h-72 w-72 rounded-full bg-ax-accent/10 blur-[100px]" />
+            <div className="absolute right-[-6rem] top-[18rem] h-80 w-80 rounded-full bg-ax-accent2/10 blur-[120px]" />
+          </div>
           <Sidebar activeView={activeView} onNavigate={navigate} />
           <main className="flex-1 overflow-y-auto relative z-10 pt-14 md:pt-0">
             <div key={viewKey} className="view-enter">

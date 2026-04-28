@@ -14,12 +14,14 @@ from datetime import datetime
 import requests
 import time
 import glob
+import re
 from aiohttp import web
 
 SOCKET_PATH = "/tmp/lattice.sock"
 PID_FILE = os.path.expanduser("~/openclaw/logs/telegram-bot.pid")
 CALLBACK_HOST = os.environ.get("OPENCLAW_TELEGRAM_CALLBACK_HOST", "127.0.0.1")
 CALLBACK_PORT = int(os.environ.get("OPENCLAW_TELEGRAM_CALLBACK_PORT", "8001"))
+LEGACY_BOT_MODE = os.environ.get("ALFRED_LEGACY_TELEGRAM_BOT_MODE", "auto").lower()
 
 def send_to_lattice(action, agent="claude", command="", chat_id=None):
     """Orchestrator'a görev gönderir (chat_id ile birlikte)"""
@@ -72,6 +74,38 @@ def log_msg(msg):
             f.write(f"[{timestamp}] {msg}\n")
     except:
         pass
+
+def openclaw_telegram_channel_enabled():
+    """OpenClaw native Telegram channel is the canonical Telegram brain."""
+    try:
+        config_path = os.path.expanduser("~/.openclaw/openclaw.json")
+        with open(config_path, "r") as f:
+            config = json.load(f)
+        telegram_config = config.get("channels", {}).get("telegram", {})
+        return bool(telegram_config.get("enabled"))
+    except Exception as e:
+        log_msg(f"OPENCLAW CONFIG CHECK ERROR: {e}")
+        return False
+
+def should_disable_legacy_polling():
+    """Prevent two Telegram pollers from consuming the same Bot API update stream."""
+    if LEGACY_BOT_MODE in ("active", "enabled", "on"):
+        return False
+    if LEGACY_BOT_MODE in ("disabled", "off"):
+        return True
+    return openclaw_telegram_channel_enabled()
+
+def sanitize_assistant_reply(reply):
+    """Remove model/tool-call leakage before a Telegram response is sent."""
+    if not reply:
+        return ""
+    reply = re.sub(r'<minimax:tool_call>.*?</minimax:tool_call>', '', reply, flags=re.DOTALL | re.IGNORECASE)
+    reply = re.sub(r'<minimax:tool_call>.*', '', reply, flags=re.DOTALL | re.IGNORECASE)
+    reply = re.sub(r'<invoke\b[^>]*>.*?</invoke>', '', reply, flags=re.DOTALL | re.IGNORECASE)
+    reply = re.sub(r'<invoke\b[^>]*>.*', '', reply, flags=re.DOTALL | re.IGNORECASE)
+    reply = re.sub(r'<[a-z_]+:[a-z_]+>.*?</[a-z_]+:[a-z_]+>', '', reply, flags=re.DOTALL | re.IGNORECASE)
+    reply = re.sub(r'(?im)^\s*(Shell|Bash|Read|Write|Edit|Glob|Grep)\s*$', '', reply)
+    return reply.strip()
 
 def _write_pid_file():
     try:
@@ -159,7 +193,13 @@ def call_claude(chat_id, prompt):
     except Exception as e:
         memory_context = f"\n\n(Hafıza okunamadı: {e})"
     
-    system_prompt = f"Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: {date_str}{memory_context}"
+    system_prompt = (
+        f"Sen Alfred'sin — Master Sefa'nın kişisel asistanı. "
+        f"Sade, kısa ve net Türkçe yanıt ver. "
+        f"ASLA XML, JSON, tool_call, invoke, Shell, Bash veya kod bloğu kullanma. "
+        f"Sadece düz metin yaz. Tek görevin konuşmak.\n\n"
+        f"Zaman: {date_str}{memory_context}"
+    )
 
     # Son MAX_HISTORY kadar konuşmayı gönder
     messages = CONVERSATIONS[chat_id][-(MAX_HISTORY * 2):]
@@ -188,8 +228,12 @@ def call_claude(chat_id, prompt):
         if not reply.strip():
             return "⚠️ Alfred boş yanıt döndürdü."
 
+        reply = sanitize_assistant_reply(reply)
+        if not reply:
+            return "⚠️ Alfred araç çağrısı üretmeye çalıştı; Telegram'da çalıştırmadım."
+
         CONVERSATIONS[chat_id].append({"role": "assistant", "content": reply})
-        return reply.strip()[:4000]
+        return reply[:4000]
     except requests.Timeout:
         return "⏱️ İstek zaman aşımına uğradı (60 sn)."
     except Exception as e:
@@ -241,6 +285,12 @@ def handle_command(chat_id, text):
         CONVERSATIONS.pop(chat_id, None)
         send_message(chat_id, "🧹 Konuşma geçmişi temizlendi.")
         log_msg(f"CLEAR: chat_id={chat_id}")
+
+    elif cmd in ("/model", "/models", "/fast", "/slow", "/agent", "/agents"):
+        send_message(chat_id,
+            "Bu OpenClaw native Telegram komutu. Legacy Python bot bu komutu işlememeli.\n"
+            "OpenClaw Telegram kanalı aktifken `telegram_bot.py` polling kapalı tutulur."
+        )
 
     elif cmd == "/stop":
         success = send_to_lattice("KILL_CURRENT")
@@ -368,6 +418,11 @@ async def handle_callback(request):
         return web.Response(text="Error", status=500)
 
 async def main_loop():
+    if should_disable_legacy_polling():
+        log_msg("Legacy Telegram polling disabled; OpenClaw native Telegram channel is authoritative.")
+        while True:
+            await asyncio.sleep(3600)
+
     # Webhook sunucusunu baslat (opsiyonel). Port zaten doluysa bot yine de polling ile calissin.
     try:
         app = web.Application()

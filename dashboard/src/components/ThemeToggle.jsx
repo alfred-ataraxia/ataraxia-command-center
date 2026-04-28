@@ -60,11 +60,12 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={handleToggle}
-      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-ax-muted/50 border border-ax-border hover:bg-ax-muted transition-colors w-full"
+      className="flex items-center gap-2 px-3 py-3 rounded-2xl bg-ax-muted/70 border border-ax-border hover:bg-ax-muted transition-colors w-full min-h-11"
       title={label}
+      aria-label={label}
     >
       {isDark ? <Sun size={14} className="text-ax-amber" /> : <Moon size={14} className="text-ax-accent" />}
-      <span className="text-xs text-ax-dim">{label}</span>
+      <span className="text-xs font-medium text-ax-dim">{label}</span>
       {isAuto && (
         <span className="ml-auto text-[10px] text-ax-green">auto</span>
       )}

@@ -1,7 +1,7 @@
 # Product Backlog — ataraxia
 
-**Son güncelleme:** 2026-04-27 · Gemini · Sprint-07 aktif  
-**Gerçek açık:** 11 İkinci Beyin işi + 2 karar/blokaj işi · **Tamamlanan/Geçersiz:** eski açık listenin büyük bölümü kapandı
+**Son güncelleme:** 2026-04-28 · Codex · Sprint-07 aktif  
+**Gerçek açık:** OpenViking pilot + kalan dashboard işi + karar/blokaj işleri · **Tamamlanan/Geçersiz:** eski açık listenin büyük bölümü kapandı
 
 Kanonik durum: `~/.openclaw/workspace/ALFRED_PROJECT_STATE.md`  
 Anlık icra kuyruğu: `TASKS.json`
@@ -52,6 +52,7 @@ Anlık icra kuyruğu: `TASKS.json`
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
+| B-079 | OpenViking Alfred hafıza pilotu — production'a bağlamadan shadow/read-only deneme | 3 | 🧪 BAŞLADI 2026-04-28 | Sefa onayı; plan `docs/openviking-pilot.md` |
 | B-040 | Skill registry INDEX.md oluştur — mevcut 14 skill dizini + bağımlılıklar | 2 | ✅ DONE 2026-04-27 | ~/.openclaw/workspace/skills/INDEX.md — 13 skill, durum + bağımlılıklar |
 | B-041 | Alfred SOUL.md oluştur — kimlik, hafıza kuralları, rol tanımı | 1 | ✅ DONE 2026-04-25 | Robin analiz (SOUL.md eksik) |
 | B-042 | MAIT + Mercer SOUL.md oluştur | 1 | ✅ DONE 2026-04-26 | Alfred referans yapısı ile genişletildi (6 bölüm) |

@@ -30,10 +30,10 @@ function NavItem({ item, active, onClick }) {
     <button
       onClick={() => onClick(item.id)}
       className={[
-        'group relative flex items-center gap-3 w-full pl-0 pr-4 py-3 text-sm transition-all duration-300',
+        'group relative flex items-center gap-3 w-full rounded-2xl px-3 py-3 text-sm transition-all duration-200',
         active
-          ? 'text-ax-heading bg-ax-accent/10 shadow-[inset_2px_0_0_0_var(--color-ax-accent)]'
-          : 'text-ax-dim hover:text-ax-text hover:bg-ax-muted',
+          ? 'text-ax-heading bg-ax-accent/12 border border-ax-accent/25 shadow-[0_12px_28px_rgba(0,0,0,0.18)]'
+          : 'text-ax-dim border border-transparent hover:text-ax-text hover:bg-ax-muted/70 hover:border-ax-border',
       ].join(' ')}
     >
       <span className={`font-mono text-[10px] w-8 text-right pr-1 shrink-0 transition-colors ${active ? 'text-ax-accent' : 'text-ax-subtle group-hover:text-ax-dim'}`}>
@@ -46,7 +46,6 @@ function NavItem({ item, active, onClick }) {
       <span className={`flex-1 text-left tracking-wide ${active ? 'font-semibold text-ax-heading' : 'font-medium'}`}>
         {item.label}
       </span>
-      {/* Active Indicator Glow */}
       {active && (
         <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-ax-accent ax-glow" />
       )}
@@ -78,11 +77,11 @@ function SidebarContent({ activeView, onNavigate, onClose }) {
   }
 
   return (
-    <div className="flex flex-col h-full ax-glass border-r border-ax-border/30">
+    <div className="flex flex-col h-full bg-ax-surface/92 border-r border-ax-border/80 shadow-[18px_0_60px_rgba(0,0,0,0.20)]">
       {/* Logo */}
-      <div className="px-6 py-8 border-b border-ax-border relative overflow-hidden">
-        {/* Subtle background glow behind logo */}
-        <div className="absolute -top-10 -left-10 w-32 h-32 bg-ax-accent2/20 rounded-full blur-[40px] pointer-events-none" />
+      <div className="px-5 py-6 border-b border-ax-border relative overflow-hidden">
+        <div className="absolute -top-16 -left-12 w-44 h-44 bg-ax-accent/12 rounded-full blur-[48px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-32 h-32 bg-ax-accent2/10 rounded-full blur-[52px] pointer-events-none" />
         
         <div className="flex items-center gap-3 relative z-10">
           <div className="relative">
@@ -91,26 +90,26 @@ function SidebarContent({ activeView, onNavigate, onClose }) {
               width="36"
               height="36"
               alt="Ataraxia"
-              className="shrink-0 relative z-10"
+              className="shrink-0 relative z-10 drop-shadow-sm"
             />
-            {openclawUp && <div className="absolute inset-0 bg-ax-accent/40 blur-md rounded-full" />}
+            {openclawUp && <div className="absolute inset-0 bg-ax-accent/35 blur-lg rounded-full" />}
           </div>
           <div className="leading-tight">
-            <h1 className="text-ax-heading font-black text-lg tracking-tight">ATARAXIA</h1>
-            <p className="text-ax-accent text-[11px] uppercase font-bold mt-0.5">Command Center</p>
+            <h1 className="text-ax-heading font-black text-lg tracking-[-0.04em]">ATARAXIA</h1>
+            <p className="text-ax-accent text-[10px] uppercase font-bold tracking-[0.24em] mt-1">Command Center</p>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 flex flex-col gap-1">
+      <nav className="flex-1 p-4 flex flex-col gap-1.5">
         {NAV_ITEMS.map(item => (
           <NavItem key={item.id} item={item} active={activeView === item.id} onClick={handleNav} />
         ))}
       </nav>
 
       {/* System Health */}
-      <div className="px-5 py-5 border-t border-ax-border bg-ax-surface">
+      <div className="px-5 py-5 border-t border-ax-border bg-ax-bg/35">
         <div className={`px-4 py-3 rounded-2xl border transition-all duration-300 ${
           openclawUp === null ? 'bg-ax-panel/50 border-ax-border'
           : openclawUp ? 'bg-ax-green/10 border-ax-green/30'
@@ -133,13 +132,13 @@ function SidebarContent({ activeView, onNavigate, onClose }) {
             </span>
           </div>
           <p className="text-[10px] text-ax-dim mt-1.5 ml-4">
-            {openclawUp ? 'Her 30dk\'da görev alır' : 'Gateway yanıt vermiyor'}
+            {openclawUp ? 'Tek Telegram akışı · OpenClaw native' : 'Gateway yanıt vermiyor'}
           </p>
         </div>
       </div>
 
       {/* Theme Toggle */}
-      <div className="px-5 pb-6 pt-4 bg-ax-surface">
+      <div className="px-5 pb-6 pt-4 bg-ax-bg/35">
         <ThemeToggle />
       </div>
     </div>
@@ -155,7 +154,8 @@ export default function Sidebar({ activeView, onNavigate }) {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed top-5 left-5 z-50 p-2.5 rounded-xl ax-glass text-ax-dim shadow-xl md:hidden hover:text-ax-accent transition-colors"
+          className="fixed top-5 left-5 z-50 p-3 rounded-2xl ax-glass text-ax-dim shadow-xl md:hidden hover:text-ax-accent transition-colors"
+          aria-label="Menüyü aç"
         >
           <Menu size={20} />
         </button>
@@ -165,7 +165,7 @@ export default function Sidebar({ activeView, onNavigate }) {
       <div className={`fixed inset-0 z-50 transform ${open ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-400 ease-out md:hidden`}>
         <div className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-400 ${open ? 'opacity-100' : 'opacity-0'}`} onClick={() => setOpen(false)} />
         <aside className="relative w-72 h-full">
-          <button onClick={() => setOpen(false)} className="absolute top-5 right-5 p-2 text-ax-dim hover:text-ax-heading transition-colors z-20">
+          <button onClick={() => setOpen(false)} className="absolute top-5 right-5 p-2 text-ax-dim hover:text-ax-heading transition-colors z-20" aria-label="Menüyü kapat">
             <X size={20} />
           </button>
           <SidebarContent activeView={activeView} onNavigate={onNavigate} onClose={() => setOpen(false)} />
