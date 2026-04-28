@@ -2282,83 +2282,102 @@ function handleRequest(req, res) {
           return sendError(res, 500, 'Telegram ayarlanmamÄ±ÅŸ (env eksik)')
         }
 
-        // Respond immediately (UX). Telegram send is best-effort in background.
+        // Respond immediately (UX). MiniMax API call is best-effort in background.
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({ ok: true, queued: true }))
 
         const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`
 
-        // MiniMax API (Anthropic-compat) üzerinden Alfred'e ilet, cevabı Telegram'a gönder.
+        // MiniMax API ile Alfred yanıtı üret ve Telegram'a gönder
         try {
           const ctx = (text.split('\n')[0] || '').replace(/\r?\n/g, ' ').slice(0, 140)
 
-          // Anında "İşleniyor" mesajı gönder
-          const ackMsg = `🤖 Alfred — "${ctx}"\n\n⏳ İşleniyor...`
-          const ackData = JSON.stringify({ chat_id: chatId, text: ackMsg, disable_web_page_preview: true })
-          const reqAck = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(ackData) } }, (r) => { r.on('data', () => {}) })
-          reqAck.on('error', () => {}); reqAck.write(ackData); reqAck.end()
-
-          // MiniMax API key — ~/.openclaw/.env'den gelir (loadOpenclawEnv ile zaten yüklü)
-          const mmApiKey = process.env.MINIMAX_API_KEY || ''
-          const mmBaseUrl = 'https://api.minimax.io/anthropic'
-          const mmModel = 'MiniMax-M2.7'
-
-          if (!mmApiKey) {
-            logger.warn('MINIMAX_API_KEY env eksik, Alfred yanıt veremez')
+          // MINIMAX_API_KEY: systemd EnvironmentFile veya dashboard .env'den
+          const miniMaxKey = process.env.MINIMAX_API_KEY || ''
+          if (!miniMaxKey) {
+            logger.warn('MINIMAX_API_KEY bulunamadı, Alfred yanıt veremez')
+            // Sadece kullanıcı mesajını ilet
+            const echoMsg = `📩 Dashboard → Alfred:\n\n${text}\n\n⚠️ Alfred yanıt veremedi (API key eksik).`
+            const echoData = JSON.stringify({ chat_id: chatId, text: echoMsg, disable_web_page_preview: true })
+            const treqEcho = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(echoData) } }, (r) => { r.on('data', () => {}); })
+            treqEcho.on('error', () => {}); treqEcho.write(echoData); treqEcho.end()
             return
           }
 
-          const systemPrompt = `Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.`
-          const reqBody = JSON.stringify({
-            model: mmModel,
+          // Anında "İşleniyor" mesajı gönder
+          const ackMsg = `🤖 Alfred — "${ctx}"\n\n⏳ İşleniyor...`;
+          const ackData = JSON.stringify({ chat_id: chatId, text: ackMsg, disable_web_page_preview: true });
+          const reqAck = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(ackData) } }, (r) => { r.on('data', () => {}); });
+          reqAck.on('error', () => {}); reqAck.write(ackData); reqAck.end();
+
+          // MiniMax Anthropic-compat API çağrısı
+          const sysPrompt = "Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş."
+          const apiPayload = JSON.stringify({
+            model: 'MiniMax-M2.7',
             max_tokens: 1024,
-            system: systemPrompt,
-            messages: [{ role: 'user', content: text }]
+            system: sysPrompt,
+            messages: [{ role: 'user', content: text }],
           })
 
-          const mmOptions = {
-            hostname: 'api.minimax.io',
-            path: '/anthropic/v1/messages',
+          const apiReq = https.request('https://api.minimax.io/anthropic/v1/messages', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${mmApiKey}`,
+              'Authorization': `Bearer ${miniMaxKey}`,
               'anthropic-version': '2023-06-01',
-              'Content-Length': Buffer.byteLength(reqBody)
-            }
-          }
-
-          const mmReq = https.request(mmOptions, (mmRes) => {
-            let body = ''
-            mmRes.on('data', chunk => { body += chunk })
-            mmRes.on('end', () => {
+              'Content-Length': Buffer.byteLength(apiPayload),
+            },
+          }, (apiRes) => {
+            let raw = ''
+            apiRes.on('data', (c) => { raw += c })
+            apiRes.on('end', () => {
               let reply = ''
               try {
-                const parsed = JSON.parse(body)
-                const textBlock = (parsed?.content || []).find(b => b.type === 'text')
-                reply = textBlock?.text || parsed?.error?.message || body.slice(0, 500)
-              } catch (_) {
-                reply = body.slice(0, 500)
+                const j = JSON.parse(raw || '{}')
+                const textBlock = (j.content || []).find(b => b.type === 'text')
+                reply = (textBlock || {}).text || j?.error?.message || ''
+              } catch (e) {
+                reply = `❌ API yanıt parse hatası: ${e.message}`
+              }
+
+              if (!reply.trim()) {
+                reply = apiRes.statusCode !== 200
+                  ? `❌ Alfred yanıt veremedi (HTTP ${apiRes.statusCode}).`
+                  : '⚠️ Alfred boş yanıt döndürdü.'
               }
               reply = reply.trim().slice(0, 3500)
-              if (!reply) reply = '⚠️ Alfred boş yanıt döndürdü.'
 
+              // Cevabı Telegram'a gönder
               const msg2 = `🤖 Alfred — "${ctx}"\n\n${reply}`
               const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
-              const treq2 = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data2) } }, (r2) => {
-                r2.on('data', () => {})
-                r2.on('end', () => { if (r2.statusCode !== 200) logger.warn('Telegram API error (Alfred reply)', { statusCode: r2.statusCode }) })
+              const treq2 = https.request(tgUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data2) }
+              }, (tres2) => {
+                tres2.on('data', () => {})
+                tres2.on('end', () => {
+                  if (tres2.statusCode !== 200) logger.warn('Telegram API error (Alfred reply)', { statusCode: tres2.statusCode })
+                })
               })
               treq2.setTimeout(5000, () => treq2.destroy(new Error('telegram timeout')))
               treq2.on('error', (err) => logger.warn('Telegram send error (Alfred reply)', { error: err.message }))
-              treq2.write(data2); treq2.end()
+              treq2.write(data2)
+              treq2.end()
             })
           })
-          mmReq.setTimeout(30000, () => mmReq.destroy(new Error('minimax timeout')))
-          mmReq.on('error', (err) => logger.warn('MiniMax API hatası', { error: err.message }))
-          mmReq.write(reqBody); mmReq.end()
+          apiReq.setTimeout(30000, () => apiReq.destroy(new Error('MiniMax API timeout')))
+          apiReq.on('error', (err) => {
+            logger.warn('MiniMax API error', { error: err.message })
+            // Timeout/hata durumunda bilgilendir
+            const errMsg = `📩 Dashboard → Alfred:\n\n${text}\n\n⏱️ Alfred yanıt veremedi: ${err.message}`
+            const errData = JSON.stringify({ chat_id: chatId, text: errMsg, disable_web_page_preview: true })
+            const treqErr = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(errData) } }, (r) => { r.on('data', () => {}); })
+            treqErr.on('error', () => {}); treqErr.write(errData); treqErr.end()
+          })
+          apiReq.write(apiPayload)
+          apiReq.end()
         } catch (e) {
-          logger.warn('Alfred mesaj iletim hatası', { error: e.message })
+          logger.warn('Alfred message handler error', { error: e.message })
         }
       } catch (jsonErr) {
         sendError(res, 400, 'GeÃ§ersiz JSON formatÄ±', { details: jsonErr.message })

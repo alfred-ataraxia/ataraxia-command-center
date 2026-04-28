@@ -23,6 +23,7 @@ FinalKillSignal=SIGKILL
 # Environment
 Environment=NODE_ENV=production
 EnvironmentFile=-/home/sefa/alfred-hub/command-center/dashboard/.env
+EnvironmentFile=-/home/sefa/.openclaw/.env
 
 # Stdout/Stderr logging
 StandardOutput=journal
