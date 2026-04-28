@@ -2288,90 +2288,62 @@ function handleRequest(req, res) {
 
         const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`
 
-        // MiniMax API ile Alfred yanıtı üret ve Telegram'a gönder
+        // MiniMax yerine doğrudan 'claude' CLI ile Alfred'e sor (Gerçek Alfred)
         try {
-          const ctx = (text.split('\n')[0] || '').replace(/\r?\n/g, ' ').slice(0, 140)
+          const { spawn } = require('child_process');
+          
+          const child = spawn('/usr/local/bin/claude', ['-p', text], {
+            stdio: ['ignore', 'pipe', 'pipe'],
+            timeout: 180000,
+            env: { ...process.env, HOME: '/home/sefa' }
+          });
 
-          // MINIMAX_API_KEY: systemd EnvironmentFile veya dashboard .env'den
-          const miniMaxKey = process.env.MINIMAX_API_KEY || ''
-          if (!miniMaxKey) {
-            logger.warn('MINIMAX_API_KEY bulunamadı, Alfred yanıt veremez')
-            // Sadece kullanıcı mesajını ilet
-            const echoMsg = `📩 Dashboard → Alfred:\n\n${text}\n\n⚠️ Alfred yanıt veremedi (API key eksik).`
-            const echoData = JSON.stringify({ chat_id: chatId, text: echoMsg, disable_web_page_preview: true })
-            const treqEcho = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(echoData) } }, (r) => { r.on('data', () => {}); })
-            treqEcho.on('error', () => {}); treqEcho.write(echoData); treqEcho.end()
-            return
-          }
+          let stdout = '';
+          let stderr = '';
 
-          // MiniMax Anthropic-compat API çağrısı
-          const sysPrompt = "Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş."
-          const apiPayload = JSON.stringify({
-            model: 'MiniMax-M2.7',
-            max_tokens: 1024,
-            system: sysPrompt,
-            messages: [{ role: 'user', content: text }],
-          })
+          child.stdout.on('data', (d) => { stdout += d; });
+          child.stderr.on('data', (d) => { stderr += d; });
 
-          const apiReq = https.request('https://api.minimax.io/anthropic/v1/messages', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${miniMaxKey}`,
-              'anthropic-version': '2023-06-01',
-              'Content-Length': Buffer.byteLength(apiPayload),
-            },
-          }, (apiRes) => {
-            let raw = ''
-            apiRes.on('data', (c) => { raw += c })
-            apiRes.on('end', () => {
-              let reply = ''
-              try {
-                const j = JSON.parse(raw || '{}')
-                const textBlock = (j.content || []).find(b => b.type === 'text')
-                reply = (textBlock || {}).text || j?.error?.message || ''
-              } catch (e) {
-                reply = `❌ API yanıt parse hatası: ${e.message}`
-              }
+          child.on('close', (code) => {
+            let reply = (stdout + '\n' + stderr).trim();
 
-              if (!reply.trim()) {
-                reply = apiRes.statusCode !== 200
-                  ? `❌ Alfred yanıt veremedi (HTTP ${apiRes.statusCode}).`
-                  : '⚠️ Alfred boş yanıt döndürdü.'
-              }
-              reply = reply.trim().slice(0, 3500)
+            if (!reply) {
+              reply = '⚠️ Alfred boş yanıt döndürdü. Yapılandırmayı kontrol edin.';
+            } else {
+              // ANSI temizliği
+              reply = reply.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '');
+            }
 
-              // Cevabı Telegram'a gönder
-              const msg2 = `🦇 ${reply}`
-              const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
-              const treq2 = https.request(tgUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data2) }
-              }, (tres2) => {
-                tres2.on('data', () => {})
-                tres2.on('end', () => {
-                  if (tres2.statusCode !== 200) logger.warn('Telegram API error (Alfred reply)', { statusCode: tres2.statusCode })
-                })
-              })
-              treq2.setTimeout(5000, () => treq2.destroy(new Error('telegram timeout')))
-              treq2.on('error', (err) => logger.warn('Telegram send error (Alfred reply)', { error: err.message }))
-              treq2.write(data2)
-              treq2.end()
-            })
-          })
-          apiReq.setTimeout(30000, () => apiReq.destroy(new Error('MiniMax API timeout')))
-          apiReq.on('error', (err) => {
-            logger.warn('MiniMax API error', { error: err.message })
-            // Timeout/hata durumunda bilgilendir
-            const errMsg = `📩 Dashboard → Alfred:\n\n${text}\n\n⏱️ Alfred yanıt veremedi: ${err.message}`
-            const errData = JSON.stringify({ chat_id: chatId, text: errMsg, disable_web_page_preview: true })
-            const treqErr = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(errData) } }, (r) => { r.on('data', () => {}); })
-            treqErr.on('error', () => {}); treqErr.write(errData); treqErr.end()
-          })
-          apiReq.write(apiPayload)
-          apiReq.end()
+            reply = reply.slice(0, 3500);
+
+            // Cevabı Telegram'a gönder
+            const msg2 = `🦇 ${reply}`;
+            const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true });
+            const treq2 = https.request(tgUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data2) }
+            }, (tres2) => {
+              tres2.on('data', () => {});
+              tres2.on('end', () => {
+                if (tres2.statusCode !== 200) logger.warn('Telegram API error (Alfred reply)', { statusCode: tres2.statusCode });
+              });
+            });
+            treq2.setTimeout(5000, () => treq2.destroy(new Error('telegram timeout')));
+            treq2.on('error', (err) => logger.warn('Telegram send error (Alfred reply)', { error: err.message }));
+            treq2.write(data2);
+            treq2.end();
+          });
+
+          child.on('error', (err) => {
+            logger.warn('Claude execution error', { error: err.message });
+            const errMsg = `📩 Dashboard → Alfred:\n\n${text}\n\n❌ Alfred hatası: ${err.message}`;
+            const errData = JSON.stringify({ chat_id: chatId, text: errMsg, disable_web_page_preview: true });
+            const treqErr = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(errData) } }, (r) => { r.on('data', () => {}); });
+            treqErr.on('error', () => {}); treqErr.write(errData); treqErr.end();
+          });
+
         } catch (e) {
-          logger.warn('Alfred message handler error', { error: e.message })
+          logger.warn('Alfred message handler error', { error: e.message });
         }
       } catch (jsonErr) {
         sendError(res, 400, 'GeÃ§ersiz JSON formatÄ±', { details: jsonErr.message })
