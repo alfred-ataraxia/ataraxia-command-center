@@ -24,6 +24,12 @@ const VIEWS = {
 
 export default function App() {
   const [activeView, setActiveView] = useState('overview')
+  const [viewKey, setViewKey] = useState(0)
+
+  const navigate = (id) => {
+    setActiveView(id)
+    setViewKey(k => k + 1)
+  }
 
   const View = VIEWS[activeView] ?? Overview
 
@@ -31,9 +37,11 @@ export default function App() {
     <ErrorBoundary>
       <ToastProvider>
         <div className="flex h-screen bg-ax-bg text-ax-text font-sans overflow-hidden">
-          <Sidebar activeView={activeView} onNavigate={setActiveView} />
+          <Sidebar activeView={activeView} onNavigate={navigate} />
           <main className="flex-1 overflow-y-auto relative z-10 pt-14 md:pt-0">
-            <View />
+            <div key={viewKey} className="view-enter">
+              <View />
+            </div>
           </main>
         </div>
       </ToastProvider>

@@ -102,7 +102,7 @@ function TaskCard({ task, onToggle, onDelete }) {
   }
 
   return (
-    <div className={`group rounded-2xl border transition-all duration-300 overflow-hidden ${
+    <div className={`group rounded-xl border transition-all duration-300 overflow-hidden ${
       expanded 
         ? 'bg-ax-muted border-ax-border shadow-[0_8px_30px_rgba(0,0,0,0.5)]' 
         : 'bg-ax-muted border-ax-border hover:border-ax-border hover:bg-ax-muted/60'
@@ -144,7 +144,7 @@ function TaskCard({ task, onToggle, onDelete }) {
         <button
           onClick={handleToggle}
           disabled={updating}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl border text-[11px] font-black uppercase tracking-widest shrink-0 transition-all duration-300 ${flow.btnClass} disabled:opacity-40 hover:-translate-y-0.5`}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl border text-[11px] font-semibold uppercase tracking-wider shrink-0 transition-all duration-300 ${flow.btnClass} disabled:opacity-40 hover:-translate-y-0.5`}
         >
           <RefreshCw size={12} className={updating ? 'animate-spin' : ''} />
           {flow.label}
@@ -271,7 +271,7 @@ function AddTaskForm({ onAdded }) {
           <div className="p-1.5 rounded-xl bg-ax-accent/10">
             <Plus size={14} className="text-ax-accent" />
           </div>
-          <h3 className="text-ax-heading text-sm font-black uppercase tracking-widest">Yeni Görev</h3>
+          <h3 className="text-ax-heading text-sm font-semibold uppercase tracking-wider">Yeni Görev</h3>
         </div>
         <button type="button" onClick={() => setOpen(false)} className="p-2 rounded-xl bg-ax-surface hover:bg-ax-muted/60 text-ax-dim transition-colors">
           <X size={14} />
@@ -349,12 +349,12 @@ function StatusSection({ status, tasks, onToggle, onDelete }) {
     <div className="space-y-4">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="group flex items-center gap-4 w-full p-4 rounded-2xl ax-glass border border-ax-border hover:border-ax-border hover:bg-ax-muted transition-all duration-300"
+        className="group flex items-center gap-4 w-full p-4 rounded-xl ax-glass border border-ax-border hover:border-ax-border hover:bg-ax-muted transition-all duration-300"
       >
         <div className={`p-2 rounded-xl ${config.bg} group-hover:scale-110 transition-transform duration-300`}>
           <StatusIcon size={16} className={`${config.iconClass}`} />
         </div>
-        <span className="text-sm font-black uppercase tracking-widest text-ax-heading flex-1 text-left">{config.label}</span>
+        <span className="text-sm font-semibold uppercase tracking-wider text-ax-heading flex-1 text-left">{config.label}</span>
         <span className={`px-3 py-1 rounded-lg border text-xs font-black ${config.badgeClass}`}>
           {tasks.length}
         </span>
@@ -369,7 +369,7 @@ function StatusSection({ status, tasks, onToggle, onDelete }) {
             <TaskCard key={task.id} task={task} onToggle={onToggle} onDelete={onDelete} />
           ))}
           {tasks.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-8 rounded-2xl border border-ax-border bg-ax-surface border-dashed">
+            <div className="flex flex-col items-center justify-center py-8 rounded-xl border border-ax-border bg-ax-surface border-dashed">
               <p className="text-xs text-ax-subtle font-mono uppercase tracking-widest">— Boş —</p>
             </div>
           )}
@@ -451,7 +451,7 @@ export default function TaskQueue() {
           <p className="text-[10px] font-mono font-bold uppercase text-ax-accent mb-2">İş Kuyruğu</p>
           <h1 className="text-2xl font-bold text-ax-heading tracking-tight">Görevler</h1>
         </div>
-        <div className="flex items-center gap-4 bg-ax-surface px-5 py-2.5 rounded-2xl border border-ax-border">
+        <div className="flex items-center gap-4 bg-ax-surface px-5 py-2.5 rounded-xl border border-ax-border">
           <div className="flex flex-col items-center">
             <span className="text-[10px] uppercase font-bold text-ax-dim tracking-widest mb-0.5">Aktif</span>
             <span className="text-lg font-black font-mono text-ax-amber">{stats.active}</span>
@@ -476,7 +476,7 @@ export default function TaskQueue() {
 
       {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 relative z-10">
-        <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-2xl ax-glass border border-ax-border focus-within:border-ax-accent/50 transition-all duration-300 group">
+        <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-xl ax-glass border border-ax-border focus-within:border-ax-accent/50 transition-all duration-300 group">
           <Search size={16} className="text-ax-subtle group-focus-within:text-ax-accent transition-colors" />
           <input
             type="text"
@@ -495,7 +495,7 @@ export default function TaskQueue() {
         <select
           value={priorityFilter}
           onChange={e => setPriorityFilter(e.target.value)}
-          className="px-4 py-3 rounded-2xl ax-glass border border-ax-border text-ax-text text-sm font-medium focus:outline-none hover:bg-ax-muted transition-colors cursor-pointer"
+          className="px-4 py-3 rounded-xl ax-glass border border-ax-border text-ax-text text-sm font-medium focus:outline-none hover:bg-ax-muted transition-colors cursor-pointer"
         >
           <option value="">Tüm öncelik</option>
           <option value="high">🔴 Yüksek</option>
@@ -506,7 +506,7 @@ export default function TaskQueue() {
         <select
           value={assigneeFilter}
           onChange={e => setAssigneeFilter(e.target.value)}
-          className="px-4 py-3 rounded-2xl ax-glass border border-ax-border text-ax-text text-sm font-medium focus:outline-none hover:bg-ax-muted transition-colors cursor-pointer"
+          className="px-4 py-3 rounded-xl ax-glass border border-ax-border text-ax-text text-sm font-medium focus:outline-none hover:bg-ax-muted transition-colors cursor-pointer"
         >
           <option value="">Tüm ajan</option>
           <option value="Alfred">🦊 Alfred</option>
@@ -520,7 +520,7 @@ export default function TaskQueue() {
 
         <button
           onClick={() => setHideDone(!hideDone)}
-          className={`px-5 py-3 rounded-2xl border text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+          className={`px-5 py-3 rounded-xl border text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
             hideDone
               ? 'bg-ax-accent/15 border-ax-accent/30 text-ax-accent'
               : 'ax-glass border-ax-border text-ax-dim hover:text-ax-text'

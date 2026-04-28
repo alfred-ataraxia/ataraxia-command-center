@@ -2214,6 +2214,82 @@ function handleRequest(req, res) {
     return
   }
 
+  // API: ask Alfred synchronously — returns reply directly to dashboard
+  if (url === '/api/alfred/ask' && req.method === 'POST') {
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('error', () => sendError(res, 400, 'Request alınamadı'))
+    req.on('end', async () => {
+      try {
+        if (!body) return sendError(res, 400, 'Request body boş')
+        const payload = JSON.parse(body)
+        const text = (payload?.text ?? '').toString().trim()
+        const history = Array.isArray(payload?.messages) ? payload.messages.slice(-8) : []
+        if (!text) return sendError(res, 400, 'text zorunlu')
+        if (text.length > 2000) return sendError(res, 400, 'text çok uzun (max 2000)')
+
+        const miniMaxKey = process.env.MINIMAX_API_KEY || ''
+        if (!miniMaxKey) return sendError(res, 500, 'MINIMAX_API_KEY eksik')
+
+        const messages = [...history, { role: 'user', content: text }]
+        const dateStr = new Date().toLocaleString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        let memoryContext = ''
+        try {
+          const mem1 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-master-memory.sh 8', { timeout: 5000 }).toString()
+          memoryContext = `\n\nKANONİK HAFIZA:\n${mem1.slice(0, 1500)}`
+        } catch (_) {}
+
+        const sysPrompt = `Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Kısa ve net yanıt ver. Türkçe konuş.\n\nZaman: ${dateStr}${memoryContext}`
+        const apiPayload = JSON.stringify({ model: 'MiniMax-M2.7', max_tokens: 1024, system: sysPrompt, messages })
+
+        const reply = await new Promise((resolve, reject) => {
+          const apiReq = https.request('https://api.minimax.io/anthropic/v1/messages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${miniMaxKey}`,
+              'anthropic-version': '2023-06-01',
+              'Content-Length': Buffer.byteLength(apiPayload),
+            },
+          }, (apiRes) => {
+            let raw = ''
+            apiRes.on('data', c => { raw += c })
+            apiRes.on('end', () => {
+              try {
+                const j = JSON.parse(raw || '{}')
+                const tb = (j.content || []).find(b => b.type === 'text')
+                resolve((tb?.text || j?.error?.message || '⚠️ Boş yanıt.').trim())
+              } catch (e) { resolve(`❌ Parse hatası: ${e.message}`) }
+            })
+          })
+          apiReq.setTimeout(45000, () => { apiReq.destroy(); reject(new Error('MiniMax timeout (45s)')) })
+          apiReq.on('error', reject)
+          apiReq.write(apiPayload)
+          apiReq.end()
+        })
+
+        // Also forward to Telegram (fire-and-forget)
+        const botToken = process.env.TELEGRAM_BOT_TOKEN
+        const chatId = process.env.TELEGRAM_CHAT_ID
+        if (botToken && chatId) {
+          const tgMsg = JSON.stringify({ chat_id: chatId, text: `🦇 ${reply.slice(0, 3500)}`, disable_web_page_preview: true })
+          const tgReq = https.request(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(tgMsg) }
+          }, r => { r.on('data', () => {}) })
+          tgReq.on('error', () => {})
+          tgReq.write(tgMsg); tgReq.end()
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ ok: true, reply: reply.slice(0, 3500) }))
+      } catch (e) {
+        logger.warn('alfred/ask error', { error: e.message })
+        sendError(res, 500, `Alfred yanıt veremedi: ${e.message}`)
+      }
+    })
+    return
+  }
+
   // API: send a message to Alfred (Telegram DM to your own chat)
   if (url === '/api/alfred/message' && req.method === 'POST') {
     let body = ''
@@ -2308,8 +2384,8 @@ function handleRequest(req, res) {
           const dateStr = new Date().toLocaleString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
           let memoryContext = ""
           try {
-            const mem1 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-master-memory.sh 30').toString()
-            const mem2 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh 20').toString()
+            const mem1 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-master-memory.sh 10').toString()
+            const mem2 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh 10').toString()
             memoryContext = `\n\nKANONİK HAFIZA (Özet):\n${mem1}\n\nSON NOTLAR:\n${mem2}`
           } catch (e) {
             memoryContext = `\n\n(Hafıza okunamadı: ${e.message})`

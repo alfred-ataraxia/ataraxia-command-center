@@ -240,3 +240,32 @@ To https://github.com/alfred-ataraxia/ataraxia-command-center.git
 [2026-04-28 02:05:11] Sistem snapshot alınıyor...
 [2026-04-28 02:05:12]   system-status.md OK
 [2026-04-28 02:05:12] Git commit hazırlanıyor...
+[master 2a86e51] chore: otomatik yedek — 2026-04-28 02:05
+ 32 files changed, 5570 insertions(+), 5469 deletions(-)
+ create mode 100644 alfred-memory/agent_prompts.md
+ mode change 100644 => 100755 cron/cleanup-orphans.sh
+ mode change 100644 => 100755 cron/compaction.sh
+ mode change 100644 => 100755 cron/cost-daily-check.sh
+ mode change 100644 => 100755 cron/cron-failure-alert.sh
+ mode change 100644 => 100755 cron/hourly-report.sh
+ mode change 100644 => 100755 cron/inbox-rotate.sh
+ mode change 100644 => 100755 cron/kaizen-worker.sh
+ mode change 100644 => 100755 cron/monday-review-trigger.sh
+ mode change 100644 => 100755 cron/morning-briefing.sh
+ mode change 100644 => 100755 cron/oom-guard.sh
+ mode change 100644 => 100755 cron/session-limiter.sh
+ mode change 100644 => 100755 cron/shared-notes-rotate.sh
+ mode change 100644 => 100755 cron/system-monitor.sh
+ mode change 100644 => 100755 cron/task-worker.sh
+ mode change 100644 => 100755 cron/token-audit.sh
+ mode change 100644 => 100755 cron/weekly-backup.sh
+ mode change 100644 => 100755 cron/weekly-report.sh
+ mode change 100644 => 100755 cron/wonderful.sh
+ create mode 100644 dashboard/test-openclaw.js
+ mode change 100644 => 100755 dashboard/vite-wrapper.cjs
+ mode change 100644 => 100755 telegram/test-telegram.sh
+[2026-04-28 02:05:12] Commit OK
+To https://github.com/alfred-ataraxia/ataraxia-command-center.git
+   41c0d1c..2a86e51  master -> master
+[2026-04-28 02:05:14] Push OK → GitHub
+[2026-04-28 02:05:14] === Yedekleme tamamlandı ===
