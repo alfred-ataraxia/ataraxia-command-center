@@ -2342,7 +2342,7 @@ function handleRequest(req, res) {
               reply = reply.trim().slice(0, 3500)
 
               // Cevabı Telegram'a gönder
-              const msg2 = `🤖 Alfred — "${ctx}"\n\n${reply}`
+              const msg2 = `🦇 ${reply}`
               const data2 = JSON.stringify({ chat_id: chatId, text: msg2, disable_web_page_preview: true })
               const treq2 = https.request(tgUrl, {
                 method: 'POST',
