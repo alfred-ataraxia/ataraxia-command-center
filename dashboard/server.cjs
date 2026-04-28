@@ -2306,7 +2306,16 @@ function handleRequest(req, res) {
 
           // MiniMax Anthropic-compat API çağrısı
           const dateStr = new Date().toLocaleString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-          const sysPrompt = `Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: ${dateStr}`
+          let memoryContext = ""
+          try {
+            const mem1 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-master-memory.sh 120').toString()
+            const mem2 = require('child_process').execSync('bash ' + require('os').homedir() + '/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh 80').toString()
+            memoryContext = `\n\nKANONİK HAFIZA (Aktif Bağlam):\n${mem1}\n\nSON NOTLAR:\n${mem2}`
+          } catch (e) {
+            memoryContext = `\n\n(Hafıza okunamadı: ${e.message})`
+          }
+          
+          const sysPrompt = `Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: ${dateStr}${memoryContext}`
           const apiPayload = JSON.stringify({
             model: 'MiniMax-M2.7',
             max_tokens: 1024,

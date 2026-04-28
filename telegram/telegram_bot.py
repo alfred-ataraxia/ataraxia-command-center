@@ -143,12 +143,23 @@ def call_claude(chat_id, prompt):
 
     import datetime
     import locale
+    import subprocess
+    import os
+    
     try: locale.setlocale(locale.LC_TIME, 'tr_TR.UTF-8')
     except: pass
     now = datetime.datetime.now()
     date_str = now.strftime("%d %B %Y %A, %H:%M")
     
-    system_prompt = f"Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: {date_str}"
+    memory_context = ""
+    try:
+        mem1 = subprocess.check_output(["bash", os.path.expanduser("~/.openclaw/workspace/memory/scripts/read-master-memory.sh"), "120"], text=True)
+        mem2 = subprocess.check_output(["bash", os.path.expanduser("~/.openclaw/workspace/memory/scripts/read-recent-shared-notes.sh"), "80"], text=True)
+        memory_context = f"\n\nKANONİK HAFIZA (Aktif Bağlam):\n{mem1}\n\nSON NOTLAR:\n{mem2}"
+    except Exception as e:
+        memory_context = f"\n\n(Hafıza okunamadı: {e})"
+    
+    system_prompt = f"Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: {date_str}{memory_context}"
 
     # Son MAX_HISTORY kadar konuşmayı gönder
     messages = CONVERSATIONS[chat_id][-(MAX_HISTORY * 2):]
