@@ -141,7 +141,14 @@ def call_claude(chat_id, prompt):
     if not api_key:
         return "❌ MiniMax API key bulunamadı. openclaw agents/alfred/agent/models.json kontrol edin."
 
-    system_prompt = "Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş."
+    import datetime
+    import locale
+    try: locale.setlocale(locale.LC_TIME, 'tr_TR.UTF-8')
+    except: pass
+    now = datetime.datetime.now()
+    date_str = now.strftime("%d %B %Y %A, %H:%M")
+    
+    system_prompt = f"Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: {date_str}"
 
     # Son MAX_HISTORY kadar konuşmayı gönder
     messages = CONVERSATIONS[chat_id][-(MAX_HISTORY * 2):]

@@ -2305,7 +2305,8 @@ function handleRequest(req, res) {
           }
 
           // MiniMax Anthropic-compat API çağrısı
-          const sysPrompt = "Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş."
+          const dateStr = new Date().toLocaleString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+          const sysPrompt = `Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş.\n\nMevcut Sistem Zamanı: ${dateStr}`
           const apiPayload = JSON.stringify({
             model: 'MiniMax-M2.7',
             max_tokens: 1024,
