@@ -2304,12 +2304,6 @@ function handleRequest(req, res) {
             return
           }
 
-          // Anında "İşleniyor" mesajı gönder
-          const ackMsg = `🤖 Alfred — "${ctx}"\n\n⏳ İşleniyor...`;
-          const ackData = JSON.stringify({ chat_id: chatId, text: ackMsg, disable_web_page_preview: true });
-          const reqAck = https.request(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(ackData) } }, (r) => { r.on('data', () => {}); });
-          reqAck.on('error', () => {}); reqAck.write(ackData); reqAck.end();
-
           // MiniMax Anthropic-compat API çağrısı
           const sysPrompt = "Sen Alfred'sin — Master Sefa'nın ikinci beyni ve orkestratörü. Batman'e Alfred ne ise, Sefa'ya sen osun: öngörücü, verimli, sadık. Kısa ve net yanıt ver. Türkçe konuş."
           const apiPayload = JSON.stringify({
