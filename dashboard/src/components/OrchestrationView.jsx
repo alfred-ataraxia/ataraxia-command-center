@@ -202,13 +202,14 @@ export default function OrchestrationView() {
 
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-bold text-ax-heading flex items-center gap-2">
-            <Bot size={18} className="text-ax-accent" /> Ajanlar
-          </h1>
-          <p className="text-xs text-ax-dim mt-0.5">
-            {activeAgents} aktif · {agents.length} toplam ajan
-          </p>
+        <div className="flex items-center gap-2">
+          <Bot size={18} className="text-ax-accent shrink-0" />
+          <div>
+            <h1 className="text-lg font-bold text-ax-heading">Ajanlar</h1>
+            <p className="text-xs text-ax-dim mt-0.5">
+              {activeAgents} aktif · {agents.length} toplam ajan
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={fetchData}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { CheckCircle2, XCircle, Clock, AlertTriangle, RefreshCw, ShieldCheck } from 'lucide-react'
+import { CheckCircle2, XCircle, Clock, RefreshCw, ShieldCheck } from 'lucide-react'
 import apiFetch from '../services/apiFetch'
 
 const RISK_STYLE = {
@@ -96,6 +96,7 @@ export default function ApprovalsView() {
     <div className="p-4 sm:p-6 space-y-5 max-w-3xl">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
+          <ShieldCheck size={18} className="text-ax-accent shrink-0" />
           <div>
             <h1 className="text-ax-heading text-xl font-bold tracking-tight">Onay Kuyruğu</h1>
             <p className="text-ax-dim text-sm mt-0.5">Ajan aksiyonları için insan onayı</p>
