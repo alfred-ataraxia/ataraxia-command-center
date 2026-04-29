@@ -22,8 +22,9 @@
 | S7-03 | İkinci Beyin şablon seti — daily, weekly, project, research, meeting, decision | 2 | ✅ Done | Gemini | B-069, 6 şablon oluşturuldu |
 | S7-04 | YAML metadata standardizasyonu — tüm vault dosyalarına status/aliases ekle | 2 | ✅ Done | Gemini | B-070, 74 dosya güncellendi |
 | S7-05 | MOC (Maps of Content) sayfaları — her alana Dataview indeks + ana MOC | 3 | ✅ Done | Codex | B-068, 11 indeks sayfası oluşturuldu |
-| S7-06 | Dashboard bileşen tutarlılığı — Memory/Agents/Automation/Logs/Approvals | 3 | 🔄 Devam ediyor | Claude | Yeni palette uyarlanıyor |
-| S7-07 | OpenViking Alfred hafıza pilotu — shadow/read-only kurulum | 3 | 🧪 Başladı | Codex | B-079; production context-engine değişmeyecek |
+| S7-06 | Dashboard bileşen tutarlılığı — Memory/Agents/Automation/Logs/Approvals | 3 | ✅ Done | Claude | Header normalizasyonu, AgentStatus dead code silindi, Territory Studio + Fathom HUD redesign — commit 8ca2268 |
+| S7-07 | OpenViking Alfred hafıza pilotu — shadow/read-only kurulum | 3 | 🔄 Devam ediyor | Codex | T-082/T-083/T-084 tamamlandı; KPI takip aşaması |
+| S7-08 | DeFi eylem geçmişi — Autopilot log dashboard | 2 | ✅ Done | Codex | T-074 tamamlandı; Autopilot sekmesine eylem özeti + neden dağılımı eklendi |
 
 ---
 

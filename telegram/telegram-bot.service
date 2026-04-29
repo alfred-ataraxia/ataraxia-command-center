@@ -7,9 +7,10 @@ Type=simple
 User=sefa
 WorkingDirectory=/home/sefa/alfred-hub/command-center/telegram
 ExecStart=/usr/bin/python3 /home/sefa/alfred-hub/command-center/telegram/telegram_bot.py
-Restart=always
+Restart=on-failure
 RestartSec=10
 Environment="PYTHONUNBUFFERED=1"
+Environment="ALFRED_LEGACY_TELEGRAM_BOT_MODE=disabled"
 
 [Install]
 WantedBy=multi-user.target

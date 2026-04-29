@@ -28,3 +28,12 @@ Kaynak: Piebald-AI/claude-code-system-prompts — agent-prompt-dream-memory-cons
 `/home/sefa/alfred-hub/scripts/ai-switch.sh` kalıcı olarak silindi.
 **Why:** Codex güncellemesini engelliyordu; hiçbir hook/cron referansı yoktu, kullanılmıyordu.
 **How to apply:** Bu dosyayı geri oluşturma veya arama — artık yok.
+
+## Kurulu Skill'ler (2026-04-28)
+
+`~/.claude/skills/` altında 18 skill mevcut:
+- **Resmi Anthropic:** frontend-design, docx, pdf, pptx, xlsx, algorithmic-art, canvas-design, slack-gif-creator, web-artifacts-builder, mcp-builder, webapp-testing, brand-guidelines, internal-comms, skill-creator
+- **3rd party:** ui-ux-pro-max (nextlevelbuilder), frontend-slides (zarazhangrui), huashu-design (alchaincyf)
+- **Custom:** session-restore
+
+Skill kurulum: SKILL.md dosyasını `~/.claude/skills/<name>/SKILL.md` olarak yaz. Güvenlik taraması: genel web erişimi yok, shell exec yok, LLM talimatlarını okuma.

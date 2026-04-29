@@ -1,10 +1,64 @@
 # Product Backlog — ataraxia
 
-**Son güncelleme:** 2026-04-28 · Codex · Sprint-07 aktif  
-**Gerçek açık:** OpenViking pilot + kalan dashboard işi + karar/blokaj işleri · **Tamamlanan/Geçersiz:** eski açık listenin büyük bölümü kapandı
+**Son güncelleme:** 2026-04-29 · Claude Sonnet 4.6 · Sprint-07 aktif  
+**Gerçek açık:** Sistem taraması (2026-04-29) + OpenViking pilot + dashboard derinliği
 
 Kanonik durum: `~/.openclaw/workspace/ALFRED_PROJECT_STATE.md`  
 Anlık icra kuyruğu: `TASKS.json`
+
+---
+
+## 🚨 Sistem Taraması — 2026-04-29 Bulguları
+
+### ✅ Anında Düzeltildi (bu session)
+
+| # | Öge | Açıklama |
+|---|-----|---------|
+| FIX-01 | DeFi APM dual-service çakışması | User + system systemd servisi aynı anda çalışıyordu (918 restart). User servisi devre dışı bırakıldı. |
+| FIX-02 | PM2 daemon gereksiz çalışıyordu | `pm2 kill` + startup disabled → ~42MB RAM geri |
+| FIX-03 | Dashboard dist stray JSX dosyaları | 7 adet tasarım dosyası dist/ içinden temizlendi |
+| FIX-04 | 1407 orphan session dosyası | ~/.openclaw/agents/alfred/sessions/ temizlendi → 20MB disk |
+| FIX-05 | aerodrome.ts getLogs block overflow | 1rpc.io 10000 blok limiti aşılıyordu → 5000'lik chunk'lara bölündü |
+| FIX-06 | session-retention.sh sadece `main` agent | Tüm agentları kapsayacak şekilde yeniden yazıldı |
+| FIX-07 | Pazar 21:00 çift cron yükü | vault-sync-weekly → 22:00'e kaydırıldı |
+| FIX-08 | OpenClaw gateway hafıza limiti yok | MemoryMax=1800M / MemoryHigh=1600M eklendi |
+| FIX-09 | OpenClaw gateway nightly restart yok | Haftalık Salı 04:30 restart cron'u eklendi |
+| FIX-10 | Mercer email-check 15dk/tur fazla sık | 30dk/tur'a düşürüldü |
+
+---
+
+### 🔴 Kritik — Karar Gerektirir
+
+| # | Öge | Puan | Durum | Açıklama |
+|---|-----|------|-------|---------|
+| B-080 | **DeFi APM LIVE MODE doğrulanmalı** | 1 | ❓ Sefa onayı | `.env` → `AUTOPILOT_EXECUTE=true`, `SIMULATE_ONLY=false`. Memory docs "simulateOnly=true" diyordu. Kasıtlı mı? |
+| B-081 | **BudgetBakers token yenileme otomasyonu** | 1 | Bekliyor | Token 2026-05-29'da doluyor. Takvim hatırlatması veya renewal cron gerekli. |
+
+---
+
+### 🟡 Mantık Hataları ve Eksikler
+
+| # | Öge | Puan | Durum | Açıklama |
+|---|-----|------|-------|---------|
+| B-082 | **Mercer agent hiç çalışmıyor** | 2 | Bekliyor | Tüm mercer job'ları `agentId: "alfred"`. Mercer kendi context'i ile hiç çağrılmıyor — cron'lar alfred üzerinden shell script çalıştırıyor. Gerçek mercer agent entegrasyonu planlanmalı. |
+| B-083 | **20-system-landscape.md eskimiş** | 1 | Bekliyor | 13 cron job yazıyor, şimdi 22. User-level defi-apm servisi hala aktif gösteriliyor. Güncellenecek. |
+| B-084 | **Orphan cron scriptleri** | 1 | Bekliyor | Hiçbir cron tarafından çağrılmayan: `hourly-report.sh`, `cost-daily-check.sh`, `monday-review-trigger.sh`, `inbox-rotate.sh`. Silinecek veya cron'a eklenecek. |
+| B-085 | **alfred-weekly-summary 440s → model optimize** | 2 | Bekliyor | Haftalık özet 7+ dakika sürüyor. Prompt sıkıştırılacak veya daha hafif model kullanılacak. |
+| B-086 | **T-074 DeFi autopilot eylem geçmişi** | 3 | Bekliyor | Dashboard'a autopilot action log sekmesi. Claude atanmış, pending. |
+| B-087 | **DeFi APM /api/widget endpoint** | 1 | Bekliyor | Dashboard Overview için DeFi widget endpoint mevcut ama kullanılmıyor. Entegre edilebilir. |
+| B-088 | **OpenClaw gateway haftalık restart cron test** | 1 | Bekliyor | FIX-09 eklendi ama test edilmedi. İlk Salı 04:30'da izlenecek. |
+
+---
+
+### 🟢 Sprint-08 Adayları
+
+| # | Öge | Puan | Öneri |
+|---|-----|------|-------|
+| B-089 | Dashboard — BudgetBakers Wallet widget | 3 | Overview'a hesap bakiyesi / bu ay harcama mini widget |
+| B-090 | DeFi APM RPC fallback | 2 | BASE_RPC tek noktaya bağımlı; Alchemy/Ankr fallback ekle |
+| B-091 | Mercer haftalık finansal özet Telegram | 2 | wallet-check.sh çıktısından haftalık PDF/metin raporu |
+| B-092 | OpenViking pilot devam (S7-07 / T-078) | 3 | Import adayları + test soruları — Gemini'ye atanmış |
+| B-093 | 20-system-landscape.md güncelle | 1 | Tüm aktif servisler, 22 cron, güncel durum |
 
 ---
 
@@ -52,7 +106,7 @@ Anlık icra kuyruğu: `TASKS.json`
 
 | # | Öge | Puan | Durum | Kaynak |
 |---|-----|------|-------|--------|
-| B-079 | OpenViking Alfred hafıza pilotu — production'a bağlamadan shadow/read-only deneme | 3 | 🧪 BAŞLADI 2026-04-28 | Sefa onayı; plan `docs/openviking-pilot.md` |
+| B-079 | OpenViking Alfred hafıza pilotu — production'a bağlamadan shadow/read-only deneme | 3 | 🔄 DEVAM 2026-04-29 | T-082 Dashboard health paneli tamam; T-083 koşullu pipeline entegrasyonu gerekli |
 | B-040 | Skill registry INDEX.md oluştur — mevcut 14 skill dizini + bağımlılıklar | 2 | ✅ DONE 2026-04-27 | ~/.openclaw/workspace/skills/INDEX.md — 13 skill, durum + bağımlılıklar |
 | B-041 | Alfred SOUL.md oluştur — kimlik, hafıza kuralları, rol tanımı | 1 | ✅ DONE 2026-04-25 | Robin analiz (SOUL.md eksik) |
 | B-042 | MAIT + Mercer SOUL.md oluştur | 1 | ✅ DONE 2026-04-26 | Alfred referans yapısı ile genişletildi (6 bölüm) |

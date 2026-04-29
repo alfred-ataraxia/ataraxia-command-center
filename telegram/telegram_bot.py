@@ -62,6 +62,7 @@ MASTER_ID = 963702150
 API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 LOGS_DIR = os.path.expanduser("~/openclaw/logs")
 os.makedirs(LOGS_DIR, exist_ok=True)
+OV_KPI_LOG = os.path.join(LOGS_DIR, "openviking-kpi.jsonl")
 
 # Konuşma geçmişi: chat_id -> [{"role": "user/assistant", "content": str}]
 CONVERSATIONS = {}
@@ -73,6 +74,17 @@ def log_msg(msg):
         with open(f"{LOGS_DIR}/telegram-bot.log", "a") as f:
             f.write(f"[{timestamp}] {msg}\n")
     except:
+        pass
+
+def log_ov_kpi_event(event):
+    try:
+        record = {
+            "ts": datetime.now().isoformat(),
+            **event
+        }
+        with open(OV_KPI_LOG, "a") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception:
         pass
 
 def openclaw_telegram_channel_enabled():
@@ -106,6 +118,51 @@ def sanitize_assistant_reply(reply):
     reply = re.sub(r'<[a-z_]+:[a-z_]+>.*?</[a-z_]+:[a-z_]+>', '', reply, flags=re.DOTALL | re.IGNORECASE)
     reply = re.sub(r'(?im)^\s*(Shell|Bash|Read|Write|Edit|Glob|Grep)\s*$', '', reply)
     return reply.strip()
+
+def is_memory_intent(text):
+    """Only trigger OpenViking adapter for memory-oriented requests."""
+    q = (text or "").lower()
+    patterns = [
+        r"\bhatırla\b", r"\bhatirla\b", r"\bnot\b", r"\bkaydet\b",
+        r"\bnerede\b", r"\bdurum\b", r"\bhangi port\b", r"\bportta\b", r"\bdashboard\b", r"\bproje\b",
+        r"\bobsidian\b", r"\bikinci-beyin\b", r"\bopenviking\b",
+        r"\bcron\b", r"\btasks\.json\b", r"\bbacklog\b", r"\bsprint\b"
+    ]
+    return any(re.search(p, q) for p in patterns)
+
+def query_openviking_memory(prompt):
+    """Dry-run OpenViking adapter call with strict timeout and confidence gate."""
+    adapter = "/home/sefa/.openviking-alfred-pilot/scripts/alfred-memory-query.sh"
+    if not os.path.exists(adapter):
+        return None
+    try:
+        proc = subprocess.run(
+            [adapter, prompt],
+            capture_output=True,
+            text=True,
+            timeout=3
+        )
+        if proc.returncode != 0:
+            return None
+        data = json.loads(proc.stdout or "{}")
+        if not data.get("ok"):
+            return None
+        confidence = data.get("confidence", "low")
+        if confidence not in ("high", "medium"):
+            return None
+        summary = (data.get("summary") or "").strip()
+        sources = data.get("sources") or []
+        if not summary:
+            return None
+        return {
+            "summary": summary[:1500],
+            "sources": sources[:3],
+            "confidence": confidence,
+            "elapsed_ms": data.get("elapsed_ms")
+        }
+    except Exception as e:
+        log_msg(f"OPENVIKING ADAPTER FALLBACK: {e}")
+        return None
 
 def _write_pid_file():
     try:
@@ -193,12 +250,33 @@ def call_claude(chat_id, prompt):
     except Exception as e:
         memory_context = f"\n\n(Hafıza okunamadı: {e})"
     
+    memory_intent = is_memory_intent(prompt)
+    memory_hint = ""
+    ov_used = False
+    ov_confidence = None
+    ov_elapsed_ms = None
+
+    if memory_intent:
+        ov = query_openviking_memory(prompt)
+        if ov:
+            ov_used = True
+            ov_confidence = ov.get("confidence")
+            ov_elapsed_ms = ov.get("elapsed_ms")
+            source_names = ", ".join(
+                [s.get("source", "unknown") for s in ov.get("sources", []) if isinstance(s, dict)]
+            ) or "unknown"
+            memory_hint = (
+                f"\n\nOPENVIKING DRY-RUN HAFIZA KONTEXTİ "
+                f"(confidence={ov.get('confidence')}, elapsed={ov.get('elapsed_ms')}ms, sources={source_names}):\n"
+                f"{ov.get('summary')}\n"
+            )
+
     system_prompt = (
         f"Sen Alfred'sin — Master Sefa'nın kişisel asistanı. "
         f"Sade, kısa ve net Türkçe yanıt ver. "
         f"ASLA XML, JSON, tool_call, invoke, Shell, Bash veya kod bloğu kullanma. "
         f"Sadece düz metin yaz. Tek görevin konuşmak.\n\n"
-        f"Zaman: {date_str}{memory_context}"
+        f"Zaman: {date_str}{memory_context}{memory_hint}"
     )
 
     # Son MAX_HISTORY kadar konuşmayı gönder
@@ -229,6 +307,14 @@ def call_claude(chat_id, prompt):
             return "⚠️ Alfred boş yanıt döndürdü."
 
         reply = sanitize_assistant_reply(reply)
+        blocked = not bool(reply)
+        log_ov_kpi_event({
+            "memory_intent": memory_intent,
+            "ov_used": ov_used,
+            "ov_confidence": ov_confidence,
+            "ov_elapsed_ms": ov_elapsed_ms,
+            "reply_blocked": blocked
+        })
         if not reply:
             return "⚠️ Alfred araç çağrısı üretmeye çalıştı; Telegram'da çalıştırmadım."
 

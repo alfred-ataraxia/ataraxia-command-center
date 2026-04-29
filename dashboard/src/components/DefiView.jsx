@@ -656,6 +656,23 @@ export default function DefiView() {
   const portfolioUsd = typeof portfolio?.totalBalanceUsd === 'number' ? portfolio.totalBalanceUsd : null
   const ethUsd = typeof portfolio?.ethUsdPrice === 'number' ? portfolio.ethUsdPrice : null
   const pendingApprovals = actions.filter(a => String(a.status || '').toUpperCase() === 'PROPOSED').length
+  const actionStatusSummary = actions.reduce((acc, action) => {
+    const status = String(action?.status || '').toUpperCase()
+    if (!status) return acc
+    acc[status] = (acc[status] || 0) + 1
+    return acc
+  }, {})
+  const skippedCount = (actionStatusSummary.SKIPPED || 0) + (actionStatusSummary.NONE || 0)
+  const executedCount = (actionStatusSummary.EXECUTED || 0) + (actionStatusSummary.DONE || 0) + (actionStatusSummary.APPROVED || 0)
+  const reasonSummary = actions.reduce((acc, action) => {
+    const reason = action?.details?.reason || action?.details?.decision?.reason
+    if (!reason) return acc
+    acc[reason] = (acc[reason] || 0) + 1
+    return acc
+  }, {})
+  const topReasons = Object.entries(reasonSummary)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
   const summary = buildSystemSummary({
     error,
     isDataStale,
@@ -951,6 +968,38 @@ export default function DefiView() {
           <div className="mb-4 p-3 rounded-xl border border-ax-border bg-ax-surface text-[11px] text-ax-dim font-mono relative z-10 shadow-inner">
             Bu liste sistemin ne denedigini gosterir. `SKIPPED / NONE / no_candidates` hata degil; kurallara uyan aday bulunamadigi anlamina gelir.
           </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 relative z-10">
+            <div className="rounded-xl border border-ax-border bg-ax-surface p-3">
+              <div className="text-[10px] text-ax-dim uppercase tracking-widest font-bold">Toplam Aksiyon</div>
+              <div className="text-sm font-black font-mono text-ax-heading mt-1">{actions.length}</div>
+            </div>
+            <div className="rounded-xl border border-ax-border bg-ax-surface p-3">
+              <div className="text-[10px] text-ax-dim uppercase tracking-widest font-bold">Çalıştı</div>
+              <div className="text-sm font-black font-mono text-ax-green mt-1">{executedCount}</div>
+            </div>
+            <div className="rounded-xl border border-ax-border bg-ax-surface p-3">
+              <div className="text-[10px] text-ax-dim uppercase tracking-widest font-bold">Yapılmadı</div>
+              <div className="text-sm font-black font-mono text-ax-amber mt-1">{skippedCount}</div>
+            </div>
+            <div className="rounded-xl border border-ax-border bg-ax-surface p-3">
+              <div className="text-[10px] text-ax-dim uppercase tracking-widest font-bold">Son Çalışma</div>
+              <div className="text-[11px] font-mono text-ax-text mt-1 truncate">{formatDateTime(actions[0]?.timestamp)}</div>
+            </div>
+          </div>
+
+          {topReasons.length > 0 && (
+            <div className="mb-4 p-3 rounded-xl border border-ax-border bg-ax-surface relative z-10">
+              <div className="text-[10px] text-ax-dim uppercase tracking-widest font-bold mb-2">Yapılmama / Karar Nedenleri</div>
+              <div className="flex flex-wrap gap-2">
+                {topReasons.map(([reason, count]) => (
+                  <span key={reason} className="text-[10px] text-ax-amber bg-ax-amber/10 px-2 py-1 rounded border border-ax-amber/20 font-mono">
+                    {reason} · {count}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {!canApproveLive && (
             <div className="mb-4 p-3 rounded-xl bg-ax-red/5 border border-ax-red/20 text-[11px] text-ax-red font-mono relative z-10">

@@ -863,6 +863,9 @@ function handleRequest(req, res) {
     '/api/approvals',
     '/api/capture',
     '/api/alfred/message',
+    '/api/openviking/health',
+    '/api/openviking/query',
+    '/api/openviking/kpi',
     '/api/calendar',
   ]
 
@@ -1446,6 +1449,196 @@ function handleRequest(req, res) {
     } catch {}
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ files }))
+    return
+  }
+
+  // API: OpenViking pilot health (dry-run visibility only)
+  if (url === '/api/openviking/health' && req.method === 'GET') {
+    try {
+      const pilotRoot = path.join(os.homedir(), '.openviking-alfred-pilot')
+      const ovCli = path.join(pilotRoot, 'venv', 'bin', 'ov')
+      const statusFile = path.join(pilotRoot, 'reports', 't081-adapter-results.json')
+      const openvikingPidFile = path.join(pilotRoot, 'data', '.openviking.pid')
+      const embedPidFile = path.join(pilotRoot, 'embed-server.pid')
+
+      const run = (cmd) => {
+        try {
+          return execSync(cmd, { encoding: 'utf8', timeout: 4000 }).toString()
+        } catch (err) {
+          return (err && err.stdout ? err.stdout.toString() : '') || ''
+        }
+      }
+
+      const exists = fs.existsSync(ovCli)
+      const healthOut = exists ? run(`${ovCli} health 2>/dev/null || true`) : ''
+      const statusOut = exists ? run(`${ovCli} status 2>/dev/null || true`) : ''
+
+      const pidInfo = (pidPath) => {
+        try {
+          if (!fs.existsSync(pidPath)) return null
+          const pid = fs.readFileSync(pidPath, 'utf8').trim()
+          if (!pid) return null
+          const rss = run(`ps -o rss= -p ${pid} 2>/dev/null || true`).trim()
+          return { pid: Number(pid), rssKb: Number(rss) || null }
+        } catch {
+          return null
+        }
+      }
+
+      let lastScore = null
+      try {
+        if (fs.existsSync(statusFile)) {
+          const scoreRaw = JSON.parse(fs.readFileSync(statusFile, 'utf8'))
+          lastScore = {
+            passed: scoreRaw.passed ?? null,
+            total: scoreRaw.total ?? null,
+            p0Passed: scoreRaw.p0_passed ?? null,
+            p0Total: scoreRaw.p0_total ?? null,
+            avgElapsedMs: scoreRaw.avg_elapsed_ms ?? null,
+          }
+        }
+      } catch {}
+
+      const queue = { pending: null, errors: null }
+      try {
+        const pendingMatches = [...statusOut.matchAll(/\|\s+([A-Za-z-]+)\s+\|\s+(\d+)\s+\|\s+(\d+)\s+\|\s+(\d+)\s+\|\s+(\d+)\s+\|\s+(\d+)\s+\|/g)]
+        let pendingSum = 0
+        let errorSum = 0
+        for (const match of pendingMatches) {
+          const queueName = match[1]
+          if (queueName === 'TOTAL') continue
+          pendingSum += Number(match[2]) || 0
+          errorSum += Number(match[6]) || 0
+        }
+        queue.pending = pendingSum
+        queue.errors = errorSum
+      } catch {}
+
+      sendSuccess(res, {
+        ok: true,
+        pilotRoot,
+        openvikingCli: exists,
+        health: healthOut.trim(),
+        queue,
+        lastScore,
+        processes: {
+          openviking: pidInfo(openvikingPidFile),
+          embedding: pidInfo(embedPidFile),
+        },
+        timestamp: new Date().toISOString(),
+      })
+    } catch (err) {
+      sendError(res, 500, 'OpenViking health okunamadı', { details: err.message })
+    }
+    return
+  }
+
+  // API: OpenViking dry-run memory query via adapter
+  if (url === '/api/openviking/query' && req.method === 'POST') {
+    let body = ''
+    req.on('data', (chunk) => { body += chunk })
+    req.on('end', () => {
+      try {
+        const payload = body ? JSON.parse(body) : {}
+        const query = (payload?.query || '').toString().trim()
+        if (!query) return sendError(res, 400, 'query zorunlu')
+        if (query.length > 500) return sendError(res, 400, 'query çok uzun (max 500)')
+
+        const adapter = path.join(os.homedir(), '.openviking-alfred-pilot', 'scripts', 'alfred-memory-query.sh')
+        if (!fs.existsSync(adapter)) return sendError(res, 404, 'OpenViking adapter bulunamadı')
+
+        const escaped = query.replace(/"/g, '\\"')
+        const raw = execSync(`${adapter} "${escaped}"`, { encoding: 'utf8', timeout: 6000 }).toString()
+        const result = JSON.parse(raw)
+
+        // Extra defense: never return token-like values from this endpoint
+        const serialized = JSON.stringify(result)
+        if (/sk-[A-Za-z0-9_-]{12,}/.test(serialized)) {
+          return sendError(res, 500, 'Güvenlik filtresi tetiklendi')
+        }
+
+        sendSuccess(res, {
+          ok: true,
+          result,
+          timestamp: new Date().toISOString(),
+        })
+      } catch (err) {
+        sendError(res, 500, 'OpenViking dry-run sorgu hatası', { details: err.message })
+      }
+    })
+    return
+  }
+
+  if (url === '/api/openviking/kpi' && req.method === 'GET') {
+    try {
+      const file = path.join(os.homedir(), 'openclaw', 'logs', 'openviking-kpi.jsonl')
+      const daysRaw = Number(new URL(req.url, 'http://localhost').searchParams.get('days') || 7)
+      const days = Number.isFinite(daysRaw) ? Math.min(Math.max(daysRaw, 1), 30) : 7
+      const since = Date.now() - (days * 24 * 60 * 60 * 1000)
+      const metrics = {
+        windowDays: days,
+        totalEvents: 0,
+        memoryIntentEvents: 0,
+        ovUsedEvents: 0,
+        ovFallbackEvents: 0,
+        fallbackRatePct: null,
+        replyBlockedEvents: 0,
+        replyBlockedRatePct: null,
+        p95LatencyMs: null,
+        confidence: { high: 0, medium: 0, low: 0, unknown: 0 }
+      }
+
+      if (!fs.existsSync(file)) {
+        return sendSuccess(res, { ok: true, metrics, timestamp: new Date().toISOString() })
+      }
+
+      const lines = fs.readFileSync(file, 'utf8').split('\n').filter(Boolean)
+      const latencies = []
+      for (const line of lines) {
+        let row
+        try {
+          row = JSON.parse(line)
+        } catch {
+          continue
+        }
+        const ts = Date.parse(row.ts || '')
+        if (!Number.isFinite(ts) || ts < since) continue
+        metrics.totalEvents += 1
+        if (row.memory_intent) {
+          metrics.memoryIntentEvents += 1
+          if (row.ov_used) {
+            metrics.ovUsedEvents += 1
+          } else {
+            metrics.ovFallbackEvents += 1
+          }
+        }
+        if (row.reply_blocked) metrics.replyBlockedEvents += 1
+        const conf = (row.ov_confidence || 'unknown').toString().toLowerCase()
+        if (Object.prototype.hasOwnProperty.call(metrics.confidence, conf)) {
+          metrics.confidence[conf] += 1
+        } else {
+          metrics.confidence.unknown += 1
+        }
+        const latency = Number(row.ov_elapsed_ms)
+        if (Number.isFinite(latency) && latency > 0) latencies.push(latency)
+      }
+
+      if (metrics.memoryIntentEvents > 0) {
+        metrics.fallbackRatePct = Number(((metrics.ovFallbackEvents / metrics.memoryIntentEvents) * 100).toFixed(1))
+      }
+      if (metrics.totalEvents > 0) {
+        metrics.replyBlockedRatePct = Number(((metrics.replyBlockedEvents / metrics.totalEvents) * 100).toFixed(2))
+      }
+      if (latencies.length > 0) {
+        latencies.sort((a, b) => a - b)
+        const idx = Math.min(latencies.length - 1, Math.ceil(latencies.length * 0.95) - 1)
+        metrics.p95LatencyMs = Math.round(latencies[idx])
+      }
+
+      sendSuccess(res, { ok: true, metrics, timestamp: new Date().toISOString() })
+    } catch (err) {
+      sendError(res, 500, 'OpenViking KPI okunamadı', { details: err.message })
+    }
     return
   }
 

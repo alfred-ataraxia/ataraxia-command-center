@@ -1380,7 +1380,7 @@
     {
       "id": "T-074",
       "title": "DeFi eylem geçmişi — Autopilot log dashboard",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "assignee": "Claude",
       "tags": [
@@ -1389,7 +1389,24 @@
       ],
       "points": 3,
       "created_at": "2026-04-27T19:26:25.459Z",
-      "description": "DefiView Autopilot sekmesine eylem geçmişi: autopilot ne zaman çalıştı, ne yaptı/yapmadı, neden. DeFi APM log parse."
+      "description": "DefiView Autopilot sekmesine eylem geçmişi: autopilot ne zaman çalıştı, ne yaptı/yapmadı, neden. DeFi APM log parse.",
+      "started_at": "2026-04-29T18:10:02.417685+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-29T18:10:02.417685+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-29T18:11:07.072271+03:00"
+        }
+      ],
+      "completed_at": "2026-04-29T18:11:07.072271+03:00",
+      "notes": [
+        "DefiView Autopilot sekmesine eylem geçmişi özeti eklendi: toplam/çalıştı/yapılmadı/son çalışma + reason dağılımı; mevcut aksiyon/event listesi korunarak görünürlük artırıldı. Dashboard build geçti."
+      ]
     },
     {
       "id": "T-075",
@@ -1490,9 +1507,9 @@
     {
       "id": "T-078",
       "title": "OpenViking read-only import adayları + test soruları",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
-      "assignee": "Gemini",
+      "assignee": "Codex",
       "tags": [
         "openviking",
         "obsidian",
@@ -1501,8 +1518,259 @@
       ],
       "points": 2,
       "created_at": "2026-04-28T20:27:30.499302Z",
-      "description": "Kanonik memory ve Obsidian vault içinden güvenli import adaylarını listele; secret hariç tutma kuralları ve Alfred retrieval test soru seti hazırla."
+      "description": "Kanonik memory ve Obsidian vault içinden güvenli import adaylarını listele; secret hariç tutma kuralları ve Alfred retrieval test soru seti hazırla.",
+      "notes": [
+        "2026-04-29: Sefa isteğiyle Codex devraldı; Gemini yerine bu oturumda hazırlanıyor.",
+        "OpenViking read-only import adayları ve retrieval test seti hazırlandı. candidates.md içinde kanonik memory + Obsidian öncelik listesi ve secret exclusion kuralları var; t078-retrieval-testset.md içinde 10 test sorusu ve geçme kriteri var. Tarama sırasında runtime config secret içerdiği görüldü; dosya import dışı bırakıldı ve izinleri 600/700 yapıldı."
+      ],
+      "started_at": "2026-04-29T12:33:59.624692+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-29T12:33:59.624692+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-29T12:36:56.042628+03:00"
+        }
+      ],
+      "completed_at": "2026-04-29T12:36:56.042628+03:00"
+    },
+    {
+      "id": "T-079",
+      "title": "OpenViking retrieval skorlaması ve Faz 5 kararı",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Codex",
+      "tags": [
+        "openviking",
+        "memory",
+        "retrieval",
+        "pilot"
+      ],
+      "points": 2,
+      "created_at": "2026-04-29T09:52:11.198835Z",
+      "description": "T-078 test setindeki 10 soruyu ov find ile çalıştır; doğru kaynak/top-k/latency/queue durumunu raporla. Production contextEngine değişikliği yapma; Faz 5 kararı için öneri üret.",
+      "started_at": "2026-04-29T12:52:11.379208+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-29T12:52:11.379208+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-29T13:02:51.550919+03:00"
+        }
+      ],
+      "completed_at": "2026-04-29T13:02:51.550919+03:00",
+      "notes": [
+        "OpenViking retrieval skorlaması tamamlandı. T-078 test seti ov find ile ölçüldü: strict 7/10, queue 0 pending/0 error, latency ortalama yaklaşık 495ms. Sonuç production contextEngine için yetersiz; T-080 hybrid retrieval prototipi sıraya eklendi."
+      ]
+    },
+    {
+      "id": "T-080",
+      "title": "OpenViking hybrid retrieval prototipi",
+      "status": "done",
+      "priority": "high",
+      "assignee": "Codex",
+      "tags": [
+        "openviking",
+        "memory",
+        "retrieval",
+        "prototype"
+      ],
+      "points": 3,
+      "created_at": "2026-04-29T10:02:24.171631Z",
+      "description": "T-079 sonucu 7/10 kaldı. Pilot içinde production dışı hybrid retrieval wrapper yaz: routing/grep -> scoped find -> global find. 10 test sorusunda hedef 8/10+ ve P0 tamamı doğru; OpenClaw contextEngine değiştirme.",
+      "started_at": "2026-04-29T13:42:18.239849+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-29T13:42:18.239849+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-29T13:45:52.702539+03:00"
+        }
+      ],
+      "completed_at": "2026-04-29T13:45:52.702539+03:00",
+      "notes": [
+        "Hybrid retrieval prototipi tamamlandı. scripts/hybrid-retrieve.py ve run-hybrid-tests.py eklendi; T-078 test setinde 10/10, P0 5/5 geçti. Production contextEngine değiştirilmedi; T-081 Alfred memory adapter entegrasyon tasarımı sıraya eklendi."
+      ]
+    },
+    {
+      "id": "T-081",
+      "title": "OpenViking Alfred memory adapter entegrasyon tasarımı",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Codex",
+      "tags": [
+        "openviking",
+        "alfred",
+        "memory",
+        "adapter"
+      ],
+      "points": 3,
+      "created_at": "2026-04-29T10:45:27.032022Z",
+      "description": "T-080 hybrid retrieval 10/10 geçti. Production contextEngine değiştirmeden alfred-memory-query.sh adapter tasarla/uygula; output summary/sources/confidence/raw_uris olsun. Telegram/Alfred pipeline entegrasyonu için önce dry-run ve dashboard Memory health önerisi üret.",
+      "started_at": "2026-04-29T13:47:54.061622+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-29T13:47:54.061622+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-29T13:50:22.055570+03:00"
+        }
+      ],
+      "completed_at": "2026-04-29T13:50:22.055570+03:00",
+      "notes": [
+        "Alfred memory adapter dry-run tamamlandı. alfred-memory-query.py/sh eklendi; JSON output summary/sources/confidence/raw_uris formatında. 10/10 test, P0 5/5 ve secret leak kontrolü 10/10 güvenli. Production contextEngine ve Alfred Telegram pipeline değişmedi; T-082 Dashboard MemoryView health paneli sıraya eklendi."
+      ]
+    },
+    {
+      "id": "T-082",
+      "title": "Dashboard MemoryView OpenViking pilot health paneli",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Codex",
+      "tags": [
+        "dashboard",
+        "openviking",
+        "memory",
+        "pilot"
+      ],
+      "points": 3,
+      "created_at": "2026-04-29T10:49:51.020114Z",
+      "description": "T-081 adapter 10/10 dry-run geçti. Production Alfred pipeline yerine önce Dashboard MemoryView içine OpenViking health + son skor + dry-run query paneli ekle. Secret gösterme; endpoint timeout/fallback korumalı olsun.",
+      "completed_at": "2026-04-29T13:59:00.090263+03:00",
+      "notes": [
+        "Dashboard MemoryView için OpenViking pilot health ve dry-run query paneli eklendi. server.cjs tarafında /api/openviking/health ve /api/openviking/query endpointleri yazıldı; MemoryView üzerinde health/skor kartı ve sorgu formu bağlandı. Build başarılı; production contextEngine ve Telegram pipeline değiştirilmedi."
+      ],
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "done",
+          "at": "2026-04-29T13:59:00.090263+03:00"
+        }
+      ]
+    },
+    {
+      "id": "T-083",
+      "title": "Alfred Telegram pipeline koşullu OpenViking dry-run entegrasyonu",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Codex",
+      "tags": [
+        "openviking",
+        "alfred",
+        "telegram",
+        "memory"
+      ],
+      "points": 3,
+      "created_at": "2026-04-29T10:58:59.961597Z",
+      "description": "Sadece hafıza niyetli mesajlarda alfred-memory-query.sh çağıran koşullu adapter katmanı ekle. Timeout/fallback ve confidence gate içersin. Production contextEngine değişmesin.",
+      "started_at": "2026-04-29T14:00:22.176767+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-29T14:00:22.176767+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-29T14:02:46.786594+03:00"
+        }
+      ],
+      "completed_at": "2026-04-29T14:02:46.786594+03:00",
+      "notes": [
+        "Intent-gated OpenViking dry-run adapter telegram_bot.py içine eklendi; timeout/fallback + confidence gate aktif; py_compile ve dry-run testleri geçti."
+      ]
+    },
+    {
+      "id": "T-084",
+      "title": "OpenViking KPI metrik endpoint ve dashboard kartı",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "Codex",
+      "tags": [
+        "openviking",
+        "kpi",
+        "dashboard",
+        "telegram"
+      ],
+      "points": 3,
+      "created_at": "2026-04-29T12:23:08.530512Z",
+      "description": "Telegram OpenViking kullanımından KPI türet: recall proxy, fallback rate, P95 latency ve confidence dağılımını /api/openviking/kpi endpointi ve MemoryView KPI kartında göster.",
+      "started_at": "2026-04-29T15:23:08.671569+03:00",
+      "status_history": [
+        {
+          "from": "pending",
+          "to": "in_progress",
+          "at": "2026-04-29T15:23:08.671569+03:00"
+        },
+        {
+          "from": "in_progress",
+          "to": "done",
+          "at": "2026-04-29T15:24:48.297841+03:00"
+        }
+      ],
+      "completed_at": "2026-04-29T15:24:48.297841+03:00",
+      "notes": [
+        "OpenViking KPI event log + /api/openviking/kpi endpoint + MemoryView KPI kartı eklendi. py_compile, node --check ve dashboard build geçti."
+      ]
+    },
+    {
+      "id": "T-085",
+      "title": "OpenClaw Telegram performans stabilizasyonu",
+      "status": "pending",
+      "priority": "high",
+      "assignee": "Codex",
+      "tags": [
+        "openclaw",
+        "telegram",
+        "performance",
+        "ops"
+      ],
+      "points": 3,
+      "created_at": "2026-04-29T22:03:55+03:00",
+      "description": "OpenClaw Telegram gecikmesini P0 olarak stabilize et. Plan: docs/openclaw-telegram-latency-plan.md. İlk fazda model fallback sırasını düşük gecikme ve quota-safe hale getir, status intentleri için LLM'e girmeyen hızlı yol tasarla/uygula, gateway restart sonrası RSS/CPU/health/Telegram callback davranışını 10 dakika izle.",
+      "notes": [
+        "Ön tanıda root nedenler: openclaw-gateway yüksek CPU/RSS, cron missed-job çakışması, legacy telegram_bot.py root servisi ve mDNS advertiser döngüsü. İlk hafifletmeler uygulandı; root service disable ve kontrollü gateway restart doğrulaması kaldı.",
+        "2026-04-29 22:40 canlı tanı: gateway health 5 ms, legacy bot yok; gecikme LLM/model katmanında. Logda openai-codex/gpt-5.4 fallback ChatGPT usage limitine çarptı, session lock 30 sn+ sürdü. P0 plan docs/openclaw-telegram-latency-plan.md içine yazıldı."
+      ]
+    },
+    {
+      "id": "T-086",
+      "title": "OpenClaw model routing tutarlılığı",
+      "status": "pending",
+      "priority": "medium",
+      "assignee": "Codex",
+      "tags": [
+        "openclaw",
+        "models",
+        "opencode-go",
+        "alfred"
+      ],
+      "points": 2,
+      "created_at": "2026-04-29T22:03:55+03:00",
+      "description": "Telegram /models seçimlerinin hangi config katmanına yazıldığını doğrula. agents.defaults ile agents.list içindeki Alfred/MAIT/MERCER model override'larını eşleştir; opencode-go GLM/Kimi/MiniMax seçenekleri için hız ve doğruluk önerisi üret.",
+      "notes": [
+        "2026-04-29 loglarında global default opencode-go görünse de Alfred agent override'ı minimax-portal/MiniMax-M2.7 olarak çalıştı. Bu yüzden model seçimi yavaşlık analizinden ayrı olarak normalize edilmeli."
+        ,
+        "2026-04-29 22:41 kısmi düzeltme: agents.defaults fallback sırası quota-safe opencode-go/minimax ağırlıklı hale getirildi; openai-codex/* modeller latency-sensitive fallback listesinden çıkarıldı; Alfred/MAIT/MERCER primary opencode-go/kimi-k2.5 ile hizalandı. Gateway restart sonrası doğrulanmalı."
+      ]
     }
   ],
-  "updated_at": "2026-04-28T23:31:33.078580+03:00"
+  "updated_at": "2026-04-29T22:40:51+03:00"
 }

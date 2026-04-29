@@ -45,6 +45,11 @@ function MemoryCard({ mem }) {
 export default function MemoryView() {
   const [memories, setMemories] = useState([])
   const [loading, setLoading] = useState(true)
+  const [ovHealth, setOvHealth] = useState(null)
+  const [ovKpi, setOvKpi] = useState(null)
+  const [ovQuery, setOvQuery] = useState('')
+  const [ovResult, setOvResult] = useState(null)
+  const [ovLoading, setOvLoading] = useState(false)
 
   const fetchMemories = useCallback(async () => {
     setLoading(true)
@@ -73,6 +78,55 @@ export default function MemoryView() {
     return () => clearTimeout(timer)
   }, [fetchMemories])
 
+  const fetchOvHealth = useCallback(async () => {
+    try {
+      const res = await apiFetch('/api/openviking/health')
+      const data = await res.json()
+      setOvHealth(res.ok ? data : null)
+    } catch {
+      setOvHealth(null)
+    }
+  }, [])
+
+  const fetchOvKpi = useCallback(async () => {
+    try {
+      const res = await apiFetch('/api/openviking/kpi?days=7')
+      const data = await res.json()
+      setOvKpi(res.ok ? data : null)
+    } catch {
+      setOvKpi(null)
+    }
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      void fetchOvHealth()
+      void fetchOvKpi()
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [fetchOvHealth, fetchOvKpi])
+
+  const runOvQuery = async (event) => {
+    event.preventDefault()
+    const q = ovQuery.trim()
+    if (!q) return
+    setOvLoading(true)
+    setOvResult(null)
+    try {
+      const res = await apiFetch('/api/openviking/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: q }),
+      })
+      const data = await res.json()
+      setOvResult(data)
+    } catch (err) {
+      setOvResult({ ok: false, error: err?.message || 'Sorgu hatası' })
+    } finally {
+      setOvLoading(false)
+    }
+  }
+
   const byType = {}
   for (const m of memories) {
     const t = m.type || 'other'
@@ -96,6 +150,112 @@ export default function MemoryView() {
       {loading && memories.length === 0 && (
         <p className="text-ax-dim text-sm">Yükleniyor...</p>
       )}
+
+      <div className="rounded-xl bg-ax-panel border border-ax-border p-4 space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <p className="text-ax-text text-sm font-semibold">OpenViking Pilot (Dry-run)</p>
+            <p className="text-ax-dim text-xs">Production contextEngine değişmez; sadece hafıza doğrulama paneli.</p>
+          </div>
+          <button
+            onClick={() => {
+              void fetchOvHealth()
+              void fetchOvKpi()
+            }}
+            className="p-2 rounded-lg bg-ax-surface border border-ax-border hover:bg-ax-muted transition-colors"
+          >
+            <RefreshCw size={14} className="text-ax-dim" />
+          </button>
+        </div>
+
+        {ovHealth?.ok ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">CLI</p>
+              <p className="text-ax-text font-medium">{ovHealth.openvikingCli ? 'Var' : 'Yok'}</p>
+            </div>
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">Queue Pending</p>
+              <p className="text-ax-text font-medium">{ovHealth.queue?.pending ?? '—'}</p>
+            </div>
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">Queue Error</p>
+              <p className="text-ax-text font-medium">{ovHealth.queue?.errors ?? '—'}</p>
+            </div>
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">Son Skor</p>
+              <p className="text-ax-text font-medium">
+                {ovHealth.lastScore?.passed != null && ovHealth.lastScore?.total != null
+                  ? `${ovHealth.lastScore.passed}/${ovHealth.lastScore.total}`
+                  : '—'}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-ax-dim text-xs">OpenViking health verisi alınamadı.</p>
+        )}
+
+        {ovKpi?.ok ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">7g Intent</p>
+              <p className="text-ax-text font-medium">{ovKpi.metrics?.memoryIntentEvents ?? '—'}</p>
+            </div>
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">Fallback %</p>
+              <p className="text-ax-text font-medium">{ovKpi.metrics?.fallbackRatePct ?? '—'}</p>
+            </div>
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">P95 (ms)</p>
+              <p className="text-ax-text font-medium">{ovKpi.metrics?.p95LatencyMs ?? '—'}</p>
+            </div>
+            <div className="rounded-lg bg-ax-surface border border-ax-border p-2">
+              <p className="text-ax-dim">Blocked %</p>
+              <p className="text-ax-text font-medium">{ovKpi.metrics?.replyBlockedRatePct ?? '—'}</p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-ax-dim text-xs">OpenViking KPI verisi henüz yok.</p>
+        )}
+
+        <form onSubmit={runOvQuery} className="space-y-2">
+          <label className="block text-xs text-ax-dim">Dry-run hafıza sorgusu</label>
+          <div className="flex gap-2">
+            <input
+              value={ovQuery}
+              onChange={(e) => setOvQuery(e.target.value)}
+              placeholder="Örn: Dashboard hangi portta?"
+              className="flex-1 rounded-lg bg-ax-surface border border-ax-border px-3 py-2 text-sm text-ax-text placeholder:text-ax-dim focus:outline-none focus:ring-1 focus:ring-ax-accent"
+            />
+            <button
+              type="submit"
+              disabled={ovLoading}
+              className="px-3 py-2 rounded-lg bg-ax-accent text-white text-sm font-medium disabled:opacity-60"
+            >
+              {ovLoading ? 'Sorgulanıyor' : 'Sorgula'}
+            </button>
+          </div>
+        </form>
+
+        {ovResult && (
+          <div className="rounded-lg bg-ax-surface border border-ax-border p-3 space-y-2">
+            {ovResult.ok ? (
+              <>
+                <p className="text-xs text-ax-dim">
+                  Confidence: <span className="text-ax-text">{ovResult.result?.confidence || '—'}</span> ·
+                  Strategy: <span className="text-ax-text">{ovResult.result?.strategy || '—'}</span> ·
+                  Süre: <span className="text-ax-text">{ovResult.result?.elapsed_ms ?? '—'}ms</span>
+                </p>
+                <pre className="text-[11px] text-ax-dim whitespace-pre-wrap font-mono max-h-56 overflow-y-auto">
+                  {ovResult.result?.summary || 'Özet yok'}
+                </pre>
+              </>
+            ) : (
+              <p className="text-xs text-ax-amber">Sorgu hatası: {ovResult.error || ovResult.details || 'Bilinmeyen hata'}</p>
+            )}
+          </div>
+        )}
+      </div>
 
       {Object.entries(byType).map(([type, items]) => {
         const style = TYPE_STYLE[type]
