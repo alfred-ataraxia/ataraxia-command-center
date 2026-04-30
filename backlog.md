@@ -1,10 +1,29 @@
 # Product Backlog — ataraxia
 
-**Son güncelleme:** 2026-04-29 · Claude Sonnet 4.6 · Sprint-07 aktif  
-**Gerçek açık:** Sistem taraması (2026-04-29) + OpenViking pilot + dashboard derinliği
+**Son güncelleme:** 2026-04-30 · Codex · Alfred + Codex sistem değerlendirmesi işlendi  
+**Gerçek açık:** OpenClaw performans doğrulaması + plan/hafıza hizalama + OpenViking pilot + MERCER tasarımı
 
 Kanonik durum: `~/.openclaw/workspace/ALFRED_PROJECT_STATE.md`  
 Anlık icra kuyruğu: `TASKS.json`
+
+---
+
+## 🚦 Sıradaki Görevler — 2026-04-30 Alfred + Codex Değerlendirmesi
+
+Bu liste Alfred'in `21-system-analysis.md` raporu ile Codex'in canlı tam taramasının birleştirilmiş öncelik sırasıdır. OpenClaw base sistemi, cron, servis restart veya model routing davranışı onaysız değiştirilmez.
+
+| Sıra | Task | Öncelik | Atanan | Amaç | Not |
+|---|---|---|---|---|---|
+| 1 | T-087 | Done | Codex | Alfred raporu ile canlı tarama bulgularını hizala | Tamamlandı; ana proje ve aktif hafıza hizalandı |
+| 2 | T-088 | Done | Codex | `memory-core dreaming` kaynak yükü karar paketi | Tamamlandı; karar paketi docs içine yazıldı |
+| 3 | T-089 | Done | Codex | `alfred-task-runner` çalışma politikasını netleştir | Tamamlandı; kapalı/manual + LLM'siz watcher önerildi |
+| 4 | T-085 | High | Codex | Telegram latency stabilizasyonunu kapat | Plugin/heartbeat düzeltmeleri sonrası canlı ölçüm gerekir |
+| 5 | T-086 | Done | Codex | Model routing tutarlılığını doğrula | Tamamlandı; Kimi primary doğrulandı, ana gecikme nedeni routing değil |
+| 6 | T-093 | Done | Codex | OpenClaw cron/tool `host=sandbox` hatasını analiz et | Tamamlandı; rapor yazıldı, onaysız config yok |
+| 7 | T-094 | High | Codex | `cron-failure-alert` LLM yükünü azalt | Onayla hafif/LLM'siz yol tasarlanacak |
+| 8 | T-092 | High | Master Sefa | DeFi APM live mode kararını netleştir | Finansal risk; karar görevi |
+| 9 | T-090 | Medium | Claude | MERCER gerçek ajan entegrasyon tasarımı | Shell-script proxy yerine ajan context planı |
+| 10 | T-091 | Medium | Alfred | BudgetBakers token yenileme runbook'u | Token 2026-05-29 öncesi yenilenmeli |
 
 ---
 
@@ -41,12 +60,12 @@ Anlık icra kuyruğu: `TASKS.json`
 | # | Öge | Puan | Durum | Açıklama |
 |---|-----|------|-------|---------|
 | B-082 | **Mercer agent hiç çalışmıyor** | 2 | Bekliyor | Tüm mercer job'ları `agentId: "alfred"`. Mercer kendi context'i ile hiç çağrılmıyor — cron'lar alfred üzerinden shell script çalıştırıyor. Gerçek mercer agent entegrasyonu planlanmalı. |
-| B-083 | **20-system-landscape.md eskimiş** | 1 | Bekliyor | 13 cron job yazıyor, şimdi 22. User-level defi-apm servisi hala aktif gösteriliyor. Güncellenecek. |
-| B-084 | **Orphan cron scriptleri** | 1 | Bekliyor | Hiçbir cron tarafından çağrılmayan: `hourly-report.sh`, `cost-daily-check.sh`, `monday-review-trigger.sh`, `inbox-rotate.sh`. Silinecek veya cron'a eklenecek. |
+| B-083 | **20-system-landscape.md eskimiş** | 1 | ✅ DONE 2026-04-30 | 13 cron job yazıyor, şimdi 22. User-level defi-apm servisi hala aktif gösteriliyor. Güncellenecek. |
+| B-084 | **Orphan cron scriptleri** | 1 | ✅ DONE 2026-04-30 | Hiçbir cron tarafından çağrılmayan: `hourly-report.sh`, `cost-daily-check.sh`, `monday-review-trigger.sh`, `inbox-rotate.sh`. Silinecek veya cron'a eklenecek. |
 | B-085 | **alfred-weekly-summary 440s → model optimize** | 2 | Bekliyor | Haftalık özet 7+ dakika sürüyor. Prompt sıkıştırılacak veya daha hafif model kullanılacak. |
 | B-086 | **T-074 DeFi autopilot eylem geçmişi** | 3 | Bekliyor | Dashboard'a autopilot action log sekmesi. Claude atanmış, pending. |
 | B-087 | **DeFi APM /api/widget endpoint** | 1 | Bekliyor | Dashboard Overview için DeFi widget endpoint mevcut ama kullanılmıyor. Entegre edilebilir. |
-| B-088 | **OpenClaw gateway haftalık restart cron test** | 1 | Bekliyor | FIX-09 eklendi ama test edilmedi. İlk Salı 04:30'da izlenecek. |
+| B-088 | **OpenClaw gateway haftalık restart cron test** | 1 | ✅ DONE 2026-04-30 | FIX-09 eklendi ama test edilmedi. İlk Salı 04:30'da izlenecek. |
 
 ---
 
