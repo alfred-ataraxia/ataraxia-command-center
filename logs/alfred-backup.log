@@ -318,3 +318,23 @@ To https://github.com/alfred-ataraxia/ataraxia-command-center.git
 [2026-04-30 02:00:42] Sistem snapshot alınıyor...
 [2026-04-30 02:00:42]   system-status.md OK
 [2026-04-30 02:00:42] Git commit hazırlanıyor...
+[master 3cda562] chore: otomatik yedek — 2026-04-30 02:00
+ 18 files changed, 1133 insertions(+), 80 deletions(-)
+ create mode 100644 cron/cron-alerts.log
+ create mode 100644 docs/openclaw-telegram-latency-plan.md
+[2026-04-30 02:00:42] Commit OK
+To https://github.com/alfred-ataraxia/ataraxia-command-center.git
+   9c9cd7b..3cda562  master -> master
+[2026-04-30 02:00:44] Push OK → GitHub
+[2026-04-30 02:00:44] === Yedekleme tamamlandı ===
+[2026-05-01 02:00:51] === Yedekleme başladı ===
+[2026-05-01 02:00:51] Scrum dosyaları kopyalanıyor...
+[2026-05-01 02:00:51]   scrum/ OK
+[2026-05-01 02:00:51] Alfred hafızası kopyalanıyor...
+[2026-05-01 02:00:51]   memory/ OK
+[2026-05-01 02:00:51] Claude skills ve scripts yedekleniyor...
+[2026-05-01 02:00:51]   skills/ OK
+[2026-05-01 02:00:51]   scripts/ OK
+[2026-05-01 02:00:51] Sistem snapshot alınıyor...
+[2026-05-01 02:00:52]   system-status.md OK
+[2026-05-01 02:00:52] Git commit hazırlanıyor...

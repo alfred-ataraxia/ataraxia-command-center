@@ -1,8 +1,49 @@
 # OpenClaw Telegram Latency Stabilization Plan
 
 **Created:** 2026-04-29 22:40 +03  
+**Last updated:** 2026-04-30 15:30 +03  
 **Owner:** Codex  
 **Scope:** OpenClaw native Telegram channel, Alfred agent model routing, gateway load, cron interference.
+
+## 2026-04-30 Current Status
+
+This plan was created before the plugin-isolation, heartbeat, `memory-core dreaming`, and `alfred-task-runner` policy work. Current state is different from the original diagnosis.
+
+### Confirmed Fixed / Improved
+
+- Legacy Python Telegram bot conflict is not currently visible.
+  - `telegram-bot.service` is not found as an active systemd unit.
+  - No separate `telegram_bot.py` process is visible.
+- Gateway HTTP health is fast.
+  - Five consecutive `18789 /health` checks returned 200 in about 2–10 ms.
+- Browser/device/phone/talk plugin isolation is active.
+  - `18791` browser sidecar is not listening.
+  - Active gateway port remains `18789`.
+- `alfred-task-runner` is disabled.
+  - This prevents repeated 2–5 minute `NO_TASK` LLM runs.
+  - Policy documented in `docs/alfred-task-runner-policy.md`.
+
+### Still Open
+
+- Gateway process is still non-trivial for a Raspberry Pi 400.
+  - Current sample: about 765 MB RSS and around 21% CPU.
+- `memory-core dreaming` was active during normal hours; A/B test was attempted and rolled back after failing targets.
+  - T-088 measured heavy dreaming activity and timeouts.
+  - Decision package and implementation log: `docs/openclaw-memory-core-dreaming-decision.md`.
+- A new log issue exists in cron/tool execution:
+  - `cron-failure-alert.sh` attempted `exec host=sandbox`.
+  - OpenClaw logged: `exec host=sandbox requires a sandbox runtime for this session`.
+  - This is not a Telegram polling failure, but it can create noisy cron failures and should be handled as a separate follow-up.
+- Real Telegram end-to-end latency still needs manual confirmation from the Telegram client.
+
+### Current Risk Assessment
+
+The original primary suspects were legacy bot conflict, model fallback, oversized sessions, and cron LLM runs. After recent fixes, the remaining high-probability latency contributors are:
+
+1. `memory-core dreaming` competing with Telegram/model runs before the A/B test.
+2. Provider/model latency during full agent responses.
+3. Cron/tool jobs failing or retrying through unsupported sandbox host settings.
+4. Lack of local fast path for common status intents.
 
 ## Current Diagnosis
 
@@ -94,13 +135,103 @@ Evidence from `/tmp/openclaw/openclaw-2026-04-29.log`:
 
 ## Execution Order
 
-1. Apply model routing cleanup.
-2. Convert no-task cron polling to direct script mode.
-3. Restart OpenClaw gateway once, deliberately.
-4. Test `/status`, `/models`, and `durum raporu ver` from Telegram.
-5. Implement local fast status path.
-6. Add latency telemetry.
-7. Review p95 latency after 24 hours.
+1. ✅ Apply model routing cleanup.
+2. ✅ Stop no-task LLM polling by keeping `alfred-task-runner` disabled; policy is documented.
+3. ✅ Plugin isolation and heartbeat stabilization were applied before this update.
+4. ✅ Start and rollback the `memory-core dreaming` A/B test after failed early result.
+5. ⏳ Test `/status`, `/models`, and `durum raporu ver` from Telegram.
+6. ⏳ Fix or isolate cron/tool `host=sandbox` failures if they continue.
+7. ⏳ Implement local fast status path if native Telegram responses still exceed target.
+8. ⏳ Add latency telemetry after the runtime is stable enough to measure cleanly.
+9. ⏳ Review p95 latency after 24 hours.
+
+## Manual Telegram Test Checklist
+
+Run these from Telegram and record approximate response times:
+
+| Test | Target | Pass/Fail |
+|---|---:|---|
+| `/status` | <3 sec | Fail — measured ~11 sec |
+| `/models` | <3 sec | Fail — measured ~7 sec |
+| `orada mısın` | <10 sec | Fail — typing ~10 sec, answer ~20 sec, total ~30 sec |
+| `durum raporu ver` | <10 sec for local summary, <30 sec if LLM | Fail — typing ~9 sec, answer starts ~35 sec |
+| `ne hatırlıyorsun` | <30 sec unless deep memory query | Pending |
+
+If any test exceeds 45 seconds, the next engineering step should be either local fast path or the approved `memory-core dreaming` A/B test.
+
+## 2026-04-30 Manual Test Result
+
+Telegram is responsive enough to show typing, but not fast enough for the target UX.
+
+Interpretation:
+
+- Native commands are still too slow for a command surface.
+- Short conversational messages are near or above the acceptable upper bound.
+- Local status intent is being treated too much like a normal agent/model response.
+- Since gateway HTTP health is fast and legacy bot conflict is gone, the next useful test is to reduce background agent load or bypass LLM for local status.
+
+Next recommended action:
+
+1. Implement a Telegram local fast path for `/status`, `/models`, `orada mısın`, and `durum raporu ver`.
+2. Investigate Telegram transport/polling stall and main lane wait.
+
+The `memory-core dreaming` A/B test was attempted and did not resolve the issue. Current engineering focus should move to Telegram fast path, transport health, and lane blocking.
+
+## 2026-04-30 A/B Test Started
+
+Master Sefa approved the `memory-core dreaming` A/B test.
+
+| Field | Value |
+|---|---|
+| Start | 2026-04-30 16:03 Europe/Istanbul |
+| Planned end | 2026-05-01 16:03 Europe/Istanbul |
+| Change | `memory-core.config.dreaming.enabled=false` |
+| Backup | `~/.openclaw/openclaw.json.bak-memory-core-dreaming-20260430-160233` |
+| Gateway health after restart | 200, about 2–9 ms |
+| Current CPU after stabilization | about 0–1% in `top` sample |
+| Current RSS after stabilization | about 630 MB |
+
+Repeat Telegram tests during this window:
+
+| Test | Before A/B | Target |
+|---|---:|---:|
+| `/status` | 11 sec | <3 sec |
+| `/models` | 7 sec | <3 sec |
+| `orada mısın` | 30 sec total | <10 sec local/simple |
+| `durum raporu ver` | answer starts ~35 sec | <10 sec local summary |
+
+If the values improve materially, keep `dreaming` disabled until a lower-frequency/scheduled memory consolidation design is prepared. If values do not improve, rollback and prioritize Telegram fast path/model routing.
+
+## 2026-04-30 A/B Test Early Result And Rollback
+
+First manual test after disabling `memory-core dreaming` did not meet the target and one message failed to complete.
+
+| Test | Before A/B | During A/B | Result |
+|---|---:|---:|---|
+| `/status` | 11 sec | 7 sec | Improved but still fail |
+| `/models` | 7 sec | 19 sec | Worse |
+| `orada mısın` | 30 sec total | typing ~11 sec, then 1.5min+ without final answer | Worse/fail |
+
+Action taken:
+
+- Rolled back from `~/.openclaw/openclaw.json.bak-memory-core-dreaming-20260430-160233`.
+- `memory-core.config.dreaming.enabled=true` again.
+- Gateway restarted and returned live.
+
+Important log evidence during the failed A/B window:
+
+- `lane wait exceeded: lane=main waitedMs=202586 queueAhead=0`
+- `Polling stall detected (no completed getUpdates for 225.08s); forcing restart`
+- `Polling runner stop timed out after 15s`
+- `telegram sendMessage failed: Network request for 'sendMessage' failed!`
+- `telegram final reply failed`
+- `answerCallbackQuery failed: query is too old`
+
+Updated interpretation:
+
+- `memory-core dreaming` contributes load, but it is not the sole root cause.
+- The stronger current suspects are Telegram transport/polling stall, delayed `sendMessage`, main agent lane blocking, and lack of local fast path.
+- Next engineering work should focus on Telegram fast path + transport health, not more memory-core toggling.
 
 ## Rollback
 
