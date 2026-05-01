@@ -31,6 +31,7 @@
 | S7-12 | Telegram latency kapanış doğrulaması | 2 | 🔄 In Progress | Codex | T-085; memory-core A/B başarısız, odak Telegram lane/transport ve fast path |
 | S7-13 | OpenClaw cron/tool sandbox hatası analizi | 2 | ✅ Done | Codex | T-093; rapor `docs/openclaw-cron-tool-sandbox-analysis.md`, config değişmedi |
 | S7-14 | cron-failure-alert LLM yükünü azalt | 3 | ⏳ Pending | Codex | T-094; onayla hafif/LLM'siz yol tasarlanacak |
+| S7-15 | Multi-AI workspace planı | 2 | 🧭 Planned | Codex | Plan `docs/multi-ai-workspace-plan.md`; Claude Code ana yüzey, OpenClaw orkestrasyon, OpenCode Go çok-model havuz |
 
 ---
 
@@ -42,7 +43,8 @@
 4. **Model routing:** T-086 tamamlandı; default ve Alfred/MAIT/MERCER primary `opencode-go/kimi-k2.5` doğrulandı.
 5. **Cron/tool hata ayrıştırması:** T-093 tamamlandı; `cron-failure-alert` agentTurn + `host=sandbox` kök nedeni raporlandı.
 6. **Kapanış ve azaltma işleri:** T-085 canlı Telegram latency testleriyle sürecek; T-094 için onaylı hafif/LLM'siz cron yolu tasarlanacak.
-7. **Karar işleri:** T-092 DeFi live mode, T-090 MERCER tasarımı ve T-091 BudgetBakers yenileme planı Sprint-08'e taşınabilecek adaylar olarak tutulacak.
+7. **Multi-AI workspace:** S7-15 planı doğrultusunda provider envanteri, profil wrapper'ları, TASKS/memory hizalaması ve dashboard görünürlüğü sırayla ele alınacak.
+8. **Karar işleri:** T-092 DeFi live mode, T-090 MERCER tasarımı ve T-091 BudgetBakers yenileme planı Sprint-08'e taşınabilecek adaylar olarak tutulacak.
 
 ---
 
