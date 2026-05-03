@@ -1,0 +1,35 @@
+{
+  "numStartups": 1,
+  "firstStartTime": "2026-05-02T16:20:39.246Z",
+  "opusProMigrationComplete": true,
+  "sonnet1m45MigrationComplete": true,
+  "seenNotifications": {},
+  "migrationVersion": 13,
+  "userID": "f0020b5c3d5cb4481ae6d5e57b717b29d0c13f6b7308d229d0d0b3df0c535d3a",
+  "changelogLastFetched": 1777738840613,
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "2.1.126",
+  "lastReleaseNotesSeen": "2.1.126",
+  "opus47LaunchSeenCount": 1,
+  "projects": {
+    "/home/sefa": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [],
+      "lastGracefulShutdown": false,
+      "hasCompletedProjectOnboarding": true,
+      "lastHintSessionId": "f6ed4878-d2ff-48be-927d-e5cc8649f160",
+      "lastSessionFirstPrompt": "hafızanı tazele",
+      "lastSessionModified": 1777738858937
+    }
+  },
+  "officialMarketplaceAutoInstallAttempted": true,
+  "officialMarketplaceAutoInstalled": true
+}

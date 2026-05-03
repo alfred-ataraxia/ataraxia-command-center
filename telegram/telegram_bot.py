@@ -190,16 +190,17 @@ def send_message(chat_id, text, parse_mode="Markdown"):
             "parse_mode": parse_mode
         }, timeout=10)
         if not resp.ok:
-            log_msg(f"SEND ERROR HTTP {resp.status_code}: {resp.text[:200]}")
-            # Fallback: Telegram can reject Markdown formatting; retry without parse_mode.
             if parse_mode:
                 resp2 = requests.post(f"{API_URL}/sendMessage", json={
                     "chat_id": chat_id,
                     "text": text
                 }, timeout=10)
                 if not resp2.ok:
-                    log_msg(f"SEND ERROR (fallback) HTTP {resp2.status_code}: {resp2.text[:200]}")
+                    log_msg(f"SEND ERROR HTTP {resp2.status_code}: {resp2.text[:200]}")
                     return False
+            else:
+                log_msg(f"SEND ERROR HTTP {resp.status_code}: {resp.text[:200]}")
+                return False
         return True
     except Exception as e:
         log_msg(f"SEND ERROR: {e}")
@@ -387,8 +388,27 @@ def handle_command(chat_id, text):
             send_message(chat_id, "❌ Durdurma komutu gönderilemedi.")
 
     elif cmd == "/status":
-        response = call_claude(chat_id, "Sistem durumu: RAM, disk, Docker container sayısı. Kısa, bullet format.")
-        send_message(chat_id, response)
+        try:
+            status_script = """
+            echo "📊 **Sistem Durumu**"
+            echo "uptime: $(uptime -p)"
+            echo "load: $(cat /proc/loadavg | awk '{print $1, $2, $3}')"
+            echo "ram: $(free -m | awk '/Mem:/ {printf "%.1f%%", $3/$2*100}')"
+            echo "disk (/): $(df -h / | awk 'NR==2 {print $5}')"
+            if command -v docker >/dev/null; then
+                echo "docker: $(docker ps -q 2>/dev/null | wc -l) running / $(docker ps -aq 2>/dev/null | wc -l) total"
+            fi
+            """
+            result = subprocess.run(["bash", "-c", status_script], capture_output=True, text=True, timeout=5)
+            send_message(chat_id, result.stdout.strip())
+        except Exception as e:
+            send_message(chat_id, f"❌ Status alınamadı: {e}")
+    elif cmd == "/kota":
+        try:
+            result = subprocess.run(["python3", "/home/sefa/alfred-hub/scripts/quota-manager.py"], capture_output=True, text=True, timeout=10)
+            send_message(chat_id, result.stdout.strip())
+        except Exception as e:
+            send_message(chat_id, f"❌ Kota bilgisi alınamadı: {e}")
 
     elif cmd == "/sprint":
         try:

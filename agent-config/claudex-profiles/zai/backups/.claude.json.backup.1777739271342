@@ -1,0 +1,72 @@
+{
+  "numStartups": 2,
+  "tipsHistory": {
+    "new-user-warmup": 2
+  },
+  "firstStartTime": "2026-05-02T16:20:39.246Z",
+  "opusProMigrationComplete": true,
+  "sonnet1m45MigrationComplete": true,
+  "seenNotifications": {},
+  "migrationVersion": 13,
+  "userID": "f0020b5c3d5cb4481ae6d5e57b717b29d0c13f6b7308d229d0d0b3df0c535d3a",
+  "changelogLastFetched": 1777738840613,
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "2.1.126",
+  "lastReleaseNotesSeen": "2.1.126",
+  "opus47LaunchSeenCount": 2,
+  "projects": {
+    "/home/sefa": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [],
+      "lastGracefulShutdown": false,
+      "hasCompletedProjectOnboarding": true,
+      "lastHintSessionId": "f6ed4878-d2ff-48be-927d-e5cc8649f160",
+      "lastSessionFirstPrompt": "hafızanı tazele",
+      "lastSessionModified": 1777738858937,
+      "lastCost": 0.0011577,
+      "lastAPIDuration": 3388,
+      "lastAPIDurationWithoutRetries": 3370,
+      "lastToolDuration": 0,
+      "lastDuration": 352624,
+      "lastLinesAdded": 0,
+      "lastLinesRemoved": 0,
+      "lastTotalInputTokens": 285,
+      "lastTotalOutputTokens": 20,
+      "lastTotalCacheCreationInputTokens": 0,
+      "lastTotalCacheReadInputTokens": 9,
+      "lastTotalWebSearchRequests": 0,
+      "lastFpsAverage": 9.22,
+      "lastFpsLow1Pct": 8.24,
+      "lastModelUsage": {
+        "glm-4.5-flash": {
+          "inputTokens": 285,
+          "outputTokens": 20,
+          "cacheReadInputTokens": 9,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.0011577
+        }
+      },
+      "lastSessionId": "f6ed4878-d2ff-48be-927d-e5cc8649f160",
+      "lastSessionMetrics": {
+        "frame_duration_ms_count": 2412,
+        "frame_duration_ms_min": 0.19690599999739788,
+        "frame_duration_ms_max": 4440.86750600001,
+        "frame_duration_ms_avg": 12.361973233416157,
+        "frame_duration_ms_p50": 1.5671539999966626,
+        "frame_duration_ms_p95": 8.866844749999833,
+        "frame_duration_ms_p99": 61.64936414999935
+      }
+    }
+  },
+  "officialMarketplaceAutoInstallAttempted": true,
+  "officialMarketplaceAutoInstalled": true
+}

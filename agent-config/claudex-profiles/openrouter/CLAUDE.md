@@ -1,0 +1,1 @@
+/home/sefa/.claude/CLAUDE.md

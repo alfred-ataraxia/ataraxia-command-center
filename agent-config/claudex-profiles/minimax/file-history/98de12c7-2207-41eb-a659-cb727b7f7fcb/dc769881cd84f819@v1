@@ -1,0 +1,271 @@
+{
+  "gateway": {
+    "auth": {
+      "mode": "token",
+      "token": "7c7c5a6788977e3c230c7bcd22b9b09a04d2aac86a64c70a"
+    },
+    "mode": "local",
+    "port": 18789,
+    "bind": "loopback",
+    "http": {
+      "endpoints": {
+        "chatCompletions": {
+          "enabled": true
+        },
+        "responses": {
+          "enabled": true
+        }
+      }
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "controlUi": {
+      "allowInsecureAuth": false,
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
+      ]
+    }
+  },
+  "discovery": {
+    "mdns": {
+      "mode": "off"
+    },
+    "wideArea": {
+      "enabled": false
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-05-02T19:02:36.669Z",
+    "lastRunVersion": "2026.4.11-beta.1",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.11-beta.1",
+    "lastTouchedAt": "2026-05-02T19:02:38.110Z"
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "google-gemini-cli/gemini-3-flash-preview",
+        "fallbacks": [
+          "google-gemini-cli/gemini-3-pro-preview",
+          "google-gemini-cli/gemini-3-flash-preview",
+          "google-gemini-cli/gemini-2.5-pro",
+          "google-gemini-cli/gemini-2.5-flash",
+          "google-gemini-cli/gemini-2.0-flash"
+        ]
+      },
+      "workspace": "/home/sefa/.openclaw/workspace",
+      "maxConcurrent": 1,
+      "heartbeat": {
+        "every": "15m",
+        "target": "last",
+        "isolatedSession": true,
+        "lightContext": true,
+        "directPolicy": "allow"
+      },
+      "models": {
+        "google-gemini-cli/gemini-3.1-pro-preview": {},
+        "google-gemini-cli/gemini-3-flash-preview": {}
+      }
+    },
+    "list": [
+      {
+        "id": "alfred",
+        "name": "Alfred",
+        "model": {
+          "primary": "minimax-portal/MiniMax-M2.7-highspeed"
+        },
+        "workspace": "/home/sefa/.openclaw/workspace"
+      },
+      {
+        "id": "mait",
+        "name": "MAIT",
+        "model": {
+          "primary": "opencode-go/kimi-k2.5"
+        },
+        "workspace": "/home/sefa/.openclaw/agents/mait"
+      },
+      {
+        "id": "mercer",
+        "name": "MERCER",
+        "model": {
+          "primary": "opencode-go/kimi-k2.5"
+        },
+        "workspace": "/home/sefa/.openclaw/agents/mercer"
+      }
+    ]
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "groups": {
+        "963702150": {
+          "requireMention": false
+        },
+        "*": {
+          "requireMention": true
+        }
+      },
+      "botToken": "${OPENCLAW_TELEGRAM_BOT_TOKEN}"
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "tools": {
+    "profile": "coding",
+    "web": {
+      "search": {
+        "provider": "brave",
+        "enabled": true
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "codex": {
+        "enabled": true
+      },
+      "minimax": {
+        "enabled": true
+      },
+      "google": {
+        "enabled": true
+      },
+      "brave": {
+        "enabled": true
+      },
+      "memory-core": {
+        "config": {
+          "dreaming": {
+            "enabled": false
+          }
+        }
+      },
+      "openai": {
+        "enabled": true
+      },
+      "opencode-go": {
+        "enabled": true
+      },
+      "browser": {
+        "enabled": false
+      },
+      "device-pair": {
+        "enabled": false
+      },
+      "phone-control": {
+        "enabled": false
+      },
+      "talk-voice": {
+        "enabled": false
+      }
+    }
+  },
+  "auth": {
+    "profiles": {
+      "minimax:global": {
+        "provider": "minimax",
+        "mode": "api_key"
+      },
+      "minimax-portal:default": {
+        "provider": "minimax-portal",
+        "mode": "oauth"
+      },
+      "google-gemini-cli:sefkaraoglu@gmail.com": {
+        "provider": "google-gemini-cli",
+        "mode": "oauth",
+        "email": "sefkaraoglu@gmail.com"
+      },
+      "openai-codex:default": {
+        "provider": "openai-codex",
+        "mode": "oauth"
+      },
+      "openai-codex:sefkaraoglu@gmail.com": {
+        "provider": "openai-codex",
+        "mode": "oauth",
+        "email": "sefkaraoglu@gmail.com"
+      },
+      "opencode:default": {
+        "provider": "opencode",
+        "mode": "api_key"
+      },
+      "opencode-go:default": {
+        "provider": "opencode-go",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "minimax": {
+        "baseUrl": "https://api.minimax.io/anthropic",
+        "models": [
+          {
+            "id": "MiniMax-M2.7",
+            "name": "MiniMax M2.7",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0.3,
+              "output": 1.2,
+              "cacheRead": 0.06,
+              "cacheWrite": 0.375
+            },
+            "contextWindow": 204800,
+            "maxTokens": 131072
+          }
+        ],
+        "api": "anthropic-messages",
+        "authHeader": true
+      },
+      "minimax-portal": {
+        "baseUrl": "https://api.minimax.io/anthropic",
+        "api": "anthropic-messages",
+        "authHeader": true,
+        "models": []
+      }
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": {
+          "enabled": true
+        },
+        "bootstrap-extra-files": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "session-memory": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "ui": {
+    "assistant": {
+      "name": "Alfred"
+    }
+  },
+  "cron": {
+    "enabled": true
+  }
+}

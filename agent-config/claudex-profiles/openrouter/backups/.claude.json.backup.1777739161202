@@ -1,0 +1,31 @@
+{
+  "numStartups": 1,
+  "firstStartTime": "2026-05-02T16:21:23.129Z",
+  "opusProMigrationComplete": true,
+  "sonnet1m45MigrationComplete": true,
+  "seenNotifications": {},
+  "migrationVersion": 13,
+  "userID": "73bb46701b919e030a3521b4aed524f128e2b489a5c624550f02943b419b3339",
+  "changelogLastFetched": 1777738885481,
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "2.1.126",
+  "lastReleaseNotesSeen": "2.1.126",
+  "opus47LaunchSeenCount": 1,
+  "projects": {
+    "/home/sefa": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [],
+      "lastGracefulShutdown": false
+    }
+  },
+  "officialMarketplaceAutoInstallAttempted": true,
+  "officialMarketplaceAutoInstalled": true
+}

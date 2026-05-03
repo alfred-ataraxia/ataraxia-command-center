@@ -1,0 +1,87 @@
+{
+  "numStartups": 2,
+  "tipsHistory": {
+    "new-user-warmup": 2,
+    "plan-mode-for-complex-tasks": 2,
+    "terminal-setup": 2
+  },
+  "firstStartTime": "2026-05-02T16:20:39.246Z",
+  "opusProMigrationComplete": true,
+  "sonnet1m45MigrationComplete": true,
+  "seenNotifications": {},
+  "migrationVersion": 13,
+  "userID": "f0020b5c3d5cb4481ae6d5e57b717b29d0c13f6b7308d229d0d0b3df0c535d3a",
+  "changelogLastFetched": 1777738840613,
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "2.1.126",
+  "lastReleaseNotesSeen": "2.1.126",
+  "opus47LaunchSeenCount": 2,
+  "projects": {
+    "/home/sefa": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [],
+      "lastGracefulShutdown": true,
+      "hasCompletedProjectOnboarding": true,
+      "lastHintSessionId": "f6ed4878-d2ff-48be-927d-e5cc8649f160",
+      "lastSessionFirstPrompt": "hafızanı tazele",
+      "lastSessionModified": 1777738858937,
+      "lastCost": 0.06938280000000001,
+      "lastAPIDuration": 200439,
+      "lastAPIDurationWithoutRetries": 199908,
+      "lastToolDuration": 0,
+      "lastDuration": 390317,
+      "lastLinesAdded": 0,
+      "lastLinesRemoved": 0,
+      "lastTotalInputTokens": 21250,
+      "lastTotalOutputTokens": 298,
+      "lastTotalCacheCreationInputTokens": 0,
+      "lastTotalCacheReadInputTokens": 3876,
+      "lastTotalWebSearchRequests": 0,
+      "lastFpsAverage": 5.88,
+      "lastFpsLow1Pct": 11.98,
+      "lastModelUsage": {
+        "glm-4.7-flash": {
+          "inputTokens": 21250,
+          "outputTokens": 298,
+          "cacheReadInputTokens": 3876,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.06938280000000001
+        }
+      },
+      "lastSessionId": "afdd2833-affb-4fc5-aada-4960aecf4483",
+      "lastSessionMetrics": {
+        "frame_duration_ms_count": 2269,
+        "frame_duration_ms_min": 0.21529500000178814,
+        "frame_duration_ms_max": 4577.999361000024,
+        "frame_duration_ms_avg": 8.286904147641803,
+        "frame_duration_ms_p50": 1.6428499999892665,
+        "frame_duration_ms_p95": 9.362008550003518,
+        "frame_duration_ms_p99": 167.76918227000226,
+        "pre_tool_hook_duration_ms_count": 3,
+        "pre_tool_hook_duration_ms_min": 44138,
+        "pre_tool_hook_duration_ms_max": 55638,
+        "pre_tool_hook_duration_ms_avg": 48225,
+        "pre_tool_hook_duration_ms_p50": 44899,
+        "pre_tool_hook_duration_ms_p95": 54564.1,
+        "pre_tool_hook_duration_ms_p99": 55423.22
+      }
+    }
+  },
+  "officialMarketplaceAutoInstallAttempted": true,
+  "officialMarketplaceAutoInstalled": true,
+  "skillUsage": {
+    "init": {
+      "usageCount": 1,
+      "lastUsedAt": 1777739282707
+    }
+  }
+}
